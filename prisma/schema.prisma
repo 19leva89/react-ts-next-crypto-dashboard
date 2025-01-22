@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TrendingData {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     Json
+  //
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique // Уникальный ключ для хранения данных
+  value     String // Храним JSON-данные в виде строки
+  //
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Coin {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  coinId    String   @unique
+  value     Json
+  //
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MarketChart {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  coinId    String
+  value     Json
+  //
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Aidrop {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     Json
+  //
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

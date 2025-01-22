@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	@font-face {
+		font-family: 'mona-light';
+		font-style: normal;
+		src: url(../assets/fonts/Mona-Sans-Light.ttf) format('truetype');
+		font-display: swap;
+	}
+	@font-face {
+		font-family: 'mona-regular';
+		font-style: normal;
+		src: url(../assets/fonts/Mona-Sans-Regular.ttf) format('truetype');
+		font-display: swap;
+	}
+	@font-face {
+		font-family: 'mona-medium';
+		src: url(../assets/fonts/Mona-Sans-Medium.ttf) format('truetype');
+		font-style: normal;
+		font-display: swap;
+	}
+	@font-face {
+		font-family: 'mona-semibold';
+		src: url(../assets/fonts/Mona-Sans-SemiBold.ttf) format('truetype');
+		font-style: normal;
+		font-display: swap;
+	}
+	@font-face {
+		font-family: 'mona-bold';
+		src: url(../assets/fonts/Mona-Sans-Bold.ttf) format('truetype');
+		font-style: normal;
+		font-display: swap;
+	}
+	@font-face {
+		font-family: 'mona-black';
+		src: url(../assets/fonts/Mona-Sans-Black.ttf) format('truetype');
+		font-style: normal;
+		font-display: swap;
+	}
+}
+
+* {
+	scroll-behavior: smooth;
+	/* transition: all;
+  transition-timing-function: ease-in-out;
+  transition-duration: 100ms; */
+}
+
+html[class='dark'] {
+	background-color: rgba(23, 25, 35, 1);
+	color: #fff;
+}
+
+.crypto-descr a {
+	color: rgb(26, 26, 222);
+}
+.crypto-descr a:hover {
+	text-decoration: underline;
+}
+
+body {
+	font-family:
+		'mona-regular',
+		system-ui,
+		-apple-system,
+		BlinkMacSystemFont,
+		'Segoe UI',
+		Roboto,
+		Oxygen,
+		Ubuntu,
+		Cantarell,
+		'Open Sans',
+		'Helvetica Neue',
+		sans-serif;
+}
+
+@layer utilities {
+	.font-light {
+		font-family: 'mona-light';
+	}
+	.font-medium {
+		font-family: 'mona-medium';
+	}
+	.font-semibold {
+		font-family: 'mona-semibold';
+	}
+	.font-bold {
+		font-family: 'mona-bold';
+	}
+	.font-black {
+		font-family: 'mona-black';
+	}
+
+	/* Hide scrollbar for Chrome, Safari and Opera */
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+	/* Hide scrollbar for IE, Edge and Firefox */
+	.no-scrollbar {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
+}
