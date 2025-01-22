@@ -6,6 +6,8 @@ export const metadata: Metadata = {
 	title: 'Dashboard',
 }
 
-export default function HomePage() {
+const HomePage = () => {
 	return <DashboardPage />
 }
+
+export default HomePage

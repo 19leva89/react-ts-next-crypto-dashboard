@@ -1,7 +1,7 @@
 import Script from 'next/script'
 import { PropsWithChildren } from 'react'
 
-import BaseDashboard from './baseDashboard'
+import { BaseDashboard } from './base-dashboard'
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
 	return (

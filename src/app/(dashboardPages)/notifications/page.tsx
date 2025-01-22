@@ -4,6 +4,8 @@ export const metadata: Metadata = {
 	title: 'Notifications',
 }
 
-export default function NotificationsPage() {
+const NotificationsPage = () => {
 	return <h1 className="text-center">Notifications</h1>
 }
+
+export default NotificationsPage

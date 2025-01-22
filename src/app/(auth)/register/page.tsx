@@ -5,7 +5,7 @@ export const metadata: Metadata = {
 	title: 'Create account',
 }
 
-export default function RegistrationPage() {
+const RegistrationPage = () => {
 	return (
 		<div className="h-screen flex justify-center items-start mx-2 my-10 overflow-auto">
 			<div className=" shadow-xl rounded-lg p-3 max-w-[350px] mx-auto">
@@ -80,3 +80,5 @@ export default function RegistrationPage() {
 		</div>
 	)
 }
+
+export default RegistrationPage

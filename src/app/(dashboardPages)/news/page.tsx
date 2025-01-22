@@ -3,14 +3,13 @@ import Image from 'next/image'
 import { Metadata } from 'next'
 
 import { cryptoNews } from './datas'
-import cmcIcon from '@/assets/icons/cmcIcon.svg'
-import { ArrowUpIcon, CommentIcon, HeartIcon } from '@/assets/iconComponents'
+import { ArrowUpIcon, CommentIcon, HeartIcon } from '@/components/icons'
 
 export const metadata: Metadata = {
 	title: 'News',
 }
 
-export default function NewsPage() {
+const NewsPage = () => {
 	return (
 		<>
 			<div className="mb-8">
@@ -27,7 +26,7 @@ export default function NewsPage() {
 					>
 						<div className="flex flex-col gap-2">
 							<div className="flex items-center gap-2">
-								<Image alt="CMC" src={cmcIcon} />
+								<img alt="CMC" src="/icons/cmc.svg" />
 
 								<div className="flex flex-col">
 									<h4 className="font-medium">CoinMarketCap</h4>
@@ -72,3 +71,5 @@ export default function NewsPage() {
 		</>
 	)
 }
+
+export default NewsPage

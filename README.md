@@ -1,3 +1,5 @@
+TODO: Заменить img на Image
+
 apexcharts
 
 Core Technologies:

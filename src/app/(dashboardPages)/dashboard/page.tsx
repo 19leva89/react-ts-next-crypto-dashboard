@@ -1,13 +1,13 @@
 import { Metadata } from 'next'
 
-import CryptosTableSection from './cryptoTableSection'
-import AccountTrendingSection from './accountTrendingSection'
+import { CryptosTableSection } from './crypto-table-section'
+import { AccountTrendingSection } from './account-trending-section'
 
 export const metadata: Metadata = {
 	title: 'Dashboard',
 }
 
-export default function DashboardPage() {
+const DashboardPage = () => {
 	return (
 		<>
 			<AccountTrendingSection />
@@ -16,3 +16,5 @@ export default function DashboardPage() {
 		</>
 	)
 }
+
+export default DashboardPage

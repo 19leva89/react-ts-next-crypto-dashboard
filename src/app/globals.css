@@ -6,36 +6,36 @@
 	@font-face {
 		font-family: 'mona-light';
 		font-style: normal;
-		src: url(../assets/fonts/Mona-Sans-Light.ttf) format('truetype');
+		src: url(/fonts/Mona-Sans-Light.ttf) format('truetype');
 		font-display: swap;
 	}
 	@font-face {
 		font-family: 'mona-regular';
 		font-style: normal;
-		src: url(../assets/fonts/Mona-Sans-Regular.ttf) format('truetype');
+		src: url(/fonts/Mona-Sans-Regular.ttf) format('truetype');
 		font-display: swap;
 	}
 	@font-face {
 		font-family: 'mona-medium';
-		src: url(../assets/fonts/Mona-Sans-Medium.ttf) format('truetype');
+		src: url(/fonts/Mona-Sans-Medium.ttf) format('truetype');
 		font-style: normal;
 		font-display: swap;
 	}
 	@font-face {
 		font-family: 'mona-semibold';
-		src: url(../assets/fonts/Mona-Sans-SemiBold.ttf) format('truetype');
+		src: url(/fonts/Mona-Sans-SemiBold.ttf) format('truetype');
 		font-style: normal;
 		font-display: swap;
 	}
 	@font-face {
 		font-family: 'mona-bold';
-		src: url(../assets/fonts/Mona-Sans-Bold.ttf) format('truetype');
+		src: url(/fonts/Mona-Sans-Bold.ttf) format('truetype');
 		font-style: normal;
 		font-display: swap;
 	}
 	@font-face {
 		font-family: 'mona-black';
-		src: url(../assets/fonts/Mona-Sans-Black.ttf) format('truetype');
+		src: url(/fonts/Mona-Sans-Black.ttf) format('truetype');
 		font-style: normal;
 		font-display: swap;
 	}

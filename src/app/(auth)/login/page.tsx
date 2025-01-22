@@ -5,7 +5,7 @@ export const metadata: Metadata = {
 	title: 'Login',
 }
 
-export default function LoginPage() {
+const LoginPage = () => {
 	return (
 		<div className="h-screen flex justify-center items-start mx-2 my-10">
 			<div className=" shadow-xl rounded-lg p-3 max-w-[350px] mx-auto">
@@ -54,3 +54,5 @@ export default function LoginPage() {
 		</div>
 	)
 }
+
+export default LoginPage

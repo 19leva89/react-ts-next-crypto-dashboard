@@ -4,6 +4,8 @@ export const metadata: Metadata = {
 	title: 'Billing',
 }
 
-export default function BillingPage() {
+const BillingPage = () => {
 	return <h1 className="text-center">Billing</h1>
 }
+
+export default BillingPage

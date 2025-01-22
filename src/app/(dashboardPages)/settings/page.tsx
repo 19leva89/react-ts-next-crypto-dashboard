@@ -4,6 +4,8 @@ export const metadata: Metadata = {
 	title: 'Settings',
 }
 
-export default function SettingsPage() {
+const SettingsPage = () => {
 	return <h1 className="text-center">Settings</h1>
 }
+
+export default SettingsPage
