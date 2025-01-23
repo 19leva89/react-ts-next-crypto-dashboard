@@ -26,7 +26,7 @@ const NewsPage = () => {
 					>
 						<div className="flex flex-col gap-2">
 							<div className="flex items-center gap-2">
-								<img alt="CMC" src="/icons/cmc.svg" />
+								<Image alt="CMC" src="/icons/cmc.svg" width={32} height={32} />
 
 								<div className="flex flex-col">
 									<h4 className="font-medium">CoinMarketCap</h4>
@@ -36,7 +36,15 @@ const NewsPage = () => {
 							</div>
 
 							<div className={`h-[200px] rounded-xl w-full bg-gray-100 dark:bg-black`}>
-								{news.cover && <img alt={news.title} src={news.cover} className="w-full h-full rounded-xl" />}
+								{news.cover && (
+									<Image
+										alt={news.title}
+										src={news.cover}
+										width={212}
+										height={200}
+										className="w-full h-full rounded-xl"
+									/>
+								)}
 							</div>
 
 							<h3 className="font-medium italic">{news.title}</h3>

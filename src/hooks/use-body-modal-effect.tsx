@@ -8,5 +8,6 @@ export const useBodyModalEffect = (dependencies: any[], condition: boolean) => {
 		} else {
 			bodyEl?.classList.remove('overflow-hidden')
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [...dependencies])
 }

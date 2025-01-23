@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 
-import { makeServerReq } from '@/app/api/makeReq'
+import { makeServerReq } from '@/app/api/make-request'
 import { getCgCoinsMarketChartRoute } from '@/app/api/ressources'
 
 export function GET(request: NextRequest, context: { params: { coinId: string } }) {

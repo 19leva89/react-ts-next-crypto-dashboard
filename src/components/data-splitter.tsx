@@ -29,6 +29,7 @@ export const DataSplitter = ({ datas, setCurrentDatas, rows }: DataSplitterProps
 		setCurrentScreen(1)
 		setPreviousScreen(0)
 		updateTotalScreen(rows)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [rows, setCurrentDatas])
 
 	useEffect(() => {
@@ -41,6 +42,7 @@ export const DataSplitter = ({ datas, setCurrentDatas, rows }: DataSplitterProps
 		} else {
 			setCurrentDatas(datas?.slice(previousScreen * rowsPerScreen, currentScreen * rowsPerScreen))
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [datas])
 
 	const updateTotalScreen = (rows: number) => {
@@ -52,7 +54,7 @@ export const DataSplitter = ({ datas, setCurrentDatas, rows }: DataSplitterProps
 
 		let screens = datas?.length / rows
 		// check if it is a float
-		let splitted = screens.toString().split('.')
+		const splitted = screens.toString().split('.')
 		if (splitted.length > 1) {
 			screens = parseInt(screens.toString()) + 1
 		}

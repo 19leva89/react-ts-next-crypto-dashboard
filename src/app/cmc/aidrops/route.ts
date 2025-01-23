@@ -1,4 +1,4 @@
-import { makeServerReq } from '@/app/api/makeReq'
+import { makeServerReq } from '@/app/api/make-request'
 import { getCmcOngoingAidropsDataRoute, getCmcUpcomingAidropsDataRoute } from '@/app/api/ressources'
 
 export async function GET() {

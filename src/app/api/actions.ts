@@ -1,3 +1,5 @@
+'use server'
+
 import {
 	AidropsData,
 	CategoriesData,
@@ -14,8 +16,8 @@ import {
 	MARKET_CHART_KEY,
 	TRENDING_KEY,
 } from './constants'
-import makeReq from './makeReq'
 import { prisma } from '@/lib/prisma'
+import { makeReq } from './make-request'
 
 export const fetchTrendingData = async (): Promise<TrendingData | null> => {
 	try {
@@ -38,6 +40,7 @@ export const fetchTrendingData = async (): Promise<TrendingData | null> => {
 					value: data,
 				},
 			})
+
 			return data
 		} else {
 			return null
@@ -106,6 +109,7 @@ export const fetchCoinsList = async (): Promise<CoinListData | null> => {
 					coinId: coinId || 'default_coin_id', // Используем значение coinId
 				},
 			})
+
 			return data
 		}
 
@@ -189,6 +193,7 @@ export const fetchCoinsListByCate = async (cate: string): Promise<CoinListData |
 				update: { value: JSON.stringify(data) },
 				create: { key: cate, value: JSON.stringify(data), coinId: coinId },
 			})
+
 			return data
 		}
 

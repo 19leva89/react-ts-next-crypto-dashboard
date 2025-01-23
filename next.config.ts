@@ -2,12 +2,12 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
 	images: {
-		// remotePatterns: [
-		// 	{
-		// 		protocol: 'https',
-		// 		hostname: 'gravatar.com',
-		// 	},
-		// ],
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'academy-public.coinmarketcap.com',
+			},
+		],
 	},
 
 	reactStrictMode: false,

@@ -13,6 +13,7 @@ export const AccountTrendingSection = () => {
 
 	useEffect(() => {
 		setFetchingTrendData(true)
+
 		fetchTrendingData().then((resp) => {
 			setFetchingTrendData(false)
 			if (resp) {
@@ -107,7 +108,7 @@ export const AccountTrendingSection = () => {
 							>
 								<div className="flex items-center justify-between">
 									<div className="flex items-center gap-1">
-										<div className="">
+										<div>
 											<img src={data.item.thumb} alt={data.item.name} className="size-8 rounded-full" />
 										</div>
 

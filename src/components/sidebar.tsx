@@ -202,9 +202,9 @@ export const Sidebar = () => {
 										{currentPathname === sideBarItem.path ||
 										theme === themeMode.dark ||
 										(currentPathname === '/' && sideBarItem.name === 'Dashboard') ? (
-											<img alt={sideBarItem.name} src={sideBarItem.whiteIcon} />
+											<Image alt={sideBarItem.name} src={sideBarItem.whiteIcon} width={18} height={18} />
 										) : (
-											<img alt={sideBarItem.name} src={sideBarItem.icon} />
+											<Image alt={sideBarItem.name} src={sideBarItem.icon} width={18} height={18} />
 										)}
 
 										<span>{sideBarItem.name}</span>
@@ -222,7 +222,7 @@ export const Sidebar = () => {
 								setIsOpen(!IsOpen)
 							}}
 						>
-							<img src="/svg/profile-image.svg" alt="John Doe" />
+							<Image src="/svg/profile-image.svg" alt="John Doe" width={40} height={40} />
 							{/* <div className="p-6 bg-slate-200 rounded-full ">
                             </div> */}
 

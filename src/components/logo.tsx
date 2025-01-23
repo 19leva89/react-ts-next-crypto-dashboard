@@ -7,7 +7,7 @@ interface LogoProps {
 export const Logo = ({ className }: LogoProps) => {
 	return (
 		<div className={className}>
-			<img alt="Crypto" src="/img/logo.png" />
+			<Image alt="Crypto" src="/img/logo.png" width={220} height={50} />
 		</div>
 	)
 }
