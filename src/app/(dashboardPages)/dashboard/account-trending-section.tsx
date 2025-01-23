@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 import { TrendingData } from '@/app/api/definitions'
@@ -108,9 +109,13 @@ export const AccountTrendingSection = () => {
 							>
 								<div className="flex items-center justify-between">
 									<div className="flex items-center gap-1">
-										<div>
-											<img src={data.item.thumb} alt={data.item.name} className="size-8 rounded-full" />
-										</div>
+										<Image
+											src={data.item.thumb || '/svg/coin-not-found.svg'}
+											alt={data.item.name || 'Coin image'}
+											width={32}
+											height={32}
+											className="size-8 rounded-full"
+										/>
 
 										<div className="flex flex-col">
 											<span className="text-gray-600 dark:text-white font-semibold">

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 
@@ -242,9 +243,13 @@ export const CryptosTableSection = () => {
 													}}
 												>
 													{coins.image && coins.name ? (
-														<div>
-															<img src={coins.image} alt={coins.name} className="size-8 rounded-full" />
-														</div>
+														<Image
+															src={coins.image || '/svg/coin-not-found.svg'}
+															alt={coins.name || 'Coin image'}
+															width={32}
+															height={32}
+															className="size-8 rounded-full"
+														/>
 													) : (
 														'-'
 													)}

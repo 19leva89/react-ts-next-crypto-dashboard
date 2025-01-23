@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
 				protocol: 'https',
 				hostname: 'academy-public.coinmarketcap.com',
 			},
+			{
+				protocol: 'https',
+				hostname: 'coin-images.coingecko.com',
+			},
 		],
 	},
 

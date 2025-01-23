@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { useContext, useEffect, useState } from 'react'
 
@@ -160,7 +161,13 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 						<>
 							<div className="flex justify-between items-center font-medium">
 								<div className="items-center flex gap-2">
-									<img src={coinsData?.image?.thumb} alt={coinsData.name} className="size-8 rounded-full" />
+									<Image
+										src={coinsData.image?.thumb || '/svg/coin-not-found.svg'}
+										alt={coinsData.name || 'Coin image'}
+										width={32}
+										height={32}
+										className="size-8 rounded-full"
+									/>
 
 									<span className="font-medium">
 										<span>{coinsData.name} </span>

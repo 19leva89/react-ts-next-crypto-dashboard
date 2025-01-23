@@ -1,5 +1,3 @@
-TODO: Заменить img на Image
-
 apexcharts
 
 Core Technologies:
@@ -30,4 +28,5 @@ npm run lint (loading ESLint checker)
 
 npx prisma migrate reset
 npx prisma db push
+npx prisma db pull
 npx prisma generate

@@ -26,7 +26,7 @@ const NewsPage = () => {
 					>
 						<div className="flex flex-col gap-2">
 							<div className="flex items-center gap-2">
-								<Image alt="CMC" src="/icons/cmc.svg" width={32} height={32} />
+								<Image alt="CMC logo" src="/icons/cmc.svg" width={32} height={32} />
 
 								<div className="flex flex-col">
 									<h4 className="font-medium">CoinMarketCap</h4>
