@@ -3,11 +3,11 @@
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
+import { ChevronDown, EllipsisVertical, Search } from 'lucide-react'
 
-import { DataSplitter } from '@/components'
+import { DataSplitter } from '@/components/shared'
 import { CoinDetailModal } from './coins-detail-modal'
 import { CategoriesData, CoinListData } from '@/app/api/definitions'
-import { ChevronDownIcon, EllispsisIcon, SearchIcon } from '@/components/icons'
 import { fetchCategories, fetchCoinsList, fetchCoinsListByCate } from '@/app/api/actions'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
@@ -123,7 +123,7 @@ export const CryptosTableSection = () => {
 				<div className="rounded-xl relative w-full sm:w-[350px]">
 					{!searchStr && (
 						<div className="flex gap-1 font-medium items-center text-sm text-gray-600 dark:text-gray-500 absolute top-1/2 left-5 -translate-y-1/2">
-							<SearchIcon className="size-4" />
+							<Search size={16} />
 
 							<span>Search crypto...</span>
 						</div>
@@ -146,7 +146,7 @@ export const CryptosTableSection = () => {
 					>
 						<span>{currentCategorie || 'Categories'}</span>
 
-						<ChevronDownIcon className="size-4" />
+						<ChevronDown size={16} />
 					</button>
 
 					<ul
@@ -187,7 +187,7 @@ export const CryptosTableSection = () => {
 					<h4 className="font-medium text-lg">Market</h4>
 
 					<button className="py-3 px-3 rounded-xl border dark:border-gray-700">
-						<EllispsisIcon className="size-4" />
+						<EllipsisVertical size={16} className="size-4" />
 					</button>
 				</div>
 

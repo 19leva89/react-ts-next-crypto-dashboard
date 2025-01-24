@@ -1,5 +1,3 @@
-apexcharts
-
 Core Technologies:
 - React 19
 - TypeScript
@@ -13,7 +11,6 @@ Middleware and Server Utilities:
 
 Styling and UI Frameworks:
 - Lucide React (stylization)
-- React Icons (stylization)
 - shadcn/ui (stylization)
 - Tailwind CSS (stylization)
 

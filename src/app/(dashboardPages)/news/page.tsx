@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Metadata } from 'next'
+import { ArrowUp, Heart, MessageSquareText } from 'lucide-react'
 
 import { cryptoNews } from './datas'
-import { ArrowUpIcon, CommentIcon, HeartIcon } from '@/components/icons'
 
 export const metadata: Metadata = {
 	title: 'News',
@@ -26,7 +26,7 @@ const NewsPage = () => {
 					>
 						<div className="flex flex-col gap-2">
 							<div className="flex items-center gap-2">
-								<Image alt="CMC logo" src="/icons/cmc.svg" width={32} height={32} />
+								<Image alt="CMC logo" src="/svg/cmc.svg" width={32} height={32} />
 
 								<div className="flex flex-col">
 									<h4 className="font-medium">CoinMarketCap</h4>
@@ -54,13 +54,13 @@ const NewsPage = () => {
 
 						<div className="flex items-center gap-3">
 							<div className="flex items-center gap-1">
-								<HeartIcon className="size-5" />
+								<Heart size={20} />
 
 								<span>{news.recation}</span>
 							</div>
 
 							<div className="flex items-center gap-1">
-								<CommentIcon className="size-5" />
+								<MessageSquareText size={20} />
 
 								<span>{news.commentCount}</span>
 							</div>
@@ -73,7 +73,7 @@ const NewsPage = () => {
 				<button className="font-medium rounded-full flex items-center gap-2 p-3 border dark:border-gray-700 bg-slate-50 dark:bg-gray-800">
 					<span>Load more</span>
 
-					<ArrowUpIcon className="rotate-180 size-5" />
+					<ArrowUp size={20} className="rotate-180" />
 				</button>
 			</div>
 		</>

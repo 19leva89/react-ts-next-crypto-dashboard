@@ -3,8 +3,8 @@
 import Link from 'next/link'
 import { ReactNode, useEffect, useState } from 'react'
 
-import { Sidebar, Navbar } from '@/components'
 import { themeModeOptions } from '@/lib/definitions'
+import { Sidebar, Navbar } from '@/components/shared'
 import { themeMode, themeModeKey } from '@/lib/constants'
 import { sidebarStateContext, themeContext } from '@/lib/context'
 

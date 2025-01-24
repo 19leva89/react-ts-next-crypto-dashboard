@@ -2,10 +2,10 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { ArrowUp, ChevronDown, TrendingDown, TrendingUp } from 'lucide-react'
 
 import { TrendingData } from '@/app/api/definitions'
 import { fetchTrendingData } from '@/app/api/actions'
-import { ArrowUpIcon, ChevronDownIcon, TradeDownIcon, TradeUpIcon } from '@/components/icons'
 
 export const AccountTrendingSection = () => {
 	const [dataIndex, setDataIndex] = useState({ start: 0, end: 4 })
@@ -59,7 +59,7 @@ export const AccountTrendingSection = () => {
 				<div className="flex gap-2 flex-wrap min-[300px]:flex-nowrap">
 					<button className="w-full min-[300px]:w-r1/2 mx-auto flex items-center justify-center px-8 py-2 rounded-xl bg-blue-50 dark:bg-slate-900 dark:border dark:border-gray-700 text-blue-500">
 						<div className="flex items-center gap-1">
-							<ArrowUpIcon className="size-6" />
+							<ArrowUp size={24} />
 
 							<span className="font-medium">Deposit</span>
 						</div>
@@ -67,7 +67,7 @@ export const AccountTrendingSection = () => {
 
 					<button className="w-full min-[300px]:w-r1/2 mx-auto flex items-center justify-center px-8 py-2 rounded-xl bg-blue-50 dark:bg-slate-900 dark:border dark:border-gray-700 text-blue-500">
 						<div className="flex items-center gap-1">
-							<ArrowUpIcon className="size-6 rotate-180" />
+							<ArrowUp size={24} className="rotate-180" />
 
 							<span className="font-medium">Withdraw</span>
 						</div>
@@ -91,7 +91,7 @@ export const AccountTrendingSection = () => {
 							<>
 								<span>View more</span>
 
-								<ChevronDownIcon className="-rotate-90" />
+								<ChevronDown size={16} className="-rotate-90" />
 							</>
 						)}
 					</button>
@@ -142,9 +142,9 @@ export const AccountTrendingSection = () => {
 										</span>
 
 										{data.item.data.price_change_percentage_24h.usd > 0 ? (
-											<TradeUpIcon className="size-4 text-green-500" />
+											<TrendingUp size={16} className="text-green-500" />
 										) : (
-											<TradeDownIcon className="size-4 text-red-500" />
+											<TrendingDown size={16} className="text-red-500" />
 										)}
 									</div>
 								</div>

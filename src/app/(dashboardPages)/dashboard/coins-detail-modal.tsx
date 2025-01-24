@@ -2,13 +2,14 @@
 
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
+import { Star, X } from 'lucide-react'
 import { useContext, useEffect, useState } from 'react'
 
+import { Button } from '@/components/ui'
 import { themeMode } from '@/lib/constants'
 import { useBodyModalEffect } from '@/hooks'
 import { themeContext } from '@/lib/context'
-import { Overlay, SimpleSkeleton } from '@/components'
-import { FavoriteIcon, XIcon } from '@/components/icons'
+import { Overlay, SimpleSkeleton } from '@/components/shared'
 import { CoinsData, MarketChartData } from '@/app/api/definitions'
 import { fetchCoinsData, fetchCoinsMarketChart } from '@/app/api/actions'
 
@@ -66,9 +67,10 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 					) : (
 						<h4 className="font-semibold text-md">{coinsData.name}</h4>
 					)}
-					<button className="bg-slate-200 dark:bg-slate-800 p-2 rounded-xl" onClick={closeModal}>
-						<XIcon className="size-5" />
-					</button>
+
+					<Button variant="ghost" size="icon" className="rounded-2xl" onClick={closeModal}>
+						<X size={20} />
+					</Button>
 				</div>
 
 				<div className="flex justify-center">
@@ -241,7 +243,7 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 
 							<button className="font-medium mt-8 rounded-xl w-full flex bg-blue-50 dark:bg-slate-900 text-blue-500 dark:text-blue-600 items-center justify-center p-2 dark:border dark:border-gray-700">
 								<div className="flex items-center gap-2">
-									<FavoriteIcon className="size-5" />
+									<Star size={20} />
 
 									<span>Add to favorites</span>
 								</div>
