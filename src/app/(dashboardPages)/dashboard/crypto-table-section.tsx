@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, EllipsisVertical, Search } from 'lucide-react'
 
+import { cn } from '@/lib'
 import { DataSplitter } from '@/components/shared'
 import { CoinDetailModal } from './coins-detail-modal'
 import { CategoriesData, CoinListData } from '@/app/api/definitions'
@@ -140,9 +141,9 @@ export const CryptosTableSection = () => {
 
 				<div className="w-full sm:w-64 relative">
 					<button
-						className="rounded-xl w-full py-2 px-3 flex items-center justify-between border dark:border-gray-700 focus:border-2 text-sm font-medium text-gray-600 dark:text-white"
-						onClick={toggleCategorieContainer}
 						id="categorie-btn"
+						onClick={toggleCategorieContainer}
+						className="rounded-xl w-full py-2 px-3 flex items-center justify-between border dark:border-gray-700 focus:border-2 text-sm font-medium text-gray-600 dark:text-white"
 					>
 						<span>{currentCategorie || 'Categories'}</span>
 
@@ -150,13 +151,17 @@ export const CryptosTableSection = () => {
 					</button>
 
 					<ul
-						className="z-20 hidden shadow-xl mt-1 max-h-64 overflow-auto py-1 absolute top-full w-full bg-white dark:bg-slate-800 dark:text-slate-100 divide-y dark:divide-gray-700 rounded-xl"
 						ref={categorieContainerRef}
+						className="z-[6] hidden shadow-xl mt-1 max-h-64 overflow-auto py-1 absolute top-full w-full bg-white dark:bg-slate-800 dark:text-slate-100 divide-y dark:divide-gray-700 rounded-xl"
 					>
 						<li>
 							<button
-								className={`p-3 hover:bg-slate-200 dark:hover:bg-slate-600 w-full text-start duration-500
-                        ${currentCategorie === 'All' ? 'bg-slate-200 dark:bg-slate-600' : ''}`}
+								className={cn(
+									'p-3 hover:bg-slate-200 dark:hover:bg-slate-600 w-full text-start duration-500',
+									{
+										'bg-slate-200 dark:bg-slate-600': currentCategorie === 'All',
+									},
+								)}
 								onClick={() => {
 									onCategorieClick('')
 								}}
@@ -168,8 +173,12 @@ export const CryptosTableSection = () => {
 						{categories?.map((categorie) => (
 							<li key={categorie.category_id}>
 								<button
-									className={`p-3 hover:bg-slate-200 dark:hover:bg-slate-600 w-full text-start duration-500
-                            ${currentCategorie === categorie.name ? 'bg-slate-200 dark:bg-slate-600' : ''}`}
+									className={cn(
+										'p-3 hover:bg-slate-200 dark:hover:bg-slate-600 w-full text-start duration-500',
+										{
+											'bg-slate-200 dark:bg-slate-600': currentCategorie === categorie.name,
+										},
+									)}
 									onClick={() => {
 										onCategorieClick(categorie.category_id, categorie.name)
 									}}
@@ -269,12 +278,12 @@ export const CryptosTableSection = () => {
 											<td className="py-3">
 												{coins.price_change_percentage_24h ? (
 													<div
-														className={`rounded-full font-medium px-2 py-1 inline-block
-                                    ${
-																			coins.price_change_percentage_24h > 0
-																				? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
-																				: ' bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item'
-																		}`}
+														className={cn(
+															'rounded-full font-medium px-2 py-1 inline-block',
+															coins.price_change_percentage_24h > 0
+																? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
+																: 'bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item',
+														)}
 													>
 														<span>
 															{coins.price_change_percentage_24h > 0 && '+'}

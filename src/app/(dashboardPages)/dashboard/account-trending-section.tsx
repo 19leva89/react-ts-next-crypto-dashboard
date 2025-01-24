@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { ArrowUp, ChevronDown, TrendingDown, TrendingUp } from 'lucide-react'
 
+import { cn } from '@/lib'
 import { TrendingData } from '@/app/api/definitions'
 import { fetchTrendingData } from '@/app/api/actions'
 
@@ -103,8 +104,7 @@ export const AccountTrendingSection = () => {
 					<div className="flex flex-wrap lg:flex-nowrap gap-2 text-sm overflow-auto no-scrollbar">
 						{trendingData?.coins?.slice(dataIndex.start, dataIndex.end)?.map((data, index) => (
 							<div
-								className="shrink-0 border dark:border-gray-700 p-3 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 duration-500 
-                    w-full min-[500px]:w-[48%] mx-auto lg:w-64 lg:mx-auto"
+								className="shrink-0 border dark:border-gray-700 p-3 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 duration-500 w-full min-[500px]:w-[48%] mx-auto lg:w-64 lg:mx-auto"
 								key={index}
 							>
 								<div className="flex items-center justify-between">
@@ -129,12 +129,12 @@ export const AccountTrendingSection = () => {
 									</div>
 
 									<div
-										className={`flex items-center gap-2 rounded-full font-medium px-2 py-1
-                                ${
-																	data.item.data.price_change_percentage_24h.usd > 0
-																		? ' bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
-																		: ' bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item'
-																}`}
+										className={cn(
+											'flex items-center gap-2 rounded-full font-medium px-2 py-1',
+											data.item.data.price_change_percentage_24h.usd > 0
+												? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
+												: 'bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item',
+										)}
 									>
 										<span>
 											{data.item.data.price_change_percentage_24h.usd > 0 && '+'}

@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { Star, X } from 'lucide-react'
 import { useContext, useEffect, useState } from 'react'
 
+import { cn } from '@/lib'
 import { Button } from '@/components/ui'
 import { themeMode } from '@/lib/constants'
 import { useBodyModalEffect } from '@/hooks'
@@ -58,8 +59,10 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 			<Overlay onOverlayClick={closeModal} showOverlay={showDetailModal} />
 
 			<div
-				className={`p-5 z-[9970] shadow-xl fixed top-0 h-full rounded-tl-xl rounded-bl-xl bg-white dark:bg-dark w-full min-[550px]:w-[500px] 
-        ${showDetailModal ? 'right-0' : '-right-full'} duration-300 linear overflow-auto`}
+				className={cn(
+					'p-5 z-[10] shadow-xl fixed top-0 h-full rounded-tl-xl rounded-bl-xl bg-white dark:bg-dark w-full min-[550px]:w-[500px] duration-300 linear overflow-auto',
+					showDetailModal ? 'right-0' : '-right-full',
+				)}
 			>
 				<div className="flex justify-between items-center mb-8">
 					{fetchingCoinsData ? (

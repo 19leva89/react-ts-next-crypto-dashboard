@@ -2,14 +2,8 @@ export { Avatar, AvatarFallback, AvatarImage } from './avatar'
 export { Button, buttonVariants } from './button'
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card'
 export { Dialog, DialogContent, DialogTitle, DialogTrigger } from './dialog'
+export { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './dropdown-menu'
 export { Input } from './input'
-export {
-	NavigationMenu,
-	NavigationMenuItem,
-	NavigationMenuList,
-	NavigationMenuTrigger,
-	NavigationMenuContent,
-} from './navigation-menu'
 export { Separator } from './separator'
 export { Textarea } from './textarea'
 export {

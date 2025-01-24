@@ -39,6 +39,7 @@ export const BaseDashboard = ({ children }: BaseDashboardProps) => {
 
 	const updateThemeMode = () => {
 		const documtElement = document.querySelector('html')
+
 		if (theme === themeMode.light) {
 			setTheme(themeMode.dark)
 			localStorage.setItem(themeModeKey, themeMode.dark)

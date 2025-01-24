@@ -71,8 +71,7 @@ const RegistrationPage = () => {
 
 				<a
 					href={'/dashboard'}
-					className="block w-full mt-6 rounded-full p-3 bg-blue-500 text-white text-center
-                hover:bg-blue-600"
+					className="block w-full mt-6 rounded-full p-3 bg-blue-500 text-white text-center hover:bg-blue-600"
 				>
 					Create account
 				</a>

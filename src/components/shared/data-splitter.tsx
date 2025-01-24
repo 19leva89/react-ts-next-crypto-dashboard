@@ -3,6 +3,8 @@
 import { ChevronDown } from 'lucide-react'
 import { Dispatch, useEffect, useState } from 'react'
 
+import { cn } from '@/lib'
+
 interface DataSplitterProps {
 	datas: any[]
 	rows: number
@@ -199,15 +201,15 @@ export const DataSplitter = ({ datas, setCurrentDatas, rows }: DataSplitterProps
 								{totalSrceen <= 4
 									? totalSrceenArray.map((value) => (
 											<button
-												className={`${
-													value === currentScreen
-														? 'bg-blue-500 text-white'
-														: 'text-blue-500 dark:border-2 dark:border-gray-700'
-												}`}
+												key={value}
 												onClick={() => {
 													goToXPage(value)
 												}}
-												key={value}
+												className={cn(
+													value === currentScreen
+														? 'bg-blue-500 text-white'
+														: 'text-blue-500 dark:border-2 dark:border-gray-700',
+												)}
 											>
 												{value}
 											</button>
@@ -216,11 +218,6 @@ export const DataSplitter = ({ datas, setCurrentDatas, rows }: DataSplitterProps
 											<>
 												{
 													<button
-														className={`${
-															totalSrceenArray.at(0) === currentScreen
-																? 'bg-blue-500 text-white'
-																: 'text-blue-500 dark:border-2 dark:border-gray-700'
-														}`}
 														onClick={() => {
 															const firstPage = totalSrceenArray.at(0)
 
@@ -228,6 +225,11 @@ export const DataSplitter = ({ datas, setCurrentDatas, rows }: DataSplitterProps
 																goToXPage(firstPage)
 															}
 														}}
+														className={cn(
+															totalSrceenArray.at(0) === currentScreen
+																? 'bg-blue-500 text-white'
+																: 'text-blue-500 dark:border-2 dark:border-gray-700',
+														)}
 													>
 														{totalSrceenArray.at(0)}
 													</button>
@@ -242,26 +244,26 @@ export const DataSplitter = ({ datas, setCurrentDatas, rows }: DataSplitterProps
 												currentScreen === totalSrceenArray.at(-1) ||
 												currentScreen === totalSrceenArray.at(-2) ? (
 													<button
-														className={`${
-															totalSrceenArray.at(1) === currentScreen
-																? 'bg-blue-500 text-white'
-																: 'text-blue-500 dark:border-2 dark:border-gray-700'
-														}`}
 														onClick={() => {
 															const page = totalSrceenArray.at(1)
 															if (page !== undefined) {
 																goToXPage(page)
 															}
 														}}
+														className={cn(
+															totalSrceenArray.at(1) === currentScreen
+																? 'bg-blue-500 text-white'
+																: 'text-blue-500 dark:border-2 dark:border-gray-700',
+														)}
 													>
 														{totalSrceenArray.at(1)}
 													</button>
 												) : (
 													<button
-														className={`bg-blue-500 text-white`}
 														onClick={() => {
 															goToXPage(currentScreen)
 														}}
+														className="bg-blue-500 text-white"
 													>
 														{currentScreen}
 													</button>
@@ -271,15 +273,15 @@ export const DataSplitter = ({ datas, setCurrentDatas, rows }: DataSplitterProps
 												)}
 												{totalSrceenArray.slice(totalSrceen - 2).map((value) => (
 													<button
-														className={`${
-															value === currentScreen
-																? 'bg-blue-500 text-white'
-																: 'text-blue-500 dark:border-2 dark:border-gray-700'
-														}`}
+														key={value}
 														onClick={() => {
 															goToXPage(value)
 														}}
-														key={value}
+														className={cn(
+															value === currentScreen
+																? 'bg-blue-500 text-white'
+																: 'text-blue-500 dark:border-2 dark:border-gray-700',
+														)}
 													>
 														{value}
 													</button>

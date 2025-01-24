@@ -21,12 +21,12 @@ import { ReactNode, useContext, useState } from 'react'
 
 import {
 	Button,
-	NavigationMenu,
-	NavigationMenuContent,
-	NavigationMenuItem,
-	NavigationMenuList,
-	NavigationMenuTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
 } from '@/components/ui'
+import { cn } from '@/lib'
 import { Logo } from '@/components/shared'
 import { sidebarStateContext } from '@/lib/context'
 
@@ -102,127 +102,144 @@ export const Sidebar = () => {
 	const pathname = usePathname()
 	const { sidebarState, setSidebarState } = useContext(sidebarStateContext)
 
-	const [IsOpen, setIsOpen] = useState<boolean>(false)
+	const [isOpen, setIsOpen] = useState<boolean>(false)
 
 	return (
 		<>
 			<div
-				className={`fixed top-0 w-64 h-full pt-4 flex flex-col bg-white border-r dark:border-gray-700
-					 lg:left-0 duration-300 sm:duration-500 ease-linear shadow-xl lg:shadow-none
-					 ${sidebarState ? 'left-0' : '-left-full'} z-[999]`}
+				className={cn(
+					'fixed top-0 w-64 h-full pt-4 flex flex-col justify-between bg-white dark:bg-dark border-r dark:border-gray-700 lg:left-0 duration-300 sm:duration-500 ease-linear shadow-xl lg:shadow-none z-[8]',
+					sidebarState ? 'left-0' : '-left-full',
+				)}
 			>
-				<div className="flex px-4">
-					<Link href={sideBarData[0].path}>
-						<Logo />
-					</Link>
-				</div>
+				<div className="flex flex-col">
+					<div className="flex px-4">
+						<Link href={sideBarData[0].path}>
+							<Logo />
+						</Link>
+					</div>
 
-				<div className="mt-8 mb-4 px-4 flex items-center justify-between">
-					<h2 className="text-gray-500 dark:text-white">Menu</h2>
+					<div className="mt-8 mb-4 px-4 h-10 flex items-center justify-between">
+						<h2 className="text-gray-500 dark:text-white">Menu</h2>
 
-					<Button variant="ghost" size="icon" className="rounded-xl lg:hidden" onClick={setSidebarState}>
-						<X size={16} />
-					</Button>
-				</div>
+						<Button variant="ghost" size="icon" className="rounded-xl lg:hidden" onClick={setSidebarState}>
+							<X size={16} />
+						</Button>
+					</div>
 
-				<NavigationMenu className="items-baseline">
-					<NavigationMenuList className="flex flex-col gap-2 px-4 w-[250px]">
+					<div className="flex flex-col gap-2 px-4 w-[250px]">
 						{sideBarData.map((sideBarItem, index) => (
-							<NavigationMenuItem key={index} className="w-full">
+							<div key={index} className="w-full">
 								{sideBarItem.isDropdown ? (
-									<>
-										<NavigationMenuTrigger className="flex gap-3 items-center justify-between w-full p-3 rounded-xl">
-											<div className="flex gap-3 items-center">
-												{sideBarItem.icon}
-												<span>{sideBarItem.name}</span>
-											</div>
-										</NavigationMenuTrigger>
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button
+												variant="outline"
+												size="lg"
+												className="flex gap-3 items-center justify-between w-full p-3 rounded-xl"
+											>
+												<div className="flex gap-3 items-center">
+													{sideBarItem.icon}
 
-										<NavigationMenuContent className="w-full mt-2 p-2 bg-white dark:bg-dark rounded-lg shadow-lg">
-											<ul className="flex flex-col gap-1">
-												{sideBarItem.dropdownItems?.map((item, idx) => (
-													<li key={idx}>
-														<Link
-															href={item.path}
-															className="block p-3 rounded-lg hover:bg-blue-100 dark:hover:bg-slate-600"
-														>
-															{item.name}
-														</Link>
-													</li>
-												))}
-											</ul>
-										</NavigationMenuContent>
-									</>
+													<span>{sideBarItem.name}</span>
+												</div>
+
+												<ChevronDown size={16} />
+											</Button>
+										</DropdownMenuTrigger>
+
+										<DropdownMenuContent
+											align="start"
+											className="flex flex-col gap-2 w-[220] bg-white dark:bg-dark rounded-xl shadow-lg"
+										>
+											{sideBarItem.dropdownItems?.map((item, idx) => (
+												<DropdownMenuItem key={idx} className="w-full h-10" asChild>
+													<Link
+														href={item.path}
+														className="block w-full p-3 rounded-xl hover:bg-blue-100 dark:hover:bg-slate-600 cursor-pointer"
+													>
+														{item.name}
+													</Link>
+												</DropdownMenuItem>
+											))}
+										</DropdownMenuContent>
+									</DropdownMenu>
 								) : (
 									<Button
 										asChild
 										size="lg"
+										onClick={() => {
+											setIsOpen(!isOpen)
+										}}
 										variant={pathname === sideBarItem.path ? 'default' : 'outline'}
 										className="flex gap-3 justify-start rounded-xl p-3 w-full"
 									>
 										<Link href={sideBarItem.path}>
 											{sideBarItem.icon}
+
 											<span>{sideBarItem.name}</span>
 										</Link>
 									</Button>
 								)}
-							</NavigationMenuItem>
-						))}
-					</NavigationMenuList>
-				</NavigationMenu>
-
-				<div className="p-2 relative">
-					<button
-						className="text-start flex gap-2 items-center 
-                        hover:bg-blue-100 dark:hover:bg-slate-800 rounded-lg p-2"
-						onClick={() => {
-							setIsOpen(!IsOpen)
-						}}
-					>
-						<Image src="/svg/profile-image.svg" alt="John Doe" width={40} height={40} />
-
-						<div className="grow flex justify-between gap-2 items-center">
-							<div className="flex flex-col gap-1 text-xs">
-								<span className="font-medium">John Doe</span>
-
-								<span className="text-gray-500">youremail@example.com</span>
 							</div>
+						))}
+					</div>
+				</div>
 
-							<ChevronDown size={16} className={`duration-300 ${IsOpen ? 'rotate-180' : 'rotate-0'}`} />
-						</div>
-					</button>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button
+							variant="outline"
+							size="lg"
+							className="flex gap-3 items-center justify-between m-1 mb-4 p-3 rounded-xl"
+						>
+							<Image src="/svg/profile-image.svg" alt="John Doe" width={40} height={40} />
 
-					<ul
-						className={`w-[90%] absolute ${IsOpen ? 'flex' : 'hidden'} bottom-full flex-col gap-1 p-1 rounded-xl shadow-lg bg-white dark:bg-slate-700`}
+							<div className="grow flex justify-between gap-2 items-center">
+								<div className="flex flex-col gap-1 text-xs">
+									<span className="font-medium">John Doe</span>
+
+									<span className="text-gray-500">youremail@example.com</span>
+								</div>
+
+								<ChevronDown size={16} className="duration-300" />
+							</div>
+						</Button>
+					</DropdownMenuTrigger>
+
+					<DropdownMenuContent
+						align="start"
+						className="flex flex-col gap-2 w-[247px] rounded-xl shadow-lg bg-white dark:bg-slate-700"
 					>
-						<li>
-							<a
+						<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
+							<Link
 								href="/login"
 								className="hover:bg-blue-100 dark:hover:bg-slate-600 p-3 rounded-xl w-full block duration-300"
 							>
 								Login
-							</a>
-						</li>
+							</Link>
+						</DropdownMenuItem>
 
-						<li>
-							<a
+						<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
+							<Link
 								href="/register"
 								className="hover:bg-blue-100 dark:hover:bg-slate-600 p-3 rounded-xl w-full block duration-300"
 							>
 								Create account
-							</a>
-						</li>
-					</ul>
-				</div>
+							</Link>
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
 
 			{/* Overlay for mobile */}
 			<div
-				className={`fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] dark:bg-slate-50 dark:opacity-30 z-[998] ${
-					sidebarState ? 'block' : 'hidden'
-				} lg:hidden`}
 				onClick={setSidebarState}
-			></div>
+				className={cn(
+					'fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] dark:bg-slate-50 dark:opacity-30 z-[7] lg:hidden',
+					sidebarState ? 'block' : 'hidden',
+				)}
+			/>
 		</>
 	)
 }
