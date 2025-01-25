@@ -66,6 +66,7 @@ export const authOptions: AuthOptions = {
 					id: findUser.id,
 					email: findUser.email,
 					name: findUser.fullName,
+					image: findUser.avatar,
 					role: findUser.role,
 				}
 			},
@@ -119,6 +120,7 @@ export const authOptions: AuthOptions = {
 						email: user.email,
 						fullName: user.name || 'User #' + user.id,
 						password: hashSync(user.id.toString(), 10),
+						avatar: user.image,
 						verified: new Date(),
 						provider: account?.provider,
 						providerId: account?.providerAccountId,
@@ -147,6 +149,7 @@ export const authOptions: AuthOptions = {
 				token.id = String(findUser.id)
 				token.email = findUser.email
 				token.fullName = findUser.fullName
+				token.avatar = findUser.avatar
 				token.role = findUser.role
 			}
 

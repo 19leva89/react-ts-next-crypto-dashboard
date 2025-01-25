@@ -11,7 +11,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui'
-import { registerUser } from '@/app/actions'
+
+import { registerUser } from '@/app/api/actions'
 import { FormInput } from '@/components/shared/form'
 import { TFormRegisterValues, formRegisterSchema } from './schemas'
 

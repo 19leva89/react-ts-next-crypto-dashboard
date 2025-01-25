@@ -11,6 +11,7 @@ import {
 	FileText,
 	HelpCircle,
 	Home,
+	LogOut,
 	Newspaper,
 	Settings,
 	User,
@@ -18,9 +19,13 @@ import {
 	X,
 } from 'lucide-react'
 import { usePathname } from 'next/navigation'
-import { ReactNode, useContext, useState } from 'react'
+import { signOut, useSession } from 'next-auth/react'
+import { ReactNode, useContext, useEffect, useState } from 'react'
 
 import {
+	Avatar,
+	AvatarFallback,
+	AvatarImage,
 	Button,
 	DropdownMenu,
 	DropdownMenuContent,
@@ -29,6 +34,7 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { Logo } from '@/components/shared'
+import { Api } from '@/services/api-client'
 import { sidebarStateContext } from '@/lib/context'
 import { AuthModal } from '@/components/shared/modals/auth-modal'
 
@@ -102,10 +108,36 @@ const sideBarData: SideBarData = [
 
 export const Sidebar = () => {
 	const pathname = usePathname()
+	const { data: session } = useSession()
 	const { sidebarState, setSidebarState } = useContext(sidebarStateContext)
 
 	const [isOpen, setIsOpen] = useState<boolean>(false)
 	const [openAuthModal, setOpenAuthModal] = useState(false)
+	const [user, setUser] = useState<{ name: string; email: string; avatar: string } | null>(null)
+
+	useEffect(() => {
+		const fetchUserInfo = async () => {
+			try {
+				const data = await Api.auth.getMe()
+
+				setUser({ name: data.fullName, email: data.email, avatar: data.avatar ?? '' })
+			} catch (error) {
+				console.error('Error fetching user data:', error)
+
+				setUser(null)
+			}
+		}
+
+		if (session) {
+			fetchUserInfo()
+		}
+	}, [session])
+
+	const onClickSignOut = () => {
+		signOut({
+			callbackUrl: '/',
+		})
+	}
 
 	return (
 		<>
@@ -199,15 +231,24 @@ export const Sidebar = () => {
 							size="lg"
 							className="gap-3 justify-between m-1 mb-4 p-3 rounded-xl group"
 						>
-							<Image src="/svg/profile-image.svg" alt="John Doe" width={40} height={40} />
-
 							<div className="grow flex justify-between gap-2 items-center">
+								<Avatar>
+									<AvatarImage src={user?.avatar || '/svg/profile-image.svg'} alt={user?.name || 'User'} />
+								</Avatar>
+
 								<div className="flex flex-col gap-1 text-xs">
-									<span className="font-medium">John Doe</span>
-
-									<span className="text-gray-500">youremail@example.com</span>
+									{user ? (
+										<>
+											<span className="font-medium">{user.name}</span>
+											<span className="text-gray-500">{user.email}</span>
+										</>
+									) : (
+										<>
+											<span className="font-medium">Guest</span>
+											<span className="text-gray-500">Please login</span>
+										</>
+									)}
 								</div>
-
 								<ChevronDown size={16} className="transition-transform duration-300 group-hover:rotate-180" />
 							</div>
 						</Button>
@@ -218,15 +259,25 @@ export const Sidebar = () => {
 						className="flex flex-col gap-2 w-[247px] rounded-xl shadow-lg bg-white dark:bg-dark"
 					>
 						<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
-							<div
-								onClick={() => {
-									setOpenAuthModal(true)
-								}}
-								className="flex items-center gap-1 p-3 rounded-xl w-full duration-300"
-							>
-								<User size={16} />
-								Login
-							</div>
+							{!session ? (
+								<button
+									onClick={() => {
+										setOpenAuthModal(true)
+									}}
+									className="flex items-center gap-1 p-3 rounded-xl w-full duration-300"
+								>
+									<User size={16} />
+									Login
+								</button>
+							) : (
+								<button
+									onClick={onClickSignOut}
+									className="flex items-center gap-1 p-3 rounded-xl w-full duration-300"
+								>
+									<LogOut size={16} />
+									Logout
+								</button>
+							)}
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 

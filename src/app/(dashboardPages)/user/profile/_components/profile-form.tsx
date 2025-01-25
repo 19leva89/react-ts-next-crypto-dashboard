@@ -7,7 +7,8 @@ import { FormProvider, useForm } from 'react-hook-form'
 
 import { User } from '@prisma/client'
 import { Button } from '@/components/ui'
-import { updateUserInfo } from '@/app/actions'
+
+import { updateUserInfo } from '@/app/api/actions'
 import { FormInput } from '@/components/shared/form'
 import { Container, Title } from '@/components/shared'
 import { updateUserInfoSchema, UserFormValues } from '@/constants/update-user-info-schema'
