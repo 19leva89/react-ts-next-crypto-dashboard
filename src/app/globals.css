@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+	scroll-behavior: smooth;
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
 @layer base {
 	:root {
 		--background: 0 0% 100%;
@@ -91,6 +101,30 @@
 	}
 }
 
+.scrollbar::-webkit-scrollbar {
+	width: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+	border-radius: 6px;
+	background: #fff;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+	background: #dbdadd;
+	border-radius: 6px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+	background: #dbdadd;
+}
+
+@layer utilities {
+	.text-balance {
+		text-wrap: balance;
+	}
+}
+
 @layer base {
 	* {
 		@apply border-border;
@@ -161,4 +195,16 @@ body {
 		-ms-overflow-style: none; /* IE and Edge */
 		scrollbar-width: none; /* Firefox */
 	}
+}
+
+#nprogress .bar {
+	@apply bg-primary !important;
+}
+
+#nprogress .peg {
+	@apply shadow-md shadow-primary !important;
+}
+
+#nprogress .spinner-icon {
+	@apply border-t-primary border-l-primary !important;
 }

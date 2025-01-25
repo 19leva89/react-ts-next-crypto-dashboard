@@ -5,12 +5,11 @@ import { BaseDashboard } from './base-dashboard'
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
 	return (
-		<html lang="en">
-			<body>
-				<BaseDashboard>{children}</BaseDashboard>
+		<>
+			<BaseDashboard>{children}</BaseDashboard>
 
-				<Script id="switch-theme" strategy="beforeInteractive">
-					{`const documtElement = document.querySelector("html");
+			<Script id="switch-theme" strategy="beforeInteractive">
+				{`const documtElement = document.querySelector("html");
 						const currentTheme = localStorage.getItem("theme");
 						const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 						const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;    
@@ -29,8 +28,7 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
 						}else{
 								documtElement?.classList.remove('dark');
 						}`}
-				</Script>
-			</body>
-		</html>
+			</Script>
+		</>
 	)
 }

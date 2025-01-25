@@ -2,11 +2,21 @@
 
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import { useEffect, useRef, useState } from 'react'
+import { useDebounce } from 'use-debounce'
+import { FixedSizeList as List } from 'react-window'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { ChevronDown, EllipsisVertical, Search } from 'lucide-react'
 
+import {
+	Button,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+	Input,
+} from '@/components/ui'
 import { cn } from '@/lib'
-import { DataSplitter } from '@/components/shared'
+import { Pagination } from '@/components/shared'
 import { CoinDetailModal } from './coins-detail-modal'
 import { CategoriesData, CoinListData } from '@/app/api/definitions'
 import { fetchCategories, fetchCoinsList, fetchCoinsListByCate } from '@/app/api/actions'
@@ -24,8 +34,9 @@ export const CryptosTableSection = () => {
 	const [currentCoinId, setCurrentCoinId] = useState<string>('')
 	const [currentCategorie, setCurrentCategorie] = useState<string>('All')
 
-	const categorieContainerRef = useRef<HTMLUListElement>(null)
+	const [debouncedSearch] = useDebounce(searchStr, 300)
 
+	// Fetch categories and coin list on component mount
 	useEffect(() => {
 		fetchCategories().then((resp) => {
 			if (resp) {
@@ -34,6 +45,7 @@ export const CryptosTableSection = () => {
 		})
 
 		setFetchingCoins(true)
+
 		fetchCoinsList().then((resp) => {
 			setFetchingCoins(false)
 			if (resp) {
@@ -42,46 +54,29 @@ export const CryptosTableSection = () => {
 		})
 	}, [])
 
+	// Filter coins based on debounced search string
 	useEffect(() => {
-		function checkOpen(ev: any) {
-			if (ev.target?.id !== 'categorie-btn' && !categorieContainerRef.current?.classList.contains('hidden')) {
-				toggleCategorieContainer()
-			}
-		}
-		document.addEventListener('click', checkOpen)
-
-		return () => {
-			document.removeEventListener('click', checkOpen)
-		}
-	}, [])
-
-	const toggleCategorieContainer = () => {
-		if (categorieContainerRef.current?.classList.contains('hidden')) {
-			categorieContainerRef.current?.classList.remove('hidden')
-		} else {
-			categorieContainerRef.current?.classList.add('hidden')
-		}
-	}
-
-	const searchCoins = (ev: any) => {
-		const value: string = ev.target.value.toLocaleLowerCase()
-		setSearchStr(value)
-
-		if (value.length > 0) {
+		if (debouncedSearch.length > 0) {
 			const results = coinsList.filter(
-				(coins) =>
-					coins?.name?.toLocaleLowerCase().includes(value) ||
-					coins?.id?.toLocaleLowerCase().includes(value) ||
-					coins?.symbol?.toLocaleLowerCase().includes(value) ||
-					coins?.current_price?.toString().toLocaleLowerCase().includes(value) ||
-					coins?.market_cap_rank?.toString().toLocaleLowerCase().includes(value),
+				(coin) =>
+					coin?.name?.toLowerCase().includes(debouncedSearch) ||
+					coin?.id?.toLowerCase().includes(debouncedSearch) ||
+					coin?.symbol?.toLowerCase().includes(debouncedSearch) ||
+					coin?.current_price?.toString().includes(debouncedSearch) ||
+					coin?.market_cap_rank?.toString().includes(debouncedSearch),
 			)
 			setSearchResults(results)
 		} else {
 			setSearchResults([])
 		}
+	}, [debouncedSearch, coinsList])
+
+	// Handle search input change
+	const handleSearchChange = (ev: ChangeEvent<HTMLInputElement>) => {
+		setSearchStr(ev.target.value.toLowerCase())
 	}
 
+	// Handle category selection
 	const onCategorieClick = (cate: string, name?: string) => {
 		setFetchingCoins(true)
 		setCoinsList([])
@@ -105,12 +100,9 @@ export const CryptosTableSection = () => {
 		}
 	}
 
+	// Handle coin detail modal
 	const toggleDetailModal = () => {
-		if (showDetailModal) {
-			setShowDetailModal(false)
-		} else {
-			setShowDetailModal(true)
-		}
+		setShowDetailModal(!showDetailModal)
 	}
 
 	const onCoinsClick = (coinId: string) => {
@@ -122,72 +114,75 @@ export const CryptosTableSection = () => {
 		<>
 			<div className="mt-10 gap-2 flex justify-between items-center flex-wrap sm:flex-nowrap">
 				<div className="rounded-xl relative w-full sm:w-[350px]">
-					{!searchStr && (
-						<div className="flex gap-1 font-medium items-center text-sm text-gray-600 dark:text-gray-500 absolute top-1/2 left-5 -translate-y-1/2">
-							<Search size={16} />
+					<Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" />
 
+					{!searchStr && (
+						<label
+							htmlFor="crypto"
+							className="absolute left-10 top-1/2 -translate-y-1/2 flex items-center gap-1 text-sm text-gray-600 dark:text-gray-500 cursor-text"
+						>
 							<span>Search crypto...</span>
-						</div>
+						</label>
 					)}
 
-					<input
+					<Input
 						type="search"
 						name="crypto"
 						id="crypto"
-						className="bg-transparent border dark:border-gray-700 p-2 rounded-xl w-full "
-						onChange={searchCoins}
+						className="p-2 pl-10 rounded-xl"
+						onChange={handleSearchChange}
 					/>
 				</div>
 
-				<div className="w-full sm:w-64 relative">
-					<button
-						id="categorie-btn"
-						onClick={toggleCategorieContainer}
-						className="rounded-xl w-full py-2 px-3 flex items-center justify-between border dark:border-gray-700 focus:border-2 text-sm font-medium text-gray-600 dark:text-white"
-					>
-						<span>{currentCategorie || 'Categories'}</span>
-
-						<ChevronDown size={16} />
-					</button>
-
-					<ul
-						ref={categorieContainerRef}
-						className="z-[6] hidden shadow-xl mt-1 max-h-64 overflow-auto py-1 absolute top-full w-full bg-white dark:bg-slate-800 dark:text-slate-100 divide-y dark:divide-gray-700 rounded-xl"
-					>
-						<li>
-							<button
-								className={cn(
-									'p-3 hover:bg-slate-200 dark:hover:bg-slate-600 w-full text-start duration-500',
-									{
-										'bg-slate-200 dark:bg-slate-600': currentCategorie === 'All',
-									},
-								)}
-								onClick={() => {
-									onCategorieClick('')
-								}}
+				<div className="w-full sm:w-64">
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								id="categorie-btn"
+								variant="outline"
+								size="lg"
+								className="w-full py-2 px-3 justify-between rounded-xl group"
 							>
-								All
-							</button>
-						</li>
+								<span className="truncate">{currentCategorie || 'Categories'}</span>
 
-						{categories?.map((categorie) => (
-							<li key={categorie.category_id}>
+								<ChevronDown size={16} className="transition-transform duration-300 group-hover:rotate-180" />
+							</Button>
+						</DropdownMenuTrigger>
+
+						<DropdownMenuContent
+							align="start"
+							className="w-full max-h-64 mt-1 py-1 overflow-y-hidden rounded-xl shadow-xl bg-white dark:bg-dark"
+						>
+							<DropdownMenuItem className="rounded-xl">
 								<button
-									className={cn(
-										'p-3 hover:bg-slate-200 dark:hover:bg-slate-600 w-full text-start duration-500',
-										{
-											'bg-slate-200 dark:bg-slate-600': currentCategorie === categorie.name,
-										},
-									)}
+									className="p-2 w-full text-start rounded-xl"
 									onClick={() => {
-										onCategorieClick(categorie.category_id, categorie.name)
+										onCategorieClick('')
 									}}
 								>
-									{categorie.name}
+									All categories
 								</button>
-							</li>
-						))}
-					</ul>
+							</DropdownMenuItem>
+
+							<List
+								height={200}
+								width={246}
+								itemSize={40} // Height of one element
+								itemCount={categories?.length} // Quantity of elements
+							>
+								{({ index, style }) => (
+									<DropdownMenuItem key={categories[index].category_id} className="rounded-xl" style={style}>
+										<button
+											className="p-2 w-full text-start rounded-xl"
+											onClick={() => onCategorieClick(categories[index].category_id, categories[index].name)}
+										>
+											{categories[index].name}
+										</button>
+									</DropdownMenuItem>
+								)}
+							</List>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				</div>
 			</div>
 
@@ -195,9 +190,9 @@ export const CryptosTableSection = () => {
 				<div className="flex justify-between py-4 px-3 items-center">
 					<h4 className="font-medium text-lg">Market</h4>
 
-					<button className="py-3 px-3 rounded-xl border dark:border-gray-700">
+					<Button variant="outline" size="icon" className="p-3 rounded-xl">
 						<EllipsisVertical size={16} className="size-4" />
-					</button>
+					</Button>
 				</div>
 
 				{fetchingCoins ? (
@@ -362,11 +357,7 @@ export const CryptosTableSection = () => {
 				)}
 			</div>
 
-			<DataSplitter
-				rows={10}
-				datas={searchStr ? searchResutls : coinsList}
-				setCurrentDatas={setCurrentDatas}
-			/>
+			<Pagination rows={10} datas={searchStr ? searchResutls : coinsList} setCurrentDatas={setCurrentDatas} />
 
 			<CoinDetailModal
 				showDetailModal={showDetailModal}

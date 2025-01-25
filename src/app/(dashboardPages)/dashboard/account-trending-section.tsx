@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { ArrowUp, ChevronDown, TrendingDown, TrendingUp } from 'lucide-react'
 
 import { cn } from '@/lib'
+import { Button } from '@/components/ui'
 import { TrendingData } from '@/app/api/definitions'
 import { fetchTrendingData } from '@/app/api/actions'
 
@@ -58,21 +59,29 @@ export const AccountTrendingSection = () => {
 				</div>
 
 				<div className="flex gap-2 flex-wrap min-[300px]:flex-nowrap">
-					<button className="w-full min-[300px]:w-r1/2 mx-auto flex items-center justify-center px-8 py-2 rounded-xl bg-blue-50 dark:bg-slate-900 dark:border dark:border-gray-700 text-blue-500">
+					<Button
+						variant="outline"
+						size="lg"
+						className="w-full min-[300px]:w-r1/2 mx-auto px-8 py-2 rounded-xl text-blue-500 bg-blue-50 hover:bg-green-600/80 dark:bg-slate-900 dark:hover:bg-green-700"
+					>
 						<div className="flex items-center gap-1">
 							<ArrowUp size={24} />
 
 							<span className="font-medium">Deposit</span>
 						</div>
-					</button>
+					</Button>
 
-					<button className="w-full min-[300px]:w-r1/2 mx-auto flex items-center justify-center px-8 py-2 rounded-xl bg-blue-50 dark:bg-slate-900 dark:border dark:border-gray-700 text-blue-500">
+					<Button
+						variant="outline"
+						size="lg"
+						className="w-full min-[300px]:w-r1/2 mx-auto px-8 py-2 rounded-xl text-blue-500 bg-blue-50 hover:bg-red-600/70 dark:bg-slate-900 dark:hover:bg-red-600/70"
+					>
 						<div className="flex items-center gap-1">
 							<ArrowUp size={24} className="rotate-180" />
 
 							<span className="font-medium">Withdraw</span>
 						</div>
-					</button>
+					</Button>
 				</div>
 			</div>
 
@@ -80,8 +89,10 @@ export const AccountTrendingSection = () => {
 				<div className="flex justify-between items-center">
 					<h3 className="font-medium text-lg">Trending</h3>
 
-					<button
-						className="text-gray-600 dark:text-slate-200 text-sm flex items-center gap-1"
+					<Button
+						variant="ghost"
+						size="sm"
+						className="gap-1 group"
 						onClick={() => {
 							onShowMoreBtnClick(dataIndex.end >= trendingData?.coins?.length)
 						}}
@@ -92,14 +103,17 @@ export const AccountTrendingSection = () => {
 							<>
 								<span>View more</span>
 
-								<ChevronDown size={16} className="-rotate-90" />
+								<ChevronDown
+									size={16}
+									className="-rotate-90 transition-transform duration-300 group-hover:rotate-0"
+								/>
 							</>
 						)}
-					</button>
+					</Button>
 				</div>
 
 				{fetchingTrendData ? (
-					<div className="bg-slate-200 animate-pulse rounded-xl h-32 "></div>
+					<div className="bg-slate-200 animate-pulse rounded-xl h-32"></div>
 				) : (
 					<div className="flex flex-wrap lg:flex-nowrap gap-2 text-sm overflow-auto no-scrollbar">
 						{trendingData?.coins?.slice(dataIndex.start, dataIndex.end)?.map((data, index) => (

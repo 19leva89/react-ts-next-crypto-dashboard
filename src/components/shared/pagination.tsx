@@ -5,13 +5,13 @@ import { Dispatch, useEffect, useState } from 'react'
 
 import { cn } from '@/lib'
 
-interface DataSplitterProps {
+interface PaginationProps {
 	datas: any[]
 	rows: number
 	setCurrentDatas: Dispatch<any>
 }
 
-export const DataSplitter = ({ datas, setCurrentDatas, rows }: DataSplitterProps) => {
+export const Pagination = ({ datas, setCurrentDatas, rows }: PaginationProps) => {
 	const [totalSrceen, setTotalSrceen] = useState<number>(0)
 	const [currentScreen, setCurrentScreen] = useState<number>(1)
 	const [previousScreen, setPreviousScreen] = useState<number>(0)

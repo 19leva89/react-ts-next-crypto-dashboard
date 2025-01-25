@@ -1,16 +1,21 @@
 'use client'
 
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { usePathname } from 'next/navigation'
 import { ChevronsUpDown, Menu, Moon, Sun, Wallet } from 'lucide-react'
 
-import { cn } from '@/lib'
+import {
+	Button,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui'
 import { themeMode } from '@/lib/constants'
 import { sidebarStateContext, themeContext } from '@/lib/context'
 
 export const Navbar = () => {
 	const { theme, setTheme } = useContext(themeContext)
-	const [currencyIsOpen, setCurrencyIsOpen] = useState(false)
 	const { setSidebarState } = useContext(sidebarStateContext)
 
 	const pathName = usePathname()
@@ -19,9 +24,14 @@ export const Navbar = () => {
 		<nav className="sticky bg-white dark:bg-dark z-[5] top-0 flex justify-between items-center border-b dark:border-gray-700 py-3 px-4 sm:px-6 max-[460px]:text-sm">
 			<div className="flex items-center gap-14">
 				<div className="flex lg:block items-center gap-2 min-[460px]:gap-6">
-					<button className="lg:hidden border border-gray-500 p-2 rounded-xl" onClick={setSidebarState}>
+					<Button
+						variant="outline"
+						size="icon"
+						className="lg:hidden border-gray-500 p-2 rounded-xl"
+						onClick={setSidebarState}
+					>
 						<Menu size={24} />
-					</button>
+					</Button>
 
 					<div className="flex-col gap-1 flex">
 						<h1 className="font-medium capitalize">
@@ -42,42 +52,42 @@ export const Navbar = () => {
 			</div>
 
 			<div className="flex gap-3 text-gray-500 dark:text-white">
-				<div className="relative">
-					<button
-						className="flex items-center gap-3 rounded-xl border text-sm focus:border-2 dark:border-gray-700 py-2 px-4"
-						onClick={() => {
-							setCurrencyIsOpen(!currencyIsOpen)
-						}}
-					>
-						<span>USD</span>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant="outline" size="lg" className="gap-3 rounded-xl text-sm py-2 px-4 group">
+							<span>USD</span>
 
-						<div className="flex-col hidden min-[460px]:flex">
-							<ChevronsUpDown size={20} />
-						</div>
-					</button>
+							<div className="flex-col hidden min-[460px]:flex">
+								<ChevronsUpDown
+									size={20}
+									className="transition-transform duration-300 group-hover:rotate-180"
+								/>
+							</div>
+						</Button>
+					</DropdownMenuTrigger>
 
-					<ul
-						className={cn(
-							currencyIsOpen ? 'block' : 'hidden',
-							'bg-white dark:bg-slate-800 dark:divide-gray-700 absolute left-0 py-1 mt-1 w-full shadow-lg rounded-xl text-gray-900 divide-y text-sm dark:text-slate-100',
-						)}
+					<DropdownMenuContent
+						align="start"
+						className="flex flex-col gap-2 w-[92px] min-w-[5rem] rounded-xl shadow-lg bg-white dark:bg-dark"
 					>
-						{['CAD', 'EUR', 'XCD'].map((currenc, index) => (
-							<li key={index}>
-								<button className="px-3 py-2 text-center w-full hover:bg-blue-100 dark:hover:bg-slate-600 duration-500">
-									{currenc}
-								</button>
-							</li>
+						{['CAD', 'EUR', 'XCD'].map((currency, index) => (
+							<DropdownMenuItem key={index} className="rounded-xl">
+								<button className="w-full text-center duration-500">{currency}</button>
+							</DropdownMenuItem>
 						))}
-					</ul>
-				</div>
+					</DropdownMenuContent>
+				</DropdownMenu>
 
-				<button
+				<Button
+					variant="outline"
+					size="lg"
 					onClick={setTheme}
-					className="flex items-center px-2 border focus:border-2 dark:border-gray-700 rounded-xl "
+					className="flex items-center px-2 w-11 rounded-xl group"
 				>
-					{theme === themeMode.light ? <Moon size={24} /> : <Sun size={24} />}
-				</button>
+					<div className="transition-transform duration-300 group-hover:rotate-90">
+						{theme === themeMode.light ? <Moon size={24} /> : <Sun size={24} />}
+					</div>
+				</Button>
 			</div>
 		</nav>
 	)

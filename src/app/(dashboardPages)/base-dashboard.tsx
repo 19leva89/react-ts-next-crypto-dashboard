@@ -56,13 +56,18 @@ export const BaseDashboard = ({ children }: BaseDashboardProps) => {
 			<sidebarStateContext.Provider value={{ sidebarState, setSidebarState: updateSidebarState }}>
 				<Sidebar />
 
-				<main className="ms-0 lg:ms-64 mb-10">
-					<Navbar />
+				<main className="flex flex-col justify-between gap-4 min-h-screen ms-0 lg:ms-64 mb-10">
+					<>
+						{/* Header */}
+						<Navbar />
 
-					<div className="px-4 sm:px-6 mt-8 max-w-expand mx-auto">{children}</div>
+						{/* Content */}
+						<div className="flex-grow px-4 sm:px-6 mt-8 max-w-expand mx-auto">{children}</div>
+					</>
 
-					<div className="text-center text-md mt-10">
-						<Link href={'https://www.linkedin.com/in/lev-dmitry'} target="_blank">
+					{/* Footer */}
+					<div className="text-center text-md mt-10 mb-3">
+						<Link href="https://www.linkedin.com/in/lev-dmitry" target="_blank no-referrer">
 							Crypto dashboard 2025 by <span className="underline"> Sobolev</span>
 						</Link>
 					</div>

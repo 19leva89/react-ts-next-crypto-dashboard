@@ -13,6 +13,7 @@ import {
 	Home,
 	Newspaper,
 	Settings,
+	User,
 	Wallet,
 	X,
 } from 'lucide-react'
@@ -29,6 +30,7 @@ import {
 import { cn } from '@/lib'
 import { Logo } from '@/components/shared'
 import { sidebarStateContext } from '@/lib/context'
+import { AuthModal } from '@/components/shared/modals/auth-modal'
 
 type SideBarItem = {
 	name: string
@@ -103,6 +105,7 @@ export const Sidebar = () => {
 	const { sidebarState, setSidebarState } = useContext(sidebarStateContext)
 
 	const [isOpen, setIsOpen] = useState<boolean>(false)
+	const [openAuthModal, setOpenAuthModal] = useState(false)
 
 	return (
 		<>
@@ -136,7 +139,7 @@ export const Sidebar = () => {
 											<Button
 												variant="outline"
 												size="lg"
-												className="flex gap-3 items-center justify-between w-full p-3 rounded-xl"
+												className="flex gap-3 items-center justify-between w-full p-3 rounded-xl group"
 											>
 												<div className="flex gap-3 items-center">
 													{sideBarItem.icon}
@@ -144,7 +147,10 @@ export const Sidebar = () => {
 													<span>{sideBarItem.name}</span>
 												</div>
 
-												<ChevronDown size={16} />
+												<ChevronDown
+													size={16}
+													className="transition-transform duration-300 group-hover:rotate-180"
+												/>
 											</Button>
 										</DropdownMenuTrigger>
 
@@ -172,7 +178,7 @@ export const Sidebar = () => {
 											setIsOpen(!isOpen)
 										}}
 										variant={pathname === sideBarItem.path ? 'default' : 'outline'}
-										className="flex gap-3 justify-start rounded-xl p-3 w-full"
+										className="gap-3 justify-start rounded-xl p-3 w-full"
 									>
 										<Link href={sideBarItem.path}>
 											{sideBarItem.icon}
@@ -191,7 +197,7 @@ export const Sidebar = () => {
 						<Button
 							variant="outline"
 							size="lg"
-							className="flex gap-3 items-center justify-between m-1 mb-4 p-3 rounded-xl"
+							className="gap-3 justify-between m-1 mb-4 p-3 rounded-xl group"
 						>
 							<Image src="/svg/profile-image.svg" alt="John Doe" width={40} height={40} />
 
@@ -202,33 +208,29 @@ export const Sidebar = () => {
 									<span className="text-gray-500">youremail@example.com</span>
 								</div>
 
-								<ChevronDown size={16} className="duration-300" />
+								<ChevronDown size={16} className="transition-transform duration-300 group-hover:rotate-180" />
 							</div>
 						</Button>
 					</DropdownMenuTrigger>
 
 					<DropdownMenuContent
 						align="start"
-						className="flex flex-col gap-2 w-[247px] rounded-xl shadow-lg bg-white dark:bg-slate-700"
+						className="flex flex-col gap-2 w-[247px] rounded-xl shadow-lg bg-white dark:bg-dark"
 					>
 						<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
-							<Link
-								href="/login"
-								className="hover:bg-blue-100 dark:hover:bg-slate-600 p-3 rounded-xl w-full block duration-300"
+							<div
+								onClick={() => {
+									setOpenAuthModal(true)
+								}}
+								className="flex items-center gap-1 p-3 rounded-xl w-full duration-300"
 							>
+								<User size={16} />
 								Login
-							</Link>
-						</DropdownMenuItem>
-
-						<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
-							<Link
-								href="/register"
-								className="hover:bg-blue-100 dark:hover:bg-slate-600 p-3 rounded-xl w-full block duration-300"
-							>
-								Create account
-							</Link>
+							</div>
 						</DropdownMenuItem>
 					</DropdownMenuContent>
+
+					<AuthModal open={openAuthModal} onClose={() => setOpenAuthModal(false)} />
 				</DropdownMenu>
 			</div>
 

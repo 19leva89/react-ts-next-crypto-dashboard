@@ -1,3 +1,9 @@
+react-window
+
+Authentication and User Management:
+- Bcrypt (password hashing)
+- NextAuth 5 (authentication)
+
 Core Technologies:
 - React 19
 - TypeScript
@@ -5,12 +11,23 @@ Core Technologies:
 
 Data Fetching and State Management:
 - Prisma 5 (ORM for DB)
+- React Hook Form (working with forms)
+
+Email Services:
+- Resend (send email)
+
+Form and Validation:
+- Zod (first schema validation)
 
 Middleware and Server Utilities:
 - Concurrently (all projects are running in tandem)
 
+Miscellaneous:
+- React hot toast (stylization message)
+
 Styling and UI Frameworks:
 - Lucide React (stylization)
+- Next Js TopLoader (using top progress bar)
 - shadcn/ui (stylization)
 - Tailwind CSS (stylization)
 
