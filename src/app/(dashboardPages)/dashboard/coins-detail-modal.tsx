@@ -3,14 +3,13 @@
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { Star, X } from 'lucide-react'
-import { useContext, useEffect, useState } from 'react'
+import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 
 import { cn } from '@/lib'
-import { Button } from '@/components/ui'
-import { themeMode } from '@/lib/constants'
 import { useBodyModalEffect } from '@/hooks'
-import { themeContext } from '@/lib/context'
-import { Overlay, SimpleSkeleton } from '@/components/shared'
+import { Overlay } from '@/components/shared'
+import { Button, Skeleton } from '@/components/ui'
 import { CoinsData, MarketChartData } from '@/app/api/definitions'
 import { fetchCoinsData, fetchCoinsMarketChart } from '@/app/api/actions'
 
@@ -23,7 +22,7 @@ interface CoinDetailModalProps {
 }
 
 export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDetailModalProps) => {
-	const { theme } = useContext(themeContext)
+	const { theme } = useTheme()
 
 	const [fetchingCoinsData, setFetchingCoinsData] = useState<boolean>(false)
 	const [fetchingHistoryData, setFetchingHistoryData] = useState<boolean>(false)
@@ -66,7 +65,7 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 			>
 				<div className="flex justify-between items-center mb-8">
 					{fetchingCoinsData ? (
-						<p className="grow p-2 rounded-full bg-slate-200 animate-pulse me-3"></p>
+						<Skeleton className="h-6 w-full" />
 					) : (
 						<h4 className="font-semibold text-md">{coinsData.name}</h4>
 					)}
@@ -78,7 +77,7 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 
 				<div className="flex justify-center">
 					{fetchingHistoryData ? (
-						<SimpleSkeleton />
+						<Skeleton className="h-72 w-full" />
 					) : (
 						<div className="w-[420px] mx-auto">
 							<Chart
@@ -123,7 +122,7 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 										type: 'numeric',
 										labels: {
 											style: {
-												colors: themeMode.dark === theme ? '#f1f5f9' : '#4b5563',
+												colors: theme === 'dark' ? '#f1f5f9' : '#4b5563',
 											},
 											formatter(value, timestamp, opts) {
 												const timestampValue = parseInt(value)
@@ -135,7 +134,7 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 									yaxis: {
 										labels: {
 											style: {
-												colors: themeMode.dark === theme ? '#f1f5f9' : '#4b5563',
+												colors: theme === 'dark' ? '#f1f5f9' : '#4b5563',
 											},
 										},
 									},
@@ -161,7 +160,7 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 
 				<div className="mt-10">
 					{fetchingCoinsData ? (
-						<SimpleSkeleton />
+						<Skeleton className="h-72 w-full" />
 					) : (
 						<>
 							<div className="flex justify-between items-center font-medium">
@@ -239,9 +238,9 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 								<span className="font-medium">Description</span>
 
 								<p
-									className="text-sm text-gray-600 dark:text-gray-300 dark:hover:text-gray-100 duration-200 mt-3"
+									className="text-gray-600 dark:text-gray-300 prose prose-sm prose-a:text-blue-700 prose-a:hover:underline dark:prose-a:text-blue-700 dark:prose-a:hover:underline duration-200 mt-3"
 									dangerouslySetInnerHTML={{ __html: coinsData.description?.en || '' }}
-								></p>
+								/>
 							</div>
 
 							<button className="font-medium mt-8 rounded-xl w-full flex bg-blue-50 dark:bg-slate-900 text-blue-500 dark:text-blue-600 items-center justify-center p-2 dark:border dark:border-gray-700">

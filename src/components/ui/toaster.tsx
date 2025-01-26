@@ -10,7 +10,7 @@ import {
 } from '@/components/ui'
 import { useToast } from '@/hooks/use-toast'
 
-export function Toaster() {
+const Toaster = () => {
 	const { toasts } = useToast()
 
 	return (
@@ -31,3 +31,5 @@ export function Toaster() {
 		</ToastProvider>
 	)
 }
+
+export { Toaster }

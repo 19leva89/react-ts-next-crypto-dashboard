@@ -1,8 +1,9 @@
 'use client'
 
-import { useContext } from 'react'
+import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { ChevronsUpDown, Menu, Moon, Sun, Wallet } from 'lucide-react'
+import { ChevronsUpDown, Moon, Sun, Wallet } from 'lucide-react'
 
 import {
 	Button,
@@ -10,37 +11,38 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
+	SidebarTrigger,
+	Skeleton,
 } from '@/components/ui'
-import { themeMode } from '@/lib/constants'
-import { sidebarStateContext, themeContext } from '@/lib/context'
+import { useUserInfo } from '@/hooks/use-user-info'
 
 export const Navbar = () => {
-	const { theme, setTheme } = useContext(themeContext)
-	const { setSidebarState } = useContext(sidebarStateContext)
-
 	const pathName = usePathname()
 
+	const { user, loading, error } = useUserInfo()
+	const { theme, resolvedTheme, setTheme } = useTheme()
+
+	const [mounted, setMounted] = useState(false)
+
+	// Needed to avoid hydration error
+	useEffect(() => setMounted(true), [])
+
 	return (
-		<nav className="sticky bg-white dark:bg-dark z-[5] top-0 flex justify-between items-center border-b dark:border-gray-700 py-3 px-4 sm:px-6 max-[460px]:text-sm">
+		<nav className="sticky bg-white dark:bg-dark top-0 flex justify-between items-center border-b dark:border-gray-700 py-3 px-4 sm:px-6 max-[460px]:text-sm">
 			<div className="flex items-center gap-14">
+				<SidebarTrigger />
+
 				<div className="flex lg:block items-center gap-2 min-[460px]:gap-6">
-					<Button
-						variant="outline"
-						size="icon"
-						className="lg:hidden border-gray-500 p-2 rounded-xl"
-						onClick={setSidebarState}
-					>
-						<Menu size={24} />
-					</Button>
-
 					<div className="flex-col gap-1 flex">
-						<h1 className="font-medium capitalize">
-							{pathName.split('/').at(-1) || 'Dashboard'} {/*  of course we could use another logique */}
-						</h1>
+						<h1 className="font-medium capitalize">{pathName.split('/').at(-1) || 'Dashboard'}</h1>
 
-						<p className="text-sm text-gray-600 dark:text-slate-300 hidden min-[320px]:block">
-							Welcome back, John Doe !
-						</p>
+						{loading ? (
+							<Skeleton className="h-5 w-36" />
+						) : (
+							<p className="text-sm text-gray-600 dark:text-slate-300 hidden min-[320px]:block">
+								Welcome back, {user?.name || 'Guest'}!
+							</p>
+						)}
 					</div>
 				</div>
 
@@ -78,16 +80,18 @@ export const Navbar = () => {
 					</DropdownMenuContent>
 				</DropdownMenu>
 
-				<Button
-					variant="outline"
-					size="lg"
-					onClick={setTheme}
-					className="flex items-center px-2 w-11 rounded-xl group"
-				>
-					<div className="transition-transform duration-300 group-hover:rotate-90">
-						{theme === themeMode.light ? <Moon size={24} /> : <Sun size={24} />}
-					</div>
-				</Button>
+				{mounted && (
+					<Button
+						variant="outline"
+						size="lg"
+						onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+						className="flex items-center px-2 w-11 rounded-xl group"
+					>
+						<div className="transition-transform duration-300 group-hover:rotate-90">
+							{resolvedTheme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
+						</div>
+					</Button>
+				)}
 			</div>
 		</nav>
 	)

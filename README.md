@@ -1,4 +1,5 @@
 react-window
+next-themes
 
 Authentication and User Management:
 - Bcrypt (password hashing)

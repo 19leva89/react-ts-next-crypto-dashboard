@@ -7,6 +7,22 @@ export { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 export { Input } from './input'
 export { Popover, PopoverTrigger, PopoverContent } from './popover'
 export { Separator } from './separator'
+export { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from './sheet'
+export {
+	Sidebar,
+	SidebarContent,
+	SidebarFooter,
+	SidebarGroup,
+	SidebarGroupContent,
+	SidebarGroupLabel,
+	SidebarHeader,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	SidebarProvider,
+	SidebarTrigger,
+} from './sidebar'
+export { Skeleton } from './skeleton'
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs'
 export { Textarea } from './textarea'
 export {

@@ -1,34 +1,26 @@
-import Script from 'next/script'
+import { cookies } from 'next/headers'
 import { PropsWithChildren } from 'react'
 
-import { BaseDashboard } from './base-dashboard'
+import { SidebarProvider } from '@/components/ui'
+import { AppSidebar, Footer, Navbar } from '@/components/shared'
 
-export default function DashboardLayout({ children }: PropsWithChildren) {
+export default async function DashboardLayout({ children }: PropsWithChildren) {
+	const cookieStore = await cookies()
+	const defaultOpen = cookieStore.get('sidebar:state')?.value === 'true'
+
 	return (
-		<>
-			<BaseDashboard>{children}</BaseDashboard>
+		<SidebarProvider defaultOpen={defaultOpen}>
+			<AppSidebar />
 
-			<Script id="switch-theme" strategy="beforeInteractive">
-				{`const documtElement = document.querySelector("html");
-						const currentTheme = localStorage.getItem("theme");
-						const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-						const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;    
+			<main className="flex flex-col justify-between gap-4 min-h-screen mb-10 w-full">
+				<>
+					<Navbar />
 
-						if(
-								currentTheme && 
-								(currentTheme === "light" || currentTheme === "dark")
-						){
-								currentTheme === "dark" ? 
-								documtElement?.classList.add("dark") :
-								documtElement?.classList.remove("dark");
-						}else if(prefersDark){
-								documtElement?.classList.add('dark');
-						}else if(prefersLight){
-								documtElement?.classList.remove('dark');
-						}else{
-								documtElement?.classList.remove('dark');
-						}`}
-			</Script>
-		</>
+					<div className="flex-grow px-4 sm:px-6 mt-8 max-w-expand mx-auto">{children}</div>
+				</>
+
+				<Footer />
+			</main>
+		</SidebarProvider>
 	)
 }

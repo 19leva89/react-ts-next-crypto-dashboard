@@ -3,7 +3,7 @@ import tailwindcssAnimate from 'tailwindcss-animate'
 import tailwindcssTypography from '@tailwindcss/typography'
 
 export default {
-	darkMode: 'class',
+	darkMode: ['class'],
 	content: [
 		'./src/pages/**/*.{ts,tsx,mdx}',
 		'./src/components/**/*.{ts,tsx,mdx}',
@@ -13,10 +13,14 @@ export default {
 		container: {
 			center: true,
 			padding: '2rem',
-			screens: { '2xl': '1400px' },
+			screens: {
+				'2xl': '1400px',
+			},
 		},
 		extend: {
-			maxWidth: { '8xl': '1408px' },
+			maxWidth: {
+				'8xl': '1408px',
+			},
 			colors: {
 				dark: 'rgba(23, 25, 35, 1)',
 				'red-dark-item': 'rgba(203, 1, 1, 1)',
@@ -63,6 +67,16 @@ export default {
 					'4': 'hsl(var(--chart-4))',
 					'5': 'hsl(var(--chart-5))',
 				},
+				sidebar: {
+					DEFAULT: 'hsl(var(--sidebar-background))',
+					foreground: 'hsl(var(--sidebar-foreground))',
+					primary: 'hsl(var(--sidebar-primary))',
+					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+					accent: 'hsl(var(--sidebar-accent))',
+					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+					border: 'hsl(var(--sidebar-border))',
+					ring: 'hsl(var(--sidebar-ring))',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -71,12 +85,20 @@ export default {
 			},
 			keyframes: {
 				'accordion-up': {
-					from: { height: 'var(--radix-accordion-content-height)' },
-					to: { height: '0' },
+					from: {
+						height: 'var(--radix-accordion-content-height)',
+					},
+					to: {
+						height: '0',
+					},
 				},
 				'accordion-down': {
-					from: { height: '0' },
-					to: { height: 'var(--radix-accordion-content-height)' },
+					from: {
+						height: '0',
+					},
+					to: {
+						height: 'var(--radix-accordion-content-height)',
+					},
 				},
 			},
 			animation: {

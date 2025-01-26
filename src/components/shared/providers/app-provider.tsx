@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast'
 import { PropsWithChildren } from 'react'
 import { SessionProvider } from 'next-auth/react'
 
-export const Providers = ({ children }: PropsWithChildren) => {
+export const AppProvider = ({ children }: PropsWithChildren) => {
 	return (
 		<>
 			<SessionProvider>{children}</SessionProvider>
