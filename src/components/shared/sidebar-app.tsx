@@ -97,7 +97,7 @@ const sideBarData = [
 	},
 ]
 
-export const AppSidebar = () => {
+export const SidebarApp = () => {
 	const currentPath = usePathname()
 
 	const { user, loading, error } = useUserInfo()
@@ -113,7 +113,7 @@ export const AppSidebar = () => {
 	return (
 		<Sidebar side="left" variant="sidebar" collapsible="icon">
 			<SidebarHeader>
-				<div className="flex px-4">
+				<div className="flex px-4 pt-1">
 					<Link href={sideBarData[0].url}>
 						<Logo />
 					</Link>
@@ -122,7 +122,7 @@ export const AppSidebar = () => {
 
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>Menu</SidebarGroupLabel>
+					<SidebarGroupLabel className="text-base">Menu</SidebarGroupLabel>
 
 					<SidebarGroupContent>
 						<SidebarMenu>
@@ -132,8 +132,8 @@ export const AppSidebar = () => {
 								return (
 									<SidebarMenuItem key={item.title}>
 										<SidebarMenuButton className="text-lg" asChild isActive={isActive}>
-											<a href={item.url}>
-												<item.icon />
+											<a href={item.url} className="flex items-center gap-4 h-[48px]">
+												<item.icon className="!w-5 !h-5" />
 
 												<span>{item.title}</span>
 											</a>
@@ -156,7 +156,7 @@ export const AppSidebar = () => {
 									size="lg"
 									className="gap-3 justify-between mb-4 rounded-xl group"
 								>
-									<div className="grow flex justify-between gap-2 items-center">
+									<div className="grow flex items-center justify-between gap-2">
 										{loading ? (
 											<Skeleton className="w-10 h-10 rounded-full" /> // Skeleton с размером для аватара
 										) : (
@@ -164,6 +164,7 @@ export const AppSidebar = () => {
 												<AvatarImage
 													src={user?.avatar || '/svg/profile-image.svg'}
 													alt={user?.name || 'User'}
+													className="object-contain"
 												/>
 											</Avatar>
 										)}

@@ -1,27 +1,31 @@
-'use client'
-
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import { Star, X } from 'lucide-react'
+import { Star } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 
-import { cn } from '@/lib'
-import { useBodyModalEffect } from '@/hooks'
-import { Overlay } from '@/components/shared'
-import { Button, Skeleton } from '@/components/ui'
+import {
+	Button,
+	Sheet,
+	SheetClose,
+	SheetContent,
+	SheetFooter,
+	SheetHeader,
+	SheetTitle,
+	Skeleton,
+} from '@/components/ui'
 import { CoinsData, MarketChartData } from '@/app/api/definitions'
 import { fetchCoinsData, fetchCoinsMarketChart } from '@/app/api/actions'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 interface CoinDetailModalProps {
-	showDetailModal: boolean
-	closeModal: () => void
 	coinId: string
+	showDetailModal: boolean
+	closeModal: (value: boolean) => void
 }
 
-export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDetailModalProps) => {
+export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: CoinDetailModalProps) => {
 	const { theme } = useTheme()
 
 	const [fetchingCoinsData, setFetchingCoinsData] = useState<boolean>(false)
@@ -29,51 +33,48 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 	const [coinsData, setCoinsData] = useState<CoinsData | Record<string, any>>({})
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>({ prices: [] })
 
-	useBodyModalEffect([showDetailModal], showDetailModal)
-
 	useEffect(() => {
-		if (showDetailModal) {
-			setFetchingHistoryData(true)
-			setFetchingCoinsData(true)
-			fetchCoinsMarketChart(coinId).then((resp) => {
-				setFetchingHistoryData(false)
-				if (resp) {
-					setCoinMarketChartData(resp)
-				}
-			})
+		if (!showDetailModal) return
 
-			fetchCoinsData(coinId).then((resp) => {
+		setFetchingCoinsData(true)
+		setFetchingHistoryData(true)
+
+		const fetchData = async () => {
+			try {
+				const [coinInfo, marketChart] = await Promise.all([
+					fetchCoinsData(coinId),
+					fetchCoinsMarketChart(coinId),
+				])
+
+				setCoinsData(coinInfo || {})
+				setCoinMarketChartData(marketChart || { prices: [] })
+			} catch (error) {
+				console.error('Error fetching coin details:', error)
+			} finally {
 				setFetchingCoinsData(false)
-				if (resp) {
-					setCoinsData(resp)
-				}
-			})
+				setFetchingHistoryData(false)
+			}
 		}
-	}, [showDetailModal, coinId])
+
+		fetchData()
+	}, [coinId, showDetailModal])
 
 	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 	return (
-		<>
-			<Overlay onOverlayClick={closeModal} showOverlay={showDetailModal} />
-
-			<div
-				className={cn(
-					'p-5 z-[10] shadow-xl fixed top-0 h-full rounded-tl-xl rounded-bl-xl bg-white dark:bg-dark w-full min-[550px]:w-[500px] duration-300 linear overflow-auto',
-					showDetailModal ? 'right-0' : '-right-full',
-				)}
-			>
-				<div className="flex justify-between items-center mb-8">
-					{fetchingCoinsData ? (
-						<Skeleton className="h-6 w-full" />
-					) : (
-						<h4 className="font-semibold text-md">{coinsData.name}</h4>
-					)}
-
-					<Button variant="ghost" size="icon" className="rounded-2xl" onClick={closeModal}>
-						<X size={20} />
-					</Button>
-				</div>
+		<Sheet open={showDetailModal} onOpenChange={closeModal}>
+			<SheetContent className="sm:max-w-xl overflow-y-auto">
+				<SheetHeader>
+					<SheetTitle>
+						<div className="flex justify-between items-center mb-8">
+							{fetchingCoinsData ? (
+								<Skeleton className="h-6 w-3/4" />
+							) : (
+								<h4 className="font-semibold text-md">{coinsData.name}</h4>
+							)}
+						</div>
+					</SheetTitle>
+				</SheetHeader>
 
 				<div className="flex justify-center">
 					{fetchingHistoryData ? (
@@ -242,18 +243,27 @@ export const CoinDetailModal = ({ showDetailModal, closeModal, coinId }: CoinDet
 									dangerouslySetInnerHTML={{ __html: coinsData.description?.en || '' }}
 								/>
 							</div>
-
-							<button className="font-medium mt-8 rounded-xl w-full flex bg-blue-50 dark:bg-slate-900 text-blue-500 dark:text-blue-600 items-center justify-center p-2 dark:border dark:border-gray-700">
-								<div className="flex items-center gap-2">
-									<Star size={20} />
-
-									<span>Add to favorites</span>
-								</div>
-							</button>
 						</>
 					)}
 				</div>
-			</div>
-		</>
+
+				<SheetFooter>
+					<SheetClose asChild>
+						<Button
+							type="submit"
+							variant="outline"
+							size="lg"
+							className="w-full mt-8 p-2 rounded-xl text-blue-500 bg-blue-50 hover:bg-green-600/80 dark:bg-slate-900 dark:hover:bg-green-700"
+						>
+							<div className="flex items-center gap-2">
+								<Star size={20} />
+
+								<span>Add to favorites</span>
+							</div>
+						</Button>
+					</SheetClose>
+				</SheetFooter>
+			</SheetContent>
+		</Sheet>
 	)
 }

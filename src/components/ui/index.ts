@@ -5,9 +5,19 @@ export { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 export { Dialog, DialogContent, DialogTitle, DialogTrigger } from './dialog'
 export { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './dropdown-menu'
 export { Input } from './input'
+export { Label } from './label'
 export { Popover, PopoverTrigger, PopoverContent } from './popover'
 export { Separator } from './separator'
-export { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from './sheet'
+export {
+	Sheet,
+	SheetClose,
+	SheetContent,
+	SheetDescription,
+	SheetFooter,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from './sheet'
 export {
 	Sidebar,
 	SidebarContent,

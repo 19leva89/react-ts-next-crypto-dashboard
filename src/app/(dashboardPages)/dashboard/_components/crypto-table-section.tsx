@@ -17,8 +17,8 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { Pagination } from '@/components/shared'
-import { CoinDetailModal } from './coins-detail-modal'
 import { CategoriesData, CoinListData } from '@/app/api/definitions'
+import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 import { fetchCategories, fetchCoinsList, fetchCoinsListByCate } from '@/app/api/actions'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
@@ -107,6 +107,7 @@ export const CryptosTableSection = () => {
 
 	const onCoinsClick = (coinId: string) => {
 		setCurrentCoinId(coinId)
+
 		toggleDetailModal()
 	}
 
@@ -360,9 +361,9 @@ export const CryptosTableSection = () => {
 			<Pagination rows={10} datas={searchStr ? searchResutls : coinsList} setCurrentDatas={setCurrentDatas} />
 
 			<CoinDetailModal
+				coinId={currentCoinId}
 				showDetailModal={showDetailModal}
 				closeModal={toggleDetailModal}
-				coinId={currentCoinId}
 			/>
 		</>
 	)

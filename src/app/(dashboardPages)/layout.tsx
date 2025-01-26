@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 import { PropsWithChildren } from 'react'
 
 import { SidebarProvider } from '@/components/ui'
-import { AppSidebar, Footer, Navbar } from '@/components/shared'
+import { SidebarApp, Footer, Navbar } from '@/components/shared'
 
 export default async function DashboardLayout({ children }: PropsWithChildren) {
 	const cookieStore = await cookies()
@@ -10,7 +10,7 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
 
 	return (
 		<SidebarProvider defaultOpen={defaultOpen}>
-			<AppSidebar />
+			<SidebarApp />
 
 			<main className="flex flex-col justify-between gap-4 min-h-screen mb-10 w-full">
 				<>

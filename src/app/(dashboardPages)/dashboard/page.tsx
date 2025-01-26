@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
-import { CryptosTableSection } from './crypto-table-section'
-import { AccountTrendingSection } from './account-trending-section'
+import { CryptosTableSection } from './_components/crypto-table-section'
+import { AccountTrendingSection } from './_components/account-trending-section'
 
 export const metadata: Metadata = {
 	title: 'Dashboard',
