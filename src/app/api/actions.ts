@@ -36,7 +36,7 @@ export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 
 		const existingUser = await prisma.user.findFirst({
 			where: {
-				id: Number(currentUser.id),
+				id: currentUser.id,
 			},
 		})
 
@@ -57,14 +57,14 @@ export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 		}
 
 		const updatedData: Prisma.UserUpdateInput = {
-			fullName: body.fullName,
+			name: body.name,
 			email: body.email ? body.email : existingUser.email, // Conditional assignment
 			password: body.password ? hashSync(body.password as string, 10) : existingUser.password,
 		}
 
 		const updatedUser = await prisma.user.update({
 			where: {
-				id: Number(currentUser.id),
+				id: currentUser.id,
 			},
 			data: updatedData,
 		})
@@ -85,7 +85,7 @@ export const registerUser = async (body: Prisma.UserCreateInput) => {
 		})
 
 		if (user) {
-			if (!user.verified) {
+			if (!user.emailVerified) {
 				throw new Error('Email not confirmed')
 			}
 
@@ -94,7 +94,7 @@ export const registerUser = async (body: Prisma.UserCreateInput) => {
 
 		const createdUser = await prisma.user.create({
 			data: {
-				fullName: body.fullName,
+				name: body.name,
 				email: body.email,
 				password: hashSync(body.password, 10),
 			},
@@ -189,7 +189,12 @@ export const fetchCoinsList = async (): Promise<CoinListData | null> => {
 	try {
 		// Проверяем наличие данных в базе данных
 		const coinsList = await prisma.coin.findUnique({
-			where: { key: COINS_LIST_KEY },
+			where: {
+				key_coinId: {
+					key: COINS_LIST_KEY,
+					coinId: 'coins_list',
+				},
+			},
 		})
 
 		if (coinsList) {
@@ -198,41 +203,62 @@ export const fetchCoinsList = async (): Promise<CoinListData | null> => {
 
 		// Если данных нет, делаем запрос к API
 		const data = await makeReq('GET', '/gecko/list')
-		if (data) {
-			// Проверяем наличие coinId в данных, предполагается, что coinId существует
-			const coinId = data[0]?.id // Пример, где берем ID первой монеты
-
+		if (data && typeof data === 'object' && data !== null) {
 			// Сохраняем данные в базе
 			await prisma.coin.upsert({
-				where: { key: COINS_LIST_KEY },
+				where: {
+					key_coinId: {
+						key: COINS_LIST_KEY,
+						coinId: 'coins_list',
+					},
+				},
 				update: { value: JSON.stringify(data) },
 				create: {
 					key: COINS_LIST_KEY,
 					value: JSON.stringify(data),
-					coinId: coinId || 'default_coin_id', // Используем значение coinId
+					coinId: 'coins_list',
 				},
 			})
 
 			return data
+		} else {
+			console.error('Invalid data received for coins list:', data)
+			return null
 		}
-
-		return null
 	} catch (error) {
-		console.error('Error fetching coins list:', error)
+		// Дополнительная проверка на ошибку
+		if (error instanceof Error) {
+			console.error('Error fetching coins list:', error.message)
+		} else {
+			console.error('Unknown error occurred during fetching coins list')
+		}
 		return null
 	}
 }
 
 export const fetchCoinsData = async (coinId: string): Promise<CoinsData | null> => {
 	try {
-		// Получаем данные о монетах из базы данных
+		// Получаем данные о монетах из базы данных по ключу и coinId
 		const coinsDataRecord = await prisma.coin.findUnique({
-			where: { key: COINS_DATA_KEY },
+			where: {
+				key_coinId: {
+					key: COINS_DATA_KEY,
+					coinId: coinId,
+				},
+			},
 		})
+
+		let coinsDatas: Record<string, CoinsData> = {}
 
 		// Проверяем, если данные о монетах уже существуют в базе данных
 		if (coinsDataRecord) {
-			const coinsDatas = JSON.parse(coinsDataRecord.value as string) as Record<string, CoinsData>
+			try {
+				coinsDatas = JSON.parse(coinsDataRecord.value as string)
+			} catch (error) {
+				console.error('Error parsing coins data:', error)
+				coinsDatas = {} // Если ошибка парсинга, начинаем с пустого объекта
+			}
+
 			const coinData = coinsDatas[coinId]
 			if (coinData) {
 				return coinData
@@ -241,32 +267,37 @@ export const fetchCoinsData = async (coinId: string): Promise<CoinsData | null> 
 
 		// Если данных нет в базе данных, выполняем запрос
 		const data = await makeReq('GET', `/gecko/coins/${coinId}`)
-		if (data) {
-			let coinsDatas: Record<string, CoinsData> = {}
-
-			// Если данные о монетах уже существуют в базе, обновляем их
-			if (coinsDataRecord) {
-				coinsDatas = JSON.parse(coinsDataRecord.value as string)
-			}
-
-			// Добавляем новые данные для монеты
-			coinsDatas[coinId] = data
-
-			// Сохраняем обновленные данные о монетах в базу данных
-			await prisma.coin.upsert({
-				where: { key: COINS_DATA_KEY },
-				update: { value: JSON.stringify(coinsDatas) },
-				create: {
-					key: COINS_DATA_KEY,
-					value: JSON.stringify(coinsDatas),
-					coinId: coinId, // Передаем coinId
-				},
-			})
-
-			return data
+		if (!data) {
+			console.error(`No data received for coin ${coinId}`)
+			return null
 		}
 
-		return null
+		// Обновляем или создаем запись в базе данных с новыми данными
+		coinsDatas[coinId] = data
+
+		// Убедитесь, что coinsDatas не пустой и не null
+		if (Object.keys(coinsDatas).length === 0) {
+			console.error('No valid coin data available to save')
+			return null
+		}
+
+		// Сохраняем обновленные данные о монетах в базу данных
+		await prisma.coin.upsert({
+			where: {
+				key_coinId: {
+					key: COINS_DATA_KEY,
+					coinId: coinId,
+				},
+			},
+			update: { value: JSON.stringify(coinsDatas) },
+			create: {
+				key: COINS_DATA_KEY,
+				value: JSON.stringify(coinsDatas),
+				coinId: coinId, // Передаем coinId
+			},
+		})
+
+		return data
 	} catch (error) {
 		console.error(`Error fetching data for coin ${coinId}:`, error)
 		return null
@@ -275,9 +306,17 @@ export const fetchCoinsData = async (coinId: string): Promise<CoinsData | null> 
 
 export const fetchCoinsListByCate = async (cate: string): Promise<CoinListData | null> => {
 	try {
+		// Создаем уникальный идентификатор для категории
+		const coinId = `${cate}-category`
+
 		// Проверяем наличие данных в базе данных
 		const categoryData = await prisma.coin.findUnique({
-			where: { key: cate },
+			where: {
+				key_coinId: {
+					key: cate,
+					coinId: coinId,
+				},
+			},
 		})
 
 		if (categoryData) {
@@ -287,12 +326,14 @@ export const fetchCoinsListByCate = async (cate: string): Promise<CoinListData |
 		// Если данных нет, делаем запрос к API
 		const data = await makeReq('GET', `/gecko/${cate}/coins`)
 		if (data) {
-			// Создаем уникальный идентификатор для категории
-			const coinId = `${cate}-category`
-
 			// Сохраняем данные в базе
 			await prisma.coin.upsert({
-				where: { key: cate },
+				where: {
+					key_coinId: {
+						key: cate,
+						coinId: coinId,
+					},
+				},
 				update: { value: JSON.stringify(data) },
 				create: { key: cate, value: JSON.stringify(data), coinId: coinId },
 			})

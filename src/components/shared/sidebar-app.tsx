@@ -162,7 +162,7 @@ export const SidebarApp = () => {
 										) : (
 											<Avatar>
 												<AvatarImage
-													src={user?.avatar || '/svg/profile-image.svg'}
+													src={user?.image || '/svg/profile-image.svg'}
 													alt={user?.name || 'User'}
 													className="object-contain"
 												/>

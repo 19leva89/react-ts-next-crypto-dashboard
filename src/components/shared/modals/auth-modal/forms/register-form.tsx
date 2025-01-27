@@ -25,7 +25,7 @@ export const RegisterForm = ({ onClose }: Props) => {
 		resolver: zodResolver(formRegisterSchema),
 		defaultValues: {
 			email: '',
-			fullName: '',
+			name: '',
 			password: '',
 			confirmPassword: '',
 		},
@@ -34,7 +34,7 @@ export const RegisterForm = ({ onClose }: Props) => {
 	const onSubmit = async (data: TFormRegisterValues) => {
 		try {
 			await registerUser({
-				fullName: data.fullName,
+				name: data.name,
 				email: data.email,
 				password: data.password,
 			})
@@ -61,7 +61,7 @@ export const RegisterForm = ({ onClose }: Props) => {
 						<CardContent className="flex flex-col gap-5">
 							<FormInput name="email" type="email" placeholder="Email" required />
 
-							<FormInput name="fullName" type="text" placeholder="Full name" required />
+							<FormInput name="name" type="text" placeholder="Full name" required />
 
 							<FormInput name="password" type="password" placeholder="Password" required />
 

@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
 				id: verificationCode.userId,
 			},
 			data: {
-				verified: new Date(),
+				emailVerified: new Date(),
 			},
 		})
 

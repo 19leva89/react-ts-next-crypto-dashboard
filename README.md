@@ -1,6 +1,3 @@
-react-window
-next-themes
-
 Authentication and User Management:
 - Bcrypt (password hashing)
 - NextAuth 5 (authentication)
@@ -11,7 +8,7 @@ Core Technologies:
 - Next 15 (framework)
 
 Data Fetching and State Management:
-- Prisma 5 (ORM for DB)
+- Prisma 6 (ORM for DB)
 - React Hook Form (working with forms)
 
 Email Services:
@@ -20,15 +17,22 @@ Email Services:
 Form and Validation:
 - Zod (first schema validation)
 
+Image Handling and Optimization:
+- Sharp (image optimizer)
+
 Middleware and Server Utilities:
 - Concurrently (all projects are running in tandem)
 
 Miscellaneous:
 - React hot toast (stylization message)
 
+Pagination:
+- React window (working with infinite scroll)
+
 Styling and UI Frameworks:
 - Lucide React (stylization)
 - Next Js TopLoader (using top progress bar)
+- Next Themes (using theme switcher)
 - shadcn/ui (stylization)
 - Tailwind CSS (stylization)
 

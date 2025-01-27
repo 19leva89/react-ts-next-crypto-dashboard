@@ -2,14 +2,14 @@ import { z } from 'zod'
 
 const errMsg = {
 	email: 'Please enter a valid email address',
-	fullName: 'Enter full name',
+	name: 'Enter full name',
 	confirmPassword: 'Passwords do not match',
 }
 
 export const updateUserInfoSchema = z
 	.object({
 		email: z.string().trim().email({ message: errMsg.email }),
-		fullName: z.string().trim().min(2, { message: errMsg.fullName }).optional(),
+		name: z.string().trim().min(2, { message: errMsg.name }).optional(),
 		password: z
 			.string()
 			.optional()

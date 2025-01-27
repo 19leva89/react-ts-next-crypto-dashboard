@@ -13,28 +13,84 @@ enum UserRole {
 }
 
 model User {
-  id               Int               @id @default(autoincrement())
-  fullName         String
+  id               String            @id @default(cuid())
+  name             String?
   email            String            @unique
   password         String
-  avatar           String?
+  image            String?
   //
   role             UserRole          @default(USER)
-  verified         DateTime?
+  emailVerified    DateTime?
   verificationCode VerificationCode?
   //
-  provider         String?
-  providerId       String?
+  accounts         Account[]
+  sessions         Session[]
+  Authenticator    Authenticator[]
   //
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 }
 
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  //
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  //
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+  //
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}
+
 model VerificationCode {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   //
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int      @unique
+  userId    String   @unique
   //
   code      String
   //
@@ -44,43 +100,50 @@ model VerificationCode {
 }
 
 model TrendingData {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   key       String   @unique
   value     Json
+  //
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   key       String   @unique
   value     String
+  //
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Coin {
-  id        Int      @id @default(autoincrement())
-  key       String   @unique
-  coinId    String   @unique
+  id        String   @id @default(cuid())
+  key       String
+  coinId    String?
   value     Json
+  //
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([key, coinId], name: "key_coinId")
 }
 
 model MarketChart {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   key       String   @unique
   coinId    String
   value     Json
+  //
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Aidrop {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   key       String   @unique
   value     Json
+  //
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

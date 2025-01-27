@@ -1,25 +1,28 @@
-import { AuthOptions } from 'next-auth'
-import { compare, hashSync } from 'bcrypt'
-import GoogleProvider from 'next-auth/providers/google'
-import GitHubProvider from 'next-auth/providers/github'
+import NextAuth from 'next-auth'
+import Google from 'next-auth/providers/google'
+import GitHub from 'next-auth/providers/github'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 import { prisma } from '@/lib/prisma'
 import { UserRole } from '@prisma/client'
+import { compare, hashSync } from 'bcrypt'
+import { Adapter } from 'next-auth/adapters'
+import { PrismaAdapter } from '@auth/prisma-adapter'
 
-export const authOptions: AuthOptions = {
+export const { auth, handlers, signIn, signOut } = NextAuth({
+	adapter: PrismaAdapter(prisma) as Adapter,
 	providers: [
-		GoogleProvider({
+		Google({
 			clientId: process.env.GOOGLE_CLIENT_ID || '',
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
 		}),
 
-		GitHubProvider({
+		GitHub({
 			clientId: process.env.GITHUB_ID || '',
 			clientSecret: process.env.GITHUB_SECRET || '',
 			profile(profile) {
 				return {
-					id: profile.id,
+					id: profile.id.toString(),
 					name: profile.name || profile.login,
 					email: profile.email,
 					image: profile.avatar_url,
@@ -41,7 +44,7 @@ export const authOptions: AuthOptions = {
 				}
 
 				const values = {
-					email: credentials.email,
+					email: credentials.email as string,
 				}
 
 				const findUser = await prisma.user.findFirst({
@@ -52,21 +55,21 @@ export const authOptions: AuthOptions = {
 					return null
 				}
 
-				const isPasswordValid = await compare(credentials.password, findUser.password)
+				const isPasswordValid = await compare(credentials.password as string, findUser.password)
 
 				if (!isPasswordValid) {
 					return null
 				}
 
-				if (!findUser.verified) {
+				if (!findUser.emailVerified) {
 					return null
 				}
 
 				return {
-					id: findUser.id,
+					id: findUser.id.toString(),
 					email: findUser.email,
-					name: findUser.fullName,
-					image: findUser.avatar,
+					name: findUser.name,
+					image: findUser.image,
 					role: findUser.role,
 				}
 			},
@@ -88,42 +91,73 @@ export const authOptions: AuthOptions = {
 					return true
 				}
 
-				if (!user.email) {
+				if (!user.email || !account?.provider || !account?.providerAccountId) {
 					return false
 				}
 
-				const findUser = await prisma.user.findFirst({
+				// Проверяем, существует ли аккаунт
+				const existingAccount = await prisma.account.findUnique({
 					where: {
-						OR: [
-							{ provider: account?.provider, providerId: account?.providerAccountId },
-							{ email: user.email },
-						],
+						provider_providerAccountId: {
+							provider: account.provider,
+							providerAccountId: account.providerAccountId,
+						},
 					},
 				})
 
-				if (findUser) {
-					await prisma.user.update({
-						where: {
-							id: findUser.id,
-						},
+				if (existingAccount) {
+					return true // Пользователь уже зарегистрирован
+				}
+
+				// Если аккаунт не найден, проверяем пользователя по email
+				const existingUser = await prisma.user.findUnique({
+					where: { email: user.email },
+				})
+
+				if (existingUser) {
+					// Привязываем новый провайдер к существующему пользователю
+					await prisma.account.create({
 						data: {
-							provider: account?.provider,
-							providerId: account?.providerAccountId,
+							userId: existingUser.id,
+							type: account.type,
+							provider: account.provider,
+							providerAccountId: account.providerAccountId,
+							refresh_token: account.refresh_token,
+							access_token: account.access_token,
+							expires_at: account.expires_at,
+							token_type: account.token_type,
+							scope: account.scope,
+							id_token: account.id_token,
+							session_state: account.session_state ? String(account.session_state) : null,
 						},
 					})
 
 					return true
 				}
 
+				// Создаем нового пользователя и привязываем аккаунт
 				await prisma.user.create({
 					data: {
 						email: user.email,
-						fullName: user.name || 'User #' + user.id,
-						password: hashSync(user.id.toString(), 10),
-						avatar: user.image,
-						verified: new Date(),
-						provider: account?.provider,
-						providerId: account?.providerAccountId,
+						name: user.name || `User #${user.id}`,
+						password: hashSync((user.id ?? '').toString(), 10), // Рекомендуется использовать безопасный способ генерации пароля
+						image: user.image,
+						emailVerified: new Date(),
+						role: 'USER', // Задаем роль по умолчанию
+						accounts: {
+							create: {
+								type: account.type,
+								provider: account.provider,
+								providerAccountId: account.providerAccountId,
+								refresh_token: account.refresh_token,
+								access_token: account.access_token,
+								expires_at: account.expires_at,
+								token_type: account.token_type,
+								scope: account.scope,
+								id_token: account.id_token,
+								session_state: account.session_state ? String(account.session_state) : null,
+							},
+						},
 					},
 				})
 
@@ -139,17 +173,16 @@ export const authOptions: AuthOptions = {
 				return token
 			}
 
-			const findUser = await prisma.user.findFirst({
-				where: {
-					email: token.email,
-				},
+			const findUser = await prisma.user.findUnique({
+				where: { email: token.email },
+				select: { id: true, email: true, name: true, image: true, role: true },
 			})
 
 			if (findUser) {
-				token.id = String(findUser.id)
+				token.id = findUser.id
 				token.email = findUser.email
-				token.fullName = findUser.fullName
-				token.avatar = findUser.avatar
+				token.name = findUser.name
+				token.image = findUser.image
 				token.role = findUser.role
 			}
 
@@ -165,4 +198,4 @@ export const authOptions: AuthOptions = {
 			return session
 		},
 	},
-}
+})

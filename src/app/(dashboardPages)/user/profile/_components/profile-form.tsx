@@ -22,7 +22,7 @@ export const ProfileForm = ({ data }: Props) => {
 		resolver: zodResolver(updateUserInfoSchema),
 		defaultValues: {
 			email: data.email,
-			fullName: data.fullName,
+			name: '',
 			password: '',
 			confirmPassword: '',
 		},
@@ -32,7 +32,7 @@ export const ProfileForm = ({ data }: Props) => {
 		try {
 			const updateData = {
 				email: formData.email,
-				fullName: formData.fullName,
+				name: formData.name,
 				...(formData.password ? { password: formData.password } : {}),
 			}
 
@@ -58,7 +58,7 @@ export const ProfileForm = ({ data }: Props) => {
 				<form className="flex flex-col gap-5 w-96 mt-10" onSubmit={form.handleSubmit(onSubmit)}>
 					<FormInput name="email" label="Email" type="email" required />
 
-					<FormInput name="fullName" label="Full name" type="text" required />
+					<FormInput name="name" label="Full name" type="text" required />
 
 					<FormInput name="password" label="New password" type="password" />
 

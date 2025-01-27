@@ -8,7 +8,7 @@ export const useUserInfo = () => {
 
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<boolean>(false)
-	const [user, setUser] = useState<{ name: string; email: string; avatar: string } | null>(null)
+	const [user, setUser] = useState<{ name: string; email: string; image: string } | null>(null)
 
 	useEffect(() => {
 		const fetchUserInfo = async () => {
@@ -16,8 +16,8 @@ export const useUserInfo = () => {
 				setLoading(true)
 				const data = await Api.auth.getMe()
 
-				if (data.fullName && data.email) {
-					setUser({ name: data.fullName, email: data.email, avatar: data.avatar ?? '' })
+				if (data.name && data.email) {
+					setUser({ name: data.name, email: data.email, image: data.image ?? '' })
 				}
 			} catch (err) {
 				console.error('Error fetching user data:', err)

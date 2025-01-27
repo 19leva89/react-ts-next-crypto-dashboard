@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const errMsg = {
 	email: 'Please enter a valid email address',
-	fullName: 'Enter your first and last name',
+	name: 'Enter your first and last name',
 	confirmPassword: 'Passwords do not match',
 }
 
@@ -23,7 +23,7 @@ export const formLoginSchema = z.object({
 // Scheme for registration
 export const formRegisterSchema = formLoginSchema
 	.extend({
-		fullName: z.string().min(2, { message: errMsg.fullName }),
+		name: z.string().min(2, { message: errMsg.name }),
 		confirmPassword: passwordSchema,
 	})
 	.refine((data) => data.password === data.confirmPassword, {
