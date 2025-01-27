@@ -187,6 +187,7 @@ export const CryptosTableSection = () => {
 				</div>
 			</div>
 
+			{/* Prev table */}
 			<div className="mt-6 border-2 dark:border-gray-700 rounded-xl overflow-auto no-scrollbar">
 				<div className="flex justify-between py-4 px-3 items-center">
 					<h4 className="font-medium text-lg">Market</h4>

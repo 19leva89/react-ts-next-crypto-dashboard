@@ -33,6 +33,16 @@ export {
 	SidebarTrigger,
 } from './sidebar'
 export { Skeleton } from './skeleton'
+export {
+	Table,
+	TableHeader,
+	TableBody,
+	TableFooter,
+	TableHead,
+	TableRow,
+	TableCell,
+	TableCaption,
+} from './table'
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs'
 export { Textarea } from './textarea'
 export {
