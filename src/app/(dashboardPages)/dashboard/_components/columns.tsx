@@ -1,44 +1,105 @@
 'use client'
 
+import Image from 'next/image'
 import { ArrowUpDown } from 'lucide-react'
 import { ColumnDef } from '@tanstack/react-table'
 
 import { Button } from '@/components/ui'
 
 export type CryptoTableSection = {
-	id: number
-	coin: string
-	price: number
-	lastDay: number
-	lastDayVolume: number
-	marketCap: number
-	lastSevenDays: string
+	id: string
+	symbol: string
+	name: string
+	image: string
+	current_price: number
+	market_cap: number
+	market_cap_rank: number
+	total_volume: number
+	price_change_percentage_24h: number
+	sparkline_in_7d: {
+		price: number[]
+	}
+	price_change_percentage_7d_in_currency: number | null
+}
+
+const onCoinsClick = (coinId: string) => {
+	// setCurrentCoinId(coinId)
+	// toggleDetailModal()
 }
 
 export const columns: ColumnDef<CryptoTableSection>[] = [
 	{
-		id: 'number',
+		accessorKey: 'market_cap_rank',
 		header: ({ column }) => {
 			return (
-				<Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+				<Button
+					variant="ghost"
+					className="px-0"
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
 					#
 					<ArrowUpDown />
 				</Button>
 			)
 		},
-		cell: ({ row }) => <div className="lowercase">{row.index + 1}</div>,
+		cell: ({ row }) => <div className="text-base">{row.getValue('market_cap_rank')}</div>,
 		enableHiding: false,
 	},
 	{
-		accessorKey: 'coin',
-		header: 'Coin',
-		cell: ({ row }) => <div className="lowercase">{row.getValue('coin')}</div>,
+		accessorKey: 'name',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant="ghost"
+					className="px-0"
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Coin
+					<ArrowUpDown />
+				</Button>
+			)
+		},
+		cell: ({ row }) => {
+			const coin = row.original // Данные текущей строки
+			return (
+				<button
+					className="flex gap-2 items-center"
+					onClick={() => {
+						onCoinsClick(coin.id) // Используем id из данных
+					}}
+				>
+					{coin.image && coin.name ? (
+						<Image
+							src={coin.image || '/svg/coin-not-found.svg'}
+							alt={coin.name || 'Coin image'}
+							width={32}
+							height={32}
+							className="size-8 rounded-full"
+						/>
+					) : (
+						'-'
+					)}
+					{coin.name}
+				</button>
+			)
+		},
 	},
 	{
-		accessorKey: 'price',
-		header: () => <div className="text-right">Price</div>,
+		accessorKey: 'current_price',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant="ghost"
+					className="px-0"
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Price
+					<ArrowUpDown />
+				</Button>
+			)
+		},
 		cell: ({ row }) => {
-			const amount = parseFloat(row.getValue('price'))
+			const amount = parseFloat(row.getValue('current_price'))
 
 			// Format the amount as a dollar amount
 			const formatted = new Intl.NumberFormat('en-US', {
@@ -46,19 +107,41 @@ export const columns: ColumnDef<CryptoTableSection>[] = [
 				currency: 'USD',
 			}).format(amount)
 
-			return <div className="text-right font-medium">{formatted}</div>
+			return <div className="text-base">{formatted}</div>
 		},
 	},
 	{
-		accessorKey: 'lastDay',
-		header: () => <div className="text-right">24h</div>,
-		cell: ({ row }) => <div className="lowercase">{row.getValue('lastDay')}</div>,
+		accessorKey: 'price_change_percentage_24h',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant="ghost"
+					className="px-0"
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					24h
+					<ArrowUpDown />
+				</Button>
+			)
+		},
+		cell: ({ row }) => <div className="text-base">{row.getValue('price_change_percentage_24h')}</div>,
 	},
 	{
-		accessorKey: 'lastDayVolume',
-		header: () => <div className="text-right">24h Volume</div>,
+		accessorKey: 'total_volume',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant="ghost"
+					className="px-0"
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					24h Volume
+					<ArrowUpDown />
+				</Button>
+			)
+		},
 		cell: ({ row }) => {
-			const amount = parseFloat(row.getValue('lastDayVolume'))
+			const amount = parseFloat(row.getValue('total_volume'))
 
 			// Format the amount as a dollar amount
 			const formatted = new Intl.NumberFormat('en-US', {
@@ -66,14 +149,25 @@ export const columns: ColumnDef<CryptoTableSection>[] = [
 				currency: 'USD',
 			}).format(amount)
 
-			return <div className="text-right font-medium">{formatted}</div>
+			return <div className="text-base">{formatted}</div>
 		},
 	},
 	{
-		accessorKey: 'marketCap',
-		header: () => <div className="text-right">Market Cap</div>,
+		accessorKey: 'market_cap',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant="ghost"
+					className="px-0"
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Market Cap
+					<ArrowUpDown />
+				</Button>
+			)
+		},
 		cell: ({ row }) => {
-			const amount = parseFloat(row.getValue('marketCap'))
+			const amount = parseFloat(row.getValue('market_cap'))
 
 			// Format the amount as a dollar amount
 			const formatted = new Intl.NumberFormat('en-US', {
@@ -81,12 +175,14 @@ export const columns: ColumnDef<CryptoTableSection>[] = [
 				currency: 'USD',
 			}).format(amount)
 
-			return <div className="text-right font-medium">{formatted}</div>
+			return <div className="text-base">{formatted}</div>
 		},
 	},
 	{
-		accessorKey: 'lastSevenDays',
-		header: () => <div className="text-right">Last 7 Days</div>,
-		cell: ({ row }) => <div className="lowercase">{row.getValue('lastSevenDays')}</div>,
+		accessorKey: 'price_change_percentage_7d_in_currency',
+		header: () => <div>Last 7 Days</div>,
+		cell: ({ row }) => (
+			<div className="text-base">{row.getValue('price_change_percentage_7d_in_currency')}</div>
+		),
 	},
 ]
