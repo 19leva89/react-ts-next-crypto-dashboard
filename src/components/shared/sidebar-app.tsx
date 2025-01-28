@@ -111,7 +111,7 @@ export const SidebarApp = () => {
 	}, [])
 
 	return (
-		<Sidebar side="left" variant="sidebar" collapsible="icon">
+		<Sidebar side="left" variant="sidebar" collapsible="icon" className="z-[100]">
 			<SidebarHeader>
 				<div className="flex px-4 pt-1">
 					<Link href={sideBarData[0].url}>
@@ -193,7 +193,7 @@ export const SidebarApp = () => {
 
 							<DropdownMenuContent
 								align="start"
-								className="flex flex-col gap-2 w-[--radix-popper-anchor-width] rounded-xl shadow-lg bg-white dark:bg-dark"
+								className="z-[100] flex flex-col gap-2 w-[--radix-popper-anchor-width] rounded-xl shadow-lg bg-white dark:bg-dark"
 							>
 								<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
 									{!user ? (

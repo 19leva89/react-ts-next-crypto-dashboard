@@ -22,6 +22,8 @@ import {
 	Separator,
 	Sheet,
 	SheetContent,
+	SheetDescription,
+	SheetTitle,
 	Skeleton,
 	Tooltip,
 	TooltipContent,
@@ -193,7 +195,12 @@ const Sidebar = forwardRef<
 						} as CSSProperties
 					}
 					side={side}
+					aria-describedby={undefined}
 				>
+					<SheetTitle className="hidden" />
+
+					<SheetDescription className="hidden" />
+
 					<div className="flex h-full w-full flex-col">{children}</div>
 				</SheetContent>
 			</Sheet>

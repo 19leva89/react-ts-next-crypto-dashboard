@@ -9,6 +9,7 @@ import {
 	Sheet,
 	SheetClose,
 	SheetContent,
+	SheetDescription,
 	SheetFooter,
 	SheetHeader,
 	SheetTitle,
@@ -63,7 +64,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: CoinDet
 
 	return (
 		<Sheet open={showDetailModal} onOpenChange={closeModal}>
-			<SheetContent className="sm:max-w-xl overflow-y-auto">
+			<SheetContent className="sm:max-w-xl overflow-y-auto" aria-describedby={undefined}>
 				<SheetHeader>
 					<SheetTitle>
 						<div className="flex justify-between items-center mb-8">
@@ -74,6 +75,8 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: CoinDet
 							)}
 						</div>
 					</SheetTitle>
+
+					<SheetDescription className="hidden" />
 				</SheetHeader>
 
 				<div className="flex justify-center">

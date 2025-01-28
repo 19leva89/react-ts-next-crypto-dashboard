@@ -201,8 +201,9 @@ export const columns: ColumnDef<CoinData>[] = [
 		header: () => <div>Last 7 Days</div>,
 		cell: ({ row }) => {
 			const coin = row.original
+			const sparkline = coin?.sparkline_in_7d?.price || []
 			const lastUpdated = new Date(coin.last_updated)
-			const dataLength = coin.sparkline_in_7d.price.length
+			const dataLength = sparkline.length
 
 			return (
 				<Chart
@@ -246,8 +247,8 @@ export const columns: ColumnDef<CoinData>[] = [
 					height={50}
 					series={[
 						{
-							data: coin?.sparkline_in_7d?.price,
-							name: `${coin?.name}`,
+							data: sparkline.length > 0 ? sparkline : [0],
+							name: `${coin?.name || 'No Name'}`,
 							color: `${
 								coin?.price_change_percentage_7d_in_currency &&
 								coin?.price_change_percentage_7d_in_currency > 0

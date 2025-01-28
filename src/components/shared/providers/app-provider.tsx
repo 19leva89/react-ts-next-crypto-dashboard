@@ -1,5 +1,3 @@
-'use client'
-
 import NextTopLoader from 'nextjs-toploader'
 import { Toaster } from 'react-hot-toast'
 import { PropsWithChildren } from 'react'

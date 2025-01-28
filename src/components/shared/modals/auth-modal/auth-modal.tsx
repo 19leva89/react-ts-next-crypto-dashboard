@@ -1,7 +1,9 @@
 'use client'
 
+import { DialogDescription } from '@/components/ui/dialog'
 import { LoginForm } from './forms/login-form'
 import { RegisterForm } from './forms/register-form'
+
 import { Dialog, DialogContent, DialogTitle, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui'
 
 interface Props {
@@ -16,16 +18,10 @@ export const AuthModal = ({ open, onClose }: Props) => {
 
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
-			<DialogContent
-				className="w-[480px] p-10 bg-white dark:bg-card rounded-xl"
-				aria-describedby="auth-dialog-description"
-			>
-				{/* Hidden description for accessibility */}
-				<p id="auth-dialog-description" className="sr-only">
-					Select a tab to log in or register.
-				</p>
+			<DialogContent className="w-[480px] p-10 bg-white dark:bg-card rounded-xl" aria-describedby={undefined}>
+				<DialogTitle className="hidden" />
 
-				<DialogTitle className="hidden">Auth modal</DialogTitle>
+				<DialogDescription className="hidden" />
 
 				<Tabs defaultValue="account" className="w-[400px]">
 					<TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-dark">
