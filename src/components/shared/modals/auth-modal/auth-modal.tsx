@@ -16,7 +16,15 @@ export const AuthModal = ({ open, onClose }: Props) => {
 
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
-			<DialogContent className="w-[480px] p-10 bg-white dark:bg-card rounded-xl" aria-describedby={undefined}>
+			<DialogContent
+				className="w-[480px] p-10 bg-white dark:bg-card rounded-xl"
+				aria-describedby="auth-dialog-description"
+			>
+				{/* Hidden description for accessibility */}
+				<p id="auth-dialog-description" className="sr-only">
+					Select a tab to log in or register.
+				</p>
+
 				<DialogTitle className="hidden">Auth modal</DialogTitle>
 
 				<Tabs defaultValue="account" className="w-[400px]">

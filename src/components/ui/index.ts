@@ -1,6 +1,8 @@
 export { Avatar, AvatarFallback, AvatarImage } from './avatar'
 export { Button, buttonVariants } from './button'
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card'
+export { ChartContainer, ChartTooltip, ChartTooltipContent } from './chart'
+export type { ChartConfig } from './chart'
 export { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command'
 export { Dialog, DialogContent, DialogTitle, DialogTrigger } from './dialog'
 export {
@@ -12,7 +14,17 @@ export {
 } from './dropdown-menu'
 export { Input } from './input'
 export { Label } from './label'
+export {
+	Pagination,
+	PaginationContent,
+	PaginationEllipsis,
+	PaginationItem,
+	PaginationLink,
+	PaginationNext,
+	PaginationPrevious,
+} from './pagination'
 export { Popover, PopoverTrigger, PopoverContent } from './popover'
+export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
 export { Separator } from './separator'
 export {
 	Sheet,

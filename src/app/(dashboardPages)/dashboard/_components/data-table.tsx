@@ -12,10 +12,9 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table'
-import { ChevronDown, Search } from 'lucide-react'
-import { useDebounce } from 'use-debounce'
+import { useState } from 'react'
 import { FixedSizeList as List } from 'react-window'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search } from 'lucide-react'
 
 import {
 	Button,
@@ -25,6 +24,11 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 	Input,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 	Table,
 	TableBody,
 	TableCell,
@@ -32,64 +36,29 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui'
-import { CategoriesData, CoinListData } from '@/app/api/definitions'
-import { fetchCategories, fetchCoinsList, fetchCoinsListByCate } from '@/app/api/actions'
+import { CoinData } from '@/app/api/definitions'
 
 interface DataTableProps<TData, TValue> {
-	columns: ColumnDef<TData, TValue>[]
 	data: TData[]
+	columns: ColumnDef<TData, TValue>[]
+	categories: { category_id: string; name: string }[]
+	currentCategorie: string
+	onCoinsClick: (coinId: string) => void
+	onCategorieClick: (categorie: string, name?: string) => void
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+	columns,
+	data,
+	categories,
+	currentCategorie,
+	onCoinsClick,
+	onCategorieClick,
+}: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const [rowSelection, setRowSelection] = useState({})
-
-	const [categories, setCategories] = useState<CategoriesData>([])
-	const [coinsList, setCoinsList] = useState<CoinListData>([])
-	const [currentDatas, setCurrentDatas] = useState<CoinListData>([])
-	const [fetchingCoins, setFetchingCoins] = useState<boolean>(false)
-	const [showDetailModal, setShowDetailModal] = useState<boolean>(false)
-	const [currentCoinId, setCurrentCoinId] = useState<string>('')
-	const [currentCategorie, setCurrentCategorie] = useState<string>('All')
-
-	// const [debouncedSearch] = useDebounce(searchStr, 300)
-
-	// Fetch categories and coin list on component mount
-	useEffect(() => {
-		fetchCategories().then((resp) => {
-			if (resp) {
-				setCategories(resp)
-			}
-		})
-
-		setFetchingCoins(true)
-
-		fetchCoinsList().then((resp) => {
-			setFetchingCoins(false)
-			if (resp) {
-				setCoinsList(resp)
-			}
-		})
-	}, [])
-
-	// Filter coins based on debounced search string
-	// useEffect(() => {
-	// 	if (debouncedSearch.length > 0) {
-	// 		const results = coinsList.filter(
-	// 			(coin) =>
-	// 				coin?.name?.toLowerCase().includes(debouncedSearch) ||
-	// 				coin?.id?.toLowerCase().includes(debouncedSearch) ||
-	// 				coin?.symbol?.toLowerCase().includes(debouncedSearch) ||
-	// 				coin?.current_price?.toString().includes(debouncedSearch) ||
-	// 				coin?.market_cap_rank?.toString().includes(debouncedSearch),
-	// 		)
-	// 		setSearchResults(results)
-	// 	} else {
-	// 		setSearchResults([])
-	// 	}
-	// }, [debouncedSearch, coinsList])
 
 	const table = useReactTable({
 		data,
@@ -110,37 +79,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 		},
 	})
 
-	// Handle category selection
-	const onCategorieClick = (cate: string, name?: string) => {
-		setFetchingCoins(true)
-		setCoinsList([])
-		if (cate) {
-			name && setCurrentCategorie(name)
-			fetchCoinsListByCate(cate).then((resp) => {
-				setFetchingCoins(false)
-				if (resp) {
-					setCoinsList(resp)
-				}
-			})
-		} else {
-			setCurrentCategorie('All')
-			// if exist, request won't be sent, cause cache in the ls (Local storage)
-			fetchCoinsList().then((resp) => {
-				setFetchingCoins(false)
-				if (resp) {
-					setCoinsList(resp)
-				}
-			})
-		}
-	}
-
-	// Handle coin detail modal
-	const toggleDetailModal = () => {
-		setShowDetailModal(!showDetailModal)
+	const handleFilterChange = (value: string) => {
+		table.getColumn('name')?.setFilterValue(value)
 	}
 
 	return (
-		<div className="w-full">
+		<div className="flex flex-col w-full">
 			<div className="flex items-center justify-between gap-2 py-4">
 				{/* Search */}
 				<div className="relative w-full max-w-sm sm:w-[350px]">
@@ -149,7 +93,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 					<Input
 						placeholder="Filter coins..."
 						value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-						onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
+						onChange={(e) => handleFilterChange(e.target.value)}
 						className="pl-10 rounded-xl"
 					/>
 				</div>
@@ -163,6 +107,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 									id="categorie-btn"
 									variant="outline"
 									size="lg"
+									disabled={!categories.length}
 									className="w-full h-10 py-2 px-4 justify-between rounded-xl group"
 								>
 									<span className="truncate">{currentCategorie || 'Categories'}</span>
@@ -174,45 +119,49 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 								</Button>
 							</DropdownMenuTrigger>
 
-							<DropdownMenuContent
-								align="start"
-								className="w-full max-h-64 mt-1 py-1 overflow-y-hidden rounded-xl shadow-xl bg-white dark:bg-dark"
-							>
-								<DropdownMenuItem className="rounded-xl">
-									<button
-										className="p-2 w-full text-start rounded-xl"
-										onClick={() => {
-											onCategorieClick('')
-										}}
-									>
-										All categories
-									</button>
-								</DropdownMenuItem>
-
-								<List
-									height={200}
-									width={246}
-									itemSize={40} // Height of one element
-									itemCount={categories?.length} // Quantity of elements
+							{categories.length ? (
+								<DropdownMenuContent
+									align="start"
+									className="w-full max-h-64 mt-1 py-1 overflow-y-hidden rounded-xl shadow-xl bg-white dark:bg-dark"
 								>
-									{({ index, style }) => (
-										<DropdownMenuItem
-											key={categories[index].category_id}
-											className="rounded-xl"
-											style={style}
+									<DropdownMenuItem className="rounded-xl">
+										<button
+											className="p-2 w-full text-start rounded-xl"
+											onClick={() => {
+												onCategorieClick('')
+											}}
 										>
-											<button
-												className="p-2 w-full text-start rounded-xl"
-												onClick={() =>
-													onCategorieClick(categories[index].category_id, categories[index].name)
-												}
+											All categories
+										</button>
+									</DropdownMenuItem>
+
+									<List
+										height={200}
+										width={246}
+										itemSize={40} // Height of one element
+										itemCount={categories?.length} // Quantity of elements
+									>
+										{({ index, style }) => (
+											<DropdownMenuItem
+												key={categories[index].category_id}
+												className="rounded-xl"
+												style={style}
 											>
-												{categories[index].name}
-											</button>
-										</DropdownMenuItem>
-									)}
-								</List>
-							</DropdownMenuContent>
+												<button
+													className="p-2 w-full text-start rounded-xl"
+													onClick={() =>
+														onCategorieClick(categories[index].category_id, categories[index].name)
+													}
+												>
+													{categories[index].name}
+												</button>
+											</DropdownMenuItem>
+										)}
+									</List>
+								</DropdownMenuContent>
+							) : (
+								<p className="text-sm text-gray-500 px-4 py-2">No categories available</p>
+							)}
 						</DropdownMenu>
 					</div>
 
@@ -247,7 +196,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 				</div>
 			</div>
 
-			<div className="rounded-md border">
+			<div className="border">
 				<Table>
 					<TableHeader className="text-left bg-gray-100 dark:bg-slate-800 text-sm border-b dark:border-gray-700">
 						{table.getHeaderGroups().map((headerGroup) => (
@@ -268,7 +217,11 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 					<TableBody>
 						{table.getRowModel().rows?.length ? (
 							table.getRowModel().rows.map((row) => (
-								<TableRow key={row.id}>
+								<TableRow
+									key={row.id}
+									onClick={() => onCoinsClick((row.original as CoinData).id)}
+									className="cursor-pointer"
+								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id}>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -287,27 +240,80 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 				</Table>
 			</div>
 
-			<div className="flex items-center justify-end space-x-2 py-4">
-				<div className="space-x-2">
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.previousPage()}
-						disabled={!table.getCanPreviousPage()}
-						className="rounded-xl"
-					>
-						Previous
-					</Button>
+			<div className="flex items-center justify-end px-2 pt-4">
+				<div className="flex items-center space-x-6 lg:space-x-8">
+					<div className="flex items-center space-x-2">
+						<p className="text-sm font-medium">Rows per page</p>
 
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.nextPage()}
-						disabled={!table.getCanNextPage()}
-						className="rounded-xl"
-					>
-						Next
-					</Button>
+						<Select
+							value={`${table.getState().pagination.pageSize}`}
+							onValueChange={(value) => {
+								table.setPageSize(Number(value))
+							}}
+						>
+							<SelectTrigger className="h-8 w-[70px]">
+								<SelectValue placeholder={table.getState().pagination.pageSize} />
+							</SelectTrigger>
+
+							<SelectContent side="top">
+								{[10, 20, 30, 40, 50].map((pageSize) => (
+									<SelectItem key={pageSize} value={`${pageSize}`}>
+										{pageSize}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+
+					<div className="flex w-[100px] items-center justify-center text-sm font-medium">
+						Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+					</div>
+
+					<div className="flex items-center space-x-2">
+						<Button
+							variant="outline"
+							className="hidden h-8 w-8 p-0 lg:flex"
+							onClick={() => table.setPageIndex(0)}
+							disabled={!table.getCanPreviousPage()}
+						>
+							<span className="sr-only">Go to first page</span>
+
+							<ChevronsLeft />
+						</Button>
+
+						<Button
+							variant="outline"
+							className="h-8 w-8 p-0"
+							onClick={() => table.previousPage()}
+							disabled={!table.getCanPreviousPage()}
+						>
+							<span className="sr-only">Go to previous page</span>
+
+							<ChevronLeft />
+						</Button>
+
+						<Button
+							variant="outline"
+							className="h-8 w-8 p-0"
+							onClick={() => table.nextPage()}
+							disabled={!table.getCanNextPage()}
+						>
+							<span className="sr-only">Go to next page</span>
+
+							<ChevronRight />
+						</Button>
+
+						<Button
+							variant="outline"
+							className="hidden h-8 w-8 p-0 lg:flex"
+							onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+							disabled={!table.getCanNextPage()}
+						>
+							<span className="sr-only">Go to last page</span>
+
+							<ChevronsRight />
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>
