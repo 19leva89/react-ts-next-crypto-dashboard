@@ -36,16 +36,17 @@ export const LoginForm = ({ onClose }: Props) => {
 				redirect: false,
 			})
 
-			if (!resp?.ok) {
-				throw Error()
+			if (resp?.error === 'CredentialsSignin') {
+				toast.error('This email is linked to a social login. Please use GitHub or Google')
 			}
 
-			toast.success('You have successfully logged in')
+			if (resp?.error === null) {
+				toast.success('You have successfully logged in')
 
-			onClose?.()
+				onClose?.()
+			}
 		} catch (error) {
 			console.error('Error [LOGIN]', error)
-			toast.error('Unable to login to account')
 		}
 	}
 

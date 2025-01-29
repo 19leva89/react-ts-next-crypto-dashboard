@@ -2,6 +2,7 @@
 
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { ChevronsUpDown, Moon, Sun, Wallet } from 'lucide-react'
 
@@ -14,12 +15,11 @@ import {
 	SidebarTrigger,
 	Skeleton,
 } from '@/components/ui'
-import { useUserInfo } from '@/hooks/use-user-info'
 
 export const Navbar = () => {
 	const pathName = usePathname()
 
-	const { user, loading, error } = useUserInfo()
+	const { data: session, status } = useSession()
 	const { theme, resolvedTheme, setTheme } = useTheme()
 
 	const [mounted, setMounted] = useState(false)
@@ -36,11 +36,11 @@ export const Navbar = () => {
 					<div className="flex-col gap-1 flex">
 						<h1 className="font-medium capitalize">{pathName.split('/').at(-1) || 'Dashboard'}</h1>
 
-						{loading ? (
+						{status === 'loading' ? (
 							<Skeleton className="h-5 w-36" />
 						) : (
 							<p className="text-sm text-gray-600 dark:text-slate-300 hidden min-[320px]:block">
-								Welcome back, {user?.name || 'Guest'}!
+								Welcome back, {session?.user.name || 'Guest'}!
 							</p>
 						)}
 					</div>

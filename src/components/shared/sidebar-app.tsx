@@ -16,9 +16,9 @@ import {
 	User,
 	Wallet,
 } from 'lucide-react'
-import { signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { useCallback, useState } from 'react'
+import { signOut, useSession } from 'next-auth/react'
 
 import {
 	Avatar,
@@ -40,7 +40,6 @@ import {
 	Skeleton,
 } from '@/components/ui'
 import { Logo } from '@/components/shared'
-import { useUserInfo } from '@/hooks/use-user-info'
 import { AuthModal } from '@/components/shared/modals/auth-modal'
 
 // Menu items
@@ -100,7 +99,7 @@ const sideBarData = [
 export const SidebarApp = () => {
 	const currentPath = usePathname()
 
-	const { user, loading, error } = useUserInfo()
+	const { data: session, status } = useSession()
 
 	const [openAuthModal, setOpenAuthModal] = useState(false)
 
@@ -157,28 +156,28 @@ export const SidebarApp = () => {
 									className="gap-3 justify-between mb-4 rounded-xl group"
 								>
 									<div className="grow flex items-center justify-between gap-2">
-										{loading ? (
+										{status === 'loading' ? (
 											<Skeleton className="w-10 h-10 rounded-full" /> // Skeleton с размером для аватара
 										) : (
 											<Avatar>
 												<AvatarImage
-													src={user?.image || '/svg/profile-image.svg'}
-													alt={user?.name || 'User'}
+													src={session?.user.image || '/svg/profile-image.svg'}
+													alt={session?.user.name || 'User'}
 													className="object-contain"
 												/>
 											</Avatar>
 										)}
 
 										<div className="flex flex-col gap-1 text-xs text-center">
-											{loading ? (
+											{status === 'loading' ? (
 												<>
 													<Skeleton className="w-32 h-4" />
 													<Skeleton className="w-32 h-4" />
 												</>
 											) : (
 												<>
-													<span className="font-medium">{user?.name || 'Guest'}</span>
-													<span className="text-gray-500">{user?.email || 'Please login'}</span>
+													<span className="font-medium">{session?.user.name || 'Guest'}</span>
+													<span className="text-gray-500">{session?.user.email || 'Please login'}</span>
 												</>
 											)}
 										</div>
@@ -196,7 +195,7 @@ export const SidebarApp = () => {
 								className="z-[100] flex flex-col gap-2 w-[--radix-popper-anchor-width] rounded-xl shadow-lg bg-white dark:bg-dark"
 							>
 								<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
-									{!user ? (
+									{!session?.user ? (
 										<button
 											onClick={() => {
 												setOpenAuthModal(true)

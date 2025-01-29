@@ -1,6 +1,6 @@
 import { InfoBlock } from '@/components/shared/info-block'
 
-export default function NotFoundPage() {
+const NotFoundPage = () => {
 	return (
 		<div className="flex flex-col items-center justify-center mt-40">
 			<InfoBlock
@@ -11,3 +11,5 @@ export default function NotFoundPage() {
 		</div>
 	)
 }
+
+export default NotFoundPage

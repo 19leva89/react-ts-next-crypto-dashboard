@@ -1,6 +1,6 @@
 import { InfoBlock } from '@/components/shared'
 
-export default function UnauthorizedPage() {
+const UnauthorizedPage = () => {
 	return (
 		<div className="flex flex-col items-center justify-center mt-40">
 			<InfoBlock
@@ -11,3 +11,5 @@ export default function UnauthorizedPage() {
 		</div>
 	)
 }
+
+export default UnauthorizedPage

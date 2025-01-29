@@ -47,23 +47,30 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
 				const email = credentials.email as string
 
-				const user = await prisma.user.findFirst({
-					where: {
-						email,
-					},
+				const user = await prisma.user.findUnique({
+					where: { email },
+					include: { accounts: true },
 				})
 
 				if (!user) {
 					return null
 				}
 
+				// Если у пользователя есть OAuth аккаунт, запрещаем вход по паролю
+				if (user.accounts.length > 0) {
+					console.log('This email is linked to a social login. Please use GitHub or Google')
+					return null
+				}
+
 				const isPasswordValid = await compare(credentials.password as string, user.password)
 
 				if (!isPasswordValid) {
+					console.log('Invalid password. Please try again')
 					return null
 				}
 
 				if (!user.emailVerified) {
+					console.log('Your email is not verified. Please check your inbox')
 					return null
 				}
 
@@ -90,6 +97,22 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 		async signIn({ user, account }) {
 			try {
 				if (account?.provider === 'credentials') {
+					if (!user.email) {
+						throw new Error('Email is required')
+					}
+
+					const existingSocialAccount = await prisma.account.findFirst({
+						where: {
+							provider: { in: ['github', 'google'] },
+							user: { email: user.email },
+						},
+					})
+
+					if (existingSocialAccount) {
+						console.log('This email is linked to a social login. Please use GitHub or Google')
+						return false
+					}
+
 					return true
 				}
 
@@ -141,11 +164,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 				await prisma.user.create({
 					data: {
 						email: user.email,
-						name: user.name || `User #${user.id}`,
+						name: user.name || 'User #' + user.id,
 						password: await saltAndHashPassword(user.id as string),
-						image: user.image,
 						emailVerified: new Date(),
-						role: 'USER', // Задаем роль по умолчанию
+						role: 'USER',
 						accounts: {
 							create: {
 								type: account.type,
@@ -194,6 +216,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 		session({ session, token }) {
 			if (session?.user) {
 				session.user.id = token.id
+				session.user.email = token.email ?? ''
 				session.user.role = token.role
 			}
 
