@@ -1,13 +1,15 @@
 import NextAuth from 'next-auth'
 import Google from 'next-auth/providers/google'
 import GitHub from 'next-auth/providers/github'
-import CredentialsProvider from 'next-auth/providers/credentials'
+import Credentials from 'next-auth/providers/credentials'
+
+import { compare } from 'bcryptjs'
+import { Adapter } from 'next-auth/adapters'
+import { PrismaAdapter } from '@auth/prisma-adapter'
 
 import { prisma } from '@/lib/prisma'
 import { UserRole } from '@prisma/client'
-import { compare, hashSync } from 'bcrypt'
-import { Adapter } from 'next-auth/adapters'
-import { PrismaAdapter } from '@auth/prisma-adapter'
+import { saltAndHashPassword } from '@/lib/salt'
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
 	adapter: PrismaAdapter(prisma) as Adapter,
@@ -31,46 +33,46 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 			},
 		}),
 
-		CredentialsProvider({
+		Credentials({
 			name: 'Credentials',
 			credentials: {
-				email: { label: 'Email', type: 'text' },
+				email: { label: 'Email', type: 'email', placeholder: 'email@example.com' },
 				password: { label: 'Password', type: 'password' },
 			},
 
-			async authorize(credentials) {
-				if (!credentials) {
+			authorize: async (credentials) => {
+				if (!credentials || !credentials.email || !credentials.password) {
 					return null
 				}
 
-				const values = {
-					email: credentials.email as string,
-				}
+				const email = credentials.email as string
 
-				const findUser = await prisma.user.findFirst({
-					where: values,
+				const user = await prisma.user.findFirst({
+					where: {
+						email,
+					},
 				})
 
-				if (!findUser) {
+				if (!user) {
 					return null
 				}
 
-				const isPasswordValid = await compare(credentials.password as string, findUser.password)
+				const isPasswordValid = await compare(credentials.password as string, user.password)
 
 				if (!isPasswordValid) {
 					return null
 				}
 
-				if (!findUser.emailVerified) {
+				if (!user.emailVerified) {
 					return null
 				}
 
 				return {
-					id: findUser.id.toString(),
-					email: findUser.email,
-					name: findUser.name,
-					image: findUser.image,
-					role: findUser.role,
+					id: user.id.toString(),
+					email: user.email,
+					name: user.name,
+					image: user.image,
+					role: user.role,
 				}
 			},
 		}),
@@ -140,7 +142,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 					data: {
 						email: user.email,
 						name: user.name || `User #${user.id}`,
-						password: hashSync((user.id ?? '').toString(), 10), // Рекомендуется использовать безопасный способ генерации пароля
+						password: await saltAndHashPassword(user.id as string),
 						image: user.image,
 						emailVerified: new Date(),
 						role: 'USER', // Задаем роль по умолчанию
@@ -197,5 +199,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
 			return session
 		},
+
+		// authorized({ auth }) {
+		// 	const isAuthenticated = !!auth?.user
+
+		// 	return isAuthenticated
+		// },
 	},
 })

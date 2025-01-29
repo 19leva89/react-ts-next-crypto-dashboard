@@ -1,7 +1,5 @@
 'use server'
 
-import { hashSync } from 'bcrypt'
-
 import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
 
@@ -16,13 +14,14 @@ import {
 import {
 	AIRDROPS_DATA_KEY,
 	CATEGORIES_KEY,
-	COINS_DATA_KEY,
+	COIN_DATA_KEY,
 	COINS_LIST_KEY,
 	MARKET_CHART_KEY,
 	TRENDING_KEY,
 } from './constants'
 import { makeReq } from './make-request'
 import { sendEmail } from '@/lib/send-email'
+import { saltAndHashPassword } from '@/lib/salt'
 import { getUserSession } from '@/lib/get-user-session'
 import { VerificationUserTemplate } from '@/components/shared/email-temapltes'
 
@@ -59,7 +58,7 @@ export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 		const updatedData: Prisma.UserUpdateInput = {
 			name: body.name,
 			email: body.email ? body.email : existingUser.email, // Conditional assignment
-			password: body.password ? hashSync(body.password as string, 10) : existingUser.password,
+			password: body.password ? await saltAndHashPassword(body.password as string) : existingUser.password,
 		}
 
 		const updatedUser = await prisma.user.update({
@@ -96,7 +95,7 @@ export const registerUser = async (body: Prisma.UserCreateInput) => {
 			data: {
 				name: body.name,
 				email: body.email,
-				password: hashSync(body.password, 10),
+				password: await saltAndHashPassword(body.password as string),
 			},
 		})
 
@@ -242,7 +241,7 @@ export const fetchCoinsData = async (coinId: string): Promise<CoinsData | null> 
 		const coinsDataRecord = await prisma.coin.findUnique({
 			where: {
 				key_coinId: {
-					key: COINS_DATA_KEY,
+					key: COIN_DATA_KEY,
 					coinId: coinId,
 				},
 			},
@@ -285,13 +284,13 @@ export const fetchCoinsData = async (coinId: string): Promise<CoinsData | null> 
 		await prisma.coin.upsert({
 			where: {
 				key_coinId: {
-					key: COINS_DATA_KEY,
+					key: COIN_DATA_KEY,
 					coinId: coinId,
 				},
 			},
 			update: { value: JSON.stringify(coinsDatas) },
 			create: {
-				key: COINS_DATA_KEY,
+				key: COIN_DATA_KEY,
 				value: JSON.stringify(coinsDatas),
 				coinId: coinId, // Передаем coinId
 			},

@@ -1,4 +1,4 @@
-import { auth } from '@/constants/auth-options'
+import { auth } from '@/auth'
 
 export const getUserSession = async () => {
 	const session = await auth()

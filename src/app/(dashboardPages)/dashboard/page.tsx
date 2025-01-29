@@ -1,18 +1,28 @@
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 
+import { Skeleton } from '@/components/ui'
 import { DataTableSection } from './_components/data-table-section'
 import { AccountTrendingSection } from './_components/account-trending-section'
+import { CategoriesData, CoinListData, TrendingData } from '@/app/api/definitions'
+import { fetchCategories, fetchCoinsList, fetchTrendingData } from '@/app/api/actions'
 
 export const metadata: Metadata = {
 	title: 'Dashboard',
 }
 
 const DashboardPage = async () => {
+	const categories = (await fetchCategories()) ?? ([] as CategoriesData)
+	const coinsList = (await fetchCoinsList()) ?? ([] as CoinListData)
+	const trendingData = (await fetchTrendingData()) ?? ({} as TrendingData)
+
 	return (
 		<div className="space-y-14">
-			<AccountTrendingSection />
+			<AccountTrendingSection trendingData={trendingData} />
 
-			<DataTableSection />
+			<Suspense fallback={<Skeleton className="h-96 w-full rounded-xl" />}>
+				<DataTableSection categories={categories} initialCoins={coinsList} />
+			</Suspense>
 		</div>
 	)
 }

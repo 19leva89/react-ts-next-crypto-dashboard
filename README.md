@@ -1,5 +1,5 @@
 Authentication and User Management:
-- Bcrypt (password hashing)
+- Bcrypt.js (password hashing)
 - NextAuth 5 (authentication)
 
 Core Technologies:

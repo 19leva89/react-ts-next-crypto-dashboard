@@ -57,7 +57,7 @@ const sideBarData = [
 	},
 	{
 		title: 'Activities',
-		url: '/activities',
+		url: '/protected/activities',
 		icon: Activity,
 	},
 	{
