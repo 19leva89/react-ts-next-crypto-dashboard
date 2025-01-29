@@ -37,7 +37,6 @@ Styling and UI Frameworks:
 - Tailwind CSS (stylization)
 
 Utilities and Libraries:
-- ApexCharts (data visualization)
 - PostCSS (transforms CSS code to AST)
 
 

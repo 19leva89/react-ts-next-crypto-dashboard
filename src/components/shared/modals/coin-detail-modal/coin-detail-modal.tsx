@@ -1,11 +1,14 @@
 import Image from 'next/image'
-import dynamic from 'next/dynamic'
 import { Star } from 'lucide-react'
-import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
 import {
 	Button,
+	ChartConfig,
+	ChartContainer,
+	ChartTooltip,
+	ChartTooltipContent,
 	Sheet,
 	SheetClose,
 	SheetContent,
@@ -18,8 +21,6 @@ import {
 import { CoinsData, MarketChartData } from '@/app/api/definitions'
 import { fetchCoinsData, fetchCoinsMarketChart } from '@/app/api/actions'
 
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
-
 interface CoinDetailModalProps {
 	coinId: string
 	showDetailModal: boolean
@@ -27,8 +28,6 @@ interface CoinDetailModalProps {
 }
 
 export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: CoinDetailModalProps) => {
-	const { theme } = useTheme()
-
 	const [fetchingCoinsData, setFetchingCoinsData] = useState<boolean>(false)
 	const [fetchingHistoryData, setFetchingHistoryData] = useState<boolean>(false)
 	const [coinsData, setCoinsData] = useState<CoinsData | Record<string, any>>({})
@@ -60,7 +59,22 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: CoinDet
 		fetchData()
 	}, [coinId, showDetailModal])
 
+	const chartConfig = {
+		prices: {
+			label: 'Price',
+			color: 'hsl(var(--chart-2))',
+		},
+	} satisfies ChartConfig
+
 	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+	const formattedData = coinMarketChartData.prices.map(([timestamp, price]) => ({
+		Month: months[new Date(timestamp).getMonth()],
+		Price: price,
+	}))
+
+	const minPrice = Math.min(...formattedData.map((h) => h.Price))
+	const maxPrice = Math.max(...formattedData.map((h) => h.Price))
 
 	return (
 		<Sheet open={showDetailModal} onOpenChange={closeModal}>
@@ -84,80 +98,51 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: CoinDet
 						<Skeleton className="h-72 w-full" />
 					) : (
 						<div className="w-[420px] mx-auto">
-							<Chart
-								type="line"
-								options={{
-									stroke: {
-										curve: 'straight',
-										width: 3,
-									},
-									grid: {
-										xaxis: {
-											lines: {
-												show: true,
-											},
-										},
-										yaxis: {
-											lines: {
-												show: true,
-											},
-										},
-									},
-									tooltip: {
-										theme: theme,
-									},
-									chart: {
-										toolbar: {
-											show: false,
-											tools: {
-												zoom: false,
-												selection: false,
-												reset: false,
-												zoomin: false,
-												zoomout: false,
-												pan: false,
-											},
-										},
-										animations: {
-											enabled: true,
-										},
-									},
-									xaxis: {
-										type: 'numeric',
-										labels: {
-											style: {
-												colors: theme === 'dark' ? '#f1f5f9' : '#4b5563',
-											},
-											formatter(value, timestamp, opts) {
-												const timestampValue = parseInt(value)
-												const date = new Date(timestampValue)
-												return months[date.getMonth()]
-											},
-										},
-									},
-									yaxis: {
-										labels: {
-											style: {
-												colors: theme === 'dark' ? '#f1f5f9' : '#4b5563',
-											},
-										},
-									},
-								}}
-								series={[
-									{
-										data: coinMarketChartData.prices,
-										name: coinsData.name,
-										color: '#22c55e',
-									},
-								]}
-								height={300}
-							/>
+							<ChartContainer config={chartConfig}>
+								<LineChart
+									accessibilityLayer
+									data={formattedData}
+									margin={{
+										left: 12,
+										right: 12,
+									}}
+								>
+									{/* Сетка */}
+									<CartesianGrid vertical={true} strokeDasharray="4 4" />
 
-							<div className="flex items-center gap-1 ms-16">
-								<div className="bg-green-500 w-8 h-2"></div>
+									{/* Ось X */}
+									<XAxis
+										dataKey="Month"
+										tickLine={false}
+										axisLine={false}
+										tick={true}
+										tickMargin={10}
+										tickFormatter={(value) => value.slice(0, 3)}
+									/>
 
-								<p>Price</p>
-							</div>
+									{/* Ось Y */}
+									<YAxis
+										dataKey="Price"
+										domain={[minPrice, maxPrice]}
+										axisLine={false}
+										tickLine={false}
+										tick={true}
+										tickMargin={10}
+									/>
+
+									{/* Тултип */}
+									<ChartTooltip cursor={true} content={<ChartTooltipContent />} />
+
+									{/* Линия */}
+									<Line
+										dataKey="Price"
+										type="natural"
+										stroke="var(--color-prices)"
+										strokeWidth={2}
+										dot={false}
+									/>
+								</LineChart>
+							</ChartContainer>
 						</div>
 					)}
 				</div>

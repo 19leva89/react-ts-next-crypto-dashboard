@@ -1,15 +1,13 @@
 'use client'
 
 import Image from 'next/image'
-import dynamic from 'next/dynamic'
 import { ArrowUpDown } from 'lucide-react'
 import { ColumnDef } from '@tanstack/react-table'
+import { Line, LineChart, YAxis } from 'recharts'
 
 import { cn } from '@/lib'
-import { Button } from '@/components/ui'
 import { CoinData } from '@/app/api/definitions'
-
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
+import { Button, ChartConfig, ChartContainer } from '@/components/ui'
 
 export const columns: ColumnDef<CoinData>[] = [
 	// #
@@ -201,66 +199,35 @@ export const columns: ColumnDef<CoinData>[] = [
 		header: () => <div>Last 7 Days</div>,
 		cell: ({ row }) => {
 			const coin = row.original
-			const sparkline = coin?.sparkline_in_7d?.price || []
-			const lastUpdated = new Date(coin.last_updated)
-			const dataLength = sparkline.length
+			const priceChange = coin?.price_change_percentage_7d_in_currency ?? 0
+
+			const chartConfig = {
+				prices: {
+					label: 'Price',
+					color: 'hsl(var(--chart-2))',
+				},
+			} satisfies ChartConfig
+
+			const formattedData = coin.sparkline_in_7d.price.map((price, index) => ({
+				Hour: index,
+				Price: Number(price.toFixed(2)),
+			}))
+
+			const minPrice = Math.min(...formattedData.map((h) => h.Price))
+			const maxPrice = Math.max(...formattedData.map((h) => h.Price))
+
+			const lineColor = priceChange > 0 ? '#22c55ed6' : priceChange < 0 ? '#dc2626d6' : '#22c55ed6'
 
 			return (
-				<Chart
-					type="line"
-					options={{
-						chart: {
-							sparkline: {
-								enabled: true,
-							},
-							animations: {
-								enabled: false,
-							},
-						},
-						tooltip: {
-							enabled: true,
-							followCursor: true,
-							x: {
-								formatter: (hour) => {
-									const date = new Date(lastUpdated.getTime() - (dataLength - hour) * 60 * 60 * 1000)
-									return date.toLocaleDateString('en-US', {
-										month: 'short',
-										day: 'numeric',
-									})
-								},
-							},
-							y: {
-								formatter: (value) => value.toFixed(2),
-								title: {
-									formatter: (seriesName) => seriesName,
-								},
-							},
-						},
-						stroke: {
-							show: true,
-							curve: 'smooth',
-							lineCap: 'butt',
-							width: 2,
-						},
-					}}
-					width={100}
-					height={50}
-					series={[
-						{
-							data: sparkline.length > 0 ? sparkline : [0],
-							name: `${coin?.name || 'No Name'}`,
-							color: `${
-								coin?.price_change_percentage_7d_in_currency &&
-								coin?.price_change_percentage_7d_in_currency > 0
-									? '#22c55e'
-									: coin?.price_change_percentage_7d_in_currency &&
-										  coin?.price_change_percentage_7d_in_currency < 0
-										? '#dc2626'
-										: '#22c55e'
-							}`,
-						},
-					]}
-				/>
+				<div className="w-[100px] mx-0">
+					<ChartContainer config={chartConfig}>
+						<LineChart accessibilityLayer data={formattedData}>
+							<YAxis domain={[minPrice, maxPrice]} hide />
+
+							<Line dataKey="Price" type="natural" stroke={lineColor} strokeWidth={2} dot={false} />
+						</LineChart>
+					</ChartContainer>
+				</div>
 			)
 		},
 	},
