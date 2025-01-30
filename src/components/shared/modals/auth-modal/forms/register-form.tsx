@@ -43,7 +43,13 @@ export const RegisterForm = ({ onClose }: Props) => {
 
 			onClose?.()
 		} catch (error) {
-			return toast.error((error as Error).message)
+			console.error('Error registering:', error)
+
+			if (error instanceof Error) {
+				toast.error(error.message)
+			} else {
+				toast.error('Error while registering')
+			}
 		}
 	}
 

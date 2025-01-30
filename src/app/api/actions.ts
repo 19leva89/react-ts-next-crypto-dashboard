@@ -22,11 +22,10 @@ import {
 	MarketChartData,
 	TrendingData,
 } from './definitions'
-import { signIn } from '@/auth'
+import { auth, signIn } from '@/auth'
 import { makeReq } from './make-request'
 import { sendEmail } from '@/lib/send-email'
 import { saltAndHashPassword } from '@/lib/salt'
-import { getUserSession } from '@/lib/get-user-session'
 import { VerificationUserTemplate } from '@/components/shared/email-temapltes'
 
 export const registerUser = async (body: Prisma.UserCreateInput) => {
@@ -89,18 +88,14 @@ export const loginUserWithCreds = async (body: Prisma.UserCreateInput) => {
 	})
 
 	if (!user) {
-		throw new Error('User not found')
+		throw new Error('Invalid password or email')
 	}
 
 	if (user.accounts.length > 0) {
 		throw new Error('This email is linked to a social login. Please use GitHub or Google')
 	}
 
-	if (!user.password) {
-		throw new Error('Password is not set for this user')
-	}
-
-	const isPasswordValid = await compare(body.password as string, user.password)
+	const isPasswordValid = await compare(body.password as string, user.password ?? '')
 
 	if (!isPasswordValid) {
 		throw new Error('Invalid password or email')
@@ -127,24 +122,37 @@ export const loginUserWithCreds = async (body: Prisma.UserCreateInput) => {
 
 export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 	try {
-		const currentUser = await getUserSession()
+		const session = await auth()
 
-		if (!currentUser) {
+		if (!session?.user) {
 			throw new Error('User not found')
 		}
 
 		const existingUser = await prisma.user.findFirst({
-			where: {
-				id: currentUser.id,
-			},
+			where: { id: session?.user.id },
+			include: { accounts: true },
 		})
 
 		if (!existingUser) {
 			throw new Error('User not found')
 		}
 
+		// Проверяем, есть ли у пользователя OAuth-аккаунты
+		const hasOAuthAccounts = existingUser.accounts.length > 0
+
+		// Если пользователь вошел через OAuth, запрещаем изменение email и пароля
+		if (hasOAuthAccounts) {
+			if (body.email && body.email !== existingUser.email) {
+				throw new Error('Email cannot be changed for OAuth users')
+			}
+
+			if (body.password) {
+				throw new Error('Password cannot be changed for OAuth users')
+			}
+		}
+
 		// Validation for email uniqueness
-		if (body.email && body.email !== existingUser.email) {
+		if (body.email && body.email !== existingUser.email && !hasOAuthAccounts) {
 			const emailExists = await prisma.user.findUnique({
 				where: {
 					email: body.email as string,
@@ -157,13 +165,19 @@ export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 
 		const updatedData: Prisma.UserUpdateInput = {
 			name: body.name,
-			email: body.email ? body.email : existingUser.email, // Conditional assignment
-			password: body.password ? await saltAndHashPassword(body.password as string) : existingUser.password,
+		}
+
+		// Если пользователь не OAuth, разрешаем обновление email и пароля
+		if (!hasOAuthAccounts) {
+			updatedData.email = body.email ? body.email : existingUser.email
+			updatedData.password = body.password
+				? await saltAndHashPassword(body.password as string)
+				: existingUser.password
 		}
 
 		const updatedUser = await prisma.user.update({
 			where: {
-				id: currentUser.id,
+				id: session?.user.id,
 			},
 			data: updatedData,
 		})
@@ -171,6 +185,42 @@ export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 		return updatedUser
 	} catch (error) {
 		console.log('Error [UPDATE_USER]', error)
+		throw error
+	}
+}
+
+export const deleteUser = async (userId?: string) => {
+	try {
+		const session = await auth()
+
+		// Проверяем, авторизован ли пользователь
+		if (!session?.user) {
+			throw new Error('User not authenticated')
+		}
+
+		// Если userId не передан, удаляем текущего пользователя
+		const targetUserId = userId || session.user.id
+
+		// Проверяем, что пользователь удаляет только себя (или администратор может удалять других)
+		if (session.user.role !== 'ADMIN' && targetUserId !== session.user.id) {
+			throw new Error('You do not have permission to delete this user')
+		}
+
+		// Удаляем пользователя и все связанные данные (каскадное удаление)
+		const deletedUser = await prisma.user.delete({
+			where: {
+				id: targetUserId,
+			},
+			include: {
+				accounts: true, // Удаляем связанные аккаунты
+				sessions: true, // Удаляем связанные сессии
+				verificationCode: true, // Удаляем код подтверждения
+			},
+		})
+
+		return deletedUser
+	} catch (error) {
+		console.error('Error [DELETE_USER]', error)
 		throw error
 	}
 }

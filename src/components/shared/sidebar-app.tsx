@@ -16,9 +16,9 @@ import {
 	User,
 	Wallet,
 } from 'lucide-react'
+import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
-import { useCallback, useState } from 'react'
-import { signOut, useSession } from 'next-auth/react'
 
 import {
 	Avatar,
@@ -39,6 +39,7 @@ import {
 	SidebarMenuItem,
 	Skeleton,
 } from '@/components/ui'
+import { signOut } from '@/auth'
 import { Logo } from '@/components/shared'
 import { AuthModal } from '@/components/shared/modals/auth-modal'
 
@@ -89,11 +90,6 @@ const sideBarData = [
 		url: '/help',
 		icon: HelpCircle,
 	},
-	{
-		title: 'Settings',
-		url: '/settings',
-		icon: Settings,
-	},
 ]
 
 export const SidebarApp = () => {
@@ -102,12 +98,6 @@ export const SidebarApp = () => {
 	const { data: session, status } = useSession()
 
 	const [openAuthModal, setOpenAuthModal] = useState(false)
-
-	const onClickSignOut = useCallback(() => {
-		signOut({
-			callbackUrl: '/',
-		})
-	}, [])
 
 	return (
 		<Sidebar side="left" variant="sidebar" collapsible="icon" className="z-[100]">
@@ -131,11 +121,11 @@ export const SidebarApp = () => {
 								return (
 									<SidebarMenuItem key={item.title}>
 										<SidebarMenuButton className="text-lg" asChild isActive={isActive}>
-											<a href={item.url} className="flex items-center gap-4 h-[48px]">
+											<Link href={item.url} className="flex items-center gap-4 h-[48px]">
 												<item.icon className="!w-5 !h-5" />
 
 												<span>{item.title}</span>
-											</a>
+											</Link>
 										</SidebarMenuButton>
 									</SidebarMenuItem>
 								)
@@ -157,7 +147,7 @@ export const SidebarApp = () => {
 								>
 									<div className="grow flex items-center justify-between gap-2">
 										{status === 'loading' ? (
-											<Skeleton className="w-10 h-10 rounded-full" /> // Skeleton с размером для аватара
+											<Skeleton className="w-10 h-10 rounded-full" />
 										) : (
 											<Avatar>
 												<AvatarImage
@@ -192,29 +182,43 @@ export const SidebarApp = () => {
 
 							<DropdownMenuContent
 								align="start"
-								className="z-[100] flex flex-col gap-2 w-[--radix-popper-anchor-width] rounded-xl shadow-lg bg-white dark:bg-dark"
+								className="z-[100] flex flex-col gap-1 w-[--radix-popper-anchor-width] rounded-xl shadow-lg bg-white dark:bg-dark"
 							>
-								<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
-									{!session?.user ? (
+								{!session?.user ? (
+									<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
 										<button
 											onClick={() => {
 												setOpenAuthModal(true)
 											}}
-											className="flex items-center gap-1 p-3 rounded-xl w-full duration-300"
+											className="flex items-center gap-2 p-3 rounded-xl w-full duration-300"
 										>
 											<User size={16} />
 											Login
 										</button>
-									) : (
-										<button
-											onClick={onClickSignOut}
-											className="flex items-center gap-1 p-3 rounded-xl w-full duration-300"
-										>
-											<LogOut size={16} />
-											Logout
-										</button>
-									)}
-								</DropdownMenuItem>
+									</DropdownMenuItem>
+								) : (
+									<>
+										<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
+											<Link
+												href={'/protected/settings'}
+												className="flex items-center gap-2 p-3 rounded-xl w-full duration-300"
+											>
+												<Settings size={16} />
+												Settings
+											</Link>
+										</DropdownMenuItem>
+
+										<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
+											<button
+												onClick={() => signOut()}
+												className="flex items-center gap-2 p-3 rounded-xl w-full duration-300"
+											>
+												<LogOut size={16} />
+												Logout
+											</button>
+										</DropdownMenuItem>
+									</>
+								)}
 							</DropdownMenuContent>
 
 							<AuthModal open={openAuthModal} onClose={() => setOpenAuthModal(false)} />

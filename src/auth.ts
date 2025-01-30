@@ -9,27 +9,18 @@ import { PrismaAdapter } from '@auth/prisma-adapter'
 
 import { prisma } from '@/lib/prisma'
 import { UserRole } from '@prisma/client'
-import { checkEnvVariables, getEnv } from '@/lib/env'
-
-// checkEnvVariables([
-// 	'GOOGLE_CLIENT_ID',
-// 	'GOOGLE_CLIENT_SECRET',
-// 	'GITHUB_ID',
-// 	'GITHUB_SECRET',
-// 	'NEXTAUTH_SECRET',
-// ])
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
 	adapter: PrismaAdapter(prisma) as Adapter,
 	providers: [
 		Google({
-			clientId: getEnv('GOOGLE_CLIENT_ID'),
-			clientSecret: getEnv('GOOGLE_CLIENT_SECRET'),
+			clientId: process.env.GOOGLE_CLIENT_ID,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 		}),
 
 		GitHub({
-			clientId: getEnv('GITHUB_ID'),
-			clientSecret: getEnv('GITHUB_SECRET'),
+			clientId: process.env.GITHUB_ID,
+			clientSecret: process.env.GITHUB_SECRET,
 			profile(profile) {
 				return {
 					id: profile.id.toString(),
@@ -61,7 +52,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 					})
 
 					if (!user) {
-						console.error('User not found')
+						console.error('Invalid password or email')
 						return null
 					}
 
@@ -71,15 +62,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 						return null
 					}
 
-					if (!user.password) {
-						console.error('Password is not set for this user')
-						return null
-					}
-
-					const isPasswordValid = await compare(credentials.password as string, user.password)
+					const isPasswordValid = await compare(credentials.password as string, user.password ?? '')
 
 					if (!isPasswordValid) {
-						console.error('Invalid password')
+						console.error('Invalid password or email')
 						return null
 					}
 
@@ -103,7 +89,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 		}),
 	],
 
-	secret: getEnv('NEXTAUTH_SECRET'),
+	secret: process.env.NEXTAUTH_SECRET,
 
 	session: {
 		strategy: 'jwt',

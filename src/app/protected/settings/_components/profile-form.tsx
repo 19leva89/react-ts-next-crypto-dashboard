@@ -2,15 +2,17 @@
 
 import toast from 'react-hot-toast'
 
+import { useSession } from 'next-auth/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { User } from '@prisma/client'
 import { Button } from '@/components/ui'
 
-import { updateUserInfo } from '@/app/api/actions'
+import { signOut } from '@/auth'
 import { FormInput } from '@/components/shared/form'
 import { Container, Title } from '@/components/shared'
+import { deleteUser, updateUserInfo } from '@/app/api/actions'
 import { updateUserInfoSchema, UserFormValues } from '@/constants/update-user-info-schema'
 
 interface Props {
@@ -18,11 +20,13 @@ interface Props {
 }
 
 export const ProfileForm = ({ data }: Props) => {
+	const { update } = useSession()
+
 	const form = useForm({
 		resolver: zodResolver(updateUserInfoSchema),
 		defaultValues: {
 			email: data.email,
-			name: '',
+			name: data.name || '',
 			password: '',
 			confirmPassword: '',
 		},
@@ -30,15 +34,15 @@ export const ProfileForm = ({ data }: Props) => {
 
 	const onSubmit = async (formData: UserFormValues) => {
 		try {
-			const updateData = {
+			await updateUserInfo({
 				email: formData.email,
 				name: formData.name,
 				...(formData.password ? { password: formData.password } : {}),
-			}
-
-			await updateUserInfo(updateData)
+			})
 
 			toast.success('Data updated 📝')
+
+			await update()
 		} catch (error) {
 			console.error('Error updating user info:', error)
 
@@ -46,6 +50,24 @@ export const ProfileForm = ({ data }: Props) => {
 				toast.error(error.message)
 			} else {
 				toast.error('Error while updating data')
+			}
+		}
+	}
+
+	const handleDeleteAccount = async () => {
+		try {
+			await deleteUser()
+
+			toast.success('Your account has been deleted')
+
+			signOut()
+		} catch (error) {
+			console.error('Error deleting account:', error)
+
+			if (error instanceof Error) {
+				toast.error(error.message)
+			} else {
+				toast.error('Error while deleting account')
 			}
 		}
 	}
@@ -64,8 +86,23 @@ export const ProfileForm = ({ data }: Props) => {
 
 					<FormInput name="confirmPassword" label="Repeat password" type="password" />
 
-					<Button disabled={form.formState.isSubmitting} className="h-12 text-base mt-10" type="submit">
+					<Button
+						type="submit"
+						disabled={form.formState.isSubmitting}
+						className="h-12 text-base mt-10 rounded-xl"
+					>
 						Save
+					</Button>
+
+					<Button
+						variant="destructive"
+						size="sm"
+						type="button"
+						onClick={handleDeleteAccount}
+						disabled={form.formState.isSubmitting}
+						className="h-12 text-base rounded-xl"
+					>
+						Delete account
 					</Button>
 				</form>
 			</FormProvider>

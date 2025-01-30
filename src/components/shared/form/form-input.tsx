@@ -46,7 +46,7 @@ export const FormInput = ({ className, name, label, type, placeholder, required,
 
 			<div className="relative">
 				<Input
-					className="h-12 text-md pr-20"
+					className="h-12 text-md pr-20 rounded-xl"
 					type={type === 'password' && !isPasswordVisible ? 'password' : 'text'}
 					placeholder={placeholder}
 					{...register(name)}
