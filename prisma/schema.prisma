@@ -50,6 +50,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -60,6 +61,8 @@ model Session {
   //
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -95,8 +98,6 @@ model VerificationCode {
   code      String
   //
   createdAt DateTime @default(now())
-
-  @@unique([userId, code])
 }
 
 model TrendingData {

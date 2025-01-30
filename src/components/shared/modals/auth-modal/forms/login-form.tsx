@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import toast from 'react-hot-toast'
-import { signIn } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -15,12 +15,15 @@ import {
 } from '@/components/ui'
 import { FormInput } from '@/components/shared/form'
 import { TFormLoginValues, formLoginSchema } from './schemas'
+import { loginUser, loginUserWithCreds } from '@/app/api/actions'
 
 interface Props {
 	onClose?: VoidFunction
 }
 
 export const LoginForm = ({ onClose }: Props) => {
+	const { update } = useSession()
+
 	const form = useForm<TFormLoginValues>({
 		resolver: zodResolver(formLoginSchema),
 		defaultValues: {
@@ -31,22 +34,18 @@ export const LoginForm = ({ onClose }: Props) => {
 
 	const onSubmit = async (data: TFormLoginValues) => {
 		try {
-			const resp = await signIn('credentials', {
-				...data,
-				redirect: false,
+			await loginUserWithCreds({
+				email: data.email,
+				password: data.password,
 			})
 
-			if (resp?.error === 'CredentialsSignin') {
-				toast.error('This email is linked to a social login. Please use GitHub or Google')
-			}
+			toast.success('You have successfully logged in')
 
-			if (resp?.error === null) {
-				toast.success('You have successfully logged in')
+			await update()
 
-				onClose?.()
-			}
+			onClose?.()
 		} catch (error) {
-			console.error('Error [LOGIN]', error)
+			toast.error((error as Error).message)
 		}
 	}
 
@@ -76,12 +75,7 @@ export const LoginForm = ({ onClose }: Props) => {
 						<div className="flex gap-2 w-full">
 							<Button
 								variant="outline"
-								onClick={() =>
-									signIn('github', {
-										callbackUrl: '/',
-										redirect: true,
-									})
-								}
+								onClick={() => loginUser('github')}
 								type="button"
 								className="gap-2 h-12 p-2 flex-1"
 							>
@@ -91,12 +85,7 @@ export const LoginForm = ({ onClose }: Props) => {
 
 							<Button
 								variant="outline"
-								onClick={() =>
-									signIn('google', {
-										callbackUrl: '/',
-										redirect: true,
-									})
-								}
+								onClick={() => loginUser('google')}
 								type="button"
 								className="gap-2 h-12 p-2 flex-1"
 							>

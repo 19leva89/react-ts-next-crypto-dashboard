@@ -9,19 +9,27 @@ import { PrismaAdapter } from '@auth/prisma-adapter'
 
 import { prisma } from '@/lib/prisma'
 import { UserRole } from '@prisma/client'
-import { saltAndHashPassword } from '@/lib/salt'
+import { checkEnvVariables, getEnv } from '@/lib/env'
+
+// checkEnvVariables([
+// 	'GOOGLE_CLIENT_ID',
+// 	'GOOGLE_CLIENT_SECRET',
+// 	'GITHUB_ID',
+// 	'GITHUB_SECRET',
+// 	'NEXTAUTH_SECRET',
+// ])
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
 	adapter: PrismaAdapter(prisma) as Adapter,
 	providers: [
 		Google({
-			clientId: process.env.GOOGLE_CLIENT_ID || '',
-			clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+			clientId: getEnv('GOOGLE_CLIENT_ID'),
+			clientSecret: getEnv('GOOGLE_CLIENT_SECRET'),
 		}),
 
 		GitHub({
-			clientId: process.env.GITHUB_ID || '',
-			clientSecret: process.env.GITHUB_SECRET || '',
+			clientId: getEnv('GITHUB_ID'),
+			clientSecret: getEnv('GITHUB_SECRET'),
 			profile(profile) {
 				return {
 					id: profile.id.toString(),
@@ -41,51 +49,61 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 			},
 
 			authorize: async (credentials) => {
-				if (!credentials || !credentials.email || !credentials.password) {
+				try {
+					if (!credentials?.email || !credentials?.password) {
+						console.error('Email and password are required')
+						return null
+					}
+
+					const user = await prisma.user.findUnique({
+						where: { email: credentials.email as string },
+						include: { accounts: true },
+					})
+
+					if (!user) {
+						console.error('User not found')
+						return null
+					}
+
+					// Если у пользователя есть OAuth аккаунт, запрещаем вход по паролю
+					if (user.accounts.length > 0) {
+						console.error('This email is linked to a social login. Please use GitHub or Google')
+						return null
+					}
+
+					if (!user.password) {
+						console.error('Password is not set for this user')
+						return null
+					}
+
+					const isPasswordValid = await compare(credentials.password as string, user.password)
+
+					if (!isPasswordValid) {
+						console.error('Invalid password')
+						return null
+					}
+
+					if (!user.emailVerified) {
+						console.error('Email is not verified')
+						return null
+					}
+
+					return {
+						id: user.id.toString(),
+						email: user.email,
+						name: user.name,
+						image: user.image,
+						role: user.role,
+					}
+				} catch (error) {
+					console.error('Error in authorize callback:', error)
 					return null
-				}
-
-				const email = credentials.email as string
-
-				const user = await prisma.user.findUnique({
-					where: { email },
-					include: { accounts: true },
-				})
-
-				if (!user) {
-					return null
-				}
-
-				// Если у пользователя есть OAuth аккаунт, запрещаем вход по паролю
-				if (user.accounts.length > 0) {
-					console.log('This email is linked to a social login. Please use GitHub or Google')
-					return null
-				}
-
-				const isPasswordValid = await compare(credentials.password as string, user.password)
-
-				if (!isPasswordValid) {
-					console.log('Invalid password. Please try again')
-					return null
-				}
-
-				if (!user.emailVerified) {
-					console.log('Your email is not verified. Please check your inbox')
-					return null
-				}
-
-				return {
-					id: user.id.toString(),
-					email: user.email,
-					name: user.name,
-					image: user.image,
-					role: user.role,
 				}
 			},
 		}),
 	],
 
-	secret: process.env.NEXTAUTH_SECRET,
+	secret: getEnv('NEXTAUTH_SECRET'),
 
 	session: {
 		strategy: 'jwt',
@@ -94,104 +112,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 	},
 
 	callbacks: {
-		async signIn({ user, account }) {
-			try {
-				if (account?.provider === 'credentials') {
-					if (!user.email) {
-						throw new Error('Email is required')
-					}
-
-					const existingSocialAccount = await prisma.account.findFirst({
-						where: {
-							provider: { in: ['github', 'google'] },
-							user: { email: user.email },
-						},
-					})
-
-					if (existingSocialAccount) {
-						console.log('This email is linked to a social login. Please use GitHub or Google')
-						return false
-					}
-
-					return true
-				}
-
-				if (!user.email || !account?.provider || !account?.providerAccountId) {
-					return false
-				}
-
-				// Проверяем, существует ли аккаунт
-				const existingAccount = await prisma.account.findUnique({
-					where: {
-						provider_providerAccountId: {
-							provider: account.provider,
-							providerAccountId: account.providerAccountId,
-						},
-					},
-				})
-
-				if (existingAccount) {
-					return true // Пользователь уже зарегистрирован
-				}
-
-				// Если аккаунт не найден, проверяем пользователя по email
-				const existingUser = await prisma.user.findUnique({
-					where: { email: user.email },
-				})
-
-				if (existingUser) {
-					// Привязываем новый провайдер к существующему пользователю
-					await prisma.account.create({
-						data: {
-							userId: existingUser.id,
-							type: account.type,
-							provider: account.provider,
-							providerAccountId: account.providerAccountId,
-							refresh_token: account.refresh_token,
-							access_token: account.access_token,
-							expires_at: account.expires_at,
-							token_type: account.token_type,
-							scope: account.scope,
-							id_token: account.id_token,
-							session_state: account.session_state ? String(account.session_state) : null,
-						},
-					})
-
-					return true
-				}
-
-				// Создаем нового пользователя и привязываем аккаунт
-				await prisma.user.create({
-					data: {
-						email: user.email,
-						name: user.name || 'User #' + user.id,
-						password: await saltAndHashPassword(user.id as string),
-						emailVerified: new Date(),
-						role: 'USER',
-						accounts: {
-							create: {
-								type: account.type,
-								provider: account.provider,
-								providerAccountId: account.providerAccountId,
-								refresh_token: account.refresh_token,
-								access_token: account.access_token,
-								expires_at: account.expires_at,
-								token_type: account.token_type,
-								scope: account.scope,
-								id_token: account.id_token,
-								session_state: account.session_state ? String(account.session_state) : null,
-							},
-						},
-					},
-				})
-
-				return true
-			} catch (error) {
-				console.error('Error [SIGNIN]', error)
-				return false
-			}
-		},
-
 		async jwt({ token }) {
 			if (!token.email) {
 				return token
@@ -216,17 +136,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 		session({ session, token }) {
 			if (session?.user) {
 				session.user.id = token.id
-				session.user.email = token.email ?? ''
+				session.user.email = token.email
 				session.user.role = token.role
 			}
 
 			return session
 		},
-
-		// authorized({ auth }) {
-		// 	const isAuthenticated = !!auth?.user
-
-		// 	return isAuthenticated
-		// },
 	},
 })

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, RefreshCcw } from 'lucide-react'
 
 import { cn } from '@/lib'
 import { Button } from '@/components/ui'
@@ -27,13 +27,14 @@ export const InfoBlock = ({ title, text, imageUrl, className }: Props) => {
 					<Link href="/">
 						<Button variant="default" size="lg" className="gap-2 rounded-xl">
 							<ArrowLeft />
-							To the home page
+							Back
 						</Button>
 					</Link>
 
 					<a href="">
-						<Button variant="outline" size="lg" className="rounded-xl">
-							Update
+						<Button variant="outline" size="lg" className="gap-2 rounded-xl">
+							<RefreshCcw />
+							Refresh
 						</Button>
 					</a>
 				</div>

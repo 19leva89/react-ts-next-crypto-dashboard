@@ -43,7 +43,7 @@ export const RegisterForm = ({ onClose }: Props) => {
 
 			onClose?.()
 		} catch (error) {
-			return toast.error('Incorrect email or password. Or email is linked to a social login')
+			return toast.error((error as Error).message)
 		}
 	}
 

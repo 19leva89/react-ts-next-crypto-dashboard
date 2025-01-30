@@ -1,16 +1,11 @@
 'use server'
 
+import { compare } from 'bcryptjs'
+import { revalidatePath } from 'next/cache'
+
 import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
 
-import {
-	AidropsData,
-	CategoriesData,
-	CoinListData,
-	CoinsData,
-	MarketChartData,
-	TrendingData,
-} from './definitions'
 import {
 	AIRDROPS_DATA_KEY,
 	CATEGORIES_KEY,
@@ -19,11 +14,116 @@ import {
 	MARKET_CHART_KEY,
 	TRENDING_KEY,
 } from './constants'
+import {
+	AidropsData,
+	CategoriesData,
+	CoinListData,
+	CoinsData,
+	MarketChartData,
+	TrendingData,
+} from './definitions'
+import { signIn } from '@/auth'
 import { makeReq } from './make-request'
 import { sendEmail } from '@/lib/send-email'
 import { saltAndHashPassword } from '@/lib/salt'
 import { getUserSession } from '@/lib/get-user-session'
 import { VerificationUserTemplate } from '@/components/shared/email-temapltes'
+
+export const registerUser = async (body: Prisma.UserCreateInput) => {
+	try {
+		const user = await prisma.user.findFirst({
+			where: {
+				email: body.email,
+			},
+		})
+
+		if (user) {
+			if (!user.emailVerified) {
+				throw new Error('Email not confirmed')
+			}
+
+			throw new Error('User already exists')
+		}
+
+		const createdUser = await prisma.user.create({
+			data: {
+				name: body.name,
+				email: body.email,
+				password: await saltAndHashPassword(body.password as string),
+			},
+		})
+
+		const code = Math.floor(100000 + Math.random() * 900000).toString()
+
+		await prisma.verificationCode.create({
+			data: {
+				code,
+				userId: createdUser.id,
+			},
+		})
+
+		await sendEmail(
+			createdUser.email,
+			'Crypto / 📝 Registration confirmation',
+			VerificationUserTemplate({
+				code,
+			}),
+		)
+	} catch (error) {
+		console.log('Error [CREATE_USER]', error)
+
+		throw error
+	}
+}
+
+export const loginUser = async (provider: string) => {
+	await signIn(provider, { redirectTo: '/' })
+
+	revalidatePath('/')
+}
+
+export const loginUserWithCreds = async (body: Prisma.UserCreateInput) => {
+	const user = await prisma.user.findUnique({
+		where: { email: body.email },
+		include: { accounts: true },
+	})
+
+	if (!user) {
+		throw new Error('User not found')
+	}
+
+	if (user.accounts.length > 0) {
+		throw new Error('This email is linked to a social login. Please use GitHub or Google')
+	}
+
+	if (!user.password) {
+		throw new Error('Password is not set for this user')
+	}
+
+	const isPasswordValid = await compare(body.password as string, user.password)
+
+	if (!isPasswordValid) {
+		throw new Error('Invalid password or email')
+	}
+
+	if (!user.emailVerified) {
+		throw new Error('Email is not verified')
+	}
+
+	const data = {
+		email: body.email,
+		password: body.password,
+		redirect: false,
+	}
+
+	const result = await signIn('credentials', data)
+
+	if (result?.error) {
+		throw new Error(result.error)
+	}
+
+	revalidatePath('/')
+}
 
 export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 	try {
@@ -69,55 +169,9 @@ export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 		})
 
 		return updatedUser
-	} catch (err) {
-		console.log('Error [UPDATE_USER]', err)
-		throw err
-	}
-}
-
-export const registerUser = async (body: Prisma.UserCreateInput) => {
-	try {
-		const user = await prisma.user.findFirst({
-			where: {
-				email: body.email,
-			},
-		})
-
-		if (user) {
-			if (!user.emailVerified) {
-				throw new Error('Email not confirmed')
-			}
-
-			throw new Error('User already exists')
-		}
-
-		const createdUser = await prisma.user.create({
-			data: {
-				name: body.name,
-				email: body.email,
-				password: await saltAndHashPassword(body.password as string),
-			},
-		})
-
-		const code = Math.floor(100000 + Math.random() * 900000).toString()
-
-		await prisma.verificationCode.create({
-			data: {
-				code,
-				userId: createdUser.id,
-			},
-		})
-
-		await sendEmail(
-			createdUser.email,
-			'Crypto / 📝 Registration confirmation',
-			VerificationUserTemplate({
-				code,
-			}),
-		)
-	} catch (err) {
-		console.log('Error [CREATE_USER]', err)
-		throw err
+	} catch (error) {
+		console.log('Error [UPDATE_USER]', error)
+		throw error
 	}
 }
 
