@@ -28,7 +28,7 @@ export const AccountTrendingSection = ({ trendingData }: AccountTrendingSectionP
 	}
 
 	return (
-		<div className="flex gap-5 flex-wrap lg:flex-nowrap">
+		<div className="flex gap-5 flex-wrap w-full lg:flex-nowrap">
 			<div className="w-full md:max-w-[500px] md:mx-auto lg:w-auto border dark:border-gray-700 rounded-xl p-3 flex flex-col justify-between">
 				<div>
 					<h2 className="mb-3 text-xl font-medium dark:text-slate-200">
@@ -102,10 +102,10 @@ export const AccountTrendingSection = ({ trendingData }: AccountTrendingSectionP
 					</Button>
 				</div>
 
-				<div className="flex flex-wrap lg:flex-nowrap gap-2 text-sm overflow-auto no-scrollbar">
+				<div className="flex flex-wrap items-start justify-start gap-2 text-sm overflow-auto no-scrollbar">
 					{trendingData?.coins?.slice(dataIndex.start, dataIndex.end)?.map((data, index) => (
 						<div
-							className="shrink-0 border dark:border-gray-700 p-3 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 duration-500 w-full min-[500px]:w-[48%] mx-auto lg:w-64 lg:mx-auto"
+							className="shrink-0 border dark:border-gray-700 p-3 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 duration-500 w-full min-[500px]:w-[48%]"
 							key={index}
 						>
 							<div className="flex items-center justify-between">

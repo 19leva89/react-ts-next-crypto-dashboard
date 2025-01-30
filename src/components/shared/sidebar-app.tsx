@@ -39,7 +39,7 @@ import {
 	SidebarMenuItem,
 	Skeleton,
 } from '@/components/ui'
-import { signOut } from '@/auth'
+import { signOut } from 'next-auth/react'
 import { Logo } from '@/components/shared'
 import { AuthModal } from '@/components/shared/modals/auth-modal'
 

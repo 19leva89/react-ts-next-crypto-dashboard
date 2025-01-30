@@ -2,14 +2,13 @@
 
 import toast from 'react-hot-toast'
 
-import { useSession } from 'next-auth/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { signOut, useSession } from 'next-auth/react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { User } from '@prisma/client'
 import { Button } from '@/components/ui'
 
-import { signOut } from '@/auth'
 import { FormInput } from '@/components/shared/form'
 import { Container, Title } from '@/components/shared'
 import { deleteUser, updateUserInfo } from '@/app/api/actions'

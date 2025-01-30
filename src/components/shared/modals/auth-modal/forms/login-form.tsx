@@ -55,6 +55,12 @@ export const LoginForm = ({ onClose }: Props) => {
 		}
 	}
 
+	const handleLogin = async (provider: string) => {
+		await loginUser(provider)
+
+		await update()
+	}
+
 	return (
 		<FormProvider {...form}>
 			<form className="flex flex-col gap-5 h-full min-h-[450px]" onSubmit={form.handleSubmit(onSubmit)}>
@@ -81,7 +87,7 @@ export const LoginForm = ({ onClose }: Props) => {
 						<div className="flex gap-2 w-full">
 							<Button
 								variant="outline"
-								onClick={() => loginUser('github')}
+								onClick={() => handleLogin('github')}
 								type="button"
 								className="gap-2 h-12 p-2 flex-1"
 							>
@@ -91,7 +97,7 @@ export const LoginForm = ({ onClose }: Props) => {
 
 							<Button
 								variant="outline"
-								onClick={() => loginUser('google')}
+								onClick={() => handleLogin('google')}
 								type="button"
 								className="gap-2 h-12 p-2 flex-1"
 							>
