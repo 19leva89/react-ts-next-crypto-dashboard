@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 import {
 	Button,
@@ -20,17 +21,45 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui'
+import { CoinListData } from '@/app/api/types'
+import { addCryptoToUser } from '@/app/api/actions'
 
-export const AddCrypto = () => {
+interface Props {
+	initialCoins: CoinListData
+}
+
+export const AddCrypto = ({ initialCoins }: Props) => {
 	const [quantity, setQuantity] = useState('')
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
 	const [selectedCrypto, setSelectedCrypto] = useState('')
 
-	const handleAddCrypto = () => {
-		// Логика для добавления новой криптовалюты
-		console.log('Selected Crypto:', selectedCrypto)
-		console.log('Quantity:', quantity)
-		setIsDialogOpen(false)
+	const handleAddCrypto = async () => {
+		try {
+			// Проверяем, что выбрана криптовалюта и введено количество
+			if (!selectedCrypto || !quantity) {
+				toast.error('Please select a cryptocurrency and enter a quantity')
+				return
+			}
+
+			console.log('Adding crypto:', selectedCrypto, quantity)
+
+			// Вызываем функцию для добавления криптовалюты
+			await addCryptoToUser(selectedCrypto, parseFloat(quantity))
+
+			// Уведомляем пользователя об успехе
+			toast.success('Crypto added successfully')
+
+			// Закрываем диалог
+			setIsDialogOpen(false)
+
+			// Очищаем поля
+			setSelectedCrypto('')
+			setQuantity('')
+		} catch (error) {
+			// Уведомляем пользователя об ошибке
+			toast.error('Failed to add crypto. Please try again.')
+			console.error('Error adding crypto:', error)
+		}
 	}
 
 	return (
@@ -63,11 +92,11 @@ export const AddCrypto = () => {
 									</SelectTrigger>
 
 									<SelectContent>
-										<SelectItem value="btc">Bitcoin (BTC)</SelectItem>
-										<SelectItem value="eth">Ethereum (ETH)</SelectItem>
-										<SelectItem value="bnb">Binance Coin (BNB)</SelectItem>
-										<SelectItem value="ada">Cardano (ADA)</SelectItem>
-										<SelectItem value="sol">Solana (SOL)</SelectItem>
+										{initialCoins.map((coin) => (
+											<SelectItem key={coin.id} value={coin.id}>
+												{coin.name} ({coin.symbol.toUpperCase()})
+											</SelectItem>
+										))}
 									</SelectContent>
 								</Select>
 							</div>

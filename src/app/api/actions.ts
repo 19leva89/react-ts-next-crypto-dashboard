@@ -218,6 +218,148 @@ export const deleteUser = async (userId?: string) => {
 	}
 }
 
+export const addCryptoToUser = async (coinId: string, quantity: number) => {
+	try {
+		const session = await auth()
+
+		// Проверяем, авторизован ли пользователь
+		if (!session?.user) {
+			throw new Error('User not authenticated')
+		}
+
+		console.log('Session:', session)
+		console.log('Session user:', session?.user)
+
+		// Проверяем права доступа
+		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
+			throw new Error('You do not have permission to perform this action')
+		}
+
+		if (!coinId) {
+			throw new Error('CoinId is required')
+		}
+
+		// Валидация входных данных
+		if (quantity <= 0) {
+			throw new Error('Quantity must be greater than 0')
+		}
+
+		const coinExists = await prisma.coin.findUnique({
+			where: {
+				id: coinId,
+			},
+		})
+
+		if (!coinExists) {
+			throw new Error('Coin not found')
+		}
+
+		// Логируем данные перед созданием записи
+		console.log('Creating UserCoin with:', {
+			userId: session.user.id,
+			coinId,
+			quantity,
+		})
+
+		await prisma.userCoin.create({
+			data: {
+				userId: session.user.id,
+				coinId,
+				quantity,
+			},
+		})
+	} catch (error) {
+		console.error('Error [ADD_CRYPTO_TO_USER]', error)
+		throw error
+	}
+}
+
+export const getUserCryptos = async () => {
+	try {
+		const session = await auth()
+
+		// Проверяем, авторизован ли пользователь
+		if (!session?.user) {
+			throw new Error('User not authenticated')
+		}
+
+		// Проверяем права доступа
+		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
+			throw new Error('You do not have permission to perform this action')
+		}
+
+		return await prisma.userCoin.findMany({
+			where: {
+				userId: session.user.id,
+			},
+			include: {
+				coin: true, // Включаем данные о криптовалюте
+			},
+		})
+	} catch (error) {
+		console.error('Error [GET_USER_CRYPTO]', error)
+		throw error
+	}
+}
+
+export const updateCryptoQuantity = async (coinId: string, quantity: number) => {
+	try {
+		const session = await auth()
+
+		// Проверяем, авторизован ли пользователь
+		if (!session?.user) {
+			throw new Error('User not authenticated')
+		}
+
+		// Проверяем права доступа
+		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
+			throw new Error('You do not have permission to perform this action')
+		}
+
+		// Валидация входных данных
+		if (quantity <= 0) {
+			throw new Error('Quantity must be greater than 0')
+		}
+
+		await prisma.userCoin.update({
+			where: {
+				user_coin_unique: { userId: session.user.id, coinId }, // Используем уникальный ключ
+			},
+			data: {
+				quantity,
+			},
+		})
+	} catch (error) {
+		console.error('Error [UPDATE_USER_CRYPTO]', error)
+		throw error
+	}
+}
+
+export const removeCryptoFromUser = async (coinId: string) => {
+	const session = await auth()
+
+	// Проверяем, авторизован ли пользователь
+	if (!session?.user) {
+		throw new Error('User not authenticated')
+	}
+
+	// Проверяем права доступа
+	if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
+		throw new Error('You do not have permission to perform this action')
+	}
+
+	await prisma.userCoin.delete({
+		where: {
+			user_coin_unique: { userId: session.user.id, coinId }, // Используем уникальный ключ
+		},
+	})
+	try {
+	} catch (error) {
+		console.error('Error [DELETE_USER_CRYPTO]', error)
+		throw error
+	}
+}
+
 export const fetchTrendingData = async (): Promise<TrendingData | null> => {
 	try {
 		const cachedData = await prisma.trendingData.findUnique({
@@ -332,7 +474,7 @@ export const fetchCoinsList = async (): Promise<CoinListData | null> => {
 	}
 }
 
-export const fetchCoinsData = async (coinId: string): Promise<CoinsData | null> => {
+export const fetchCoinData = async (coinId: string): Promise<CoinsData | null> => {
 	try {
 		// Получаем данные о монетах из базы данных по ключу и coinId
 		const coinsDataRecord = await prisma.coin.findUnique({

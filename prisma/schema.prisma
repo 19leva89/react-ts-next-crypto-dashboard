@@ -26,9 +26,24 @@ model User {
   accounts         Account[]
   sessions         Session[]
   Authenticator    Authenticator[]
+  userCoins        UserCoin[]
   //
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
+}
+
+model UserCoin {
+  id       String @id @default(cuid())
+  userId   String // Ссылка на пользователя
+  coinId   String // Ссылка на криптовалюту
+  quantity Float // Количество криптовалюты у пользователя
+
+  // Связи
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coin Coin @relation(fields: [coinId], references: [id], onDelete: Cascade)
+
+  // Уникальный ключ для пары пользователь-криптовалюта
+  @@unique([userId, coinId], name: "user_coin_unique")
 }
 
 model Account {
@@ -119,13 +134,15 @@ model Category {
 }
 
 model Coin {
-  id        String   @id @default(cuid()) @map("_id")
+  id        String     @id @default(cuid()) @map("_id")
   key       String
   coinId    String?
   value     Json
   //
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  userCoins UserCoin[]
+  //
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   @@unique([key, coinId], name: "key_coinId")
 }

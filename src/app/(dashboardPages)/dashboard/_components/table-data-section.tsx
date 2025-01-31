@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 
-import { columns } from './columns'
-import { DataTable } from './data-table'
+import { DataTable } from './table-data'
+import { columns } from './table-columns'
 import { Skeleton } from '@/components/ui'
 import { CategoriesData, CoinListData } from '@/app/api/types'
 import { fetchCoinsList, fetchCoinsListByCate } from '@/app/api/actions'

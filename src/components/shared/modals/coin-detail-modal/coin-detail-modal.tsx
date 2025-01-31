@@ -19,7 +19,7 @@ import {
 	Skeleton,
 } from '@/components/ui'
 import { CoinsData, MarketChartData } from '@/app/api/types'
-import { fetchCoinsData, fetchCoinsMarketChart } from '@/app/api/actions'
+import { fetchCoinData, fetchCoinsMarketChart } from '@/app/api/actions'
 
 interface Props {
 	coinId: string
@@ -42,7 +42,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 		const fetchData = async () => {
 			try {
 				const [coinInfo, marketChart] = await Promise.all([
-					fetchCoinsData(coinId),
+					fetchCoinData(coinId),
 					fetchCoinsMarketChart(coinId),
 				])
 

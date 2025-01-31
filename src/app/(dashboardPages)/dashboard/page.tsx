@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { Suspense } from 'react'
 
 import { Skeleton } from '@/components/ui'
-import { DataTableSection } from './_components/data-table-section'
+import { DataTableSection } from './_components/table-data-section'
 import { CategoriesData, CoinListData, TrendingData } from '@/app/api/types'
 import { AccountTrendingSection } from './_components/account-trending-section'
 import { fetchCategories, fetchCoinsList, fetchTrendingData } from '@/app/api/actions'
