@@ -19,7 +19,7 @@ import { makeReq } from './make-request'
 import { sendEmail } from '@/lib/send-email'
 import { saltAndHashPassword } from '@/lib/salt'
 import { VerificationUserTemplate } from '@/components/shared/email-temapltes'
-import { AidropsData, CategoriesData, CoinListData, CoinsData, MarketChartData, TrendingData } from './types'
+import { AidropsData, CategoriesData, CoinListData, CoinData, MarketChartData, TrendingData } from './types'
 
 export const registerUser = async (body: Prisma.UserCreateInput) => {
 	try {
@@ -63,6 +63,11 @@ export const registerUser = async (body: Prisma.UserCreateInput) => {
 		)
 	} catch (error) {
 		console.log('Error [CREATE_USER]', error)
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
 
 		throw error
 	}
@@ -178,6 +183,12 @@ export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 		return updatedUser
 	} catch (error) {
 		console.log('Error [UPDATE_USER]', error)
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
 		throw error
 	}
 }
@@ -214,6 +225,12 @@ export const deleteUser = async (userId?: string) => {
 		return deletedUser
 	} catch (error) {
 		console.error('Error [DELETE_USER]', error)
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
 		throw error
 	}
 }
@@ -222,54 +239,90 @@ export const addCryptoToUser = async (coinId: string, quantity: number) => {
 	try {
 		const session = await auth()
 
-		// Проверяем, авторизован ли пользователь
 		if (!session?.user) {
 			throw new Error('User not authenticated')
-		}
-
-		console.log('Session:', session)
-		console.log('Session user:', session?.user)
-
-		// Проверяем права доступа
-		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
-			throw new Error('You do not have permission to perform this action')
 		}
 
 		if (!coinId) {
 			throw new Error('CoinId is required')
 		}
 
-		// Валидация входных данных
-		if (quantity <= 0) {
-			throw new Error('Quantity must be greater than 0')
+		if (typeof quantity !== 'number' || isNaN(quantity) || quantity <= 0) {
+			throw new Error('Quantity must be a valid number greater than 0')
 		}
 
-		const coinExists = await prisma.coin.findUnique({
+		// Проверяем, существует ли пользователь
+		const user = await prisma.user.findUnique({
+			where: { id: session.user.id },
+		})
+
+		if (!user) {
+			throw new Error('User not found')
+		}
+
+		// Получаем данные о монете из fetchCoinData
+		const coinData = await fetchCoinData(coinId)
+
+		// Если coinData пустое (ошибка получения данных), выбрасываем ошибку
+		if (!coinData || Object.keys(coinData).length === 0) {
+			throw new Error(`Failed to fetch data for coin ${coinId}`)
+		}
+
+		// Ищем монету по составному ключу (ключ+coinId)
+		let coin = await prisma.coin.findUnique({
 			where: {
-				id: coinId,
+				key_coinId: {
+					key: COIN_DATA_KEY,
+					coinId: coinId,
+				},
 			},
 		})
 
-		if (!coinExists) {
-			throw new Error('Coin not found')
+		// Если монета не найдена, создаем ее
+		if (!coin) {
+			coin = await prisma.coin.create({
+				data: {
+					key: COIN_DATA_KEY,
+					coinId: coinId,
+					value: JSON.stringify(coinData),
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				},
+			})
 		}
 
-		// Логируем данные перед созданием записи
-		console.log('Creating UserCoin with:', {
-			userId: session.user.id,
-			coinId,
-			quantity,
+		// Проверяем, если монета уже есть в портфеле пользователя
+		const userCoin = await prisma.userCoin.findUnique({
+			where: {
+				userId_coinId: {
+					userId: user.id,
+					coinId: coin.id,
+				},
+			},
 		})
 
+		if (userCoin) {
+			throw new Error('The coin is already in the portfolio')
+		}
+
+		// Создаем запись UserCoin
 		await prisma.userCoin.create({
 			data: {
-				userId: session.user.id,
-				coinId,
+				userId: user.id,
+				coinId: coin.id,
 				quantity,
 			},
 		})
+
+		revalidatePath('/')
 	} catch (error) {
-		console.error('Error [ADD_CRYPTO_TO_USER]', error)
+		console.error('Error [ADD_CRYPTO_TO_USER]:', error)
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
 		throw error
 	}
 }
@@ -298,6 +351,12 @@ export const getUserCryptos = async () => {
 		})
 	} catch (error) {
 		console.error('Error [GET_USER_CRYPTO]', error)
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
 		throw error
 	}
 }
@@ -323,7 +382,7 @@ export const updateCryptoQuantity = async (coinId: string, quantity: number) => 
 
 		await prisma.userCoin.update({
 			where: {
-				user_coin_unique: { userId: session.user.id, coinId }, // Используем уникальный ключ
+				userId_coinId: { userId: session.user.id, coinId }, // Используем уникальный ключ
 			},
 			data: {
 				quantity,
@@ -331,6 +390,12 @@ export const updateCryptoQuantity = async (coinId: string, quantity: number) => 
 		})
 	} catch (error) {
 		console.error('Error [UPDATE_USER_CRYPTO]', error)
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
 		throw error
 	}
 }
@@ -350,17 +415,23 @@ export const removeCryptoFromUser = async (coinId: string) => {
 
 	await prisma.userCoin.delete({
 		where: {
-			user_coin_unique: { userId: session.user.id, coinId }, // Используем уникальный ключ
+			userId_coinId: { userId: session.user.id, coinId }, // Используем уникальный ключ
 		},
 	})
 	try {
 	} catch (error) {
 		console.error('Error [DELETE_USER_CRYPTO]', error)
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
 		throw error
 	}
 }
 
-export const fetchTrendingData = async (): Promise<TrendingData | null> => {
+export const fetchTrendingData = async (): Promise<TrendingData> => {
 	try {
 		const cachedData = await prisma.trendingData.findUnique({
 			where: { key: TRENDING_KEY },
@@ -384,15 +455,21 @@ export const fetchTrendingData = async (): Promise<TrendingData | null> => {
 
 			return data
 		} else {
-			return null
+			return { coins: [] }
 		}
 	} catch (error) {
 		console.error('Error fetching trending data:', error)
-		return null
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
+		throw error
 	}
 }
 
-export const fetchCategories = async (): Promise<CategoriesData | null> => {
+export const fetchCategories = async (): Promise<CategoriesData> => {
 	try {
 		// Проверяем наличие категорий в базе данных
 		const categories = await prisma.category.findUnique({
@@ -416,14 +493,20 @@ export const fetchCategories = async (): Promise<CategoriesData | null> => {
 			return data
 		}
 
-		return null
+		return []
 	} catch (error) {
 		console.error('Error fetching categories:', error)
-		return null
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
+		throw error
 	}
 }
 
-export const fetchCoinsList = async (): Promise<CoinListData | null> => {
+export const fetchCoinsList = async (): Promise<CoinListData> => {
 	try {
 		// Проверяем наличие данных в базе данных
 		const coinsList = await prisma.coin.findUnique({
@@ -461,7 +544,7 @@ export const fetchCoinsList = async (): Promise<CoinListData | null> => {
 			return data
 		} else {
 			console.error('Invalid data received for coins list:', data)
-			return null
+			return []
 		}
 	} catch (error) {
 		// Дополнительная проверка на ошибку
@@ -470,11 +553,12 @@ export const fetchCoinsList = async (): Promise<CoinListData | null> => {
 		} else {
 			console.error('Unknown error occurred during fetching coins list')
 		}
-		return null
+
+		throw error
 	}
 }
 
-export const fetchCoinData = async (coinId: string): Promise<CoinsData | null> => {
+export const fetchCoinData = async (coinId: string): Promise<CoinData> => {
 	try {
 		// Получаем данные о монетах из базы данных по ключу и coinId
 		const coinsDataRecord = await prisma.coin.findUnique({
@@ -486,7 +570,7 @@ export const fetchCoinData = async (coinId: string): Promise<CoinsData | null> =
 			},
 		})
 
-		let coinsDatas: Record<string, CoinsData> = {}
+		let coinsDatas: Record<string, CoinData> = {}
 
 		// Проверяем, если данные о монетах уже существуют в базе данных
 		if (coinsDataRecord) {
@@ -497,27 +581,21 @@ export const fetchCoinData = async (coinId: string): Promise<CoinsData | null> =
 				coinsDatas = {} // Если ошибка парсинга, начинаем с пустого объекта
 			}
 
-			const coinData = coinsDatas[coinId]
-			if (coinData) {
-				return coinData
+			// Если данные о монетах существуют в базе данных, возвращаем их
+			if (coinsDatas[coinId]) {
+				return coinsDatas[coinId]
 			}
 		}
 
 		// Если данных нет в базе данных, выполняем запрос
 		const data = await makeReq('GET', `/gecko/coins/${coinId}`)
-		if (!data) {
-			console.error(`No data received for coin ${coinId}`)
-			return null
+		if (!data || Object.keys(data).length === 0) {
+			console.error(`Failed to fetch valid data for coin ${coinId}`)
+			return {} as CoinData
 		}
 
 		// Обновляем или создаем запись в базе данных с новыми данными
 		coinsDatas[coinId] = data
-
-		// Убедитесь, что coinsDatas не пустой и не null
-		if (Object.keys(coinsDatas).length === 0) {
-			console.error('No valid coin data available to save')
-			return null
-		}
 
 		// Сохраняем обновленные данные о монетах в базу данных
 		await prisma.coin.upsert({
@@ -538,11 +616,17 @@ export const fetchCoinData = async (coinId: string): Promise<CoinsData | null> =
 		return data
 	} catch (error) {
 		console.error(`Error fetching data for coin ${coinId}:`, error)
-		return null
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
+		throw error
 	}
 }
 
-export const fetchCoinsListByCate = async (cate: string): Promise<CoinListData | null> => {
+export const fetchCoinsListByCate = async (cate: string): Promise<CoinListData> => {
 	try {
 		// Создаем уникальный идентификатор для категории
 		const coinId = `${cate}-category`
@@ -579,14 +663,20 @@ export const fetchCoinsListByCate = async (cate: string): Promise<CoinListData |
 			return data
 		}
 
-		return null
+		return []
 	} catch (error) {
 		console.error(`Error fetching coins list for category ${cate}:`, error)
-		return null
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
+		throw error
 	}
 }
 
-export const fetchCoinsMarketChart = async (coinId: string): Promise<MarketChartData | null> => {
+export const fetchCoinsMarketChart = async (coinId: string): Promise<MarketChartData> => {
 	try {
 		// Получаем все данные о графиках из базы данных
 		const marketChartData = await prisma.marketChart.findUnique({
@@ -627,14 +717,20 @@ export const fetchCoinsMarketChart = async (coinId: string): Promise<MarketChart
 			return data
 		}
 
-		return null
+		return {} as MarketChartData
 	} catch (error) {
 		console.error(`Error fetching market chart for coin ${coinId}:`, error)
-		return null
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
+		throw error
 	}
 }
 
-export const fetchAidrops = async (): Promise<AidropsData | null> => {
+export const fetchAidrops = async (): Promise<AidropsData> => {
 	try {
 		// Получаем данные о airdrops из базы данных
 		const aidropsDataRecord = await prisma.aidrop.findUnique({
@@ -659,9 +755,15 @@ export const fetchAidrops = async (): Promise<AidropsData | null> => {
 			return data
 		}
 
-		return null
+		return {} as AidropsData
 	} catch (error) {
 		console.error('Error fetching aidrops data:', error)
-		return null
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('Prisma error code:', error.code)
+			console.error('Prisma error message:', error.message)
+		}
+
+		throw error
 	}
 }

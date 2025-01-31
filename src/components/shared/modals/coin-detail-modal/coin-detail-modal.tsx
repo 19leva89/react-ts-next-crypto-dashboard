@@ -18,7 +18,7 @@ import {
 	SheetTitle,
 	Skeleton,
 } from '@/components/ui'
-import { CoinsData, MarketChartData } from '@/app/api/types'
+import { CoinData, MarketChartData } from '@/app/api/types'
 import { fetchCoinData, fetchCoinsMarketChart } from '@/app/api/actions'
 
 interface Props {
@@ -30,7 +30,7 @@ interface Props {
 export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) => {
 	const [fetchingCoinsData, setFetchingCoinsData] = useState<boolean>(false)
 	const [fetchingHistoryData, setFetchingHistoryData] = useState<boolean>(false)
-	const [coinsData, setCoinsData] = useState<CoinsData | Record<string, any>>({})
+	const [coinsData, setCoinsData] = useState<CoinData | Record<string, any>>({})
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>({ prices: [] })
 
 	useEffect(() => {

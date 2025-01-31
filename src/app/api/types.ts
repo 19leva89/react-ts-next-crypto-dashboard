@@ -31,7 +31,7 @@ export type CategoriesData = {
 	name: string
 }[]
 
-export type CoinData = {
+export type SingleCoinData = {
 	id: string
 	symbol: string
 	name: string
@@ -48,13 +48,13 @@ export type CoinData = {
 	price_change_percentage_7d_in_currency: number | null
 }
 
-export type CoinListData = CoinData[]
+export type CoinListData = SingleCoinData[]
 
 export type MarketChartData = {
 	prices: [number, number][]
 }
 
-export type CoinsData = {
+export type CoinData = {
 	id: string
 	symbol: string
 	name: string

@@ -50,7 +50,7 @@ export function FormCombobox({
 		watch,
 		setValue,
 	} = useFormContext()
-	const [open, setOpen] = useState(false)
+	const [open, setOpen] = useState<boolean>(false)
 
 	const value = watch(name)
 	const errorText = errors[name]?.message as string

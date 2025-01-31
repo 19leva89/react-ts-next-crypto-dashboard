@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const AccountTrendingSection = ({ trendingData }: Props) => {
-	const [dataIndex, setDataIndex] = useState({ start: 0, end: 4 })
+	const [dataIndex, setDataIndex] = useState<{ start: number; end: number }>({ start: 0, end: 4 })
 
 	const onShowMoreBtnClick = (reset = false) => {
 		setDataIndex({ end: 0, start: 0 })

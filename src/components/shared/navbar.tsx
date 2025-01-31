@@ -22,7 +22,7 @@ export const Navbar = () => {
 	const { data: session, status } = useSession()
 	const { theme, resolvedTheme, setTheme } = useTheme()
 
-	const [mounted, setMounted] = useState(false)
+	const [mounted, setMounted] = useState<boolean>(false)
 
 	// Needed to avoid hydration error
 	useEffect(() => setMounted(true), [])

@@ -74,11 +74,11 @@ const SidebarProvider = forwardRef<
 		ref,
 	) => {
 		const isMobile = useIsMobile()
-		const [openMobile, setOpenMobile] = useState(false)
+		const [openMobile, setOpenMobile] = useState<boolean>(false)
 
 		// This is the internal state of the sidebar.
 		// We use openProp and setOpenProp for control from outside the component.
-		const [_open, _setOpen] = useState(defaultOpen)
+		const [_open, _setOpen] = useState<boolean>(defaultOpen)
 		const open = openProp ?? _open
 		const setOpen = useCallback(
 			(value: boolean | ((value: boolean) => boolean)) => {

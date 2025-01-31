@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { Plus } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Plus } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { ChangeEvent, useState } from 'react'
 
 import {
 	Button,
@@ -29,9 +30,24 @@ interface Props {
 }
 
 export const AddCrypto = ({ initialCoins }: Props) => {
-	const [quantity, setQuantity] = useState('')
-	const [isDialogOpen, setIsDialogOpen] = useState(false)
-	const [selectedCrypto, setSelectedCrypto] = useState('')
+	const [quantity, setQuantity] = useState<number>(0)
+	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+	const [selectedCrypto, setSelectedCrypto] = useState<string>('')
+
+	const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value
+
+		// Преобразуем ввод пользователя в число
+		const numericValue = parseFloat(value)
+
+		// Если значение является числом, обновляем состояние
+		if (!isNaN(numericValue)) {
+			setQuantity(numericValue)
+		} else {
+			// Если ввод некорректный, устанавливаем 0 или другое значение по умолчанию
+			setQuantity(0)
+		}
+	}
 
 	const handleAddCrypto = async () => {
 		try {
@@ -41,10 +57,8 @@ export const AddCrypto = ({ initialCoins }: Props) => {
 				return
 			}
 
-			console.log('Adding crypto:', selectedCrypto, quantity)
-
 			// Вызываем функцию для добавления криптовалюты
-			await addCryptoToUser(selectedCrypto, parseFloat(quantity))
+			await addCryptoToUser(selectedCrypto, quantity)
 
 			// Уведомляем пользователя об успехе
 			toast.success('Crypto added successfully')
@@ -54,11 +68,16 @@ export const AddCrypto = ({ initialCoins }: Props) => {
 
 			// Очищаем поля
 			setSelectedCrypto('')
-			setQuantity('')
+			setQuantity(0)
 		} catch (error) {
 			// Уведомляем пользователя об ошибке
-			toast.error('Failed to add crypto. Please try again.')
 			console.error('Error adding crypto:', error)
+
+			if (error instanceof Error) {
+				toast.error(error.message)
+			} else {
+				toast.error('Failed to add crypto. Please try again')
+			}
 		}
 	}
 
@@ -110,7 +129,7 @@ export const AddCrypto = ({ initialCoins }: Props) => {
 									id="quantity"
 									type="number"
 									value={quantity}
-									onChange={(e) => setQuantity(e.target.value)}
+									onChange={handleQuantityChange}
 									className="col-span-3"
 								/>
 							</div>

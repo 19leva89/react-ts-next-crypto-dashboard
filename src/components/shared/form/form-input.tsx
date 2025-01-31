@@ -23,7 +23,7 @@ export const FormInput = ({ className, name, label, type, placeholder, required,
 		watch,
 		setValue,
 	} = useFormContext()
-	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+	const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false)
 
 	const value = watch(name)
 	const errorText = errors[name]?.message as string

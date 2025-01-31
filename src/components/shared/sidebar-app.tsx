@@ -97,7 +97,7 @@ export const SidebarApp = () => {
 
 	const { data: session, status } = useSession()
 
-	const [openAuthModal, setOpenAuthModal] = useState(false)
+	const [openAuthModal, setOpenAuthModal] = useState<boolean>(false)
 
 	return (
 		<Sidebar side="left" variant="sidebar" collapsible="icon" className="z-[100]">

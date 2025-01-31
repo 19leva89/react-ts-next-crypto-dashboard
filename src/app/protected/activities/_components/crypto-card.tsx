@@ -32,9 +32,9 @@ interface Props {
 }
 
 export const CryptoCard = ({ name, symbol, currentPrice, quantity, image }: Props) => {
-	const [isDialogOpen, setIsDialogOpen] = useState(false)
-	const [editQuantity, setEditQuantity] = useState(quantity)
-	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+	const [editQuantity, setEditQuantity] = useState<number>(quantity)
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
 
 	const totalValue = currentPrice * quantity
 
@@ -51,7 +51,7 @@ export const CryptoCard = ({ name, symbol, currentPrice, quantity, image }: Prop
 	}
 
 	return (
-		<Card className="flex flex-col gap-1 w-full min-h-20 min-w-80 max-w-96">
+		<Card className="flex flex-col gap-1 w-full min-h-20 min-w-80 max-w-[378px]">
 			<CardHeader className="p-3 pb-0">
 				<CardTitle className="flex items-center gap-2">
 					<Image src={image} alt={name} width={24} height={24} className="rounded-full" />

@@ -33,7 +33,7 @@ model User {
 }
 
 model UserCoin {
-  id       String @id @default(cuid())
+  id       String @id @default(cuid()) @map("_id")
   userId   String // Ссылка на пользователя
   coinId   String // Ссылка на криптовалюту
   quantity Float // Количество криптовалюты у пользователя
@@ -43,7 +43,21 @@ model UserCoin {
   coin Coin @relation(fields: [coinId], references: [id], onDelete: Cascade)
 
   // Уникальный ключ для пары пользователь-криптовалюта
-  @@unique([userId, coinId], name: "user_coin_unique")
+  @@unique([userId, coinId], name: "userId_coinId")
+}
+
+model Coin {
+  id        String     @id @default(cuid()) @map("_id")
+  key       String
+  coinId    String
+  value     Json
+  //
+  userCoins UserCoin[]
+  //
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([key, coinId], name: "key_coinId")
 }
 
 model Account {
@@ -131,20 +145,6 @@ model Category {
   //
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model Coin {
-  id        String     @id @default(cuid()) @map("_id")
-  key       String
-  coinId    String?
-  value     Json
-  //
-  userCoins UserCoin[]
-  //
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-
-  @@unique([key, coinId], name: "key_coinId")
 }
 
 model MarketChart {

@@ -6,10 +6,10 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Line, LineChart, YAxis } from 'recharts'
 
 import { cn } from '@/lib'
-import { CoinData } from '@/app/api/types'
+import { SingleCoinData } from '@/app/api/types'
 import { Button, ChartConfig, ChartContainer } from '@/components/ui'
 
-export const columns: ColumnDef<CoinData>[] = [
+export const columns: ColumnDef<SingleCoinData>[] = [
 	// #
 	{
 		accessorKey: 'market_cap_rank',
