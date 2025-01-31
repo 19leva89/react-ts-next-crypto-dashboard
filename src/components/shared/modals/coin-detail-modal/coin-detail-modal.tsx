@@ -18,16 +18,16 @@ import {
 	SheetTitle,
 	Skeleton,
 } from '@/components/ui'
-import { CoinsData, MarketChartData } from '@/app/api/definitions'
+import { CoinsData, MarketChartData } from '@/app/api/types'
 import { fetchCoinsData, fetchCoinsMarketChart } from '@/app/api/actions'
 
-interface CoinDetailModalProps {
+interface Props {
 	coinId: string
 	showDetailModal: boolean
 	closeModal: (value: boolean) => void
 }
 
-export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: CoinDetailModalProps) => {
+export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) => {
 	const [fetchingCoinsData, setFetchingCoinsData] = useState<boolean>(false)
 	const [fetchingHistoryData, setFetchingHistoryData] = useState<boolean>(false)
 	const [coinsData, setCoinsData] = useState<CoinsData | Record<string, any>>({})

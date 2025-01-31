@@ -6,7 +6,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Line, LineChart, YAxis } from 'recharts'
 
 import { cn } from '@/lib'
-import { CoinData } from '@/app/api/definitions'
+import { CoinData } from '@/app/api/types'
 import { Button, ChartConfig, ChartContainer } from '@/components/ui'
 
 export const columns: ColumnDef<CoinData>[] = [

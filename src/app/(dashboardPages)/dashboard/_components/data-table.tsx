@@ -36,9 +36,9 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui'
-import { CoinData } from '@/app/api/definitions'
+import { CoinData } from '@/app/api/types'
 
-interface DataTableProps<TData, TValue> {
+interface Props<TData, TValue> {
 	data: TData[]
 	columns: ColumnDef<TData, TValue>[]
 	categories: { category_id: string; name: string }[]
@@ -54,7 +54,7 @@ export function DataTable<TData, TValue>({
 	currentCategorie,
 	onCoinsClick,
 	onCategorieClick,
-}: DataTableProps<TData, TValue>) {
+}: Props<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})

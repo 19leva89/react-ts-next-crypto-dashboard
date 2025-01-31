@@ -3,8 +3,8 @@ import { Suspense } from 'react'
 
 import { Skeleton } from '@/components/ui'
 import { DataTableSection } from './_components/data-table-section'
+import { CategoriesData, CoinListData, TrendingData } from '@/app/api/types'
 import { AccountTrendingSection } from './_components/account-trending-section'
-import { CategoriesData, CoinListData, TrendingData } from '@/app/api/definitions'
 import { fetchCategories, fetchCoinsList, fetchTrendingData } from '@/app/api/actions'
 
 export const metadata: Metadata = {

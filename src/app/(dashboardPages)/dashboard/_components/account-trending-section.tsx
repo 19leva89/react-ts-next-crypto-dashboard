@@ -6,13 +6,13 @@ import { ArrowUp, ChevronDown, TrendingDown, TrendingUp } from 'lucide-react'
 
 import { cn } from '@/lib'
 import { Button } from '@/components/ui'
-import { TrendingData } from '@/app/api/definitions'
+import { TrendingData } from '@/app/api/types'
 
-interface AccountTrendingSectionProps {
+interface Props {
 	trendingData: TrendingData
 }
 
-export const AccountTrendingSection = ({ trendingData }: AccountTrendingSectionProps) => {
+export const AccountTrendingSection = ({ trendingData }: Props) => {
 	const [dataIndex, setDataIndex] = useState({ start: 0, end: 4 })
 
 	const onShowMoreBtnClick = (reset = false) => {

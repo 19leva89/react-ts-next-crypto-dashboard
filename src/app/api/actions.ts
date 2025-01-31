@@ -14,19 +14,12 @@ import {
 	MARKET_CHART_KEY,
 	TRENDING_KEY,
 } from './constants'
-import {
-	AidropsData,
-	CategoriesData,
-	CoinListData,
-	CoinsData,
-	MarketChartData,
-	TrendingData,
-} from './definitions'
 import { auth, signIn } from '@/auth'
 import { makeReq } from './make-request'
 import { sendEmail } from '@/lib/send-email'
 import { saltAndHashPassword } from '@/lib/salt'
 import { VerificationUserTemplate } from '@/components/shared/email-temapltes'
+import { AidropsData, CategoriesData, CoinListData, CoinsData, MarketChartData, TrendingData } from './types'
 
 export const registerUser = async (body: Prisma.UserCreateInput) => {
 	try {

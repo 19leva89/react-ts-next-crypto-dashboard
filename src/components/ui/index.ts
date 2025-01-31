@@ -4,7 +4,15 @@ export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
 export { ChartContainer, ChartTooltip, ChartTooltipContent } from './chart'
 export type { ChartConfig } from './chart'
 export { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command'
-export { Dialog, DialogContent, DialogTitle, DialogTrigger } from './dialog'
+export {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from './dialog'
 export {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,

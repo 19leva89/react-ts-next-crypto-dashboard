@@ -5,16 +5,16 @@ import { useState } from 'react'
 import { columns } from './columns'
 import { DataTable } from './data-table'
 import { Skeleton } from '@/components/ui'
-import { CategoriesData, CoinListData } from '@/app/api/definitions'
+import { CategoriesData, CoinListData } from '@/app/api/types'
 import { fetchCoinsList, fetchCoinsListByCate } from '@/app/api/actions'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 
-interface DataTableProps {
+interface Props {
 	categories: CategoriesData
 	initialCoins: CoinListData
 }
 
-export const DataTableSection = ({ categories, initialCoins }: DataTableProps) => {
+export const DataTableSection = ({ categories, initialCoins }: Props) => {
 	const [coinsList, setCoinsList] = useState<CoinListData>(initialCoins)
 	const [fetchingCoins, setFetchingCoins] = useState<boolean>(false)
 	const [showDetailModal, setShowDetailModal] = useState<boolean>(false)

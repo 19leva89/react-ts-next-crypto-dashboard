@@ -46,11 +46,11 @@ export const Navbar = () => {
 					</div>
 				</div>
 
-				<button className="bg-blue-500 dark:bg-blue-600 text-white hidden min-[680px]:flex items-center gap-2 px-5 py-2 rounded-xl selection:hover:bg-blue-600">
+				<Button className="min-[680px]:flex items-center gap-2 px-5 py-2 rounded-xl text-white">
 					<Wallet size={18} />
 
 					<span>Connect wallet</span>
-				</button>
+				</Button>
 			</div>
 
 			<div className="flex gap-3 text-gray-500 dark:text-white">
