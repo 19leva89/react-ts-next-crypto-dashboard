@@ -139,7 +139,7 @@ export function DataTable<TData, TValue>({
 										height={200}
 										width={246}
 										itemSize={40} // Height of one element
-										itemCount={categories?.length} // Quantity of elements
+										itemCount={categories.length} // Quantity of elements
 									>
 										{({ index, style }) => (
 											<DropdownMenuItem

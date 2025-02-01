@@ -13,23 +13,26 @@ const ActivitiesPage = async () => {
 	const userCryptos = await getUserCryptos()
 	const coinsList = await fetchCoinsList()
 
-	const cryptoData = await Promise.all(
-		userCryptos.map(async (userCoin) => {
-			const coinData = await fetchCoinData(userCoin.coin.coinId)
-			if (!coinData) {
-				console.warn(`Failed to fetch data for coinId: ${userCoin.coin.coinId}`)
-				return null
-			}
+	// Получаем данные для всех монет параллельно
+	const coinDataPromises = userCryptos.map((userCoin) => fetchCoinData(userCoin.coin.coinId))
+	const coinDataResults = await Promise.all(coinDataPromises)
 
-			return {
-				name: coinData.name,
-				symbol: coinData.symbol,
-				currentPrice: coinData.market_data.current_price.usd,
-				image: coinData.image.thumb ?? '/svg/coin-not-found.svg',
-				quantity: userCoin.quantity,
-			}
-		}),
-	)
+	const cryptoData = userCryptos.map((userCoin, index) => {
+		const coinData = coinDataResults[index]
+		if (!coinData) {
+			console.warn(`Failed to fetch data for coinId: ${userCoin.coin.coinId}`)
+			return null
+		}
+
+		return {
+			coinId: userCoin.coinId,
+			name: coinData.name,
+			symbol: coinData.symbol,
+			currentPrice: coinData.market_data.current_price.usd,
+			image: coinData.image.thumb ?? '/svg/coin-not-found.svg',
+			quantity: userCoin.quantity,
+		}
+	})
 
 	// Фильтруем null значения из cryptoData
 	const validCryptoData = cryptoData.filter((crypto) => crypto !== null)
@@ -48,16 +51,25 @@ const ActivitiesPage = async () => {
 			</div>
 
 			<div className="flex flex-raw flex-wrap gap-4 items-start justify-start w-full p-6">
-				{validCryptoData.map((crypto, index) => (
-					<CryptoCard
-						key={index}
-						name={crypto.name}
-						symbol={crypto.symbol}
-						currentPrice={crypto.currentPrice}
-						quantity={crypto.quantity}
-						image={crypto.image}
-					/>
-				))}
+				{cryptoData.length === 0 && (
+					<h2 className="flex justify-center w-full">No cryptos added. Add your first crypto!</h2>
+				)}
+
+				{validCryptoData.map((crypto) => {
+					const { coinId, name, symbol, currentPrice, quantity, image } = crypto
+
+					return (
+						<CryptoCard
+							key={coinId}
+							coinId={coinId}
+							name={name}
+							symbol={symbol}
+							currentPrice={currentPrice}
+							quantity={quantity}
+							image={image}
+						/>
+					)
+				})}
 			</div>
 		</div>
 	)

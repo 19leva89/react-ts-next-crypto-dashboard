@@ -1,9 +1,10 @@
 'use client'
 
+import Image from 'next/image'
 import toast from 'react-hot-toast'
 import { Plus } from 'lucide-react'
-import { useSession } from 'next-auth/react'
 import { ChangeEvent, useState } from 'react'
+import { FixedSizeList as List } from 'react-window'
 
 import {
 	Button,
@@ -30,23 +31,27 @@ interface Props {
 }
 
 export const AddCrypto = ({ initialCoins }: Props) => {
-	const [quantity, setQuantity] = useState<number>(0)
+	const [quantity, setQuantity] = useState<string>('')
+	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [selectedCrypto, setSelectedCrypto] = useState<string>('')
 
+	const filteredCoins = initialCoins.filter(
+		(coin) =>
+			coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()),
+	)
+
 	const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value
+		let value = e.target.value
 
-		// Преобразуем ввод пользователя в число
-		const numericValue = parseFloat(value)
+		// Разрешаем только цифры, точку и запятую
+		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
 
-		// Если значение является числом, обновляем состояние
-		if (!isNaN(numericValue)) {
-			setQuantity(numericValue)
-		} else {
-			// Если ввод некорректный, устанавливаем 0 или другое значение по умолчанию
-			setQuantity(0)
-		}
+		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
+		value = value.replace(',', '.')
+
+		setQuantity(value)
 	}
 
 	const handleAddCrypto = async () => {
@@ -58,7 +63,7 @@ export const AddCrypto = ({ initialCoins }: Props) => {
 			}
 
 			// Вызываем функцию для добавления криптовалюты
-			await addCryptoToUser(selectedCrypto, quantity)
+			await addCryptoToUser(selectedCrypto, Number(quantity))
 
 			// Уведомляем пользователя об успехе
 			toast.success('Crypto added successfully')
@@ -68,7 +73,7 @@ export const AddCrypto = ({ initialCoins }: Props) => {
 
 			// Очищаем поля
 			setSelectedCrypto('')
-			setQuantity(0)
+			setQuantity('')
 		} catch (error) {
 			// Уведомляем пользователя об ошибке
 			console.error('Error adding crypto:', error)
@@ -105,17 +110,62 @@ export const AddCrypto = ({ initialCoins }: Props) => {
 									Crypto
 								</Label>
 
-								<Select onValueChange={setSelectedCrypto}>
+								<Select
+									value={selectedCrypto}
+									onValueChange={(value) => {
+										setSelectedCrypto(value)
+									}}
+								>
 									<SelectTrigger className="col-span-3">
 										<SelectValue placeholder="Select a cryptocurrency" />
 									</SelectTrigger>
 
 									<SelectContent>
-										{initialCoins.map((coin) => (
-											<SelectItem key={coin.id} value={coin.id}>
-												{coin.name} ({coin.symbol.toUpperCase()})
-											</SelectItem>
-										))}
+										{/* Input for search filter */}
+										<div className="p-2">
+											<Input
+												type="text"
+												placeholder="Search coin..."
+												value={searchQuery}
+												onChange={(e) => setSearchQuery(e.target.value)}
+											/>
+										</div>
+
+										{(() => {
+											const selectedIndex = filteredCoins.findIndex((coin) => coin.id === selectedCrypto)
+											const itemHeight = 40
+
+											return (
+												<List
+													height={200}
+													width={325}
+													itemSize={itemHeight}
+													itemCount={filteredCoins.length}
+													initialScrollOffset={selectedIndex > -1 ? selectedIndex * itemHeight : 0}
+												>
+													{({ index, style }) => {
+														const coin = filteredCoins[index]
+
+														return (
+															<SelectItem
+																key={coin.id}
+																value={coin.id}
+																className="rounded-xl truncate"
+																style={style}
+															>
+																<div className="flex flex-row gap-2 h-5">
+																	<Image src={coin.image} alt={coin.name} width={20} height={20} />
+
+																	<span className="truncate">
+																		{coin.name} ({coin.symbol.toUpperCase()})
+																	</span>
+																</div>
+															</SelectItem>
+														)
+													}}
+												</List>
+											)
+										})()}
 									</SelectContent>
 								</Select>
 							</div>
@@ -127,7 +177,7 @@ export const AddCrypto = ({ initialCoins }: Props) => {
 
 								<Input
 									id="quantity"
-									type="number"
+									type="text"
 									value={quantity}
 									onChange={handleQuantityChange}
 									className="col-span-3"

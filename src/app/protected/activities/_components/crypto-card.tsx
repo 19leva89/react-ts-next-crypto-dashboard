@@ -1,8 +1,9 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import toast from 'react-hot-toast'
 import { Pencil, Trash } from 'lucide-react'
+import { ChangeEvent, useState } from 'react'
 
 import {
 	Button,
@@ -22,8 +23,11 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
+import { formatPrice } from '@/constants/format-price'
+import { delleteCryptoFromUser, updateCryptoQuantity } from '@/app/api/actions'
 
 interface Props {
+	coinId: string
 	name: string
 	symbol: string
 	currentPrice: number
@@ -31,23 +35,66 @@ interface Props {
 	image: string
 }
 
-export const CryptoCard = ({ name, symbol, currentPrice, quantity, image }: Props) => {
+export const CryptoCard = ({ coinId, name, symbol, currentPrice, quantity, image }: Props) => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-	const [editQuantity, setEditQuantity] = useState<number>(quantity)
+	const [editQuantity, setEditQuantity] = useState<string>(String(quantity))
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
 
 	const totalValue = currentPrice * quantity
 
-	const handleSave = () => {
-		// Здесь можно добавить логику для сохранения измененного количества
-		console.log('New quantity:', editQuantity)
-		setIsDialogOpen(false)
+	const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
+		let value = e.target.value
+
+		// Разрешаем только цифры, точку и запятую
+		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
+
+		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
+		value = value.replace(',', '.')
+
+		setEditQuantity(value)
 	}
 
-	const handleDelete = () => {
-		// Логика для удаления монеты
-		console.log('Deleting:', name)
-		setIsDeleteDialogOpen(false)
+	const handleUpdate = async () => {
+		try {
+			// Вызываем функцию для обновления криптовалюты
+			await updateCryptoQuantity(coinId, Number(editQuantity))
+
+			// Уведомляем пользователя об успехе
+			toast.success('Crypto updated successfully')
+
+			// Закрываем диалог
+			setIsDialogOpen(false)
+		} catch (error) {
+			// Уведомляем пользователя об ошибке
+			console.error('Error updating crypto:', error)
+
+			if (error instanceof Error) {
+				toast.error(error.message)
+			} else {
+				toast.error('Failed to update crypto. Please try again')
+			}
+		}
+	}
+
+	const handleDelete = async () => {
+		try {
+			// Вызываем функцию для удаления криптовалюты
+			await delleteCryptoFromUser(coinId)
+
+			// Уведомляем пользователя об успехе
+			toast.success('Crypto removed successfully')
+
+			setIsDeleteDialogOpen(false)
+		} catch (error) {
+			// Уведомляем пользователя об ошибке
+			console.error('Error removing crypto:', error)
+
+			if (error instanceof Error) {
+				toast.error(error.message)
+			} else {
+				toast.error('Failed to remove crypto. Please try again')
+			}
+		}
 	}
 
 	return (
@@ -61,13 +108,13 @@ export const CryptoCard = ({ name, symbol, currentPrice, quantity, image }: Prop
 					<span className="text-sm text-muted-foreground">({symbol.toUpperCase()})</span>
 				</CardTitle>
 
-				<CardDescription>Current Price: ${currentPrice.toLocaleString()}</CardDescription>
+				<CardDescription>Current Price: ${formatPrice(currentPrice)}</CardDescription>
 			</CardHeader>
 
 			<CardContent className="p-3 pt-0 pb-0">
-				<p className="text-lg font-semibold">Quantity: {quantity}</p>
+				<p className="text-lg font-semibold">Quantity: {formatPrice(quantity)}</p>
 
-				<p className="text-lg font-semibold">Total Value: ${totalValue.toLocaleString()}</p>
+				<p className="text-lg font-semibold">Total Value: ${formatPrice(totalValue)}</p>
 			</CardContent>
 
 			<CardFooter className="flex justify-end gap-2 p-3 pt-0">
@@ -94,16 +141,16 @@ export const CryptoCard = ({ name, symbol, currentPrice, quantity, image }: Prop
 
 								<Input
 									id="quantity"
-									type="number"
+									type="text"
 									value={editQuantity}
-									onChange={(e) => setEditQuantity(Number(e.target.value))}
+									onChange={handleQuantityChange}
 									className="col-span-3 rounded-xl"
 								/>
 							</div>
 						</div>
 
 						<DialogFooter>
-							<Button onClick={handleSave} className="rounded-xl text-white">
+							<Button onClick={handleUpdate} className="rounded-xl text-white">
 								Save changes
 							</Button>
 						</DialogFooter>

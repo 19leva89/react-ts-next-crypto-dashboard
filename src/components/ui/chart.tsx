@@ -14,6 +14,7 @@ import {
 } from 'react'
 
 import { cn } from '@/lib'
+import { formatPrice } from '@/constants/format-price'
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: '', dark: '.dark' } as const
@@ -221,7 +222,7 @@ const ChartTooltipContent = forwardRef<
 											</div>
 											{item.value && (
 												<span className="font-mono font-medium tabular-nums text-foreground">
-													{item.value.toLocaleString()}
+													{formatPrice(Number(item.value))}
 												</span>
 											)}
 										</div>

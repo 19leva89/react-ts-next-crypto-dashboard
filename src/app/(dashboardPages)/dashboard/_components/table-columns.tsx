@@ -7,6 +7,7 @@ import { Line, LineChart, YAxis } from 'recharts'
 
 import { cn } from '@/lib'
 import { SingleCoinData } from '@/app/api/types'
+import { formatPrice } from '@/constants/format-price'
 import { Button, ChartConfig, ChartContainer } from '@/components/ui'
 
 export const columns: ColumnDef<SingleCoinData>[] = [
@@ -85,13 +86,9 @@ export const columns: ColumnDef<SingleCoinData>[] = [
 		cell: ({ row }) => {
 			const amount = parseFloat(row.getValue('current_price'))
 
-			// Format the amount as a dollar amount
-			const formatted = new Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: 'USD',
-			}).format(amount)
+			const formatted = formatPrice(amount, true)
 
-			return <div className="text-base">{formatted}</div>
+			return <div className="text-base">${formatted}</div>
 		},
 	},
 
@@ -155,13 +152,9 @@ export const columns: ColumnDef<SingleCoinData>[] = [
 		cell: ({ row }) => {
 			const amount = parseFloat(row.getValue('total_volume'))
 
-			// Format the amount as a dollar amount
-			const formatted = new Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: 'USD',
-			}).format(amount)
+			const formatted = formatPrice(amount, true)
 
-			return <div className="text-base">{formatted}</div>
+			return <div className="text-base">${formatted}</div>
 		},
 	},
 
@@ -183,13 +176,9 @@ export const columns: ColumnDef<SingleCoinData>[] = [
 		cell: ({ row }) => {
 			const amount = parseFloat(row.getValue('market_cap'))
 
-			// Format the amount as a dollar amount
-			const formatted = new Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: 'USD',
-			}).format(amount)
+			const formatted = formatPrice(amount, true)
 
-			return <div className="text-base">{formatted}</div>
+			return <div className="text-base">${formatted}</div>
 		},
 	},
 
@@ -199,7 +188,7 @@ export const columns: ColumnDef<SingleCoinData>[] = [
 		header: () => <div>Last 7 Days</div>,
 		cell: ({ row }) => {
 			const coin = row.original
-			const priceChange = coin?.price_change_percentage_7d_in_currency ?? 0
+			const priceChange = coin.price_change_percentage_7d_in_currency as number
 
 			const chartConfig = {
 				prices: {
@@ -210,7 +199,7 @@ export const columns: ColumnDef<SingleCoinData>[] = [
 
 			const formattedData = coin.sparkline_in_7d.price.map((price, index) => ({
 				Hour: index,
-				Price: Number(price.toFixed(2)),
+				Price: price,
 			}))
 
 			const minPrice = Math.min(...formattedData.map((h) => h.Price))

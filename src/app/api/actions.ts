@@ -388,6 +388,8 @@ export const updateCryptoQuantity = async (coinId: string, quantity: number) => 
 				quantity,
 			},
 		})
+
+		revalidatePath('/')
 	} catch (error) {
 		console.error('Error [UPDATE_USER_CRYPTO]', error)
 
@@ -400,25 +402,27 @@ export const updateCryptoQuantity = async (coinId: string, quantity: number) => 
 	}
 }
 
-export const removeCryptoFromUser = async (coinId: string) => {
-	const session = await auth()
-
-	// Проверяем, авторизован ли пользователь
-	if (!session?.user) {
-		throw new Error('User not authenticated')
-	}
-
-	// Проверяем права доступа
-	if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
-		throw new Error('You do not have permission to perform this action')
-	}
-
-	await prisma.userCoin.delete({
-		where: {
-			userId_coinId: { userId: session.user.id, coinId }, // Используем уникальный ключ
-		},
-	})
+export const delleteCryptoFromUser = async (coinId: string) => {
 	try {
+		const session = await auth()
+
+		// Проверяем, авторизован ли пользователь
+		if (!session?.user) {
+			throw new Error('User not authenticated')
+		}
+
+		// Проверяем права доступа
+		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
+			throw new Error('You do not have permission to perform this action')
+		}
+
+		await prisma.userCoin.delete({
+			where: {
+				userId_coinId: { userId: session.user.id, coinId }, // Используем уникальный ключ
+			},
+		})
+
+		revalidatePath('/')
 	} catch (error) {
 		console.error('Error [DELETE_USER_CRYPTO]', error)
 

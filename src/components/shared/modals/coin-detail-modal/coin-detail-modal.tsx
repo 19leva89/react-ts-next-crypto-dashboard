@@ -18,6 +18,7 @@ import {
 	SheetTitle,
 	Skeleton,
 } from '@/components/ui'
+import { formatPrice } from '@/constants/format-price'
 import { CoinData, MarketChartData } from '@/app/api/types'
 import { fetchCoinData, fetchCoinsMarketChart } from '@/app/api/actions'
 
@@ -169,7 +170,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									</span>
 								</div>
 
-								<div>${coinsData.market_data?.current_price?.usd.toFixed(2)}</div>
+								<div>${formatPrice(coinsData.market_data?.current_price?.usd)}</div>
 							</div>
 
 							<div className="mt-8 flex flex-col gap-2 text-md">
@@ -185,10 +186,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span>Market cap</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										{coinsData.market_data?.market_cap?.usd.toLocaleString('en-US', {
-											style: 'currency',
-											currency: 'USD',
-										})}
+										${formatPrice(coinsData.market_data?.market_cap.usd, true)}
 									</span>
 								</div>
 
@@ -196,7 +194,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span>Circulating supply</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										{coinsData.market_data?.circulating_supply.toFixed(1)}
+										${formatPrice(coinsData.market_data?.circulating_supply, true)}
 									</span>
 								</div>
 
@@ -204,10 +202,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span className="capitalize">24 hour high</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										{coinsData.market_data?.high_24h?.usd.toLocaleString('en-US', {
-											style: 'currency',
-											currency: 'USD',
-										})}
+										${formatPrice(coinsData.market_data?.high_24h?.usd, true)}
 									</span>
 								</div>
 
@@ -215,10 +210,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span className="capitalize">24 hour low</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										{coinsData.market_data?.low_24h?.usd.toLocaleString('en-US', {
-											style: 'currency',
-											currency: 'USD',
-										})}
+										${formatPrice(coinsData.market_data?.low_24h?.usd, true)}
 									</span>
 								</div>
 							</div>
