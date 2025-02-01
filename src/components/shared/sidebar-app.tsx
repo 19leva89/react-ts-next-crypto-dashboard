@@ -49,46 +49,55 @@ const sideBarData = [
 		title: 'Dashboard',
 		url: '/dashboard',
 		icon: Home,
+		protected: false,
 	},
 	{
 		title: 'News',
 		url: '/news',
 		icon: Newspaper,
+		protected: false,
 	},
 	{
 		title: 'Activities',
 		url: '/protected/activities',
 		icon: Activity,
+		protected: true,
 	},
 	{
 		title: 'Cards',
-		url: '/cards',
+		url: '/protected/cards',
 		icon: CreditCard,
+		protected: true,
 	},
 	{
 		title: 'Reports',
-		url: '/reports',
+		url: '/protected/reports',
 		icon: FileText,
+		protected: true,
 	},
 	{
 		title: 'Notifications',
-		url: '/notifications',
+		url: '/protected/notifications',
 		icon: Bell,
+		protected: true,
 	},
 	{
 		title: 'Billing',
-		url: '/billing',
+		url: '/protected/billing',
 		icon: Wallet,
+		protected: true,
 	},
 	{
 		title: 'Invoices',
-		url: '/invoices',
+		url: '/protected/invoices',
 		icon: Clipboard,
+		protected: true,
 	},
 	{
 		title: 'Help center',
 		url: '/help',
 		icon: HelpCircle,
+		protected: false,
 	},
 ]
 
@@ -98,6 +107,15 @@ export const SidebarApp = () => {
 	const { data: session, status } = useSession()
 
 	const [openAuthModal, setOpenAuthModal] = useState<boolean>(false)
+
+	// Фильтруем sideBarData в зависимости от авторизации
+	const filteredSideBarData = sideBarData.filter((item) => {
+		if (item.protected && !session?.user) {
+			return false
+		}
+
+		return true
+	})
 
 	return (
 		<Sidebar side="left" variant="sidebar" collapsible="icon" className="z-[100]">
@@ -115,7 +133,7 @@ export const SidebarApp = () => {
 
 					<SidebarGroupContent>
 						<SidebarMenu>
-							{sideBarData.map((item) => {
+							{filteredSideBarData.map((item) => {
 								const isActive = currentPath === item.url
 
 								return (

@@ -9,6 +9,9 @@ export const metadata: Metadata = {
 	title: 'Activities',
 }
 
+// The page must be rendered on the server side
+export const dynamic = 'force-dynamic'
+
 const ActivitiesPage = async () => {
 	const userCryptos = await getUserCryptos()
 	const coinsList = await fetchCoinsList()
