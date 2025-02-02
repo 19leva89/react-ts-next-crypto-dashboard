@@ -15,15 +15,31 @@ export type CoinsListData = {
 	name: string
 	description: string
 	image: string
+	current_price: number
+	market_cap: number
 	market_cap_rank: number
+	total_volume: number
+	high_24h: number
+	low_24h: number
+	price_change_percentage_24h: number
+	circulating_supply: number
+	sparkline_in_7d: {
+		price: number[]
+	}
+	price_change_percentage_7d_in_currency: number
 }[]
 
 export type CoinData = {
 	id: string
+	quantity?: number
 	symbol: string
 	name: string
-	description: { en: string }
-	image: string
+	description: {
+		en?: string
+	}
+	image: {
+		thumb: string
+	}
 	market_cap_rank: number
 	market_data: {
 		current_price: {
@@ -32,22 +48,14 @@ export type CoinData = {
 		market_cap: {
 			usd: number
 		}
-		total_volume: {
-			usd: number
-		}
-		price_change_percentage_24h: number
-		price_change_percentage_7d_in_currency: {
-			usd: number
-		}
-		circulating_supply: number
 		high_24h: {
 			usd: number
 		}
 		low_24h: {
 			usd: number
 		}
+		circulating_supply: number
 	}
-	last_updated: string
 }
 
 export type TableCoinData = {

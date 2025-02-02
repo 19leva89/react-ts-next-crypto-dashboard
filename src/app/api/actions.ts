@@ -277,28 +277,11 @@ export const addCryptoToUser = async (coinId: string, quantity: number) => {
 				},
 			},
 			update: {
-				current_price: coinData.market_data.current_price.usd,
 				quantity: quantity,
-				market_cap: coinData.market_data.market_cap.usd,
-				total_volume: coinData.market_data.total_volume.usd,
-				price_change_percentage_24h: coinData.market_data.price_change_percentage_24h,
-				price_change_percentage_7d_in_currency:
-					coinData.market_data.price_change_percentage_7d_in_currency.usd,
-				circulating_supply: coinData.market_data.circulating_supply,
-				high_24h: coinData.market_data.high_24h.usd,
-				low_24h: coinData.market_data.low_24h.usd,
 			},
 			create: {
-				current_price: coinData.market_data.current_price.usd,
+				id: coinData.id,
 				quantity: quantity,
-				market_cap: coinData.market_data.market_cap.usd,
-				total_volume: coinData.market_data.total_volume.usd,
-				price_change_percentage_24h: coinData.market_data.price_change_percentage_24h,
-				price_change_percentage_7d_in_currency:
-					coinData.market_data.price_change_percentage_7d_in_currency.usd,
-				circulating_supply: coinData.market_data.circulating_supply,
-				high_24h: coinData.market_data.high_24h.usd,
-				low_24h: coinData.market_data.low_24h.usd,
 				userId: user.id,
 				coinId: coinId,
 				coinsListIDMapId: coinData.id,
@@ -313,9 +296,9 @@ export const addCryptoToUser = async (coinId: string, quantity: number) => {
 			console.error('💾 Prisma error:', error.code, error.message)
 		} else if (error instanceof Error) {
 			console.error('🚨 Unexpected error:', error.message)
-			// console.error('Error stack:', error.stack)
-			// console.error('Error name:', error.name)
-			// console.error('Error cause:', error.cause)
+			console.error('Error stack:', error.stack)
+			console.error('Error name:', error.name)
+			console.error('Error cause:', error.cause)
 		} else {
 			console.error(`Error fetching data for coin ${coinId}:`, error)
 		}
@@ -578,13 +561,23 @@ export const fetchCoinsList = async (): Promise<CoinsListData> => {
 		if (cachedData.length > 0) {
 			console.log('✅ Используем кешированные данные из БД')
 			return cachedData.map((list) => ({
-				id: list.id,
+				id: list.coinsListIDMap.id,
 				symbol: list.coinsListIDMap.symbol,
 				name: list.coinsListIDMap.name,
-				description: list.description || '',
-				image: list.image || '',
-				market_cap_rank: list.market_cap_rank || 0,
-			}))
+				description: list.description,
+				image: list.image,
+				current_price: list.current_price,
+				market_cap: list.market_cap,
+				market_cap_rank: list.market_cap_rank,
+				total_volume: list.total_volume,
+				high_24h: list.high_24h,
+				low_24h: list.low_24h,
+				price_change_percentage_24h: list.price_change_percentage_24h,
+				circulating_supply: list.circulating_supply,
+				sparkline_in_7d: list.sparkline_in_7d,
+
+				price_change_percentage_7d_in_currency: list.price_change_percentage_7d_in_currency,
+			})) as CoinsListData
 		}
 
 		// Если данных нет, делаем запрос к API
@@ -595,7 +588,7 @@ export const fetchCoinsList = async (): Promise<CoinsListData> => {
 		if (Array.isArray(data)) {
 			// Обрабатываем каждую монету из API
 			for (const coinData of data) {
-				const { id, symbol, name, image, market_cap_rank } = coinData
+				const { id, symbol, name } = coinData
 
 				// Убедимся, что запись в CoinsListIDMap существует
 				await prisma.coinsListIDMap.upsert({
@@ -608,15 +601,33 @@ export const fetchCoinsList = async (): Promise<CoinsListData> => {
 				await prisma.coin.upsert({
 					where: { id },
 					update: {
-						description: coinData.description || null,
-						image: coinData.image || null,
-						market_cap_rank: coinData.market_cap_rank || null,
+						description: coinData.description,
+						image: coinData.image,
+						current_price: coinData.current_price,
+						market_cap: coinData.market_cap,
+						market_cap_rank: coinData.market_cap_rank,
+						total_volume: coinData.total_volume,
+						high_24h: coinData.high_24h,
+						low_24h: coinData.low_24h,
+						price_change_percentage_24h: coinData.price_change_percentage_24h,
+						circulating_supply: coinData.circulating_supply,
+						sparkline_in_7d: coinData.sparkline_in_7d,
+						price_change_percentage_7d_in_currency: coinData.price_change_percentage_7d_in_currency,
 					},
 					create: {
 						id,
-						description: coinData.description || null,
-						image: coinData.image || null,
-						market_cap_rank: coinData.market_cap_rank || null,
+						description: coinData.description,
+						image: coinData.image,
+						current_price: coinData.current_price,
+						market_cap: coinData.market_cap,
+						market_cap_rank: coinData.market_cap_rank,
+						total_volume: coinData.total_volume,
+						high_24h: coinData.high_24h,
+						low_24h: coinData.low_24h,
+						price_change_percentage_24h: coinData.price_change_percentage_24h,
+						circulating_supply: coinData.circulating_supply,
+						sparkline_in_7d: coinData.sparkline_in_7d,
+						price_change_percentage_7d_in_currency: coinData.price_change_percentage_7d_in_currency,
 						coinsListIDMapId: id,
 					},
 				})
@@ -630,6 +641,76 @@ export const fetchCoinsList = async (): Promise<CoinsListData> => {
 		}
 	} catch (error) {
 		console.error('Error fetching coins list:', error)
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('💾 Prisma error:', error.code, error.message)
+		} else if (error instanceof Error) {
+			console.error('🚨 Unexpected error:', error.message)
+		}
+
+		throw error
+	}
+}
+
+export const fetchUserCoinsList = async (): Promise<any> => {
+	try {
+		const session = await auth()
+
+		if (!session?.user) {
+			throw new Error('User not found')
+		}
+
+		// Получаем список монет пользователя
+		const userCoins = await prisma.userCoin.findMany({
+			where: { userId: session.user.id },
+			include: { coin: true },
+		})
+
+		if (!userCoins.length) {
+			return []
+		}
+
+		const currentTime = new Date()
+		const oneHourAgo = new Date(currentTime.getTime() - 60 * 60 * 1000)
+
+		// Получаем только те монеты, которые устарели
+		const coinsToUpdate = await prisma.userCoin.findMany({
+			where: {
+				userId: session.user.id,
+				updatedAt: { lt: oneHourAgo }, // Берем только те, что старше 1 часа
+			},
+			include: { coin: true },
+		})
+
+		// Если нет устаревших данных, просто возвращаем всё из кэша
+		if (!coinsToUpdate.length) {
+			console.log('✅ Используем кешированные данные из БД')
+			return (await prisma.userCoin.findMany({
+				where: { userId: session.user.id },
+				include: { coin: true },
+			})) as unknown as CoinData[]
+		}
+
+		// Собираем ID монет для запроса
+		const coinList = coinsToUpdate.map((uc) => encodeURIComponent(uc.coinId)).join('%2C')
+
+		// Запрашиваем свежие данные
+		console.log('🔄 Данные в БД устарели, запрашиваем API...')
+		const response = await makeReq('GET', `/gecko/user/${coinList}`)
+		console.log('✅ Данные response получены', response)
+
+		for (const coin of response) {
+			await prisma.userCoin.updateMany({
+				where: { userId: session.user.id, coinId: coin.id },
+				data: {
+					updatedAt: currentTime,
+				},
+			})
+		}
+
+		console.log('✅ Данные о монетах успешно обновлены')
+	} catch (error) {
+		console.error(`Error fetching coin list:`, error)
 
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error('💾 Prisma error:', error.code, error.message)
@@ -736,126 +817,111 @@ export const fetchCoinData = async (coinId: string): Promise<CoinData> => {
 				id: cachedData.coinId,
 				symbol: cachedData.coinsListIDMap.symbol,
 				name: cachedData.coinsListIDMap.name,
-				description: {
-					en: cachedData.coin.description as string,
-				},
-				image: cachedData.coin.image as string,
-				market_cap_rank: cachedData.coin.market_cap_rank as number,
+				description: { en: cachedData.coin.description || '' },
+				image: { thumb: cachedData.coin.image || '' },
+				market_cap_rank: cachedData.coin.market_cap_rank || 0,
 				market_data: {
-					current_price: { usd: cachedData.current_price as number },
-					market_cap: { usd: cachedData.market_cap as number },
-					total_volume: { usd: cachedData.total_volume as number },
-					price_change_percentage_24h: cachedData.price_change_percentage_24h as number,
-					price_change_percentage_7d_in_currency: {
-						usd: cachedData.price_change_percentage_7d_in_currency as number,
+					current_price: {
+						usd: cachedData.coin.current_price || 0,
 					},
-					circulating_supply: cachedData.circulating_supply as number,
-					high_24h: { usd: cachedData.high_24h as number },
-					low_24h: { usd: cachedData.low_24h as number },
+					market_cap: {
+						usd: cachedData.coin.market_cap || 0,
+					},
+					high_24h: {
+						usd: cachedData.coin.high_24h || 0,
+					},
+					low_24h: {
+						usd: cachedData.coin.low_24h || 0,
+					},
+					circulating_supply: cachedData.coin.circulating_supply || 0,
 				},
 				last_updated: cachedData.updatedAt.toISOString(),
-			}
+			} as CoinData
 		}
 
 		// Если данных нет, делаем запрос к API
 		console.log('🔄 Данных нет в БД, запрашиваем API...')
 		const data = await makeReq('GET', `/gecko/coins/${coinId}`)
 
-		// Если данные получены и они не пустые
-		if (data && typeof data === 'object' && !Array.isArray(data)) {
-			const { id, symbol, name, image, description, market_cap_rank, market_data, last_updated } = data
-			const {
-				current_price,
-				market_cap,
-				total_volume,
-				price_change_percentage_24h,
-				price_change_percentage_7d_in_currency,
-				circulating_supply,
-				high_24h,
-				low_24h,
-			} = market_data
-
-			// Убедимся, что запись в CoinsListIDMap существует
-			await prisma.coinsListIDMap.upsert({
-				where: { id },
-				update: { symbol, name },
-				create: { id, symbol, name },
-			})
-			console.log('✅ Запись в CoinsListIDMap обновлена!')
-
-			// Обновляем или создаем запись в Coin
-			await prisma.coin.upsert({
-				where: { id },
-				update: {
-					description: description ? description.en : '',
-					image: image ? image.large : '',
-					market_cap_rank: market_cap_rank ?? 0,
-				},
-				create: {
-					id,
-					description: description ? description.en : '',
-					image: image ? image.large : '',
-					market_cap_rank: market_cap_rank ?? 0,
-					coinsListIDMapId: id,
-				},
-			})
-			console.log('✅ Запись в Coin обновлена!')
-
-			// Обновляем или создаем запись в UserCoin
-			await prisma.userCoin.upsert({
-				where: { userId_coinId: { userId: existingUser.id, coinId: id } },
-				update: {
-					current_price: current_price.usd,
-					market_cap: market_cap.usd,
-					total_volume: total_volume.usd,
-					price_change_percentage_24h,
-					price_change_percentage_7d_in_currency: price_change_percentage_7d_in_currency.usd,
-					circulating_supply,
-					high_24h: high_24h.usd,
-					low_24h: low_24h.usd,
-				},
-				create: {
-					current_price: current_price?.usd,
-					market_cap: market_cap?.usd,
-					total_volume: total_volume?.usd,
-					price_change_percentage_24h,
-					price_change_percentage_7d_in_currency: price_change_percentage_7d_in_currency?.usd,
-					circulating_supply,
-					high_24h: high_24h?.usd,
-					low_24h: low_24h?.usd,
-					coinsListIDMapId: id,
-					userId: existingUser.id,
-					coinId: id,
-				},
-			})
-
-			console.log('✅ Данные о монете успешно обновлены или созданы')
-
-			return {
-				id,
-				symbol,
-				name,
-				description: { en: data.description as string },
-				image: data.image as string,
-				market_cap_rank: data.market_cap_rank as number,
-				market_data: {
-					current_price: { usd: market_data.current_price.usd },
-					market_cap: { usd: market_data.market_cap.usd },
-					total_volume: { usd: market_data.total_volume.usd },
-					price_change_percentage_24h: market_data.price_change_percentage_24h,
-					price_change_percentage_7d_in_currency: {
-						usd: market_data.price_change_percentage_7d_in_currency.usd,
-					},
-					circulating_supply: market_data.circulating_supply,
-					high_24h: { usd: market_data.high_24h.usd },
-					low_24h: { usd: market_data.low_24h.usd },
-				},
-				last_updated,
-			}
-		} else {
+		// Validate the API response
+		if (!data || typeof data !== 'object' || Array.isArray(data)) {
 			console.warn('⚠️ Данные от API пустые или имеют неверный формат')
-			return {} as CoinData
+			return {
+				id: coinId,
+				symbol: '',
+				name: '',
+				description: { en: '' },
+				image: { thumb: '' },
+				market_cap_rank: 0,
+				market_data: {
+					current_price: { usd: 0 },
+					market_cap: { usd: 0 },
+					high_24h: { usd: 0 },
+					low_24h: { usd: 0 },
+					circulating_supply: 0,
+				},
+			} as CoinData
 		}
+
+		const { id, symbol, name, image, description, market_cap_rank, market_data } = data
+
+		// Ensure CoinsListIDMap exists
+		await prisma.coinsListIDMap.upsert({
+			where: { id },
+			update: { symbol, name },
+			create: { id, symbol, name },
+		})
+		console.log('✅ Запись в CoinsListIDMap обновлена!')
+
+		// Update or create the Coin record
+		await prisma.coin.upsert({
+			where: { id },
+			update: {
+				current_price: market_data?.current_price?.usd || 0,
+				description: description?.en || '',
+				image: image?.thumb || '',
+				market_cap: market_data?.market_cap?.usd || 0,
+				market_cap_rank: market_cap_rank || 0,
+				total_volume: market_data?.total_volume?.usd || 0,
+				high_24h: market_data?.high_24h?.usd || 0,
+				low_24h: market_data?.low_24h?.usd || 0,
+				price_change_percentage_24h: market_data?.price_change_percentage_24h || 0,
+				circulating_supply: market_data?.circulating_supply || 0,
+				price_change_percentage_7d_in_currency: market_data?.price_change_percentage_7d_in_currency?.usd || 0,
+			},
+			create: {
+				id,
+				current_price: market_data?.current_price?.usd || 0,
+				description: description?.en || '',
+				image: image?.thumb || '',
+				market_cap: market_data?.market_cap?.usd || 0,
+				market_cap_rank: market_cap_rank || 0,
+				total_volume: market_data?.total_volume?.usd || 0,
+				high_24h: market_data?.high_24h?.usd || 0,
+				low_24h: market_data?.low_24h?.usd || 0,
+				price_change_percentage_24h: market_data?.price_change_percentage_24h || 0,
+				circulating_supply: market_data?.circulating_supply || 0,
+				price_change_percentage_7d_in_currency: market_data?.price_change_percentage_7d_in_currency?.usd || 0,
+				coinsListIDMapId: id,
+			},
+		})
+		console.log('✅ Запись в Coin обновлена!')
+
+		return {
+			id,
+			symbol,
+			name,
+			description: { en: description?.en || '' },
+			image: { thumb: image?.thumb || '' },
+			market_cap_rank: market_cap_rank || 0,
+			market_data: {
+				current_price: { usd: market_data?.current_price?.usd || 0 },
+				market_cap: { usd: market_data?.market_cap?.usd || 0 },
+				high_24h: { usd: market_data?.high_24h?.usd || 0 },
+				low_24h: { usd: market_data?.low_24h?.usd || 0 },
+				circulating_supply: market_data?.circulating_supply || 0,
+			},
+		} as CoinData
 	} catch (error) {
 		console.error(`Error fetching data for coin ${coinId}:`, error)
 
@@ -888,12 +954,20 @@ export const fetchCoinsListByCate = async (cate: string): Promise<CoinsListData>
 				id: coin.id,
 				symbol: coin.coinsListIDMap.symbol,
 				name: coin.coinsListIDMap.name,
-				description: coin.description || '',
-				image: coin.image || '',
-				market_cap_rank: coin.market_cap_rank || 0,
-			}))
+				description: coin.description,
+				image: coin.image,
+				current_price: coin.current_price,
+				market_cap: coin.market_cap,
+				market_cap_rank: coin.market_cap_rank,
+				total_volume: coin.total_volume,
+				high_24h: coin.high_24h,
+				low_24h: coin.low_24h,
+				price_change_percentage_24h: coin.price_change_percentage_24h,
+				circulating_supply: coin.circulating_supply,
+				sparkline_in_7d: coin.sparkline_in_7d,
+				price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
+			})) as CoinsListData
 		}
-
 		// Если данных нет, делаем запрос к API
 		console.log('🔄 Данных нет в БД, запрашиваем API...')
 		const data = await makeReq('GET', `/gecko/${cate}/coins`)
@@ -902,30 +976,46 @@ export const fetchCoinsListByCate = async (cate: string): Promise<CoinsListData>
 		if (Array.isArray(data)) {
 			// Обрабатываем каждую монету из API
 			for (const coinData of data) {
-				const { id, symbol, name, image, market_cap_rank, description } = coinData
-
 				// Убедимся, что запись в CoinsListIDMap существует
 				await prisma.coinsListIDMap.upsert({
-					where: { id },
-					update: { symbol, name },
-					create: { id, symbol, name },
+					where: { id: coinData.id },
+					update: { symbol: coinData.symbol, name: coinData.name },
+					create: { id: coinData.id, symbol: coinData.symbol, name: coinData.name },
 				})
 
 				// Обновляем или создаем запись в Coin
 				await prisma.coin.upsert({
-					where: { id },
+					where: { id: coinData.id },
 					update: {
-						description: description || null,
-						image: image || null,
-						market_cap_rank: market_cap_rank || null,
+						description: coinData.description,
+						image: coinData.image,
+						current_price: coinData.current_price,
+						market_cap: coinData.market_cap,
+						market_cap_rank: coinData.market_cap_rank,
+						total_volume: coinData.total_volume,
+						high_24h: coinData.high_24h,
+						low_24h: coinData.low_24h,
+						price_change_percentage_24h: coinData.price_change_percentage_24h,
+						circulating_supply: coinData.circulating_supply,
+						sparkline_in_7d: coinData.sparkline_in_7d,
+						price_change_percentage_7d_in_currency: coinData.price_change_percentage_7d_in_currency,
 						categoryId: cate, // Связываем с категорией
 					},
 					create: {
-						id,
-						description: description || null,
-						image: image || null,
-						market_cap_rank: market_cap_rank || null,
-						coinsListIDMapId: id, // Связываем с CoinsListIDMap
+						id: coinData.id,
+						description: coinData.description,
+						image: coinData.image,
+						current_price: coinData.current_price,
+						market_cap: coinData.market_cap,
+						market_cap_rank: coinData.market_cap_rank,
+						total_volume: coinData.total_volume,
+						high_24h: coinData.high_24h,
+						low_24h: coinData.low_24h,
+						price_change_percentage_24h: coinData.price_change_percentage_24h,
+						circulating_supply: coinData.circulating_supply,
+						sparkline_in_7d: coinData.sparkline_in_7d,
+						price_change_percentage_7d_in_currency: coinData.price_change_percentage_7d_in_currency,
+						coinsListIDMapId: coinData.id, // Связываем с CoinsListIDMap
 						categoryId: cate, // Связываем с категорией
 					},
 				})
@@ -934,14 +1024,7 @@ export const fetchCoinsListByCate = async (cate: string): Promise<CoinsListData>
 			console.log('✅ Данные о монетах успешно обновлены или созданы')
 
 			// Возвращаем данные в формате CoinsListData
-			return data.map((coin) => ({
-				id: coin.id,
-				symbol: coin.symbol,
-				name: coin.name,
-				description: coin.description || '',
-				image: coin.image || '',
-				market_cap_rank: coin.market_cap_rank || 0,
-			}))
+			return data
 		} else {
 			console.warn('⚠️ Данные от API пустые или имеют неверный формат')
 			return []

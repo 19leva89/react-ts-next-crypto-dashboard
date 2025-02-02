@@ -15,6 +15,11 @@ export const getCgCoinsListRoute = (): string => {
 	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&per_page=250&sparkline=true&price_change_percentage=7d`
 }
 
+// fetchUserCoinsList
+export const getCgUserCoinsListRoute = (coinList: string): string => {
+	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&ids=${coinList}&per_page=250&sparkline=false`
+}
+
 // fetchCoinsListIDMap
 export const getCgCoinsListIDMap = (): string => {
 	return `${GECKO_ROUTE_V3}/coins/list`
