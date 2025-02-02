@@ -6,11 +6,11 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Line, LineChart, YAxis } from 'recharts'
 
 import { cn } from '@/lib'
-import { SingleCoinData } from '@/app/api/types'
+import { TableCoinData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
 import { Button, ChartConfig, ChartContainer } from '@/components/ui'
 
-export const columns: ColumnDef<SingleCoinData>[] = [
+export const columns: ColumnDef<TableCoinData>[] = [
 	// #
 	{
 		accessorKey: 'market_cap_rank',
@@ -112,18 +112,18 @@ export const columns: ColumnDef<SingleCoinData>[] = [
 
 			return (
 				<div className="text-base">
-					{coin.price_change_percentage_24h ? (
+					{coin.market_data.price_change_percentage_24h ? (
 						<div
 							className={cn(
 								'rounded-full font-medium px-2 py-1 inline-block',
-								coin.price_change_percentage_24h > 0
+								coin.market_data.price_change_percentage_24h > 0
 									? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
 									: 'bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item',
 							)}
 						>
 							<span>
-								{coin.price_change_percentage_24h > 0 && '+'}
-								{coin.price_change_percentage_24h?.toFixed(1)}%
+								{coin.market_data.price_change_percentage_24h > 0 && '+'}
+								{coin.market_data.price_change_percentage_24h?.toFixed(1)}%
 							</span>
 						</div>
 					) : (
@@ -183,41 +183,41 @@ export const columns: ColumnDef<SingleCoinData>[] = [
 	},
 
 	// Last 7 Days
-	{
-		accessorKey: 'price_change_percentage_7d_in_currency',
-		header: () => <div>Last 7 Days</div>,
-		cell: ({ row }) => {
-			const coin = row.original
-			const priceChange = coin.price_change_percentage_7d_in_currency as number
+	// {
+	// 	accessorKey: 'price_change_percentage_7d_in_currency',
+	// 	header: () => <div>Last 7 Days</div>,
+	// 	cell: ({ row }) => {
+	// 		const coin = row.original
+	// 		const priceChange = coin.market_data.price_change_percentage_7d_in_currency.usd as number
 
-			const chartConfig = {
-				prices: {
-					label: 'Price',
-					color: 'hsl(var(--chart-2))',
-				},
-			} satisfies ChartConfig
+	// 		const chartConfig = {
+	// 			prices: {
+	// 				label: 'Price',
+	// 				color: 'hsl(var(--chart-2))',
+	// 			},
+	// 		} satisfies ChartConfig
 
-			const formattedData = coin.sparkline_in_7d.price.map((price, index) => ({
-				Hour: index,
-				Price: price,
-			}))
+	// 		const formattedData = coin.sparkline_in_7d.price.map((price, index) => ({
+	// 			Hour: index,
+	// 			Price: price,
+	// 		}))
 
-			const minPrice = Math.min(...formattedData.map((h) => h.Price))
-			const maxPrice = Math.max(...formattedData.map((h) => h.Price))
+	// 		const minPrice = Math.min(...formattedData.map((h) => h.Price))
+	// 		const maxPrice = Math.max(...formattedData.map((h) => h.Price))
 
-			const lineColor = priceChange > 0 ? '#22c55ed6' : priceChange < 0 ? '#dc2626d6' : '#22c55ed6'
+	// 		const lineColor = priceChange > 0 ? '#22c55ed6' : priceChange < 0 ? '#dc2626d6' : '#22c55ed6'
 
-			return (
-				<div className="w-[100px] mx-0">
-					<ChartContainer config={chartConfig}>
-						<LineChart accessibilityLayer data={formattedData}>
-							<YAxis domain={[minPrice, maxPrice]} hide />
+	// 		return (
+	// 			<div className="w-[100px] mx-0">
+	// 				<ChartContainer config={chartConfig}>
+	// 					<LineChart accessibilityLayer data={formattedData}>
+	// 						<YAxis domain={[minPrice, maxPrice]} hide />
 
-							<Line dataKey="Price" type="natural" stroke={lineColor} strokeWidth={2} dot={false} />
-						</LineChart>
-					</ChartContainer>
-				</div>
-			)
-		},
-	},
+	// 						<Line dataKey="Price" type="natural" stroke={lineColor} strokeWidth={2} dot={false} />
+	// 					</LineChart>
+	// 				</ChartContainer>
+	// 			</div>
+	// 		)
+	// 	},
+	// },
 ]

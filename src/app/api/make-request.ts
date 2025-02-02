@@ -21,6 +21,7 @@ const makeReq = async (
 		if (axios.isAxiosError(error)) {
 			throw new Error(`Axios error: ${error.message}`)
 		}
+
 		throw new Error(`Error: ${error}`)
 	}
 }

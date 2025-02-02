@@ -5,17 +5,17 @@ import { useState } from 'react'
 import { DataTable } from './table-data'
 import { columns } from './table-columns'
 import { Skeleton } from '@/components/ui'
-import { CategoriesData, CoinListData } from '@/app/api/types'
+import { CategoriesData, CoinsListData } from '@/app/api/types'
 import { fetchCoinsList, fetchCoinsListByCate } from '@/app/api/actions'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 
 interface Props {
 	categories: CategoriesData
-	initialCoins: CoinListData
+	initialCoins: CoinsListData
 }
 
 export const DataTableSection = ({ categories, initialCoins }: Props) => {
-	const [coinsList, setCoinsList] = useState<CoinListData>(initialCoins)
+	const [coinsList, setCoinsList] = useState<CoinsListData>(initialCoins)
 	const [fetchingCoins, setFetchingCoins] = useState<boolean>(false)
 	const [showDetailModal, setShowDetailModal] = useState<boolean>(false)
 	const [currentCoinId, setCurrentCoinId] = useState<string>('')
@@ -60,14 +60,16 @@ export const DataTableSection = ({ categories, initialCoins }: Props) => {
 			{fetchingCoins ? (
 				<Skeleton className="h-96 w-full rounded-xl" />
 			) : (
-				<DataTable
-					columns={columns}
-					data={coinsList}
-					categories={categories}
-					currentCategorie={currentCategorie}
-					onCoinsClick={onCoinsClick}
-					onCategorieClick={onCategorieClick}
-				/>
+				<>
+					{/* <DataTable
+						columns={columns}
+						data={coinsList}
+						categories={categories}
+						currentCategorie={currentCategorie}
+						onCoinsClick={onCoinsClick}
+						onCategorieClick={onCategorieClick}
+					/> */}
+				</>
 			)}
 
 			<CoinDetailModal

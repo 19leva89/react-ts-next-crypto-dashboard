@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 import { AddCrypto } from './_components/add-crypto'
 import { CryptoCard } from './_components/crypto-card'
 import { AllCryptoPrices } from './_components/all-crypto-prices'
-import { fetchCoinData, fetchCoinsList, getUserCryptos } from '@/app/api/actions'
+import { fetchCoinsListIDMap, getUserCryptos } from '@/app/api/actions'
 
 export const metadata: Metadata = {
 	title: 'Activities',
@@ -13,35 +13,20 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 const ActivitiesPage = async () => {
+	const coinsList = await fetchCoinsListIDMap()
 	const userCryptos = await getUserCryptos()
-	const coinsList = await fetchCoinsList()
 
-	// Получаем данные для всех монет параллельно
-	const coinDataPromises = userCryptos.map((userCoin) => fetchCoinData(userCoin.coin.coinId))
-	const coinDataResults = await Promise.all(coinDataPromises)
-
-	const cryptoData = userCryptos.map((userCoin, index) => {
-		const coinData = coinDataResults[index]
-		if (!coinData) {
-			console.warn(`Failed to fetch data for coinId: ${userCoin.coin.coinId}`)
-			return null
-		}
-
-		return {
-			coinId: userCoin.coinId,
-			name: coinData.name,
-			symbol: coinData.symbol,
-			currentPrice: coinData.market_data.current_price.usd,
-			image: coinData.image.thumb ?? '/svg/coin-not-found.svg',
-			quantity: userCoin.quantity,
-		}
-	})
-
-	// Фильтруем null значения из cryptoData
-	const validCryptoData = cryptoData.filter((crypto) => crypto !== null)
+	const cryptoData = userCryptos.map((userCoin) => ({
+		coinId: userCoin.coin.id,
+		name: userCoin.coin.coinsListIDMap.name,
+		symbol: userCoin.coin.coinsListIDMap.symbol,
+		currentPrice: userCoin.current_price as number,
+		quantity: userCoin.quantity as number,
+		image: userCoin.coin.image as string,
+	}))
 
 	// Вычисляем общую стоимость портфеля
-	const totalPortfolioValue = validCryptoData.reduce((total, crypto) => {
+	const totalPortfolioValue = cryptoData.reduce((total, crypto) => {
 		return total + crypto.currentPrice * crypto.quantity
 	}, 0)
 
@@ -58,7 +43,7 @@ const ActivitiesPage = async () => {
 					<h2 className="flex justify-center w-full">No cryptos added. Add your first crypto!</h2>
 				)}
 
-				{validCryptoData.map((crypto) => {
+				{cryptoData.map((crypto) => {
 					const { coinId, name, symbol, currentPrice, quantity, image } = crypto
 
 					return (

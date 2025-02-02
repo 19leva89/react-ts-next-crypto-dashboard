@@ -156,7 +156,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 							<div className="flex justify-between items-center font-medium">
 								<div className="items-center flex gap-2">
 									<Image
-										src={coinsData.image?.thumb || '/svg/coin-not-found.svg'}
+										src={coinsData.image || '/svg/coin-not-found.svg'}
 										alt={coinsData.name || 'Coin image'}
 										width={32}
 										height={32}

@@ -1,3 +1,77 @@
+export type CategoriesData = {
+	category_id: string
+	name: string
+}[]
+
+export type CoinsListIDMapData = {
+	id: string
+	symbol: string
+	name: string
+}[]
+
+export type CoinsListData = {
+	id: string
+	symbol: string
+	name: string
+	description: string
+	image: string
+	market_cap_rank: number
+}[]
+
+export type CoinData = {
+	id: string
+	symbol: string
+	name: string
+	description: { en: string }
+	image: string
+	market_cap_rank: number
+	market_data: {
+		current_price: {
+			usd: number
+		}
+		market_cap: {
+			usd: number
+		}
+		total_volume: {
+			usd: number
+		}
+		price_change_percentage_24h: number
+		price_change_percentage_7d_in_currency: {
+			usd: number
+		}
+		circulating_supply: number
+		high_24h: {
+			usd: number
+		}
+		low_24h: {
+			usd: number
+		}
+	}
+	last_updated: string
+}
+
+export type TableCoinData = {
+	id: string
+	name: string
+	image: string
+	market_data: {
+		current_price: {
+			usd: number
+		}
+		market_cap: {
+			usd: number
+		}
+		total_volume: {
+			usd: number
+		}
+		price_change_percentage_24h: number
+		price_change_percentage_7d_in_currency: {
+			usd: number
+		}
+	}
+	last_updated: string
+}
+
 export type TrendingData = {
 	coins: {
 		item: {
@@ -26,60 +100,8 @@ export type TrendingData = {
 	}[]
 }
 
-export type CategoriesData = {
-	category_id: string
-	name: string
-}[]
-
-export type SingleCoinData = {
-	id: string
-	symbol: string
-	name: string
-	image: string
-	current_price: number
-	market_cap: number
-	market_cap_rank: number
-	total_volume: number
-	price_change_percentage_24h: number
-	last_updated: string
-	sparkline_in_7d: {
-		price: number[]
-	}
-	price_change_percentage_7d_in_currency: number | null
-}
-
-export type CoinListData = SingleCoinData[]
-
 export type MarketChartData = {
 	prices: [number, number][]
-}
-
-export type CoinData = {
-	id: string
-	symbol: string
-	name: string
-	description: {
-		en?: string
-	}
-	image: {
-		thumb: string
-	}
-	market_cap_rank: number
-	market_data: {
-		current_price: {
-			usd: number
-		}
-		market_cap: {
-			usd: number
-		}
-		high_24h: {
-			usd: number
-		}
-		low_24h: {
-			usd: number
-		}
-		circulating_supply: number
-	}
 }
 
 export type AidropsData = {
@@ -87,11 +109,10 @@ export type AidropsData = {
 		id: string
 		project_name: string
 		description: string
-		status: 'UPCOMING' | 'ONGOING'
+		status: 'UPCOMING' | 'ONGOING' | 'ENDED'
 		coin: {
-			id: number
+			id: string
 			name: string
-			slug: string
 			symbol: string
 		}
 		start_date: string

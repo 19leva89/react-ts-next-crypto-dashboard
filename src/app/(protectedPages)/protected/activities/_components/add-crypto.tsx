@@ -23,11 +23,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui'
-import { CoinListData } from '@/app/api/types'
 import { addCryptoToUser } from '@/app/api/actions'
 
 interface Props {
-	initialCoins: CoinListData
+	initialCoins: { id: string; name: string; symbol: string; image?: string }[]
 }
 
 export const AddCrypto = ({ initialCoins }: Props) => {
@@ -154,7 +153,12 @@ export const AddCrypto = ({ initialCoins }: Props) => {
 																style={style}
 															>
 																<div className="flex flex-row gap-2 h-5">
-																	<Image src={coin.image} alt={coin.name} width={20} height={20} />
+																	<Image
+																		src={coin.image || '/svg/coin-not-found.svg'}
+																		alt={coin.name}
+																		width={20}
+																		height={20}
+																	/>
 
 																	<span className="truncate">
 																		{coin.name} ({coin.symbol.toUpperCase()})

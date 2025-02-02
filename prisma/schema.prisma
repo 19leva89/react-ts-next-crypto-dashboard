@@ -12,6 +12,12 @@ enum UserRole {
   ADMIN
 }
 
+enum AirdropStatus {
+  UPCOMING
+  ONGOING
+  ENDED
+}
+
 model User {
   id               String            @id @default(cuid()) @map("_id")
   name             String?
@@ -25,44 +31,15 @@ model User {
   //
   accounts         Account[]
   sessions         Session[]
-  Authenticator    Authenticator[]
+  authenticator    Authenticator[]
   userCoins        UserCoin[]
   //
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 }
 
-model UserCoin {
-  id       String @id @default(cuid()) @map("_id")
-  userId   String // Ссылка на пользователя
-  coinId   String // Ссылка на криптовалюту
-  quantity Float // Количество криптовалюты у пользователя
-
-  // Связи
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  coin Coin @relation(fields: [coinId], references: [id], onDelete: Cascade)
-
-  // Уникальный ключ для пары пользователь-криптовалюта
-  @@unique([userId, coinId], name: "userId_coinId")
-}
-
-model Coin {
-  id        String     @id @default(cuid()) @map("_id")
-  key       String
-  coinId    String
-  value     Json
-  //
-  userCoins UserCoin[]
-  //
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-
-  @@unique([key, coinId], name: "key_coinId")
-}
-
 model Account {
   id                String   @id @default(cuid()) @map("_id")
-  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -74,10 +51,11 @@ model Account {
   id_token          String?
   session_state     String?
   //
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String
+  //
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -85,9 +63,10 @@ model Account {
 model Session {
   id           String   @id @default(cuid()) @map("_id")
   sessionToken String   @unique
-  userId       String
   expires      DateTime
+  //
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
   //
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -127,41 +106,113 @@ model VerificationCode {
   code      String
   //
   createdAt DateTime @default(now())
+
+  @@map("verification_code")
 }
 
-model TrendingData {
-  id        String   @id @default(cuid()) @map("_id")
-  key       String   @unique
-  value     Json
+model CoinsListIDMap {
+  id        String     @id @unique
+  symbol    String
+  name      String
+  coin      Coin?
   //
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  userCoins UserCoin[]
+  airdrop   Airdrop[]
+
+  @@map("coins_list_id_map")
+}
+
+model Coin {
+  id               String         @id @unique
+  description      String?
+  image            String?
+  market_cap_rank  Int?
+  //
+  userCoins        UserCoin[]
+  airdrops         Airdrop[]
+  coinsListIDMap   CoinsListIDMap @relation(fields: [id], references: [id], onDelete: Cascade)
+  coinsListIDMapId String
+  category         Category?      @relation(fields: [categoryId], references: [category_id])
+  categoryId       String?
+
+  @@map("coin")
+}
+
+model UserCoin {
+  id                                     String         @id @default(uuid())
+  current_price                          Float?
+  quantity                               Float?
+  market_cap                             Float?
+  total_volume                           Float?
+  price_change_percentage_24h            Float?
+  price_change_percentage_7d_in_currency Float?
+  circulating_supply                     Float?
+  high_24h                               Float?
+  low_24h                                Float?
+  //
+  coin                                   Coin           @relation(fields: [coinId], references: [id], onDelete: Cascade)
+  coinId                                 String
+  coinsListIDMap                         CoinsListIDMap @relation(fields: [coinsListIDMapId], references: [id], onDelete: Cascade)
+  coinsListIDMapId                       String
+  user                                   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                                 String
+  //
+  createdAt                              DateTime       @default(now())
+  updatedAt                              DateTime       @updatedAt
+
+  @@unique([userId, coinId])
+  @@map("user_coin")
+}
+
+model TrendingCoin {
+  id              String   @id @default(uuid())
+  coin_id         Int
+  name            String
+  symbol          String
+  market_cap_rank Int?
+  thumb           String
+  slug            String
+  price_btc       Float
+  data            Json
+  //
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([coin_id, slug])
+  @@map("trending_coin")
 }
 
 model Category {
-  id        String   @id @default(cuid()) @map("_id")
-  key       String   @unique
-  value     String
-  //
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  category_id String @id @unique
+  name        String
+  coin        Coin[]
+
+  @@map("category")
 }
 
 model MarketChart {
-  id        String   @id @default(cuid()) @map("_id")
-  key       String   @unique
-  coinId    String
-  value     Json
-  //
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id     String @id @default(uuid())
+  prices Json
+
+  @@map("market_chart")
 }
 
-model Aidrop {
-  id        String   @id @default(cuid()) @map("_id")
-  key       String   @unique
-  value     Json
+model Airdrop {
+  id               String         @id @default(uuid())
+  project_name     String
+  description      String
+  status           AirdropStatus  @default(UPCOMING)
+  start_date       DateTime
+  end_date         DateTime
+  total_prize      Float
+  winner_count     Int
+  link             String
   //
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  coin             Coin           @relation(fields: [coinId], references: [id], onDelete: Cascade)
+  coinId           String
+  coinsListIDMap   CoinsListIDMap @relation(fields: [coinsListIDMapId], references: [id], onDelete: Cascade)
+  coinsListIDMapId String
+
+  @@unique([project_name, coinId])
+  @@map("airdrop")
 }
