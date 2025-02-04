@@ -20,7 +20,7 @@ export const getCgUpdateCoinsListRoute = (coinList: string): string => {
 	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&ids=${coinList}&per_page=250&sparkline=false`
 }
 
-// getUserCoinsList
+// updateUserCoinsList
 export const getCgUserCoinsListRoute = (coinList: string): string => {
 	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&ids=${coinList}&per_page=250&sparkline=false`
 }

@@ -706,7 +706,7 @@ export const updateCoinsList = async (): Promise<CoinsListData> => {
 	}
 }
 
-export const getUserCoinsList = async (): Promise<any> => {
+export const updateUserCoinsList = async (): Promise<any> => {
 	try {
 		const session = await auth()
 

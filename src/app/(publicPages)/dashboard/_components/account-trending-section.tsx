@@ -5,14 +5,16 @@ import { useState } from 'react'
 import { ArrowUp, ChevronDown, TrendingDown, TrendingUp } from 'lucide-react'
 
 import { cn } from '@/lib'
-import { Button } from '@/components/ui'
 import { TrendingData } from '@/app/api/types'
+import { Button, Skeleton } from '@/components/ui'
+import { formatPrice } from '@/constants/format-price'
 
 interface Props {
 	trendingData: TrendingData
+	totalPortfolioValue: number
 }
 
-export const AccountTrendingSection = ({ trendingData }: Props) => {
+export const AccountTrendingSection = ({ trendingData, totalPortfolioValue }: Props) => {
 	const [dataIndex, setDataIndex] = useState<{ start: number; end: number }>({ start: 0, end: 4 })
 
 	const onShowMoreBtnClick = (reset = false) => {
@@ -27,6 +29,69 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 		}, 100)
 	}
 
+	if (!trendingData) {
+		return (
+			<div className="flex gap-5 flex-wrap w-full lg:flex-nowrap">
+				{/* Skeleton для левой части (Balance) */}
+				<div className="w-full md:max-w-[500px] md:mx-auto lg:w-auto border dark:border-gray-700 rounded-xl p-3 flex flex-col justify-between">
+					<div>
+						<Skeleton className="h-6 w-1/2 mb-3" />
+
+						<div className="flex flex-nowrap gap-1 items-center mb-3">
+							<Skeleton className="h-6 w-36" />
+							<Skeleton className="h-6 w-1/3" />
+							<Skeleton className="h-6 w-28" />
+						</div>
+					</div>
+
+					<div className="flex gap-2 flex-wrap min-[300px]:flex-nowrap">
+						<Skeleton className="w-full min-[300px]:w-1/2 h-10 rounded-xl" />
+
+						<Skeleton className="w-full min-[300px]:w-1/2 h-10 rounded-xl" />
+					</div>
+				</div>
+
+				{/* Skeleton для правой части (Trending) */}
+				<div className="flex flex-col gap-3 grow overflow-auto">
+					<div className="flex justify-between items-center">
+						<Skeleton className="h-6 w-24" />
+
+						<Skeleton className="h-6 w-16" />
+					</div>
+
+					<div className="flex flex-wrap items-start justify-start gap-2 text-sm overflow-auto no-scrollbar">
+						{Array.from({ length: 4 }).map((_, index) => (
+							<div
+								className="shrink-0 border dark:border-gray-700 p-3 rounded-xl w-full min-[500px]:w-[48%]"
+								key={index}
+							>
+								<div className="flex items-center justify-between">
+									<div className="flex items-center gap-1">
+										<Skeleton className="size-8 rounded-full" />
+
+										<div className="flex flex-col">
+											<Skeleton className="h-4 w-16 mb-1" />
+
+											<Skeleton className="h-3 w-12" />
+										</div>
+									</div>
+
+									<Skeleton className="h-6 w-16 rounded-full" />
+								</div>
+
+								<div className="mt-3 flex flex-col">
+									<Skeleton className="h-4 w-24 mb-1" />
+
+									<Skeleton className="h-3 w-16" />
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+			</div>
+		)
+	}
+
 	return (
 		<div className="flex gap-5 flex-wrap w-full lg:flex-nowrap">
 			<div className="w-full md:max-w-[500px] md:mx-auto lg:w-auto border dark:border-gray-700 rounded-xl p-3 flex flex-col justify-between">
@@ -36,7 +101,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 					</h2>
 
 					<div className="flex flex-wrap gap-x-14 items-center mb-3">
-						<span className="font-semibold text-lg">$63,755,200</span>
+						<span className="font-semibold text-lg">${formatPrice(totalPortfolioValue, true, 2)}</span>
 
 						<div className="flex items-center text-sm gap-3">
 							<span className="bg-green-100 dark:bg-green-dark-container text-green-600 dark:text-green-dark-item py-1 px-2 rounded-full font-medium ">
@@ -84,10 +149,10 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 						size="sm"
 						className="gap-1 group"
 						onClick={() => {
-							onShowMoreBtnClick(dataIndex.end >= trendingData?.coins?.length)
+							onShowMoreBtnClick(dataIndex.end >= trendingData.coins.length)
 						}}
 					>
-						{dataIndex.end >= trendingData?.coins?.length ? (
+						{dataIndex.end >= trendingData.coins.length ? (
 							<span>Reset</span>
 						) : (
 							<>
@@ -103,7 +168,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 				</div>
 
 				<div className="flex flex-wrap items-start justify-start gap-2 text-sm overflow-auto no-scrollbar">
-					{trendingData?.coins?.slice(dataIndex.start, dataIndex.end)?.map((data, index) => (
+					{trendingData.coins.slice(dataIndex.start, dataIndex.end).map((data, index) => (
 						<div
 							className="shrink-0 border dark:border-gray-700 p-3 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 duration-500 w-full min-[500px]:w-[48%]"
 							key={index}
@@ -111,7 +176,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-1">
 									<Image
-										src={data.item?.thumb || '/svg/coin-not-found.svg'}
+										src={data.item.thumb || '/svg/coin-not-found.svg'}
 										alt={data.item.name || 'Coin image'}
 										width={32}
 										height={32}
