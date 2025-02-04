@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 
+import { auth } from '@/auth'
 import { Skeleton } from '@/components/ui'
 import { DataTableSection } from './_components/table-data-section'
 import { AccountTrendingSection } from './_components/account-trending-section'
@@ -14,10 +15,12 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 const DashboardPage = async () => {
+	const session = await auth()
+
 	const categories = await getCategories()
 	const coinsList = await updateCoinsList()
 	const trendingData = await getTrendingData()
-	const userCryptos = await getUserCryptos()
+	const userCryptos = session ? await getUserCryptos() : []
 
 	// Вычисляем общую стоимость портфеля
 	const totalPortfolioValue = userCryptos.reduce((total, crypto) => {
@@ -26,7 +29,10 @@ const DashboardPage = async () => {
 
 	return (
 		<div className="space-y-14">
-			<AccountTrendingSection trendingData={trendingData} totalPortfolioValue={totalPortfolioValue} />
+			<AccountTrendingSection
+				trendingData={trendingData}
+				totalPortfolioValue={session ? totalPortfolioValue : 0}
+			/>
 
 			<Suspense fallback={<Skeleton className="h-96 w-full rounded-xl" />}>
 				<DataTableSection categories={categories} initialCoins={coinsList} />
