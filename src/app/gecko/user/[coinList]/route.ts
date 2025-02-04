@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgUserCoinsListRoute } from '@/app/api/ressources'
 
-export const GET = async (request: NextRequest, context: { params: any }) => {
+export async function GET(req: NextRequest, context: { params: any }) {
 	try {
 		const { coinList } = await context.params
 		const url = getCgUserCoinsListRoute(coinList)

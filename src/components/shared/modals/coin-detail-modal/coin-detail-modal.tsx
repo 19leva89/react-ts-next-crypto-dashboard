@@ -18,9 +18,9 @@ import {
 	SheetTitle,
 	Skeleton,
 } from '@/components/ui'
+import { MarketChartData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
-import { CoinData, MarketChartData } from '@/app/api/types'
-import { fetchCoinData, fetchCoinsMarketChart } from '@/app/api/actions'
+import { getCoinsMarketChart } from '@/app/api/actions'
 
 interface Props {
 	coinId: string
@@ -31,8 +31,7 @@ interface Props {
 export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) => {
 	const [fetchingCoinsData, setFetchingCoinsData] = useState<boolean>(false)
 	const [fetchingHistoryData, setFetchingHistoryData] = useState<boolean>(false)
-	const [coinsData, setCoinsData] = useState<CoinData | Record<string, any>>({})
-	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>({ prices: [] })
+	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData | null>(null)
 
 	useEffect(() => {
 		if (!showDetailModal) return
@@ -42,13 +41,10 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 		const fetchData = async () => {
 			try {
-				const [coinInfo, marketChart] = await Promise.all([
-					fetchCoinData(coinId),
-					fetchCoinsMarketChart(coinId),
-				])
+				const marketChart = await getCoinsMarketChart(coinId)
+				console.log('marketChart', marketChart)
 
-				setCoinsData(coinInfo || {})
-				setCoinMarketChartData(marketChart || { prices: [] })
+				setCoinMarketChartData(marketChart)
 			} catch (error) {
 				console.error('Error fetching coin details:', error)
 			} finally {
@@ -69,10 +65,11 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-	const formattedData = coinMarketChartData.prices.map(([timestamp, price]) => ({
-		Month: months[new Date(timestamp).getMonth()],
-		Price: price,
-	}))
+	const formattedData =
+		coinMarketChartData?.prices?.map(([timestamp, price]) => ({
+			Month: months[new Date(timestamp).getMonth()],
+			Price: price,
+		})) || []
 
 	const minPrice = Math.min(...formattedData.map((h) => h.Price))
 	const maxPrice = Math.max(...formattedData.map((h) => h.Price))
@@ -86,7 +83,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 							{fetchingCoinsData ? (
 								<Skeleton className="h-6 w-3/4" />
 							) : (
-								<h4 className="font-semibold text-md">{coinsData.name}</h4>
+								<h4 className="font-semibold text-md">{coinMarketChartData?.coin.coinsListIDMap.name}</h4>
 							)}
 						</div>
 					</SheetTitle>
@@ -156,21 +153,21 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 							<div className="flex justify-between items-center font-medium">
 								<div className="items-center flex gap-2">
 									<Image
-										src={coinsData.image || '/svg/coin-not-found.svg'}
-										alt={coinsData.name || 'Coin image'}
+										src={coinMarketChartData?.coin.image || '/svg/coin-not-found.svg'}
+										alt={coinMarketChartData?.coin.coinsListIDMap.name || 'Coin image'}
 										width={32}
 										height={32}
 										className="size-8 rounded-full"
 									/>
 
 									<span className="font-medium">
-										<span>{coinsData.name} </span>
+										<span>{coinMarketChartData?.coin.coinsListIDMap.name} </span>
 
-										<span className="uppercase">({coinsData.symbol}/usd)</span>
+										<span className="uppercase">({coinMarketChartData?.coin.coinsListIDMap.symbol}/usd)</span>
 									</span>
 								</div>
 
-								<div>${formatPrice(coinsData.market_data?.current_price?.usd)}</div>
+								<div>${formatPrice(coinMarketChartData?.coin.current_price as number)}</div>
 							</div>
 
 							<div className="mt-8 flex flex-col gap-2 text-md">
@@ -178,7 +175,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span>Crypto market rank</span>
 
 									<span className="bg-slate-100 dark:bg-gray-600 px-2 rounded-full text-sm flex items-center">
-										Rank #{coinsData.market_cap_rank}
+										Rank #{coinMarketChartData?.coin.market_cap_rank}
 									</span>
 								</div>
 
@@ -186,7 +183,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span>Market cap</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										${formatPrice(coinsData.market_data?.market_cap.usd, true)}
+										${formatPrice(coinMarketChartData?.coin.market_cap as number, true)}
 									</span>
 								</div>
 
@@ -194,7 +191,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span>Circulating supply</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										${formatPrice(coinsData.market_data?.circulating_supply, true)}
+										${formatPrice(coinMarketChartData?.coin.circulating_supply as number, true)}
 									</span>
 								</div>
 
@@ -202,7 +199,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span className="capitalize">24 hour high</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										${formatPrice(coinsData.market_data?.high_24h?.usd, true)}
+										${formatPrice(coinMarketChartData?.coin.high_24h as number, true)}
 									</span>
 								</div>
 
@@ -210,7 +207,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span className="capitalize">24 hour low</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										${formatPrice(coinsData.market_data?.low_24h?.usd, true)}
+										${formatPrice(coinMarketChartData?.coin.low_24h as number, true)}
 									</span>
 								</div>
 							</div>
@@ -220,7 +217,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 								<p
 									className="text-gray-600 dark:text-gray-300 prose prose-sm prose-a:text-blue-700 prose-a:hover:underline dark:prose-a:text-blue-700 dark:prose-a:hover:underline duration-200 mt-3"
-									dangerouslySetInnerHTML={{ __html: coinsData.description?.en || '' }}
+									dangerouslySetInnerHTML={{ __html: coinMarketChartData?.coin.description as string }}
 								/>
 							</div>
 						</>

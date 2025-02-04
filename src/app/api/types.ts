@@ -9,7 +9,7 @@ export type CoinsListIDMapData = {
 	name: string
 }[]
 
-export type CoinsListData = {
+export type CoinListData = {
 	id: string
 	symbol: string
 	name: string
@@ -27,7 +27,9 @@ export type CoinsListData = {
 		price: number[]
 	}
 	price_change_percentage_7d_in_currency: number
-}[]
+}
+
+export type CoinsListData = CoinListData[]
 
 export type CoinData = {
 	id: string
@@ -56,28 +58,6 @@ export type CoinData = {
 		}
 		circulating_supply: number
 	}
-}
-
-export type TableCoinData = {
-	id: string
-	name: string
-	image: string
-	market_data: {
-		current_price: {
-			usd: number
-		}
-		market_cap: {
-			usd: number
-		}
-		total_volume: {
-			usd: number
-		}
-		price_change_percentage_24h: number
-		price_change_percentage_7d_in_currency: {
-			usd: number
-		}
-	}
-	last_updated: string
 }
 
 export type TrendingData = {
@@ -110,6 +90,20 @@ export type TrendingData = {
 
 export type MarketChartData = {
 	prices: [number, number][]
+	coin: {
+		current_price: number
+		description: string
+		image: string
+		market_cap_rank: number
+		market_cap: number
+		circulating_supply: number
+		high_24h: number
+		low_24h: number
+		coinsListIDMap: {
+			symbol: string
+			name: string
+		}
+	}
 }
 
 export type AidropsData = {

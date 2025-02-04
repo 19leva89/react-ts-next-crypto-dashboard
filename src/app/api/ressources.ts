@@ -1,51 +1,56 @@
 import { GECKO_ROUTE_V3, MARKETCAP_ROUTE_V1 } from './constants'
 
-// fetchTrendingData
+// getTrendingData
 export const getCgTrendingRoute = (): string => {
 	return `${GECKO_ROUTE_V3}/search/trending`
 }
 
-// fetchCategories
+// getCategories
 export const getCgCategoriesRoute = (): string => {
 	return `${GECKO_ROUTE_V3}/coins/categories/list`
 }
 
-// fetchCoinsList
+// getCoinsList
 export const getCgCoinsListRoute = (): string => {
 	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&per_page=250&sparkline=true&price_change_percentage=7d`
 }
 
-// fetchUserCoinsList
+// updateCoinsList
+export const getCgUpdateCoinsListRoute = (coinList: string): string => {
+	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&ids=${coinList}&per_page=250&sparkline=false`
+}
+
+// getUserCoinsList
 export const getCgUserCoinsListRoute = (coinList: string): string => {
 	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&ids=${coinList}&per_page=250&sparkline=false`
 }
 
-// fetchCoinsListIDMap
+// getCoinsListIDMap
 export const getCgCoinsListIDMap = (): string => {
 	return `${GECKO_ROUTE_V3}/coins/list`
 }
 
-// fetchCoinData
+// getCoinData
 export const getCgCoinsDataRoute = (coinId: string): string => {
 	return `${GECKO_ROUTE_V3}/coins/${coinId}?localization=false&tickers=false&community_data=false&developer_data=false`
 }
 
-// fetchCoinsListByCate
+// getCoinsListByCate
 export const getCgCoinsListByCateRoute = (cate: string): string => {
 	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&category=${cate}&per_page=250&sparkline=true&price_change_percentage=7d`
 }
 
-// fetchCoinsMarketChart
+// getCoinsMarketChart
 export const getCgCoinsMarketChartRoute = (coinId: string): string => {
 	return `${GECKO_ROUTE_V3}/coins/${coinId}/market_chart?vs_currency=usd&days=365&precision=1`
 }
 
-// fetchAidrops
+// getAidrops
 export const getCmcOngoingAidropsDataRoute = (): string => {
 	return `${MARKETCAP_ROUTE_V1}/cryptocurrency/airdrops?limit=300&status="ONGOING"`
 }
 
-// fetchAidrops
+// getAidrops
 export const getCmcUpcomingAidropsDataRoute = (): string => {
 	return `${MARKETCAP_ROUTE_V1}/cryptocurrency/airdrops?limit=300&status="UPCOMING"`
 }

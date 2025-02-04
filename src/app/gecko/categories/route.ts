@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgCategoriesRoute } from '@/app/api/ressources'
 
-export const GET = async () => {
+export async function GET() {
 	try {
 		const url = getCgCategoriesRoute()
 

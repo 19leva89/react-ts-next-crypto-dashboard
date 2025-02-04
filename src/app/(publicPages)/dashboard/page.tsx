@@ -5,16 +5,16 @@ import { Skeleton } from '@/components/ui'
 import { DataTableSection } from './_components/table-data-section'
 import { CategoriesData, CoinsListData, TrendingData } from '@/app/api/types'
 import { AccountTrendingSection } from './_components/account-trending-section'
-import { fetchCategories, fetchCoinsList, fetchTrendingData } from '@/app/api/actions'
+import { getCategories, getTrendingData, updateCoinsList } from '@/app/api/actions'
 
 export const metadata: Metadata = {
 	title: 'Dashboard',
 }
 
 const DashboardPage = async () => {
-	const categories = (await fetchCategories()) ?? ([] as CategoriesData)
-	const coinsList = (await fetchCoinsList()) ?? ([] as CoinsListData)
-	const trendingData = (await fetchTrendingData()) ?? ({} as TrendingData)
+	const categories = (await getCategories()) ?? ([] as CategoriesData)
+	const coinsList = (await updateCoinsList()) ?? ([] as CoinsListData)
+	const trendingData = (await getTrendingData()) ?? ({} as TrendingData)
 
 	return (
 		<div className="space-y-14">

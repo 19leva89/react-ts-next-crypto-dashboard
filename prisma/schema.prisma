@@ -117,7 +117,7 @@ model CoinsListIDMap {
   coin      Coin?
   //
   userCoins UserCoin[]
-  airdrop   Airdrop[]
+  airdrops  Airdrop[]
 
   @@map("coins_list_id_map")
 }
@@ -139,6 +139,7 @@ model Coin {
   //
   userCoins                              UserCoin[]
   airdrops                               Airdrop[]
+  marketCharts                           MarketChart[]
   coinsListIDMap                         CoinsListIDMap @relation(fields: [id], references: [id], onDelete: Cascade)
   coinsListIDMapId                       String
   category                               Category?      @relation(fields: [categoryId], references: [category_id])
@@ -189,14 +190,16 @@ model TrendingCoin {
 model Category {
   category_id String @id @unique
   name        String
-  coin        Coin[]
+  coins       Coin[]
 
   @@map("category")
 }
 
 model MarketChart {
-  id     String @id @default(uuid())
+  id     String @id @unique
   prices Json
+  coin   Coin   @relation(fields: [coinId], references: [id], onDelete: Cascade)
+  coinId String
 
   @@map("market_chart")
 }

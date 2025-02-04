@@ -2,12 +2,12 @@ import axios from 'axios'
 
 import { absoluteUrl } from '@/lib/utils'
 
-const makeReq = async (
+async function makeReq(
 	method: string,
 	url: string,
 	data: Record<string, any> = {},
 	headers: Record<string, string> = {},
-): Promise<any> => {
+): Promise<any> {
 	try {
 		const response = await axios({
 			method,
@@ -26,7 +26,7 @@ const makeReq = async (
 	}
 }
 
-const makeServerReq = async (url: string, method: string, useGecko = true): Promise<any> => {
+async function makeServerReq(url: string, method: string, useGecko = true): Promise<any> {
 	const authHeader: Record<string, string> = useGecko
 		? { 'x-cg-demo-api-key': `${process.env.GECKO_API_KEY}` }
 		: { 'X-CMC_PRO_API_KEY': `${process.env.CMC_API_KEY}` }

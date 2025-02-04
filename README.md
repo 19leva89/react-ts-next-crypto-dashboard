@@ -44,7 +44,7 @@ To run the client and server via concurrently:
 npm run all
 npm run lint (loading ESLint checker)
 
-npx prisma generate --no-engine
+npx prisma generate
 npx prisma db push
 npx prisma db pull
 npx prisma db seed (loading test database)

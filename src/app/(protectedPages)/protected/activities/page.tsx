@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 import { AddCrypto } from './_components/add-crypto'
 import { CryptoCard } from './_components/crypto-card'
 import { AllCryptoPrices } from './_components/all-crypto-prices'
-import { fetchCoinsListIDMap, fetchUserCoinsList, getUserCryptos } from '@/app/api/actions'
+import { getCoinsListIDMap, getUserCoinsList, getUserCryptos } from '@/app/api/actions'
 
 export const metadata: Metadata = {
 	title: 'Activities',
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 const ActivitiesPage = async () => {
-	const coinsList = await fetchCoinsListIDMap()
+	const coinsList = await getCoinsListIDMap()
 	const userCryptos = await getUserCryptos()
-	await fetchUserCoinsList()
+	await getUserCoinsList()
 
 	const cryptoData = userCryptos.map((userCoin) => ({
 		coinId: userCoin.coin.id,

@@ -1,9 +1,12 @@
-import { PrismaClient } from '@prisma/client/edge'
-import { withAccelerate } from '@prisma/extension-accelerate'
+import { PrismaClient } from '@prisma/client'
 
 const prismaClientSingleton = () => {
-	return new PrismaClient().$extends(withAccelerate())
+	return new PrismaClient()
 }
+
+// const prismaClientSingleton = () => {
+// 	return new PrismaClient({ log: ['query', 'info', 'warn', 'error'] }).$extends(withAccelerate())
+// }
 
 declare const globalThis: {
 	prismaGlobal: ReturnType<typeof prismaClientSingleton>

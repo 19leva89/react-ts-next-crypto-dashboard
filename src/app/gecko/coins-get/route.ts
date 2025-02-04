@@ -1,14 +1,13 @@
 'use server'
 
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
 import { makeServerReq } from '@/app/api/make-request'
-import { getCgCoinsDataRoute } from '@/app/api/ressources'
+import { getCgCoinsListIDMap } from '@/app/api/ressources'
 
-export const GET = async (request: NextRequest, context: { params: any }) => {
+export async function GET() {
 	try {
-		const { coinId } = await context.params
-		const url = getCgCoinsDataRoute(coinId)
+		const url = getCgCoinsListIDMap()
 
 		// Execute a request to the server
 		const result = await makeServerReq(url, 'GET')
@@ -22,7 +21,7 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
 		}
 
 		// If there is an error, return it
-		return new NextResponse(JSON.stringify({ error: 'Failed to fetch trending data' }), {
+		return new NextResponse(JSON.stringify({ error: 'Failed to fetch coins data' }), {
 			status: result.status,
 			headers: { 'Content-Type': 'application/json' },
 		})

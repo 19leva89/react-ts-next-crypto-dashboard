@@ -36,7 +36,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui'
-import { TableCoinData } from '@/app/api/types'
+import { CoinListData } from '@/app/api/types'
 
 interface Props<TData, TValue> {
 	data: TData[]
@@ -219,7 +219,7 @@ export function DataTable<TData, TValue>({
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
-									onClick={() => onCoinsClick((row.original as TableCoinData).id)}
+									onClick={() => onCoinsClick((row.original as CoinListData).id)}
 									className="cursor-pointer"
 								>
 									{row.getVisibleCells().map((cell) => (

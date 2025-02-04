@@ -111,7 +111,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-1">
 									<Image
-										src={data.item.thumb || '/svg/coin-not-found.svg'}
+										src={data.item?.thumb || '/svg/coin-not-found.svg'}
 										alt={data.item.name || 'Coin image'}
 										width={32}
 										height={32}
