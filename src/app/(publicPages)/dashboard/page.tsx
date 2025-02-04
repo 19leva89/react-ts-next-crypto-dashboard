@@ -10,6 +10,9 @@ export const metadata: Metadata = {
 	title: 'Dashboard',
 }
 
+// The page must be rendered on the server side
+export const dynamic = 'force-dynamic'
+
 const DashboardPage = async () => {
 	const categories = await getCategories()
 	const coinsList = await updateCoinsList()
