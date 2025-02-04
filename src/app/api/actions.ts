@@ -22,7 +22,7 @@ import {
 	CoinsListData,
 } from './types'
 
-const BATCH_SIZE = 1
+const BATCH_SIZE = 1000
 const USER_COINS_UPDATE_INTERVAL = 5 // minutes
 const COINS_UPDATE_INTERVAL = 60 // minutes
 
