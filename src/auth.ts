@@ -38,11 +38,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 			return token
 		},
 
-		session({ session, token }) {
-			if (session?.user) {
-				session.user.id = token.id
-				session.user.email = token.email
-				session.user.role = token.role
+		async session({ session, token }) {
+			if (session.user) {
+				session.user.id = token.id as string
+				session.user.email = token.email as string
+				session.user.role = token.role as string
 			}
 
 			return session

@@ -29,27 +29,24 @@ interface Props {
 }
 
 export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) => {
-	const [fetchingCoinsData, setFetchingCoinsData] = useState<boolean>(false)
-	const [fetchingHistoryData, setFetchingHistoryData] = useState<boolean>(false)
-	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData | null>(null)
+	const [getCoinData, setGetCoinData] = useState<boolean>(false)
+	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
 
 	useEffect(() => {
 		if (!showDetailModal) return
 
-		setFetchingCoinsData(true)
-		setFetchingHistoryData(true)
+		setGetCoinData(true)
+		setCoinMarketChartData(undefined)
 
 		const fetchData = async () => {
 			try {
 				const marketChart = await getCoinsMarketChart(coinId)
-				console.log('marketChart', marketChart)
 
 				setCoinMarketChartData(marketChart)
 			} catch (error) {
 				console.error('Error fetching coin details:', error)
 			} finally {
-				setFetchingCoinsData(false)
-				setFetchingHistoryData(false)
+				setGetCoinData(false)
 			}
 		}
 
@@ -66,7 +63,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 	const formattedData =
-		coinMarketChartData?.prices?.map(([timestamp, price]) => ({
+		coinMarketChartData?.prices.map(([timestamp, price]) => ({
 			Month: months[new Date(timestamp).getMonth()],
 			Price: price,
 		})) || []
@@ -80,7 +77,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 				<SheetHeader>
 					<SheetTitle>
 						<div className="flex justify-between items-center mb-8">
-							{fetchingCoinsData ? (
+							{getCoinData ? (
 								<Skeleton className="h-6 w-3/4" />
 							) : (
 								<h4 className="font-semibold text-md">{coinMarketChartData?.coin.coinsListIDMap.name}</h4>
@@ -92,7 +89,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 				</SheetHeader>
 
 				<div className="flex justify-center">
-					{fetchingHistoryData ? (
+					{getCoinData ? (
 						<Skeleton className="h-72 w-full" />
 					) : (
 						<div className="w-[420px] mx-auto">
@@ -146,7 +143,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 				</div>
 
 				<div className="mt-10">
-					{fetchingCoinsData ? (
+					{getCoinData ? (
 						<Skeleton className="h-72 w-full" />
 					) : (
 						<>
