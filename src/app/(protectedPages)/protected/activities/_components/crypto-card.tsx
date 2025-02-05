@@ -37,7 +37,7 @@ interface Props {
 	image: string
 }
 
-export const CryptoCard = ({ coinId, name, symbol, currentPrice, quantity, image }: Props) => {
+const CryptoCard = ({ coinId, name, symbol, currentPrice, quantity, image }: Props) => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [editQuantity, setEditQuantity] = useState<string>(String(quantity))
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
@@ -104,7 +104,7 @@ export const CryptoCard = ({ coinId, name, symbol, currentPrice, quantity, image
 			<CardHeader className="flex flex-row items-center justify-between p-3 pb-0">
 				<div className="flex flex-col gap-1">
 					<CardTitle className="flex items-center gap-2">
-						<Image src={image} alt={name} width={24} height={24} className="rounded-full" />
+						<Image src={image} alt={name} width={24} height={24} loading="lazy" className="rounded-full" />
 
 						<span>{name}</span>
 
@@ -200,3 +200,5 @@ export const CryptoCard = ({ coinId, name, symbol, currentPrice, quantity, image
 		</Card>
 	)
 }
+
+export default CryptoCard

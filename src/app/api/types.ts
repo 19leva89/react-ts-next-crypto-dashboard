@@ -7,6 +7,7 @@ export type CoinsListIDMapData = {
 	id: string
 	symbol: string
 	name: string
+	image?: string
 }[]
 
 export type CoinListData = {

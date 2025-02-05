@@ -176,8 +176,8 @@ export const AccountTrendingSection = ({ trendingData, totalPortfolioValue }: Pr
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-1">
 									<Image
-										src={data.item.thumb || '/svg/coin-not-found.svg'}
-										alt={data.item.name || 'Coin image'}
+										src={data?.item?.thumb || '/svg/coin-not-found.svg'}
+										alt={data?.item?.name || 'Coin image'}
 										width={32}
 										height={32}
 										className="size-8 rounded-full"
@@ -185,7 +185,7 @@ export const AccountTrendingSection = ({ trendingData, totalPortfolioValue }: Pr
 
 									<div className="flex flex-col">
 										<span className="text-gray-600 dark:text-white font-semibold">
-											{data.item.name.length > 7 ? data.item.name.slice(0, 7) + '...' : data.item.name}
+											{data?.item?.name.length > 7 ? data?.item?.name.slice(0, 7) + '...' : data?.item?.name}
 										</span>
 
 										<span className="text-gray-400 dark:text-slate-400 font-semibold text-xs">

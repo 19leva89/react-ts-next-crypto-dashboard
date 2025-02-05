@@ -5,17 +5,17 @@ import { useState } from 'react'
 import { DataTable } from './table-data'
 import { columns } from './table-columns'
 import { Skeleton } from '@/components/ui'
-import { CategoriesData, CoinsListData } from '@/app/api/types'
-import { getCoinsListByCate, updateCoinsList } from '@/app/api/actions'
+import { CategoriesData } from '@/app/api/types'
+import { getCoinsList, getCoinsListByCate } from '@/app/api/actions'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 
 interface Props {
 	categories: CategoriesData
-	initialCoins: CoinsListData
+	initialCoins: any
 }
 
 export const DataTableSection = ({ categories, initialCoins }: Props) => {
-	const [coinsList, setCoinsList] = useState<CoinsListData>(initialCoins)
+	const [coinsList, setCoinsList] = useState(initialCoins)
 	const [fetchingCoins, setFetchingCoins] = useState<boolean>(false)
 	const [showDetailModal, setShowDetailModal] = useState<boolean>(false)
 	const [currentCoinId, setCurrentCoinId] = useState<string>('')
@@ -36,7 +36,7 @@ export const DataTableSection = ({ categories, initialCoins }: Props) => {
 		} else {
 			setCurrentCategorie('All')
 
-			const resp = await updateCoinsList()
+			const resp = await getCoinsList()
 			setFetchingCoins(false)
 
 			if (resp) setCoinsList(resp)

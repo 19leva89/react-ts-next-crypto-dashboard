@@ -5,7 +5,7 @@ import { auth } from '@/auth'
 import { Skeleton } from '@/components/ui'
 import { DataTableSection } from './_components/table-data-section'
 import { AccountTrendingSection } from './_components/account-trending-section'
-import { getCategories, getTrendingData, getUserCryptos, updateCoinsList } from '@/app/api/actions'
+import { getCategories, getCoinsList, getTrendingData, getUserCryptos } from '@/app/api/actions'
 
 export const metadata: Metadata = {
 	title: 'Dashboard',
@@ -18,7 +18,7 @@ const DashboardPage = async () => {
 	const session = await auth()
 
 	const categories = await getCategories()
-	const coinsList = await updateCoinsList()
+	const coinsList = await getCoinsList()
 	const trendingData = await getTrendingData()
 	const userCryptos = session ? await getUserCryptos() : []
 

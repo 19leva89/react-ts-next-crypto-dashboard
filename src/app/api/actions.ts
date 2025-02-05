@@ -22,7 +22,7 @@ import {
 	CoinsListData,
 } from './types'
 
-const BATCH_SIZE = 1000
+const BATCH_SIZE = 100
 const USER_COINS_UPDATE_INTERVAL = 5 // minutes
 const COINS_UPDATE_INTERVAL = 60 // minutes
 
@@ -559,14 +559,37 @@ export const getCategories = async (): Promise<CategoriesData> => {
 	}
 }
 
-export const updateCoinsList = async (): Promise<CoinsListData> => {
+export const getCoinsList = async () => {
+	// Отдаем старые данные сразу
+	const cachedCoins = await prisma.coin.findMany({
+		include: {
+			coinsListIDMap: true,
+		},
+	})
+
+	// Запускаем обновление в фоне через API
+	const response = await makeReq('GET', '/update/coins-list')
+
+	if (!response || !Array.isArray(response) || response.length === 0) {
+		console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')
+		return cachedCoins
+	}
+
+	return cachedCoins
+}
+
+export const updateCoinsList = async (): Promise<any> => {
 	try {
-		// Проверяем наличие данных в базе данных
+		// Получаем список монет
 		const cachedCoins = await prisma.coin.findMany({
 			include: {
 				coinsListIDMap: true,
 			},
 		})
+
+		if (!cachedCoins.length) {
+			return []
+		}
 
 		const currentTime = new Date()
 		const updateTime = new Date(currentTime.getTime() - COINS_UPDATE_INTERVAL * 60 * 1000)
@@ -576,51 +599,19 @@ export const updateCoinsList = async (): Promise<CoinsListData> => {
 
 		if (!coinsToUpdate.length) {
 			console.log('✅ Using cached Coins from DB')
-			return cachedCoins.map((coin) => ({
-				id: coin.coinsListIDMap.id,
-				symbol: coin.coinsListIDMap.symbol,
-				name: coin.coinsListIDMap.name,
-				description: coin.description,
-				image: coin.image,
-				current_price: coin.current_price,
-				market_cap: coin.market_cap,
-				market_cap_rank: coin.market_cap_rank,
-				total_volume: coin.total_volume,
-				high_24h: coin.high_24h,
-				low_24h: coin.low_24h,
-				price_change_percentage_24h: coin.price_change_percentage_24h,
-				circulating_supply: coin.circulating_supply,
-				sparkline_in_7d: coin.sparkline_in_7d,
-				price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
-			})) as CoinsListData
+			return cachedCoins
 		}
 
 		// Формируем строку для API-запроса
 		const coinList = coinsToUpdate.map((coin) => encodeURIComponent(coin.id)).join('%2C')
 
-		// Если данных нет, делаем запрос к API
+		// Запрашиваем свежие данные с API
 		console.log('🔄 Outdated records, request CoinsList via API...')
 		const response = await makeReq('GET', `/gecko/coins-upd/${coinList}`)
 
 		if (!response || !Array.isArray(response) || response.length === 0) {
 			console.warn('⚠️ Empty response from API, using old CoinsList')
-			return cachedCoins.map((coin) => ({
-				id: coin.coinsListIDMap.id,
-				symbol: coin.coinsListIDMap.symbol,
-				name: coin.coinsListIDMap.name,
-				description: coin.description,
-				image: coin.image,
-				current_price: coin.current_price,
-				market_cap: coin.market_cap,
-				market_cap_rank: coin.market_cap_rank,
-				total_volume: coin.total_volume,
-				high_24h: coin.high_24h,
-				low_24h: coin.low_24h,
-				price_change_percentage_24h: coin.price_change_percentage_24h,
-				circulating_supply: coin.circulating_supply,
-				sparkline_in_7d: coin.sparkline_in_7d,
-				price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
-			})) as CoinsListData
+			return cachedCoins
 		}
 
 		// Разбиваем данные на чанки
@@ -672,27 +663,9 @@ export const updateCoinsList = async (): Promise<CoinsListData> => {
 		console.log('✅ Records CoinsList updated!')
 
 		// Возвращаем обновленный список монет
-		const updatedCoins = await prisma.coin.findMany({
+		return await prisma.coin.findMany({
 			include: { coinsListIDMap: true },
 		})
-
-		return updatedCoins.map((coin) => ({
-			id: coin.coinsListIDMap.id,
-			symbol: coin.coinsListIDMap.symbol,
-			name: coin.coinsListIDMap.name,
-			description: coin.description,
-			image: coin.image,
-			current_price: coin.current_price,
-			market_cap: coin.market_cap,
-			market_cap_rank: coin.market_cap_rank,
-			total_volume: coin.total_volume,
-			high_24h: coin.high_24h,
-			low_24h: coin.low_24h,
-			price_change_percentage_24h: coin.price_change_percentage_24h,
-			circulating_supply: coin.circulating_supply,
-			sparkline_in_7d: coin.sparkline_in_7d,
-			price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
-		})) as CoinsListData
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error('💾 Prisma error:', error.code, error.message)
@@ -706,17 +679,32 @@ export const updateCoinsList = async (): Promise<CoinsListData> => {
 	}
 }
 
-export const updateUserCoinsList = async (): Promise<any> => {
+export const getUserCoinsList = async () => {
+	const session = await auth()
+	if (!session?.user) throw new Error('User not found')
+
+	// Отдаем старые данные сразу
+	const userCoins = await prisma.userCoin.findMany({
+		where: { userId: session.user.id },
+		include: { coin: true },
+	})
+
+	// Запускаем обновление в фоне через API
+	const response = await makeReq('GET', `/update/user-coins?userId=${session.user.id}`)
+
+	if (!response || !Array.isArray(response) || response.length === 0) {
+		console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')
+		return userCoins
+	}
+
+	return userCoins
+}
+
+export const updateUserCoinsList = async (userId: string): Promise<any> => {
 	try {
-		const session = await auth()
-
-		if (!session?.user) {
-			throw new Error('User not found')
-		}
-
 		// Получаем список монет пользователя
 		const userCoins = await prisma.userCoin.findMany({
-			where: { userId: session.user.id },
+			where: { userId },
 			include: { coin: true },
 		})
 
@@ -743,7 +731,7 @@ export const updateUserCoinsList = async (): Promise<any> => {
 		const response = await makeReq('GET', `/gecko/user/${coinList}`)
 
 		if (!response || !Array.isArray(response) || response.length === 0) {
-			console.warn('⚠️ Empty response from API, using old UserCoinsList')
+			console.warn('⚠️ UPDATE_USER_COINS: Empty response from API, using old UserCoinsList')
 			return userCoins
 		}
 
@@ -775,7 +763,7 @@ export const updateUserCoinsList = async (): Promise<any> => {
 				// Обновляем userCoin.updatedAt
 				...batch.map((coin) =>
 					prisma.userCoin.updateMany({
-						where: { userId: session.user.id, coinId: coin.id },
+						where: { userId, coinId: coin.id },
 						data: { updatedAt: currentTime },
 					}),
 				),
@@ -786,7 +774,7 @@ export const updateUserCoinsList = async (): Promise<any> => {
 
 		// Возвращаем обновленный список монет
 		return await prisma.userCoin.findMany({
-			where: { userId: session.user.id },
+			where: { userId },
 			include: { coin: true },
 		})
 	} catch (error) {
@@ -816,8 +804,8 @@ export const getCoinsListIDMap = async (): Promise<CoinsListIDMapData> => {
 			id: list.id,
 			symbol: list.symbol,
 			name: list.name,
-			image: list.coin?.image || null,
-		}))
+			image: list.coin?.image,
+		})) as CoinsListIDMapData
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error('💾 Prisma error:', error.code, error.message)

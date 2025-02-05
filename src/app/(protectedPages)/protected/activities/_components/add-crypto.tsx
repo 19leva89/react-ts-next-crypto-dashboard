@@ -3,8 +3,8 @@
 import Image from 'next/image'
 import toast from 'react-hot-toast'
 import { Plus } from 'lucide-react'
-import { ChangeEvent, useState } from 'react'
 import { FixedSizeList as List } from 'react-window'
+import { ChangeEvent, useEffect, useState } from 'react'
 
 import {
 	Button,
@@ -22,20 +22,42 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
+	Skeleton,
 } from '@/components/ui'
-import { addCryptoToUser } from '@/app/api/actions'
+import { CoinsListIDMapData } from '@/app/api/types'
+import { addCryptoToUser, getCoinsListIDMap } from '@/app/api/actions'
 
-interface Props {
-	initialCoins: { id: string; name: string; symbol: string; image?: string }[]
-}
-
-export const AddCrypto = ({ initialCoins }: Props) => {
+export const AddCrypto = () => {
 	const [quantity, setQuantity] = useState<string>('')
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [selectedCrypto, setSelectedCrypto] = useState<string>('')
 
-	const filteredCoins = initialCoins.filter(
+	const [getCoinData, setGetCoinData] = useState<boolean>(false)
+	const [coinsListIDMapData, setCoinsListIDMapData] = useState<CoinsListIDMapData>()
+
+	useEffect(() => {
+		if (!isDialogOpen) return
+
+		setGetCoinData(true)
+		setCoinsListIDMapData(undefined)
+
+		const fetchData = async () => {
+			try {
+				const coinsList = await getCoinsListIDMap()
+
+				setCoinsListIDMapData(coinsList)
+			} catch (error) {
+				console.error('Error fetching CoinsListIDMap:', error)
+			} finally {
+				setGetCoinData(false)
+			}
+		}
+
+		fetchData()
+	}, [setCoinsListIDMapData, isDialogOpen])
+
+	const filteredCoins = coinsListIDMapData?.filter(
 		(coin) =>
 			coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 			coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -130,46 +152,52 @@ export const AddCrypto = ({ initialCoins }: Props) => {
 											/>
 										</div>
 
-										{(() => {
-											const selectedIndex = filteredCoins.findIndex((coin) => coin.id === selectedCrypto)
-											const itemHeight = 40
+										{getCoinData ? (
+											<Skeleton className="h-52 w-full" />
+										) : (
+											(() => {
+												const selectedIndex = filteredCoins?.findIndex((coin) => coin.id === selectedCrypto)
+												const itemHeight = 40
 
-											return (
-												<List
-													height={200}
-													width={325}
-													itemSize={itemHeight}
-													itemCount={filteredCoins.length}
-													initialScrollOffset={selectedIndex > -1 ? selectedIndex * itemHeight : 0}
-												>
-													{({ index, style }) => {
-														const coin = filteredCoins[index]
+												return (
+													<List
+														height={200}
+														width={325}
+														itemSize={itemHeight}
+														itemCount={filteredCoins?.length as number}
+														initialScrollOffset={
+															(selectedIndex as number) > -1 ? (selectedIndex as number) * itemHeight : 0
+														}
+													>
+														{({ index, style }) => {
+															const coin = filteredCoins && filteredCoins[index]
 
-														return (
-															<SelectItem
-																key={coin.id}
-																value={coin.id}
-																className="rounded-xl truncate"
-																style={style}
-															>
-																<div className="flex flex-row gap-2 h-5">
-																	<Image
-																		src={coin.image || '/svg/coin-not-found.svg'}
-																		alt={coin.name}
-																		width={20}
-																		height={20}
-																	/>
+															return (
+																<SelectItem
+																	key={coin?.id}
+																	value={coin?.id as string}
+																	className="rounded-xl truncate"
+																	style={style}
+																>
+																	<div className="flex flex-row gap-2 h-5">
+																		<Image
+																			src={coin?.image || '/svg/coin-not-found.svg'}
+																			alt={coin?.name || 'Coin'}
+																			width={20}
+																			height={20}
+																		/>
 
-																	<span className="truncate">
-																		{coin.name} ({coin.symbol.toUpperCase()})
-																	</span>
-																</div>
-															</SelectItem>
-														)
-													}}
-												</List>
-											)
-										})()}
+																		<span className="truncate">
+																			{coin?.name} ({coin?.symbol.toUpperCase()})
+																		</span>
+																	</div>
+																</SelectItem>
+															)
+														}}
+													</List>
+												)
+											})()
+										)}
 									</SelectContent>
 								</Select>
 							</div>
