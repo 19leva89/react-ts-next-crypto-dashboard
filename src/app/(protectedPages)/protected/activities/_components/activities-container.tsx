@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 import { AddCrypto } from './add-crypto'
 import { CryptoCardItem } from './crypto-card-item'
@@ -54,9 +54,11 @@ export const ActivitiesContainer = () => {
 	return (
 		<div className="flex flex-col w-full">
 			<div className="flex items-center justify-between">
-				<div className="p-2 px-6">
-					<h2 className="text-2xl font-bold">Total crypto: ${formatPrice(totalValue, true, 2)}</h2>
-				</div>
+				<Suspense fallback={<p>Loading...</p>}>
+					<div className="p-2 px-6">
+						<h2 className="text-2xl font-bold">Total crypto: ${formatPrice(totalValue, true, 2)}</h2>
+					</div>
+				</Suspense>
 
 				<AddCrypto />
 			</div>

@@ -700,7 +700,11 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 		}
 
 		// Формируем строку для API-запроса
-		const coinList = coinsToUpdate.map((uc) => encodeURIComponent(uc.coinId)).join('%2C')
+		const coinList = coinsToUpdate
+			.sort(() => Math.random() - 0.5) // Перемешиваем массив случайным образом
+			.slice(0, 10) // Берем первые 10 элементов
+			.map((uc) => encodeURIComponent(uc.coinId))
+			.join('%2C')
 
 		// Запрашиваем свежие данные с API
 		console.log('🔄 Outdated records, request UserCoins via API...')
@@ -711,40 +715,34 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 			return userCoins
 		}
 
-		// Разбиваем данные на чанки
-		const coinChunks = chunk(response, BATCH_SIZE)
+		await prisma.$transaction([
+			// Обновляем coin
+			...response.map((coin) =>
+				prisma.coin.upsert({
+					where: { id: coin.id },
+					update: {
+						current_price: coin.current_price,
+						image: coin.image,
+						updatedAt: currentTime,
+					},
+					create: {
+						id: coin.id,
+						coinsListIDMapId: coin.id,
+						current_price: coin.current_price,
+						image: coin.image,
+						updatedAt: currentTime,
+					},
+				}),
+			),
 
-		// Обновляем монеты батчами
-		for (const batch of coinChunks) {
-			await prisma.$transaction([
-				// Обновляем coin
-				...batch.map((coin) =>
-					prisma.coin.upsert({
-						where: { id: coin.id },
-						update: {
-							current_price: coin.current_price,
-							image: coin.image,
-							updatedAt: currentTime,
-						},
-						create: {
-							id: coin.id,
-							coinsListIDMapId: coin.id,
-							current_price: coin.current_price,
-							image: coin.image,
-							updatedAt: currentTime,
-						},
-					}),
-				),
-
-				// Обновляем userCoin.updatedAt
-				...batch.map((coin) =>
-					prisma.userCoin.updateMany({
-						where: { userId, coinId: coin.id },
-						data: { updatedAt: currentTime },
-					}),
-				),
-			])
-		}
+			// Обновляем userCoin
+			...response.map((coin) =>
+				prisma.userCoin.updateMany({
+					where: { userId, coinId: coin.id },
+					data: { updatedAt: currentTime },
+				}),
+			),
+		])
 
 		console.log('✅ Records UserCoinsList updated!')
 
