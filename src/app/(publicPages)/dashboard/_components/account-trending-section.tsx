@@ -149,17 +149,17 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 							<div
 								className={cn(
 									'flex items-center gap-2 rounded-full font-medium px-2 py-1',
-									data.item.data.price_change_percentage_24h.usd > 0
+									data?.item?.data?.price_change_percentage_24h?.usd > 0
 										? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
 										: 'bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item',
 								)}
 							>
 								<span>
-									{data.item.data.price_change_percentage_24h.usd > 0 && '+'}
-									{data.item.data.price_change_percentage_24h.usd.toFixed(1)}%
+									{data?.item?.data?.price_change_percentage_24h?.usd > 0 && '+'}
+									{data?.item?.data?.price_change_percentage_24h?.usd.toFixed(1)}%
 								</span>
 
-								{data.item.data.price_change_percentage_24h.usd > 0 ? (
+								{data?.item?.data?.price_change_percentage_24h?.usd > 0 ? (
 									<TrendingUp size={16} className="text-green-500" />
 								) : (
 									<TrendingDown size={16} className="text-red-500" />

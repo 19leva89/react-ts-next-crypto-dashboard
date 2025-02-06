@@ -658,6 +658,7 @@ export const getUserCoinsList = async () => {
 
 		if (!response || !Array.isArray(response) || response.length === 0) {
 			console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')
+
 			return userCoins
 		}
 
