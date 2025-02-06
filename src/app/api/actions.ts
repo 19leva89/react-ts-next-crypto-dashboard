@@ -1,6 +1,5 @@
 'use server'
 
-import { chunk } from 'lodash'
 import { compare } from 'bcryptjs'
 import { revalidatePath } from 'next/cache'
 
@@ -22,7 +21,6 @@ import {
 	CoinsListData,
 } from './types'
 
-const BATCH_SIZE = 100
 const USER_COINS_UPDATE_INTERVAL = 5 // minutes
 const COINS_UPDATE_INTERVAL = 60 // minutes
 
@@ -562,62 +560,60 @@ export const updateCoinsList = async (): Promise<any> => {
 		}
 
 		// Формируем строку для API-запроса
-		const coinList = coinsToUpdate.map((coin) => encodeURIComponent(coin.id)).join('%2C')
+		const coinList = coinsToUpdate
+			.sort(() => Math.random() - 0.5) // Перемешиваем массив случайным образом
+			.slice(0, 10) // Берем первые 10 элементов
+			.map((coin) => encodeURIComponent(coin.id))
+			.join('%2C')
 
 		// Запрашиваем свежие данные с API
 		console.log('🔄 Outdated records, request CoinsList via API...')
 		const response = await makeReq('GET', `/gecko/coins-upd/${coinList}`)
 
 		if (!response || !Array.isArray(response) || response.length === 0) {
-			console.warn('⚠️ Empty response from API, using old CoinsList')
+			console.warn('⚠️ UPDATE_COINS: Empty response from API, using old CoinsList')
 			return cachedCoins
 		}
 
-		// Разбиваем данные на чанки
-		const coinChunks = chunk(response, BATCH_SIZE)
+		await prisma.$transaction([
+			// Обновляем coinsListIDMap
+			...response.map((coin) =>
+				prisma.coinsListIDMap.upsert({
+					where: { id: coin.id },
+					update: {
+						symbol: coin.symbol,
+						name: coin.name,
+					},
+					create: {
+						id: coin.id,
+						symbol: coin.symbol,
+						name: coin.name,
+					},
+				}),
+			),
 
-		// Обновляем монеты батчами
-		for (const batch of coinChunks) {
-			await prisma.$transaction([
-				// Обновляем coinsListIDMap
-				...batch.map((coin) =>
-					prisma.coinsListIDMap.upsert({
-						where: { id: coin.id },
-						update: {
-							symbol: coin.symbol,
-							name: coin.name,
-						},
-						create: {
-							id: coin.id,
-							symbol: coin.symbol,
-							name: coin.name,
-						},
-					}),
-				),
-
-				// Обновляем Coin
-				...batch.map((coin) =>
-					prisma.coin.updateMany({
-						where: { id: coin.id },
-						data: {
-							description: coin.description,
-							image: coin.image,
-							current_price: coin.current_price,
-							market_cap: coin.market_cap,
-							market_cap_rank: coin.market_cap_rank,
-							total_volume: coin.total_volume,
-							high_24h: coin.high_24h,
-							low_24h: coin.low_24h,
-							price_change_percentage_24h: coin.price_change_percentage_24h,
-							circulating_supply: coin.circulating_supply,
-							sparkline_in_7d: coin.sparkline_in_7d,
-							price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
-							updatedAt: currentTime,
-						},
-					}),
-				),
-			])
-		}
+			// Обновляем Coin
+			...response.map((coin) =>
+				prisma.coin.updateMany({
+					where: { id: coin.id },
+					data: {
+						description: coin.description,
+						image: coin.image,
+						current_price: coin.current_price,
+						market_cap: coin.market_cap,
+						market_cap_rank: coin.market_cap_rank,
+						total_volume: coin.total_volume,
+						high_24h: coin.high_24h,
+						low_24h: coin.low_24h,
+						price_change_percentage_24h: coin.price_change_percentage_24h,
+						circulating_supply: coin.circulating_supply,
+						sparkline_in_7d: coin.sparkline_in_7d,
+						price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
+						updatedAt: currentTime,
+					},
+				}),
+			),
+		])
 
 		console.log('✅ Records CoinsList updated!')
 

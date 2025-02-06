@@ -170,10 +170,12 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 						<div className="mt-3 flex flex-col ">
 							<span className="text-gray-500 dark:text-slate-200 font-semibold overflow-hidden">
 								{/* dummy */}
-								{parseFloat(data.item.data.total_volume_btc).toFixed(2)} {data.item.symbol}
+								{parseFloat(data?.item?.data?.total_volume_btc).toFixed(2)} {data?.item?.symbol}
 							</span>
 
-							<span className="text-gray-600 dark:text-slate-400 text-xs">{data.item.data.market_cap}</span>
+							<span className="text-gray-600 dark:text-slate-400 text-xs">
+								{data?.item?.data?.market_cap}
+							</span>
 						</div>
 					</div>
 				))}
