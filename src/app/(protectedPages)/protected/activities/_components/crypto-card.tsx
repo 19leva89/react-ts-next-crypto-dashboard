@@ -25,44 +25,79 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
-import { CryptoData } from './activities-container'
 import { formatPrice } from '@/constants/format-price'
 import { delleteCryptoFromUser, updateCryptoQuantity } from '@/app/api/actions'
 
-export const CryptoCardItem = ({ coin }: { coin: CryptoData }) => {
+interface CryptoData {
+	coinId: string
+	name: string
+	symbol: string
+	currentPrice: number
+	quantity: number
+	image: string
+}
+
+export const CryptoCard = ({ coin }: { coin: CryptoData }) => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-	const [editQuantity, setEditQuantity] = useState<string>(coin.quantity.toString())
+	const [editQuantity, setEditQuantity] = useState<string>(String(coin.quantity))
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
 
 	const totalValue = coin.currentPrice * coin.quantity
 
 	const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
 		let value = e.target.value
-		if (!/^\d*([.,]?\d*)?$/.test(value)) return
+
+		// Разрешаем только цифры, точку и запятую
+		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
+
+		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
 		value = value.replace(',', '.')
+
 		if ((value.match(/\./g) || []).length > 1) return
+
 		setEditQuantity(value)
 	}
 
 	const handleUpdate = async () => {
 		try {
+			// Вызываем функцию для обновления криптовалюты
 			await updateCryptoQuantity(coin.coinId, Number(editQuantity))
+
+			// Уведомляем пользователя об успехе
 			toast.success('Crypto updated successfully')
+
+			// Закрываем диалог
 			setIsDialogOpen(false)
 		} catch (error) {
+			// Уведомляем пользователя об ошибке
 			console.error('Error updating crypto:', error)
-			toast.error(error instanceof Error ? error.message : 'Failed to update crypto. Please try again')
+
+			if (error instanceof Error) {
+				toast.error(error.message)
+			} else {
+				toast.error('Failed to update crypto. Please try again')
+			}
 		}
 	}
 
 	const handleDelete = async () => {
 		try {
+			// Вызываем функцию для удаления криптовалюты
 			await delleteCryptoFromUser(coin.coinId)
+
+			// Уведомляем пользователя об успехе
 			toast.success('Crypto removed successfully')
+
 			setIsDeleteDialogOpen(false)
 		} catch (error) {
+			// Уведомляем пользователя об ошибке
 			console.error('Error removing crypto:', error)
-			toast.error(error instanceof Error ? error.message : 'Failed to remove crypto. Please try again')
+
+			if (error instanceof Error) {
+				toast.error(error.message)
+			} else {
+				toast.error('Failed to remove crypto. Please try again')
+			}
 		}
 	}
 
@@ -71,15 +106,10 @@ export const CryptoCardItem = ({ coin }: { coin: CryptoData }) => {
 			<CardHeader className="flex flex-row items-center justify-between p-3 pb-0">
 				<div className="flex flex-col gap-1">
 					<CardTitle className="flex items-center gap-2">
-						<Image
-							src={coin.image}
-							alt={coin.name}
-							width={24}
-							height={24}
-							loading="lazy"
-							className="rounded-full"
-						/>
+						<Image src={coin.image} alt={coin.name} width={24} height={24} className="rounded-full" />
+
 						<span>{coin.name}</span>
+
 						<span className="text-sm text-muted-foreground">({coin.symbol.toUpperCase()})</span>
 					</CardTitle>
 					<CardDescription>Current Price: ${formatPrice(coin.currentPrice)}</CardDescription>
@@ -95,16 +125,17 @@ export const CryptoCardItem = ({ coin }: { coin: CryptoData }) => {
 					<DropdownMenuContent side="right" align="start" sideOffset={0} className="rounded-xl">
 						<DropdownMenuItem
 							onSelect={() => setIsDialogOpen(true)}
-							className="p-0 rounded-xl cursor-pointer"
+							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
 								<Pencil className="h-4 w-4" />
 								<span>Edit</span>
 							</Button>
 						</DropdownMenuItem>
+
 						<DropdownMenuItem
 							onSelect={() => setIsDeleteDialogOpen(true)}
-							className="p-0 rounded-xl cursor-pointer"
+							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
 								<Trash className="h-4 w-4" />

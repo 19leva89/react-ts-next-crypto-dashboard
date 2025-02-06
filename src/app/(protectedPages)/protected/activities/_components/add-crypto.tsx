@@ -72,6 +72,8 @@ export const AddCrypto = () => {
 		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
 		value = value.replace(',', '.')
 
+		if ((value.match(/\./g) || []).length > 1) return
+
 		setQuantity(value)
 	}
 
