@@ -37,7 +37,7 @@ interface Props {
 	image: string
 }
 
-const CryptoCard = ({ coinId, name, symbol, currentPrice, quantity, image }: Props) => {
+export const CryptoCard = ({ coinId, name, symbol, currentPrice, quantity, image }: Props) => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [editQuantity, setEditQuantity] = useState<string>(String(quantity))
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
@@ -200,5 +200,3 @@ const CryptoCard = ({ coinId, name, symbol, currentPrice, quantity, image }: Pro
 		</Card>
 	)
 }
-
-export default CryptoCard

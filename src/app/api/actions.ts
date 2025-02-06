@@ -310,47 +310,6 @@ export const addCryptoToUser = async (coinId: string, quantity: number) => {
 	}
 }
 
-export const getUserCryptos = async () => {
-	try {
-		const session = await auth()
-
-		// Проверяем, авторизован ли пользователь
-		if (!session?.user) {
-			throw new Error('User not authenticated')
-		}
-
-		// Проверяем права доступа
-		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
-			throw new Error('You do not have permission to perform this action')
-		}
-
-		return await prisma.userCoin.findMany({
-			where: {
-				userId: session.user.id,
-			},
-			include: {
-				// Подключаем данные монеты
-				coin: {
-					include: {
-						// Подключаем данные из CoinsListIDMap (название, символ)
-						coinsListIDMap: true,
-					},
-				},
-			},
-		})
-	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [GET_USER_CRYPTO]', error)
-		}
-
-		throw error
-	}
-}
-
 export const updateCryptoQuantity = async (coinId: string, quantity: number) => {
 	try {
 		const session = await auth()
@@ -680,24 +639,40 @@ export const updateCoinsList = async (): Promise<any> => {
 }
 
 export const getUserCoinsList = async () => {
-	const session = await auth()
-	if (!session?.user) throw new Error('User not found')
+	try {
+		const session = await auth()
 
-	// Отдаем старые данные сразу
-	const userCoins = await prisma.userCoin.findMany({
-		where: { userId: session.user.id },
-		include: { coin: true },
-	})
+		// Проверяем, авторизован ли пользователь
+		if (!session?.user) {
+			throw new Error('User not authenticated')
+		}
 
-	// Запускаем обновление в фоне через API
-	const response = await makeReq('GET', `/update/user-coins?userId=${session.user.id}`)
+		// Отдаем старые данные сразу
+		const userCoins = await prisma.userCoin.findMany({
+			where: { userId: session.user.id },
+			include: { coinsListIDMap: true, coin: true },
+		})
 
-	if (!response || !Array.isArray(response) || response.length === 0) {
-		console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')
+		// Запускаем обновление в фоне через API
+		const response = await makeReq('GET', `/update/user-coins?userId=${session.user.id}`)
+
+		if (!response || !Array.isArray(response) || response.length === 0) {
+			console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')
+			return userCoins
+		}
+
 		return userCoins
-	}
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error('💾 Prisma error:', error.code, error.message)
+		} else if (error instanceof Error) {
+			console.error('🚨 Unexpected error:', error.message)
+		} else {
+			console.error('❌ Error [GET_USER_COINS]', error)
+		}
 
-	return userCoins
+		throw error
+	}
 }
 
 export const updateUserCoinsList = async (userId: string): Promise<any> => {

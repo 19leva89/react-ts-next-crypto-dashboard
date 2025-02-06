@@ -1,13 +1,10 @@
-import dynamic from 'next/dynamic'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 
+import { getUserCoinsList } from '@/app/api/actions'
 import { AddCrypto } from './_components/add-crypto'
+import { CryptoCard } from './_components/crypto-card'
 import { AllCryptoPrices } from './_components/all-crypto-prices'
-import { getUserCoinsList, getUserCryptos } from '@/app/api/actions'
-
-// Lazy loading
-const CryptoCard = dynamic(() => import('./_components/crypto-card'))
 
 export const metadata: Metadata = {
 	title: 'Activities',
@@ -23,27 +20,15 @@ interface CryptoData {
 }
 
 const ActivitiesPage = async () => {
-	let userCryptos, userCoins
+	const userCoins = await getUserCoinsList()
 
-	try {
-		;[userCryptos, userCoins] = await Promise.all([getUserCryptos(), getUserCoinsList()])
-	} catch (error) {
-		console.error('Failed to fetch data:', error)
-
-		return (
-			<div className="flex justify-center items-center h-screen">
-				<p className="text-red-500">Failed to load data. Please try again later.</p>
-			</div>
-		)
-	}
-
-	const cryptoData: CryptoData[] = userCryptos.map((userCoin) => ({
-		coinId: userCoin.coin.id,
-		name: userCoin.coin.coinsListIDMap.name,
-		symbol: userCoin.coin.coinsListIDMap.symbol,
-		currentPrice: userCoin.coin.current_price as number,
-		quantity: userCoin.quantity as number,
-		image: userCoin.coin.image as string,
+	const cryptoData: CryptoData[] = userCoins.map((coin) => ({
+		coinId: coin.coin.id,
+		name: coin.coinsListIDMap.name,
+		symbol: coin.coinsListIDMap.symbol,
+		currentPrice: coin.coin.current_price as number,
+		quantity: coin.quantity as number,
+		image: coin.coin.image as string,
 	}))
 
 	// Вычисляем общую стоимость портфеля
