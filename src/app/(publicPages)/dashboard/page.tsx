@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { Suspense } from 'react'
 
 import { Skeleton } from '@/components/ui'
-import { DataTableSection } from './_components/table-data-section'
+import { DataTableContainer } from './_components/table-data-container'
 import { AccountTrendingSection } from './_components/account-trending-section'
 import { getCategories, getCoinsList, getTrendingData } from '@/app/api/actions'
 
@@ -23,7 +23,7 @@ const DashboardPage = async () => {
 			<AccountTrendingSection trendingData={trendingData} />
 
 			<Suspense fallback={<Skeleton className="h-96 w-full rounded-xl" />}>
-				<DataTableSection categories={categories} initialCoins={coinsList} />
+				<DataTableContainer categories={categories} initialCoins={coinsList} />
 			</Suspense>
 		</div>
 	)

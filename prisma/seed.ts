@@ -657,7 +657,7 @@ async function up() {
 		})
 
 		await prisma.userCoin.createMany({
-			data: [{ userId, id: 'tether', coinId: 'tether', coinsListIDMapId: 'tether', quantity: 858.01 }],
+			data: [{ userId, id: 'tether', coinId: 'tether', coinsListIDMapId: 'tether', quantity: 714.07 }],
 		})
 	})
 
@@ -964,6 +964,192 @@ async function up() {
 			data: [
 				{ userId, id: 'ethereum', coinId: 'ethereum', coinsListIDMapId: 'ethereum', quantity: 0.0483545 },
 			],
+		})
+	})
+
+	// #54
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'my-neighbor-alice' },
+			update: {},
+			create: {
+				id: 'my-neighbor-alice',
+				coinsListIDMapId: 'my-neighbor-alice',
+			},
+		})
+
+		await prisma.userCoin.createMany({
+			data: [
+				{
+					userId,
+					id: 'my-neighbor-alice',
+					coinId: 'my-neighbor-alice',
+					coinsListIDMapId: 'my-neighbor-alice',
+					quantity: 17,
+				},
+			],
+		})
+	})
+
+	// #55
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'alpaca-finance' },
+			update: {},
+			create: {
+				id: 'alpaca-finance',
+				coinsListIDMapId: 'alpaca-finance',
+			},
+		})
+
+		await prisma.userCoin.createMany({
+			data: [
+				{
+					userId,
+					id: 'alpaca-finance',
+					coinId: 'alpaca-finance',
+					coinsListIDMapId: 'alpaca-finance',
+					quantity: 105,
+				},
+			],
+		})
+	})
+
+	// #56
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'altlayer' },
+			update: {},
+			create: {
+				id: 'altlayer',
+				coinsListIDMapId: 'altlayer',
+			},
+		})
+
+		await prisma.userCoin.createMany({
+			data: [{ userId, id: 'altlayer', coinId: 'altlayer', coinsListIDMapId: 'altlayer', quantity: 230 }],
+		})
+	})
+
+	// #57
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'apecoin' },
+			update: {},
+			create: {
+				id: 'apecoin',
+				coinsListIDMapId: 'apecoin',
+			},
+		})
+
+		await prisma.userCoin.createMany({
+			data: [{ userId, id: 'apecoin', coinId: 'apecoin', coinsListIDMapId: 'apecoin', quantity: 32 }],
+		})
+	})
+
+	// #58
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'bakerytoken' },
+			update: {},
+			create: {
+				id: 'bakerytoken',
+				coinsListIDMapId: 'bakerytoken',
+			},
+		})
+
+		await prisma.userCoin.createMany({
+			data: [
+				{ userId, id: 'bakerytoken', coinId: 'bakerytoken', coinsListIDMapId: 'bakerytoken', quantity: 85 },
+			],
+		})
+	})
+
+	// #59
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'ethereum-classic' },
+			update: {},
+			create: {
+				id: 'ethereum-classic',
+				coinsListIDMapId: 'ethereum-classic',
+			},
+		})
+
+		await prisma.userCoin.createMany({
+			data: [
+				{
+					userId,
+					id: 'ethereum-classic',
+					coinId: 'ethereum-classic',
+					coinsListIDMapId: 'ethereum-classic',
+					quantity: 1,
+				},
+			],
+		})
+	})
+
+	// #60
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'hashflow' },
+			update: {},
+			create: {
+				id: 'hashflow',
+				coinsListIDMapId: 'hashflow',
+			},
+		})
+
+		await prisma.userCoin.createMany({
+			data: [{ userId, id: 'hashflow', coinId: 'hashflow', coinsListIDMapId: 'hashflow', quantity: 115 }],
+		})
+	})
+
+	// #61
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'space-id' },
+			update: {},
+			create: {
+				id: 'space-id',
+				coinsListIDMapId: 'space-id',
+			},
+		})
+
+		await prisma.userCoin.createMany({
+			data: [{ userId, id: 'space-id', coinId: 'space-id', coinsListIDMapId: 'space-id', quantity: 46 }],
+		})
+	})
+
+	// #62
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'litecoin' },
+			update: {},
+			create: {
+				id: 'litecoin',
+				coinsListIDMapId: 'litecoin',
+			},
+		})
+
+		await prisma.userCoin.createMany({
+			data: [{ userId, id: 'litecoin', coinId: 'litecoin', coinsListIDMapId: 'litecoin', quantity: 0.15 }],
+		})
+	})
+
+	// #63
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'starknet' },
+			update: {},
+			create: {
+				id: 'starknet',
+				coinsListIDMapId: 'starknet',
+			},
+		})
+
+		await prisma.userCoin.createMany({
+			data: [{ userId, id: 'starknet', coinId: 'starknet', coinsListIDMapId: 'starknet', quantity: 48 }],
 		})
 	})
 }

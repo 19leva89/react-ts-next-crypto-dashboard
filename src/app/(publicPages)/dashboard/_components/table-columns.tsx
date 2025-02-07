@@ -1,8 +1,8 @@
 'use client'
 
 import Image from 'next/image'
-import { ArrowUpDown } from 'lucide-react'
 import { ColumnDef } from '@tanstack/react-table'
+import { ArrowDown, ArrowUp } from 'lucide-react'
 import { Line, LineChart, YAxis } from 'recharts'
 
 import { cn } from '@/lib'
@@ -22,7 +22,11 @@ export const columns: ColumnDef<CoinListData>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					#
-					<ArrowUpDown />
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUp className="h-4 w-4" />
+					) : (
+						<ArrowDown className="h-4 w-4" />
+					)}
 				</Button>
 			)
 		},
@@ -41,7 +45,11 @@ export const columns: ColumnDef<CoinListData>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Name
-					<ArrowUpDown />
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUp className="h-4 w-4" />
+					) : (
+						<ArrowDown className="h-4 w-4" />
+					)}
 				</Button>
 			)
 		},
@@ -79,7 +87,11 @@ export const columns: ColumnDef<CoinListData>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Price
-					<ArrowUpDown />
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUp className="h-4 w-4" />
+					) : (
+						<ArrowDown className="h-4 w-4" />
+					)}
 				</Button>
 			)
 		},
@@ -103,7 +115,11 @@ export const columns: ColumnDef<CoinListData>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					24h
-					<ArrowUpDown />
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUp className="h-4 w-4" />
+					) : (
+						<ArrowDown className="h-4 w-4" />
+					)}
 				</Button>
 			)
 		},
@@ -145,7 +161,11 @@ export const columns: ColumnDef<CoinListData>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					24h Volume
-					<ArrowUpDown />
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUp className="h-4 w-4" />
+					) : (
+						<ArrowDown className="h-4 w-4" />
+					)}
 				</Button>
 			)
 		},
@@ -169,7 +189,11 @@ export const columns: ColumnDef<CoinListData>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Market Cap
-					<ArrowUpDown />
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUp className="h-4 w-4" />
+					) : (
+						<ArrowDown className="h-4 w-4" />
+					)}
 				</Button>
 			)
 		},

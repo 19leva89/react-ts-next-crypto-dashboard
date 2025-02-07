@@ -2,12 +2,11 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import { ArrowUp, ChevronDown, TrendingDown, TrendingUp } from 'lucide-react'
+import { ChevronDown, TrendingDown, TrendingUp } from 'lucide-react'
 
 import { cn } from '@/lib'
 import { TrendingData } from '@/app/api/types'
 import { Button, Skeleton } from '@/components/ui'
-import { formatPrice } from '@/constants/format-price'
 
 interface Props {
 	trendingData: TrendingData

@@ -38,7 +38,13 @@ export interface CryptoData {
 	image: string
 }
 
-export const CryptoCard = ({ coin, viewMode }: { coin: CryptoData; viewMode: 'grid' | 'list' }) => {
+interface Props {
+	coin: CryptoData
+	viewMode: 'list' | 'grid'
+	onClick: (coinId: string) => void
+}
+
+export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [editQuantity, setEditQuantity] = useState<string>(String(coin.quantity))
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
@@ -114,7 +120,12 @@ export const CryptoCard = ({ coin, viewMode }: { coin: CryptoData; viewMode: 'gr
 					<CardTitle className="flex items-center gap-2">
 						<Image src={coin.image} alt={coin.name} width={24} height={24} className="rounded-full" />
 
-						<span>{coin.name}</span>
+						<span
+							onClick={() => onClick(coin.coinId)}
+							className="cursor-pointer truncate hover:text-[#397fee] dark:hover:text-[#75a6f4]"
+						>
+							{coin.name}
+						</span>
 
 						<span className="text-sm text-muted-foreground">({coin.symbol.toUpperCase()})</span>
 					</CardTitle>

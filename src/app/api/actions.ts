@@ -518,7 +518,7 @@ export const getCategories = async (): Promise<CategoriesData> => {
 	}
 }
 
-export const getCoinsList = async () => {
+export const getCoinsList = async (): Promise<CoinsListData> => {
 	// Отдаем старые данные сразу
 	const cachedCoins = await prisma.coin.findMany({
 		include: {
@@ -526,15 +526,24 @@ export const getCoinsList = async () => {
 		},
 	})
 
+	const transformCoinData = (coins: any[]): CoinsListData => {
+		return coins.map((coin) => ({
+			...coin,
+			symbol: coin.coinsListIDMap.symbol,
+			name: coin.coinsListIDMap.name,
+		}))
+	}
+
 	// Запускаем обновление в фоне через API
 	const response = await makeReq('GET', '/update/coins-list')
 
 	if (!response || !Array.isArray(response) || response.length === 0) {
 		console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')
-		return cachedCoins
+
+		return transformCoinData(cachedCoins)
 	}
 
-	return cachedCoins
+	return transformCoinData(cachedCoins)
 }
 
 export const updateCoinsList = async (): Promise<any> => {

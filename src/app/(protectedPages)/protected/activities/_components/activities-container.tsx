@@ -17,6 +17,7 @@ import { cn } from '@/lib'
 import { AddCrypto } from './add-crypto'
 import { AllCryptoPrices } from './all-crypto-prices'
 import { CryptoCard, CryptoData } from './crypto-card'
+import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 
 interface Props {
 	cryptoData: CryptoData[]
@@ -25,6 +26,8 @@ interface Props {
 
 export const ActivitiesContainer = ({ cryptoData, totalValue }: Props) => {
 	const [isMounted, setIsMounted] = useState(false)
+	const [isModalOpen, setIsModalOpen] = useState(false)
+	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
 	const [viewMode, setViewMode] = useLocalStorageState<'list' | 'grid'>('viewMode', {
 		defaultValue: 'grid',
 	})
@@ -56,6 +59,18 @@ export const ActivitiesContainer = ({ cryptoData, totalValue }: Props) => {
 				return 0
 		}
 	})
+
+	// Handle card detail modal
+	const toggleDetailModal = () => {
+		setIsModalOpen(!isModalOpen)
+	}
+
+	const handleCardClick = (coinId: string) => {
+		if (coinId) {
+			setSelectedCoinId(coinId)
+			toggleDetailModal()
+		}
+	}
 
 	useEffect(() => {
 		setIsMounted(true)
@@ -141,9 +156,11 @@ export const ActivitiesContainer = ({ cryptoData, totalValue }: Props) => {
 				)}
 
 				{sortedCryptoData.map((coin) => (
-					<CryptoCard key={coin.coinId} coin={coin} viewMode={viewMode} />
+					<CryptoCard key={coin.coinId} coin={coin} viewMode={viewMode} onClick={handleCardClick} />
 				))}
 			</div>
+
+			<CoinDetailModal coinId={selectedCoinId} showDetailModal={isModalOpen} closeModal={toggleDetailModal} />
 		</div>
 	)
 }

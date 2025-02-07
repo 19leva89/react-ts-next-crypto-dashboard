@@ -5,20 +5,20 @@ import { useState } from 'react'
 import { DataTable } from './table-data'
 import { columns } from './table-columns'
 import { Skeleton } from '@/components/ui'
-import { CategoriesData } from '@/app/api/types'
+import { CategoriesData, CoinListData } from '@/app/api/types'
 import { getCoinsList, getCoinsListByCate } from '@/app/api/actions'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 
 interface Props {
 	categories: CategoriesData
-	initialCoins: any
+	initialCoins: CoinListData[]
 }
 
-export const DataTableSection = ({ categories, initialCoins }: Props) => {
+export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 	const [coinsList, setCoinsList] = useState(initialCoins)
 	const [fetchingCoins, setFetchingCoins] = useState<boolean>(false)
-	const [showDetailModal, setShowDetailModal] = useState<boolean>(false)
-	const [currentCoinId, setCurrentCoinId] = useState<string>('')
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
 	const [currentCategorie, setCurrentCategorie] = useState<string>('All')
 
 	// Handle category selection
@@ -45,12 +45,12 @@ export const DataTableSection = ({ categories, initialCoins }: Props) => {
 
 	// Handle coin detail modal
 	const toggleDetailModal = () => {
-		setShowDetailModal(!showDetailModal)
+		setIsModalOpen(!isModalOpen)
 	}
 
-	const onCoinsClick = (coinId: string) => {
+	const handleCoinClick = (coinId: string) => {
 		if (coinId) {
-			setCurrentCoinId(coinId)
+			setSelectedCoinId(coinId)
 			toggleDetailModal()
 		}
 	}
@@ -65,16 +65,12 @@ export const DataTableSection = ({ categories, initialCoins }: Props) => {
 					data={coinsList}
 					categories={categories}
 					currentCategorie={currentCategorie}
-					onCoinsClick={onCoinsClick}
+					onCoinsClick={handleCoinClick}
 					onCategorieClick={onCategorieClick}
 				/>
 			)}
 
-			<CoinDetailModal
-				coinId={currentCoinId}
-				showDetailModal={showDetailModal}
-				closeModal={toggleDetailModal}
-			/>
+			<CoinDetailModal coinId={selectedCoinId} showDetailModal={isModalOpen} closeModal={toggleDetailModal} />
 		</>
 	)
 }
