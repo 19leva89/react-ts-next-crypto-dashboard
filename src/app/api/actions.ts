@@ -282,12 +282,14 @@ export const addCryptoToUser = async (coinId: string, quantity: number) => {
 					coinId: coinId,
 				},
 			},
+
 			update: {
 				quantity: quantity,
 			},
 			create: {
 				id: coinData.id,
 				quantity: quantity,
+
 				userId: user.id,
 				coinId: coinId,
 				coinsListIDMapId: coinData.id,
@@ -308,7 +310,7 @@ export const addCryptoToUser = async (coinId: string, quantity: number) => {
 	}
 }
 
-export const updateCryptoQuantity = async (coinId: string, quantity: number) => {
+export const updateUserCryptoQuantity = async (coinId: string, quantity: number) => {
 	try {
 		const session = await auth()
 

@@ -27,7 +27,7 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { formatPrice } from '@/constants/format-price'
-import { delleteCryptoFromUser, updateCryptoQuantity } from '@/app/api/actions'
+import { delleteCryptoFromUser, updateUserCryptoQuantity } from '@/app/api/actions'
 
 export interface CryptoData {
 	coinId: string
@@ -62,7 +62,7 @@ export const CryptoCard = ({ coin, viewMode }: { coin: CryptoData; viewMode: 'gr
 	const handleUpdate = async () => {
 		try {
 			// Вызываем функцию для обновления криптовалюты
-			await updateCryptoQuantity(coin.coinId, Number(editQuantity))
+			await updateUserCryptoQuantity(coin.coinId, Number(editQuantity))
 
 			// Уведомляем пользователя об успехе
 			toast.success('Crypto updated successfully')

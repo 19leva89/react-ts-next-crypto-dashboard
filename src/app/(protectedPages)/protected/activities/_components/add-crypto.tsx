@@ -110,7 +110,7 @@ export const AddCrypto = () => {
 	}
 
 	return (
-		<div className="flex flex-col gap-4 p-2 px-6">
+		<div className="flex flex-col gap-4 pr-10">
 			<div className="flex justify-end">
 				<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 					<DialogTrigger asChild>
