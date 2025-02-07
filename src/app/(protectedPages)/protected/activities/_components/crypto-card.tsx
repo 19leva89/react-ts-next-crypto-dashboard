@@ -25,10 +25,11 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
+import { cn } from '@/lib'
 import { formatPrice } from '@/constants/format-price'
 import { delleteCryptoFromUser, updateCryptoQuantity } from '@/app/api/actions'
 
-interface CryptoData {
+export interface CryptoData {
 	coinId: string
 	name: string
 	symbol: string
@@ -37,7 +38,7 @@ interface CryptoData {
 	image: string
 }
 
-export const CryptoCard = ({ coin }: { coin: CryptoData }) => {
+export const CryptoCard = ({ coin, viewMode }: { coin: CryptoData; viewMode: 'grid' | 'list' }) => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [editQuantity, setEditQuantity] = useState<string>(String(coin.quantity))
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
@@ -102,9 +103,14 @@ export const CryptoCard = ({ coin }: { coin: CryptoData }) => {
 	}
 
 	return (
-		<Card className="flex flex-col gap-1 w-full min-h-20 min-w-80 max-w-[378px]">
-			<CardHeader className="flex flex-row items-center justify-between p-3 pb-0">
-				<div className="flex flex-col gap-1">
+		<Card
+			className={cn(
+				'flex w-full',
+				viewMode === 'grid' ? 'flex-col gap-1 min-w-[19.5rem] max-w-[21rem]' : 'flex-col',
+			)}
+		>
+			<CardHeader className="flex items-center flex-row justify-between px-3 py-1 pb-0">
+				<div className={cn('flex', viewMode === 'grid' ? 'flex-col gap-1' : 'flex-row items-center gap-2')}>
 					<CardTitle className="flex items-center gap-2">
 						<Image src={coin.image} alt={coin.name} width={24} height={24} className="rounded-full" />
 
@@ -112,6 +118,7 @@ export const CryptoCard = ({ coin }: { coin: CryptoData }) => {
 
 						<span className="text-sm text-muted-foreground">({coin.symbol.toUpperCase()})</span>
 					</CardTitle>
+
 					<CardDescription>Current Price: ${formatPrice(coin.currentPrice)}</CardDescription>
 				</div>
 
@@ -146,8 +153,14 @@ export const CryptoCard = ({ coin }: { coin: CryptoData }) => {
 				</DropdownMenu>
 			</CardHeader>
 
-			<CardContent className="p-3 pt-0">
+			<CardContent
+				className={cn(
+					'flex gap-1 px-3 py-1 pt-0',
+					viewMode === 'grid' ? 'flex-col items-start' : 'flex-row items-center gap-10',
+				)}
+			>
 				<p className="text-lg font-semibold">Quantity: {formatPrice(coin.quantity)}</p>
+
 				<p className="text-lg font-semibold">Total Value: ${formatPrice(totalValue)}</p>
 			</CardContent>
 

@@ -1,9 +1,7 @@
 import { Metadata } from 'next'
 
 import { getUserCoinsList } from '@/app/api/actions'
-import { AddCrypto } from './_components/add-crypto'
-import { CryptoCard } from './_components/crypto-card'
-import { AllCryptoPrices } from './_components/all-crypto-prices'
+import { ActivitiesContainer } from './_components/activities-container'
 
 export const metadata: Metadata = {
 	title: 'Activities',
@@ -29,27 +27,7 @@ const ActivitiesPage = async () => {
 		return total + crypto.currentPrice * crypto.quantity
 	}, 0)
 
-	return (
-		<div className="flex flex-col w-full">
-			<div className="flex items-center justify-between">
-				<AllCryptoPrices totalValue={totalPortfolioValue} />
-
-				<AddCrypto />
-			</div>
-
-			<div className="flex flex-raw flex-wrap gap-4 items-start justify-start w-full p-6">
-				{cryptoData.length === 0 && (
-					<h2 className="flex justify-center w-full">No cryptos added. Add your first crypto!</h2>
-				)}
-
-				{cryptoData
-					.sort((a, b) => b.currentPrice - a.currentPrice)
-					.map((coin) => {
-						return <CryptoCard key={coin.coinId} coin={coin} />
-					})}
-			</div>
-		</div>
-	)
+	return <ActivitiesContainer cryptoData={cryptoData} totalValue={totalPortfolioValue} />
 }
 
 export default ActivitiesPage
