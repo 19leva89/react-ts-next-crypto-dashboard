@@ -1,6 +1,7 @@
 export const formatPrice = (
 	price: number,
 	useGrouping?: boolean,
+	minimumFractionDigits?: number,
 	maximumFractionDigits?: number,
 	locale?: string,
 ): string => {
@@ -14,9 +15,9 @@ export const formatPrice = (
 
 	return price.toLocaleString(userLocale, {
 		currencyDisplay: 'symbol',
-		minimumFractionDigits: 1,
-		maximumFractionDigits: maximumFractionDigits || 10,
 		useGrouping: useGrouping || false,
+		minimumFractionDigits: minimumFractionDigits || 1,
+		maximumFractionDigits: maximumFractionDigits || 10,
 		notation: 'standard',
 	})
 }

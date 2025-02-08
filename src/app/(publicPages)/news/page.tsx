@@ -1,13 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Metadata } from 'next'
 import { ArrowUp, Heart, MessageSquareText } from 'lucide-react'
 
 import { cryptoNews } from './datas'
+import { constructMetadata } from '@/lib'
 
-export const metadata: Metadata = {
-	title: 'News',
-}
+export const metadata = constructMetadata({ title: 'News' })
 
 const NewsPage = () => {
 	return (

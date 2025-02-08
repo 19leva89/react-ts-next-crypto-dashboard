@@ -1,11 +1,8 @@
-import { Metadata } from 'next'
-
+import { constructMetadata } from '@/lib'
 import { getUserCoinsList } from '@/app/api/actions'
 import { ActivitiesContainer } from './_components/activities-container'
 
-export const metadata: Metadata = {
-	title: 'Activities',
-}
+export const metadata = constructMetadata({ title: 'Activities' })
 
 // The page must be rendered on the server side
 export const dynamic = 'force-dynamic'

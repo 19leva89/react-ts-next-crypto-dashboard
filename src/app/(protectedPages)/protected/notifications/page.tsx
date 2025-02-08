@@ -1,8 +1,6 @@
-import { Metadata } from 'next'
+import { constructMetadata } from '@/lib'
 
-export const metadata: Metadata = {
-	title: 'Notifications',
-}
+export const metadata = constructMetadata({ title: 'Notifications' })
 
 const NotificationsPage = () => {
 	return <h1 className="text-center">Notifications</h1>

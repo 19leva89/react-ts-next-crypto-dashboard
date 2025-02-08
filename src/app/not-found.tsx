@@ -1,4 +1,7 @@
+import { constructMetadata } from '@/lib'
 import { InfoBlock } from '@/components/shared/info-block'
+
+export const metadata = constructMetadata({ title: 'Page not found' })
 
 const NotFoundPage = () => {
 	return (

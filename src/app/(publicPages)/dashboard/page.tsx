@@ -1,14 +1,12 @@
-import { Metadata } from 'next'
 import { Suspense } from 'react'
 
+import { constructMetadata } from '@/lib'
 import { Skeleton } from '@/components/ui'
 import { DataTableContainer } from './_components/table-data-container'
 import { AccountTrendingSection } from './_components/account-trending-section'
 import { getCategories, getCoinsList, getTrendingData } from '@/app/api/actions'
 
-export const metadata: Metadata = {
-	title: 'Dashboard',
-}
+export const metadata = constructMetadata({ title: 'Dashboard' })
 
 // The page must be rendered on the server side
 export const dynamic = 'force-dynamic'

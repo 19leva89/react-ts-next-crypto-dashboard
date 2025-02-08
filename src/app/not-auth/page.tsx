@@ -1,4 +1,7 @@
+import { constructMetadata } from '@/lib'
 import { InfoBlock } from '@/components/shared'
+
+export const metadata = constructMetadata({ title: 'Access denied' })
 
 const UnauthorizedPage = () => {
 	return (

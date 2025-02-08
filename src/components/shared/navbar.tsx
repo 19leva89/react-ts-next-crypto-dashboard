@@ -29,10 +29,10 @@ export const Navbar = () => {
 
 	return (
 		<nav className="z-[50] sticky w-full bg-white dark:bg-dark top-0 flex justify-between items-center border-b dark:border-gray-700 py-3 px-4 sm:px-6 max-[460px]:text-sm">
-			<div className="flex items-center gap-14">
+			<div className="flex items-center gap-14 max-[430px]:gap-4">
 				<SidebarTrigger />
 
-				<div className="flex lg:block items-center gap-2 min-[460px]:gap-6">
+				<div className="flex lg:block items-center gap-2 min-[460px]:gap-6 max-[700px]:hidden">
 					<div className="flex-col gap-1 flex">
 						<h1 className="font-medium capitalize">{pathName.split('/').at(-1) || 'Dashboard'}</h1>
 
@@ -46,14 +46,14 @@ export const Navbar = () => {
 					</div>
 				</div>
 
-				<Button className="min-[680px]:flex items-center gap-2 px-5 py-2 rounded-xl text-white">
+				<Button className="flex items-center gap-2 px-5 py-2 rounded-xl text-white">
 					<Wallet size={18} />
 
 					<span>Connect wallet</span>
 				</Button>
 			</div>
 
-			<div className="flex gap-3 text-gray-500 dark:text-white">
+			<div className="flex gap-3 text-gray-500 dark:text-white max-[460px]:gap-1">
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="outline" size="lg" className="gap-3 rounded-xl text-sm py-2 px-4 group">

@@ -22,7 +22,7 @@ export function absoluteUrl(path: string): string {
 }
 
 export function constructMetadata({
-	title = 'Crypto - Insights | Control | Growth',
+	title = 'Crypto',
 	description = 'Track crypto trends, analyze data, and manage investments with ease.',
 	image = '/img/thumbnail.webp',
 	icons = '/favicon.ico',
@@ -35,7 +35,10 @@ export function constructMetadata({
 	noIndex?: boolean
 } = {}): Metadata {
 	return {
-		title,
+		title: {
+			default: title,
+			template: title ? `%s | ${title}` : `%s`,
+		},
 		description,
 		openGraph: {
 			title,

@@ -111,12 +111,19 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 	return (
 		<Card
 			className={cn(
-				'flex w-full',
-				viewMode === 'grid' ? 'flex-col gap-1 min-w-[19.5rem] max-w-[21rem]' : 'flex-col',
+				'flex',
+				viewMode === 'grid'
+					? 'flex-col gap-1 flex-grow flex-shrink-0 sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)] min-w-[18rem] max-w-[21rem]'
+					: 'flex-col w-full',
 			)}
 		>
 			<CardHeader className="flex items-center flex-row justify-between px-3 py-1 pb-0">
-				<div className={cn('flex', viewMode === 'grid' ? 'flex-col gap-1' : 'flex-row items-center gap-2')}>
+				<div
+					className={cn(
+						'flex',
+						viewMode === 'grid' ? 'flex-col gap-1' : 'flex-row items-center gap-2 max-[550px]:flex-wrap',
+					)}
+				>
 					<CardTitle className="flex items-center gap-2">
 						<Image src={coin.image} alt={coin.name} width={24} height={24} className="rounded-full" />
 
@@ -167,12 +174,12 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			<CardContent
 				className={cn(
 					'flex gap-1 px-3 py-1 pt-0',
-					viewMode === 'grid' ? 'flex-col items-start' : 'flex-row items-center gap-10',
+					viewMode === 'grid' ? 'flex-col items-start' : 'flex-row items-center justify-between gap-8',
 				)}
 			>
 				<p className="text-lg font-semibold">Quantity: {formatPrice(coin.quantity)}</p>
 
-				<p className="text-lg font-semibold">Total Value: ${formatPrice(totalValue)}</p>
+				<p className="text-lg font-semibold">Total Value: ${formatPrice(totalValue, false, 2, 2)}</p>
 			</CardContent>
 
 			{/* Edit Dialog */}

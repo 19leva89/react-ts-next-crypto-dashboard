@@ -24,6 +24,18 @@ import {
 const USER_COINS_UPDATE_INTERVAL = 5 // minutes
 const COINS_UPDATE_INTERVAL = 60 // minutes
 
+const handleError = (error: unknown, context: string) => {
+	if (error instanceof Prisma.PrismaClientKnownRequestError) {
+		console.error(`💾 Prisma error [${context}]:`, error.code, error.message)
+	} else if (error instanceof Error) {
+		console.error(`🚨 Unexpected error [${context}]:`, error.message)
+	} else {
+		console.error(`❌ Error [${context}]`, error)
+	}
+
+	throw error
+}
+
 export const registerUser = async (body: Prisma.UserCreateInput) => {
 	try {
 		const user = await prisma.user.findFirst({
@@ -65,15 +77,7 @@ export const registerUser = async (body: Prisma.UserCreateInput) => {
 			}),
 		)
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [CREATE_USER]', error)
-		}
-
-		throw error
+		handleError(error, 'CREATE_USER')
 	}
 }
 
@@ -186,15 +190,7 @@ export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 
 		return updatedUser
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [UPDATE_USER]', error)
-		}
-
-		throw error
+		handleError(error, 'UPDATE_USER')
 	}
 }
 
@@ -229,15 +225,7 @@ export const deleteUser = async (userId?: string) => {
 
 		return deletedUser
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [DELETE_USER]', error)
-		}
-
-		throw error
+		handleError(error, 'DELETE_USER')
 	}
 }
 
@@ -298,15 +286,7 @@ export const addCryptoToUser = async (coinId: string, quantity: number) => {
 
 		revalidatePath('/')
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [ADD_CRYPTO_TO_USER]', error)
-		}
-
-		throw error
+		handleError(error, 'ADD_CRYPTO_TO_USER')
 	}
 }
 
@@ -340,15 +320,7 @@ export const updateUserCryptoQuantity = async (coinId: string, quantity: number)
 
 		revalidatePath('/')
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [UPDATE_USER_CRYPTO]', error)
-		}
-
-		throw error
+		handleError(error, 'UPDATE_USER_CRYPTO')
 	}
 }
 
@@ -374,15 +346,7 @@ export const delleteCryptoFromUser = async (coinId: string) => {
 
 		revalidatePath('/')
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [DELETE_USER_CRYPTO]', error)
-		}
-
-		throw error
+		handleError(error, 'DELETE_USER_CRYPTO')
 	}
 }
 
@@ -451,15 +415,9 @@ export const getTrendingData = async (): Promise<TrendingData> => {
 
 		return { coins: trendingCoins }
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [GET_TRENDING_DATA]', error)
-		}
+		handleError(error, 'GET_TRENDING_DATA')
 
-		throw error
+		return { coins: [] }
 	}
 }
 
@@ -506,15 +464,9 @@ export const getCategories = async (): Promise<CategoriesData> => {
 
 		return categoriesData
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [GET_CATEGORIES]', error)
-		}
+		handleError(error, 'GET_CATEGORIES')
 
-		throw error
+		return []
 	}
 }
 
@@ -633,15 +585,7 @@ export const updateCoinsList = async (): Promise<any> => {
 			include: { coinsListIDMap: true },
 		})
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [UPDATE_COINS_LIST]', error)
-		}
-
-		throw error
+		handleError(error, 'UPDATE_COINS_LIST')
 	}
 }
 
@@ -671,15 +615,9 @@ export const getUserCoinsList = async () => {
 
 		return userCoins
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [GET_USER_COINS]', error)
-		}
+		handleError(error, 'GET_USER_COINS')
 
-		throw error
+		return []
 	}
 }
 
@@ -759,15 +697,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 			include: { coin: true },
 		})
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [UPDATE_USER_COINS_LIST]', error)
-		}
-
-		throw error
+		handleError(error, 'UPDATE_USER_COINS_LIST')
 	}
 }
 
@@ -788,15 +718,9 @@ export const getCoinsListIDMap = async (): Promise<CoinsListIDMapData> => {
 			image: list.coin?.image,
 		})) as CoinsListIDMapData
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [GET_COINS_ID_LIST]', error)
-		}
+		handleError(error, 'GET_COINS_ID_LIST')
 
-		throw error
+		return []
 	}
 }
 
@@ -924,15 +848,9 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 			},
 		} as CoinData
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [GET_COIN_DATA]', error)
-		}
+		handleError(error, 'GET_COIN_DATA')
 
-		throw error
+		return {} as CoinData
 	}
 }
 
@@ -1031,15 +949,9 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 			return [] as CoinsListData
 		}
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [GET_COINS_LIST_BY_CATE]', error)
-		}
+		handleError(error, 'GET_COINS_LIST_BY_CATE')
 
-		throw error
+		return [] as CoinsListData
 	}
 }
 
@@ -1094,15 +1006,9 @@ export const getCoinsMarketChart = async (coinId: string): Promise<MarketChartDa
 			coin: cachedData.coin,
 		} as MarketChartData
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [GET_COINS_MARKET_CHART]', error)
-		}
+		handleError(error, 'GET_COINS_MARKET_CHART')
 
-		throw error
+		return {} as MarketChartData
 	}
 }
 
@@ -1206,14 +1112,8 @@ export const getAidrops = async (): Promise<AidropsData> => {
 
 		return aidropsData
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [GET_AIDROPS]', error)
-		}
+		handleError(error, 'GET_AIDROPS')
 
-		throw error
+		return { data: [] } as AidropsData
 	}
 }
