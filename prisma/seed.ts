@@ -2,6 +2,8 @@
 import { prisma } from './../src/lib/prisma'
 import { getCoinsList, updateCoinsListIDMapFromAPI } from './../src/app/api/actions-seed'
 
+//! To run the command "npx prisma db seed" the server must be running
+
 // ID пользователя
 export const userId = 'cm6q6877i0000o89scjcfe5ry'
 
