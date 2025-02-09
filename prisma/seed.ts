@@ -9,10 +9,10 @@ export const userId = 'cm6q6877i0000o89scjcfe5ry'
 
 async function up() {
 	// Запускает обновление списка криптовалют ~20мин
-	await updateCoinsListIDMapFromAPI()
+	// await updateCoinsListIDMapFromAPI()
 
 	// Получаем список криптовалют TOP250
-	await getCoinsList()
+	// await getCoinsList()
 
 	// Создаем запись в Coin и UserCoin
 	// #1
@@ -25,12 +25,10 @@ async function up() {
 				coinsListIDMapId: '1inch',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: '1inch', coinId: '1inch', coinsListIDMapId: '1inch', quantity: 20 }],
 		})
 	})
-
 	// #2
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -41,12 +39,10 @@ async function up() {
 				coinsListIDMapId: 'aave',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'aave', coinId: 'aave', coinsListIDMapId: 'aave', quantity: 0.2 }],
 		})
 	})
-
 	// #3
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -57,14 +53,12 @@ async function up() {
 				coinsListIDMapId: 'algorand',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{ userId, id: 'algorand', coinId: 'algorand', coinsListIDMapId: 'algorand', quantity: 130.10011 },
 			],
 		})
 	})
-
 	// #4
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -75,12 +69,10 @@ async function up() {
 				coinsListIDMapId: 'cosmos',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'cosmos', coinId: 'cosmos', coinsListIDMapId: 'cosmos', quantity: 4.684885 }],
 		})
 	})
-
 	// #5
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -91,14 +83,12 @@ async function up() {
 				coinsListIDMapId: 'avalanche-2',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{ userId, id: 'avalanche-2', coinId: 'avalanche-2', coinsListIDMapId: 'avalanche-2', quantity: 1 },
 			],
 		})
 	})
-
 	// #6
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -109,7 +99,6 @@ async function up() {
 				coinsListIDMapId: 'basic-attention-token',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -122,7 +111,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #7
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -133,12 +121,10 @@ async function up() {
 				coinsListIDMapId: 'bitcoin',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'bitcoin', coinId: 'bitcoin', coinsListIDMapId: 'bitcoin', quantity: 0.00963772 }],
 		})
 	})
-
 	// #8
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -149,7 +135,6 @@ async function up() {
 				coinsListIDMapId: 'pancakeswap-token',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -162,7 +147,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #9
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -173,12 +157,10 @@ async function up() {
 				coinsListIDMapId: 'celo',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'celo', coinId: 'celo', coinsListIDMapId: 'celo', quantity: 15 }],
 		})
 	})
-
 	// #10
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -189,7 +171,6 @@ async function up() {
 				coinsListIDMapId: 'celer-network',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -202,7 +183,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #11
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -213,12 +193,10 @@ async function up() {
 				coinsListIDMapId: 'coin98',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'coin98', coinId: 'coin98', coinsListIDMapId: 'coin98', quantity: 40 }],
 		})
 	})
-
 	// #12
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -229,7 +207,6 @@ async function up() {
 				coinsListIDMapId: 'crypto-com-chain',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -242,7 +219,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #13
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -253,12 +229,10 @@ async function up() {
 				coinsListIDMapId: 'dash',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'dash', coinId: 'dash', coinsListIDMapId: 'dash', quantity: 0.3 }],
 		})
 	})
-
 	// #14
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -269,12 +243,10 @@ async function up() {
 				coinsListIDMapId: 'dogecoin',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'dogecoin', coinId: 'dogecoin', coinsListIDMapId: 'dogecoin', quantity: 300 }],
 		})
 	})
-
 	// #15
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -285,12 +257,10 @@ async function up() {
 				coinsListIDMapId: 'polkadot',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'polkadot', coinId: 'polkadot', coinsListIDMapId: 'polkadot', quantity: 10 }],
 		})
 	})
-
 	// #16
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -301,7 +271,6 @@ async function up() {
 				coinsListIDMapId: 'elrond-erd-2',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -314,7 +283,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #17
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -325,12 +293,10 @@ async function up() {
 				coinsListIDMapId: 'eos',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'eos', coinId: 'eos', coinsListIDMapId: 'eos', quantity: 11 }],
 		})
 	})
-
 	// #18
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -341,14 +307,12 @@ async function up() {
 				coinsListIDMapId: 'filecoin',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{ userId, id: 'filecoin', coinId: 'filecoin', coinsListIDMapId: 'filecoin', quantity: 1.2486047 },
 			],
 		})
 	})
-
 	// #19
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -359,12 +323,10 @@ async function up() {
 				coinsListIDMapId: 'flow',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'flow', coinId: 'flow', coinsListIDMapId: 'flow', quantity: 13 }],
 		})
 	})
-
 	// #20
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -375,12 +337,10 @@ async function up() {
 				coinsListIDMapId: 'moonbeam',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'moonbeam', coinId: 'moonbeam', coinsListIDMapId: 'moonbeam', quantity: 50 }],
 		})
 	})
-
 	// #21
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -391,7 +351,6 @@ async function up() {
 				coinsListIDMapId: 'hedera-hashgraph',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -404,7 +363,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #22
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -415,7 +373,6 @@ async function up() {
 				coinsListIDMapId: 'internet-computer',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -428,7 +385,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #23
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -439,12 +395,10 @@ async function up() {
 				coinsListIDMapId: 'iota',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'iota', coinId: 'iota', coinsListIDMapId: 'iota', quantity: 110 }],
 		})
 	})
-
 	// #24
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -455,12 +409,10 @@ async function up() {
 				coinsListIDMapId: 'kusama',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'kusama', coinId: 'kusama', coinsListIDMapId: 'kusama', quantity: 0.25 }],
 		})
 	})
-
 	// #25
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -471,12 +423,10 @@ async function up() {
 				coinsListIDMapId: 'loopring',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'loopring', coinId: 'loopring', coinsListIDMapId: 'loopring', quantity: 40 }],
 		})
 	})
-
 	// #26
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -487,12 +437,10 @@ async function up() {
 				coinsListIDMapId: 'chainlink',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'chainlink', coinId: 'chainlink', coinsListIDMapId: 'chainlink', quantity: 1.5 }],
 		})
 	})
-
 	// #27
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -503,7 +451,6 @@ async function up() {
 				coinsListIDMapId: 'decentraland',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -516,7 +463,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #28
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -527,12 +473,10 @@ async function up() {
 				coinsListIDMapId: 'maker',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'maker', coinId: 'maker', coinsListIDMapId: 'maker', quantity: 0.015 }],
 		})
 	})
-
 	// #29
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -543,12 +487,10 @@ async function up() {
 				coinsListIDMapId: 'near',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'near', coinId: 'near', coinsListIDMapId: 'near', quantity: 7.1920949 }],
 		})
 	})
-
 	// #30
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -559,12 +501,10 @@ async function up() {
 				coinsListIDMapId: 'neo',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'neo', coinId: 'neo', coinsListIDMapId: 'neo', quantity: 2 }],
 		})
 	})
-
 	// #31
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -575,12 +515,10 @@ async function up() {
 				coinsListIDMapId: 'qtum',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'qtum', coinId: 'qtum', coinsListIDMapId: 'qtum', quantity: 4 }],
 		})
 	})
-
 	// #32
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -591,12 +529,10 @@ async function up() {
 				coinsListIDMapId: 'reef',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'reef', coinId: 'reef', coinsListIDMapId: 'reef', quantity: 3600 }],
 		})
 	})
-
 	// #33
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -607,14 +543,12 @@ async function up() {
 				coinsListIDMapId: 'shiba-inu',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{ userId, id: 'shiba-inu', coinId: 'shiba-inu', coinsListIDMapId: 'shiba-inu', quantity: 1300000 },
 			],
 		})
 	})
-
 	// #34
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -625,12 +559,10 @@ async function up() {
 				coinsListIDMapId: 'sonic-3',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'sonic-3', coinId: 'sonic-3', coinsListIDMapId: 'sonic-3', quantity: 50 }],
 		})
 	})
-
 	// #35
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -641,12 +573,10 @@ async function up() {
 				coinsListIDMapId: 'sushi',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'sushi', coinId: 'sushi', coinsListIDMapId: 'sushi', quantity: 10 }],
 		})
 	})
-
 	// #36
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -657,12 +587,10 @@ async function up() {
 				coinsListIDMapId: 'tether',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'tether', coinId: 'tether', coinsListIDMapId: 'tether', quantity: 714.07 }],
 		})
 	})
-
 	// #37
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -673,7 +601,6 @@ async function up() {
 				coinsListIDMapId: 'the-sandbox',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -686,7 +613,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #38
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -697,7 +623,6 @@ async function up() {
 				coinsListIDMapId: 'trust-wallet-token',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -710,7 +635,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #39
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -721,12 +645,10 @@ async function up() {
 				coinsListIDMapId: 'uniswap',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'uniswap', coinId: 'uniswap', coinsListIDMapId: 'uniswap', quantity: 2 }],
 		})
 	})
-
 	// #40
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -737,12 +659,10 @@ async function up() {
 				coinsListIDMapId: 'vechain',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'vechain', coinId: 'vechain', coinsListIDMapId: 'vechain', quantity: 500 }],
 		})
 	})
-
 	// #41
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -753,14 +673,12 @@ async function up() {
 				coinsListIDMapId: 'woo-network',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{ userId, id: 'woo-network', coinId: 'woo-network', coinsListIDMapId: 'woo-network', quantity: 50 },
 			],
 		})
 	})
-
 	// #42
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -771,12 +689,10 @@ async function up() {
 				coinsListIDMapId: 'nem',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'nem', coinId: 'nem', coinsListIDMapId: 'nem', quantity: 250 }],
 		})
 	})
-
 	// #43
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -787,12 +703,10 @@ async function up() {
 				coinsListIDMapId: 'tezos',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'tezos', coinId: 'tezos', coinsListIDMapId: 'tezos', quantity: 21.869092 }],
 		})
 	})
-
 	// #44
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -803,12 +717,10 @@ async function up() {
 				coinsListIDMapId: 'zilliqa',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'zilliqa', coinId: 'zilliqa', coinsListIDMapId: 'zilliqa', quantity: 400 }],
 		})
 	})
-
 	// #45
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -819,14 +731,12 @@ async function up() {
 				coinsListIDMapId: 'usd-coin',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{ userId, id: 'usd-coin', coinId: 'usd-coin', coinsListIDMapId: 'usd-coin', quantity: 1.4306788 },
 			],
 		})
 	})
-
 	// #46
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -837,12 +747,10 @@ async function up() {
 				coinsListIDMapId: 'derive',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'derive', coinId: 'derive', coinsListIDMapId: 'derive', quantity: 101.167327 }],
 		})
 	})
-
 	// #47
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -853,14 +761,12 @@ async function up() {
 				coinsListIDMapId: 'sosovalue',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{ userId, id: 'sosovalue', coinId: 'sosovalue', coinsListIDMapId: 'sosovalue', quantity: 53.49 },
 			],
 		})
 	})
-
 	// #48
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -871,12 +777,10 @@ async function up() {
 				coinsListIDMapId: 'aptos',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'aptos', coinId: 'aptos', coinsListIDMapId: 'aptos', quantity: 3.00585339 }],
 		})
 	})
-
 	// #49
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -887,7 +791,6 @@ async function up() {
 				coinsListIDMapId: 'ondo-finance',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -900,7 +803,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #50
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -911,12 +813,10 @@ async function up() {
 				coinsListIDMapId: 'cardano',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'cardano', coinId: 'cardano', coinsListIDMapId: 'cardano', quantity: 20 }],
 		})
 	})
-
 	// #51
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -927,14 +827,12 @@ async function up() {
 				coinsListIDMapId: 'rowan-coin',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{ userId, id: 'rowan-coin', coinId: 'rowan-coin', coinsListIDMapId: 'rowan-coin', quantity: 2000 },
 			],
 		})
 	})
-
 	// #52
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -945,12 +843,10 @@ async function up() {
 				coinsListIDMapId: 'chia',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'chia', coinId: 'chia', coinsListIDMapId: 'chia', quantity: 1 }],
 		})
 	})
-
 	// #53
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -961,14 +857,12 @@ async function up() {
 				coinsListIDMapId: 'ethereum',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{ userId, id: 'ethereum', coinId: 'ethereum', coinsListIDMapId: 'ethereum', quantity: 0.0483545 },
 			],
 		})
 	})
-
 	// #54
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -979,7 +873,6 @@ async function up() {
 				coinsListIDMapId: 'my-neighbor-alice',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -992,7 +885,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #55
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -1003,7 +895,6 @@ async function up() {
 				coinsListIDMapId: 'alpaca-finance',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -1016,7 +907,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #56
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -1027,12 +917,10 @@ async function up() {
 				coinsListIDMapId: 'altlayer',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'altlayer', coinId: 'altlayer', coinsListIDMapId: 'altlayer', quantity: 230 }],
 		})
 	})
-
 	// #57
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -1043,12 +931,10 @@ async function up() {
 				coinsListIDMapId: 'apecoin',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'apecoin', coinId: 'apecoin', coinsListIDMapId: 'apecoin', quantity: 32 }],
 		})
 	})
-
 	// #58
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -1059,14 +945,12 @@ async function up() {
 				coinsListIDMapId: 'bakerytoken',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{ userId, id: 'bakerytoken', coinId: 'bakerytoken', coinsListIDMapId: 'bakerytoken', quantity: 85 },
 			],
 		})
 	})
-
 	// #59
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -1077,7 +961,6 @@ async function up() {
 				coinsListIDMapId: 'ethereum-classic',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [
 				{
@@ -1090,7 +973,6 @@ async function up() {
 			],
 		})
 	})
-
 	// #60
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -1101,12 +983,10 @@ async function up() {
 				coinsListIDMapId: 'hashflow',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'hashflow', coinId: 'hashflow', coinsListIDMapId: 'hashflow', quantity: 115 }],
 		})
 	})
-
 	// #61
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -1117,12 +997,10 @@ async function up() {
 				coinsListIDMapId: 'space-id',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'space-id', coinId: 'space-id', coinsListIDMapId: 'space-id', quantity: 46 }],
 		})
 	})
-
 	// #62
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -1133,12 +1011,10 @@ async function up() {
 				coinsListIDMapId: 'litecoin',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'litecoin', coinId: 'litecoin', coinsListIDMapId: 'litecoin', quantity: 0.15 }],
 		})
 	})
-
 	// #63
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
@@ -1149,7 +1025,6 @@ async function up() {
 				coinsListIDMapId: 'starknet',
 			},
 		})
-
 		await prisma.userCoin.createMany({
 			data: [{ userId, id: 'starknet', coinId: 'starknet', coinsListIDMapId: 'starknet', quantity: 48 }],
 		})
@@ -1158,7 +1033,7 @@ async function up() {
 
 async function down() {
 	// await prisma.$executeRaw`DELETE FROM "user_coin" CASCADE;`
-	await prisma.$executeRaw`TRUNCATE TABLE "user_coin" RESTART IDENTITY CASCADE;`
+	// await prisma.$executeRaw`TRUNCATE TABLE "user_coin" RESTART IDENTITY CASCADE;`
 }
 
 async function main() {
