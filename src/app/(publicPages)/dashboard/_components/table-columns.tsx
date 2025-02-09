@@ -71,7 +71,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 					) : (
 						'-'
 					)}
-					<span className="max-w-[6.5rem] truncate">{coin.name}</span>
+					<span className="max-w-[6rem] truncate">{coin.name}</span>
 				</button>
 			)
 		},

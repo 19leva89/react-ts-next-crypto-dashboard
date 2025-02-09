@@ -2,10 +2,10 @@
 import { prisma } from './../src/lib/prisma'
 import { getCoinsList, updateCoinsListIDMapFromAPI } from './../src/app/api/actions-seed'
 
-async function up() {
-	// ID пользователя
-	const userId = 'cm6q6877i0000o89scjcfe5ry'
+// ID пользователя
+export const userId = 'cm6q6877i0000o89scjcfe5ry'
 
+async function up() {
 	// Запускает обновление списка криптовалют ~20мин
 	await updateCoinsListIDMapFromAPI()
 

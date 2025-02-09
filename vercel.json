@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/coins-list",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/user-coins",
+      "schedule": "0 9 * * *"
+    }
+  ]
+}

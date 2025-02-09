@@ -8,6 +8,18 @@ import { prisma } from './../../lib/prisma'
 
 const BATCH_SIZE = 50
 
+const handleError = (error: unknown, context: string) => {
+	if (error instanceof Prisma.PrismaClientKnownRequestError) {
+		console.error(`💾 Prisma error [${context}]:`, error.code, error.message)
+	} else if (error instanceof Error) {
+		console.error(`🚨 Unexpected error [${context}]:`, error.message)
+	} else {
+		console.error(`❌ Error [${context}]`, error)
+	}
+
+	throw error
+}
+
 export const updateCoinsListIDMapFromAPI = async (): Promise<void> => {
 	try {
 		console.log('🔄 Requesting current CoinsListIDMap via API...')
@@ -40,15 +52,9 @@ export const updateCoinsListIDMapFromAPI = async (): Promise<void> => {
 
 		console.log('✅ Records CoinsListIDMap updated!')
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [GET_COINS_LIST_ID_MAP]', error)
-		}
+		handleError(error, 'GET_COINS_LIST_ID_MAP')
 
-		throw error
+		return
 	}
 }
 
@@ -120,16 +126,10 @@ export const getCoinsList = async (): Promise<CoinsListData> => {
 
 		console.log('✅ Records CoinsListIDMap updated!')
 
-		return response
+		return response as CoinsListData
 	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error('💾 Prisma error:', error.code, error.message)
-		} else if (error instanceof Error) {
-			console.error('🚨 Unexpected error:', error.message)
-		} else {
-			console.error('❌ Error [GET_COINS_LIST]', error)
-		}
+		handleError(error, 'GET_COINS_LIST')
 
-		throw error
+		return []
 	}
 }

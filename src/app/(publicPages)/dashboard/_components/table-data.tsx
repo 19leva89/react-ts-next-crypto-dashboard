@@ -207,8 +207,10 @@ export function DataTable<TData, TValue>({
 										<TableHead
 											key={header.id}
 											className={cn(
+												'max-[1200px]:py-2 max-[1200px]:px-3 max-[600px]:py-1 max-[600px]:px-2 max-[400px]:py-0 max-[400px]:px-1',
 												i === 0 && 'sticky left-[0rem] bg-gray-100 dark:bg-slate-800',
-												i === 1 && 'sticky left-[4rem] min-w-36 bg-gray-100 dark:bg-slate-800',
+												i === 1 &&
+													'sticky left-[3.5rem] max-[600px]:left-[3rem] max-[400px]:left-[2.5rem] min-w-36 bg-gray-100 dark:bg-slate-800',
 											)}
 										>
 											{header.isPlaceholder
@@ -233,9 +235,10 @@ export function DataTable<TData, TValue>({
 										<TableCell
 											key={cell.id}
 											className={cn(
-												'max-[1200px]:py-2 max-[1200px]:px-3 group-hover:bg-gray-50 dark:group-hover:bg-gray-800',
+												'max-[1200px]:py-2 max-[1200px]:px-3 max-[600px]:py-1 max-[600px]:px-2 max-[400px]:py-0 max-[400px]:px-1 group-hover:bg-gray-50 dark:group-hover:bg-gray-800',
 												i === 0 && 'sticky left-[0rem] bg-background dark:bg-background',
-												i === 1 && 'sticky left-[4rem] min-w-36 bg-background dark:bg-background',
+												i === 1 &&
+													'sticky left-[3.5rem] max-[600px]:left-[3rem] max-[400px]:left-[2.5rem] min-w-36 bg-background dark:bg-background',
 											)}
 										>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}
