@@ -36,6 +36,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui'
+import { cn } from '@/lib'
 import { CoinListData } from '@/app/api/types'
 
 interface Props<TData, TValue> {
@@ -84,10 +85,10 @@ export function DataTable<TData, TValue>({
 	}
 
 	return (
-		<div className="flex flex-col w-full">
-			<div className="flex items-center justify-between gap-2 py-4">
+		<>
+			<div className="flex items-center justify-between gap-8 py-4 max-[820px]:flex-wrap-reverse max-[820px]:justify-end max-[820px]:gap-2">
 				{/* Search */}
-				<div className="relative w-full max-w-sm sm:w-[350px]">
+				<div className="relative w-full">
 					<Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
 
 					<Input
@@ -201,9 +202,15 @@ export function DataTable<TData, TValue>({
 					<TableHeader className="text-left bg-gray-100 dark:bg-slate-800 text-sm border-b dark:border-gray-700">
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
-								{headerGroup.headers.map((header) => {
+								{headerGroup.headers.map((header, i) => {
 									return (
-										<TableHead key={header.id}>
+										<TableHead
+											key={header.id}
+											className={cn(
+												i === 0 && 'sticky left-[0rem] bg-gray-100 dark:bg-slate-800',
+												i === 1 && 'sticky left-[4rem] min-w-36 bg-gray-100 dark:bg-slate-800',
+											)}
+										>
 											{header.isPlaceholder
 												? null
 												: flexRender(header.column.columnDef.header, header.getContext())}
@@ -220,10 +227,17 @@ export function DataTable<TData, TValue>({
 								<TableRow
 									key={row.id}
 									onClick={() => onCoinsClick((row.original as CoinListData).id)}
-									className="cursor-pointer"
+									className="cursor-pointer group"
 								>
-									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id}>
+									{row.getVisibleCells().map((cell, i) => (
+										<TableCell
+											key={cell.id}
+											className={cn(
+												'max-[1200px]:py-2 max-[1200px]:px-3 group-hover:bg-gray-50 dark:group-hover:bg-gray-800',
+												i === 0 && 'sticky left-[0rem] bg-background dark:bg-background',
+												i === 1 && 'sticky left-[4rem] min-w-36 bg-background dark:bg-background',
+											)}
+										>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}
 										</TableCell>
 									))}
@@ -241,8 +255,8 @@ export function DataTable<TData, TValue>({
 			</div>
 
 			<div className="flex items-center justify-end px-2 pt-4">
-				<div className="flex items-center space-x-6 lg:space-x-8">
-					<div className="flex items-center space-x-2">
+				<div className="flex items-center gap-2">
+					<div className="flex items-center gap-2 max-[420px]:hidden">
 						<p className="text-sm font-medium">Rows per page</p>
 
 						<Select
@@ -269,7 +283,7 @@ export function DataTable<TData, TValue>({
 						Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
 					</div>
 
-					<div className="flex items-center space-x-2">
+					<div className="flex items-center gap-2">
 						<Button
 							variant="outline"
 							className="hidden h-8 w-8 p-0 lg:flex"
@@ -316,6 +330,6 @@ export function DataTable<TData, TValue>({
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	)
 }

@@ -211,10 +211,13 @@ export const AddCrypto = () => {
 
 								<Input
 									id="quantity"
-									type="text"
+									type="number"
+									placeholder="Enter quantity"
+									min={0}
+									step={0.01}
 									value={quantity}
 									onChange={handleQuantityChange}
-									className="col-span-3"
+									className="col-span-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 								/>
 							</div>
 						</div>

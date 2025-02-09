@@ -30,7 +30,9 @@ export const columns: ColumnDef<CoinListData>[] = [
 				</Button>
 			)
 		},
-		cell: ({ row }) => <div className="text-base">{row.getValue('market_cap_rank')}</div>,
+		cell: ({ row }) => (
+			<div className="text-base max-[1200px]:text-sm">{row.getValue('market_cap_rank')}</div>
+		),
 		enableHiding: false,
 	},
 
@@ -57,19 +59,19 @@ export const columns: ColumnDef<CoinListData>[] = [
 			const coin = row.original
 
 			return (
-				<button className="flex gap-2 items-center text-base">
+				<button className="flex gap-2 items-center text-base max-[1200px]:text-sm">
 					{coin.image && coin.name ? (
 						<Image
 							src={coin.image || '/svg/coin-not-found.svg'}
 							alt={coin.name || 'Coin image'}
 							width={32}
 							height={32}
-							className="size-8 rounded-full"
+							className="size-8 rounded-full max-[1200px]:size-6"
 						/>
 					) : (
 						'-'
 					)}
-					{coin.name}
+					<span className="max-w-[6.5rem] truncate">{coin.name}</span>
 				</button>
 			)
 		},
@@ -100,7 +102,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 
 			const formatted = formatPrice(amount, true)
 
-			return <div className="text-base">${formatted}</div>
+			return <div className="text-base max-[1200px]:text-sm">${formatted}</div>
 		},
 	},
 
@@ -127,7 +129,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 			const coin = row.original
 
 			return (
-				<div className="text-base">
+				<div className="text-base max-[1200px]:text-sm">
 					{coin.price_change_percentage_24h ? (
 						<div
 							className={cn(
@@ -174,7 +176,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 
 			const formatted = formatPrice(amount, true)
 
-			return <div className="text-base">${formatted}</div>
+			return <div className="text-base max-[1200px]:text-sm">${formatted}</div>
 		},
 	},
 
@@ -202,7 +204,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 
 			const formatted = formatPrice(amount, true)
 
-			return <div className="text-base">${formatted}</div>
+			return <div className="text-base max-[1200px]:text-sm">${formatted}</div>
 		},
 	},
 

@@ -17,7 +17,7 @@ const DashboardPage = async () => {
 	const trendingData = await getTrendingData()
 
 	return (
-		<div className="space-y-14">
+		<div className="mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0">
 			<AccountTrendingSection trendingData={trendingData} />
 
 			<Suspense fallback={<Skeleton className="h-96 w-full rounded-xl" />}>

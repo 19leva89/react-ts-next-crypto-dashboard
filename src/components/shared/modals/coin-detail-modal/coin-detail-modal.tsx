@@ -80,7 +80,9 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 							{getCoinData ? (
 								<Skeleton className="h-6 w-3/4" />
 							) : (
-								<h4 className="font-semibold text-md">{coinMarketChartData?.coin.coinsListIDMap.name}</h4>
+								<h4 className="font-semibold text-md max-[500px]:text-sm">
+									{coinMarketChartData?.coin.coinsListIDMap.name}
+								</h4>
 							)}
 						</div>
 					</SheetTitle>
@@ -147,14 +149,14 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 						<Skeleton className="h-72 w-full" />
 					) : (
 						<>
-							<div className="flex justify-between items-center font-medium">
+							<div className="flex justify-between items-center font-medium max-[500px]:text-sm">
 								<div className="items-center flex gap-2">
 									<Image
 										src={coinMarketChartData?.coin.image || '/svg/coin-not-found.svg'}
 										alt={coinMarketChartData?.coin.coinsListIDMap.name || 'Coin image'}
 										width={32}
 										height={32}
-										className="size-8 rounded-full"
+										className="size-8 rounded-full max-[500px]:size-6"
 									/>
 
 									<span className="font-medium">
@@ -167,7 +169,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 								<div>${formatPrice(coinMarketChartData?.coin.current_price as number)}</div>
 							</div>
 
-							<div className="mt-8 flex flex-col gap-2 text-md">
+							<div className="mt-8 flex flex-col gap-2 text-md max-[500px]:text-sm">
 								<div className="flex flex-wrap justify-between gap-2 capitalize">
 									<span>Crypto market rank</span>
 
@@ -210,10 +212,10 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 							</div>
 
 							<div className="mt-8 crypto-descr">
-								<span className="font-medium">Description</span>
+								<span className="font-medium max-[500px]:text-sm">Description</span>
 
 								<p
-									className="text-gray-600 dark:text-gray-300 prose prose-sm prose-a:text-blue-700 prose-a:hover:underline dark:prose-a:text-blue-700 dark:prose-a:hover:underline duration-200 mt-3"
+									className="mt-3 text-gray-600 dark:text-gray-300 prose prose-sm prose-a:text-blue-700 prose-a:hover:underline dark:prose-a:text-blue-700 dark:prose-a:hover:underline duration-200"
 									dangerouslySetInnerHTML={{ __html: coinMarketChartData?.coin.description as string }}
 								/>
 							</div>

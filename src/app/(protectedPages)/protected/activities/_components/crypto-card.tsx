@@ -111,17 +111,17 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 	return (
 		<Card
 			className={cn(
-				'flex',
+				'flex flex-col gap-1',
 				viewMode === 'grid'
-					? 'flex-col gap-1 flex-grow flex-shrink-0 sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)] min-w-[18rem] max-w-[21rem]'
-					: 'flex-col w-full',
+					? 'flex-grow flex-shrink-0 sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)] min-w-[18rem] max-w-[21rem]'
+					: 'w-full',
 			)}
 		>
 			<CardHeader className="flex items-center flex-row justify-between px-3 py-1 pb-0">
 				<div
 					className={cn(
-						'flex',
-						viewMode === 'grid' ? 'flex-col gap-1' : 'flex-row items-center gap-2 max-[550px]:flex-wrap',
+						'flex gap-1',
+						viewMode === 'grid' ? 'flex-col' : 'flex-row items-center max-[550px]:flex-wrap',
 					)}
 				>
 					<CardTitle className="flex items-center gap-2">
@@ -142,8 +142,8 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="icon" className="!mt-0 group">
-							<EllipsisVertical className="transition-transform duration-300 group-hover:rotate-180" />
+						<Button variant="ghost" size="icon" className="!mt-0 group shrink-0">
+							<EllipsisVertical className="h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
 						</Button>
 					</DropdownMenuTrigger>
 
@@ -173,7 +173,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 
 			<CardContent
 				className={cn(
-					'flex gap-1 px-3 py-1 pt-0',
+					'flex gap-0 px-3 py-1 pt-0',
 					viewMode === 'grid' ? 'flex-col items-start' : 'flex-row items-center justify-between gap-8',
 				)}
 			>
@@ -187,22 +187,28 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Edit Quantity</DialogTitle>
+
 						<DialogDescription>Update the quantity of {coin.name} in your portfolio</DialogDescription>
 					</DialogHeader>
+
 					<div className="grid gap-4 py-4">
 						<div className="grid grid-cols-4 items-center gap-4">
 							<Label htmlFor="quantity" className="text-right">
 								Quantity
 							</Label>
+
 							<Input
 								id="quantity"
-								type="text"
+								type="number"
+								min={0}
+								step={0.01}
 								value={editQuantity}
 								onChange={handleQuantityChange}
-								className="col-span-3 rounded-xl"
+								className="col-span-3 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 							/>
 						</div>
 					</div>
+
 					<DialogFooter>
 						<Button onClick={handleUpdate} className="rounded-xl text-white">
 							Save changes
@@ -216,14 +222,17 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Delete {coin.name}</DialogTitle>
+
 						<DialogDescription>
 							Are you sure you want to delete this coin from your portfolio?
 						</DialogDescription>
 					</DialogHeader>
-					<DialogFooter>
+
+					<DialogFooter className="gap-4">
 						<Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)} className="rounded-xl">
 							Cancel
 						</Button>
+
 						<Button onClick={handleDelete} variant="destructive" className="rounded-xl">
 							Delete
 						</Button>
