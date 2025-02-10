@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import toast from 'react-hot-toast'
 import { ChangeEvent, useState } from 'react'
-import { EllipsisVertical, Pencil, Trash } from 'lucide-react'
+import { EllipsisVertical, Pencil, Trash, TrendingDown, TrendingUp } from 'lucide-react'
 
 import {
 	Button,
@@ -54,6 +54,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
 
 	const totalValue = coin.currentPrice * coin.quantity
+	const changePercentagePrice = ((coin.currentPrice - coin.buyPrice) / coin.buyPrice) * 100
 
 	const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
 		let value = e.target.value
@@ -145,15 +146,15 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			className={cn(
 				'flex flex-col gap-1',
 				viewMode === 'grid'
-					? 'flex-grow flex-shrink-0 sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)] min-w-[18rem] max-w-[21rem]'
+					? 'flex-grow flex-shrink-0 sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)] min-w-[18rem] max-w-[21rem] min-h-[10rem]'
 					: 'w-full',
 			)}
 		>
-			<CardHeader className="flex items-center flex-row justify-between px-3 py-1 pb-0">
+			<CardHeader className="flex flex-row items-start justify-between px-3 py-1 pb-0">
 				<div
 					className={cn(
 						'flex gap-1',
-						viewMode === 'grid' ? 'flex-col' : 'flex-row items-center max-[550px]:flex-wrap',
+						viewMode === 'grid' ? 'flex-col' : 'flex-row items-center gap-4 max-[550px]:flex-wrap',
 					)}
 				>
 					<CardTitle className="flex items-center gap-2">
@@ -169,12 +170,34 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 						<span className="text-sm text-muted-foreground">({coin.symbol.toUpperCase()})</span>
 					</CardTitle>
 
-					<CardDescription className="flex flex-col ">
-						<span>Buy price: ${formatPrice(coin.buyPrice)}</span>
+					<CardDescription className="flex gap-2 items-center">
+						<div className={cn('flex', viewMode === 'grid' ? 'flex-col' : 'flex-row gap-4')}>
+							<span>Buy: ${formatPrice(coin.buyPrice)}</span>
 
-						<span>Current price: ${formatPrice(coin.currentPrice)}</span>
+							<span>Curr: ${formatPrice(coin.currentPrice)}</span>
 
-						{coin.sellPrice && <span>Sell price: ${formatPrice(coin.sellPrice)}</span>}
+							{coin.sellPrice && <span>Sell: ${formatPrice(coin.sellPrice)}</span>}
+						</div>
+
+						<div
+							className={cn(
+								'flex items-center gap-2 rounded-full font-medium px-2 py-1 h-8',
+								coin.currentPrice > coin.buyPrice
+									? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
+									: 'bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item',
+							)}
+						>
+							<span>
+								{changePercentagePrice > 0 && '+'}
+								{changePercentagePrice.toFixed(1)}%
+							</span>
+
+							{changePercentagePrice > 0 ? (
+								<TrendingUp size={16} className="text-green-500" />
+							) : (
+								<TrendingDown size={16} className="text-red-500" />
+							)}
+						</div>
 					</CardDescription>
 				</div>
 
