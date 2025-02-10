@@ -229,7 +229,12 @@ export const deleteUser = async (userId?: string) => {
 	}
 }
 
-export const addCryptoToUser = async (coinId: string, quantity: number) => {
+export const addCryptoToUser = async (
+	coinId: string,
+	quantity: number,
+	buy_price: number,
+	sell_price?: number,
+) => {
 	try {
 		const session = await auth()
 
@@ -272,11 +277,15 @@ export const addCryptoToUser = async (coinId: string, quantity: number) => {
 			},
 
 			update: {
-				quantity: quantity,
+				quantity,
+				buy_price,
+				sell_price,
 			},
 			create: {
 				id: coinData.id,
-				quantity: quantity,
+				quantity,
+				buy_price,
+				sell_price,
 
 				userId: user.id,
 				coinId: coinId,
@@ -290,7 +299,12 @@ export const addCryptoToUser = async (coinId: string, quantity: number) => {
 	}
 }
 
-export const updateUserCryptoQuantity = async (coinId: string, quantity: number) => {
+export const updateUserCrypto = async (
+	coinId: string,
+	quantity: number,
+	buy_price: number,
+	sell_price?: number,
+) => {
 	try {
 		const session = await auth()
 
@@ -309,12 +323,22 @@ export const updateUserCryptoQuantity = async (coinId: string, quantity: number)
 			throw new Error('Quantity must be greater than 0')
 		}
 
+		if (buy_price <= 0) {
+			throw new Error('Buy price must be greater than 0')
+		}
+
+		if (sell_price && sell_price <= 0) {
+			throw new Error('Sell price must be greater than 0')
+		}
+
 		await prisma.userCoin.update({
 			where: {
 				userId_coinId: { userId: session.user.id, coinId }, // Используем уникальный ключ
 			},
 			data: {
 				quantity,
+				buy_price,
+				sell_price,
 			},
 		})
 

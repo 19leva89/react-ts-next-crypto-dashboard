@@ -29,6 +29,8 @@ import { addCryptoToUser, getCoinsListIDMap } from '@/app/api/actions'
 
 export const AddCrypto = () => {
 	const [quantity, setQuantity] = useState<string>('')
+	const [buyPrice, setBuyPrice] = useState<string>('')
+	const [sellPrice, setSellPrice] = useState<string>('')
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [selectedCrypto, setSelectedCrypto] = useState<string>('')
@@ -77,16 +79,44 @@ export const AddCrypto = () => {
 		setQuantity(value)
 	}
 
+	const handleBuyPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+		let value = e.target.value
+
+		// Разрешаем только цифры, точку и запятую
+		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
+
+		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
+		value = value.replace(',', '.')
+
+		if ((value.match(/\./g) || []).length > 1) return
+
+		setBuyPrice(value)
+	}
+
+	const handleSellPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+		let value = e.target.value
+
+		// Разрешаем только цифры, точку и запятую
+		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
+
+		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
+		value = value.replace(',', '.')
+
+		if ((value.match(/\./g) || []).length > 1) return
+
+		setSellPrice(value)
+	}
+
 	const handleAddCrypto = async () => {
 		try {
 			// Проверяем, что выбрана криптовалюта и введено количество
-			if (!selectedCrypto || !quantity) {
-				toast.error('Please select a cryptocurrency and enter a quantity')
+			if (!selectedCrypto || !quantity || !buyPrice) {
+				toast.error('Please select a cryptocurrency, enter a quantity and buy price')
 				return
 			}
 
 			// Вызываем функцию для добавления криптовалюты
-			await addCryptoToUser(selectedCrypto, Number(quantity))
+			await addCryptoToUser(selectedCrypto, Number(quantity), Number(buyPrice), Number(sellPrice))
 
 			// Уведомляем пользователя об успехе
 			toast.success('Crypto added successfully')
@@ -217,6 +247,40 @@ export const AddCrypto = () => {
 									step={0.01}
 									value={quantity}
 									onChange={handleQuantityChange}
+									className="col-span-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+								/>
+							</div>
+
+							<div className="grid grid-cols-4 items-center gap-4">
+								<Label htmlFor="buy-price" className="text-right">
+									Buy Price
+								</Label>
+
+								<Input
+									id="buy-price"
+									type="number"
+									placeholder="Enter buy price"
+									min={0}
+									step={0.01}
+									value={buyPrice}
+									onChange={handleBuyPriceChange}
+									className="col-span-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+								/>
+							</div>
+
+							<div className="grid grid-cols-4 items-center gap-4">
+								<Label htmlFor="sell-price" className="text-right">
+									Sell Price
+								</Label>
+
+								<Input
+									id="sell-price"
+									type="number"
+									placeholder="Enter sell price"
+									min={0}
+									step={0.01}
+									value={sellPrice}
+									onChange={handleSellPriceChange}
 									className="col-span-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 								/>
 							</div>

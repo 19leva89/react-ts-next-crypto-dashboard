@@ -153,7 +153,9 @@ model Coin {
 
 model UserCoin {
   id               String         @id @unique
-  quantity         Float?
+  quantity         Float
+  buy_price        Float
+  sell_price       Float?
   //
   coin             Coin           @relation(fields: [coinId], references: [id], onDelete: Cascade)
   coinId           String

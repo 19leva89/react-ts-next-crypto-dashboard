@@ -27,7 +27,7 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { formatPrice } from '@/constants/format-price'
-import { delleteCryptoFromUser, updateUserCryptoQuantity } from '@/app/api/actions'
+import { delleteCryptoFromUser, updateUserCrypto } from '@/app/api/actions'
 
 export interface CryptoData {
 	coinId: string
@@ -35,6 +35,8 @@ export interface CryptoData {
 	symbol: string
 	currentPrice: number
 	quantity: number
+	buyPrice: number
+	sellPrice?: number
 	image: string
 }
 
@@ -47,6 +49,8 @@ interface Props {
 export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [editQuantity, setEditQuantity] = useState<string>(String(coin.quantity))
+	const [editBuyPrice, setEditBuyPrice] = useState<string>(String(coin.buyPrice))
+	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
 
 	const totalValue = coin.currentPrice * coin.quantity
@@ -65,10 +69,38 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 		setEditQuantity(value)
 	}
 
+	const handleBuyPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+		let value = e.target.value
+
+		// Разрешаем только цифры, точку и запятую
+		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
+
+		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
+		value = value.replace(',', '.')
+
+		if ((value.match(/\./g) || []).length > 1) return
+
+		setEditBuyPrice(value)
+	}
+
+	const handleSellPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+		let value = e.target.value
+
+		// Разрешаем только цифры, точку и запятую
+		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
+
+		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
+		value = value.replace(',', '.')
+
+		if ((value.match(/\./g) || []).length > 1) return
+
+		setEditSellPrice(value)
+	}
+
 	const handleUpdate = async () => {
 		try {
 			// Вызываем функцию для обновления криптовалюты
-			await updateUserCryptoQuantity(coin.coinId, Number(editQuantity))
+			await updateUserCrypto(coin.coinId, Number(editQuantity), Number(editBuyPrice), Number(editSellPrice))
 
 			// Уведомляем пользователя об успехе
 			toast.success('Crypto updated successfully')
@@ -137,7 +169,13 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 						<span className="text-sm text-muted-foreground">({coin.symbol.toUpperCase()})</span>
 					</CardTitle>
 
-					<CardDescription>Current Price: ${formatPrice(coin.currentPrice)}</CardDescription>
+					<CardDescription className="flex flex-col ">
+						<span>Buy price: ${formatPrice(coin.buyPrice)}</span>
+
+						<span>Current price: ${formatPrice(coin.currentPrice)}</span>
+
+						{coin.sellPrice && <span>Sell price: ${formatPrice(coin.sellPrice)}</span>}
+					</CardDescription>
 				</div>
 
 				<DropdownMenu>
@@ -204,6 +242,38 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 								step={0.01}
 								value={editQuantity}
 								onChange={handleQuantityChange}
+								className="col-span-3 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+							/>
+						</div>
+
+						<div className="grid grid-cols-4 items-center gap-4">
+							<Label htmlFor="buy-price" className="text-right">
+								Buy Price
+							</Label>
+
+							<Input
+								id="buy-price"
+								type="number"
+								min={0}
+								step={0.01}
+								value={editBuyPrice}
+								onChange={handleBuyPriceChange}
+								className="col-span-3 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+							/>
+						</div>
+
+						<div className="grid grid-cols-4 items-center gap-4">
+							<Label htmlFor="sell-price" className="text-right">
+								Sell Price
+							</Label>
+
+							<Input
+								id="sell-price"
+								type="number"
+								min={0}
+								step={0.01}
+								value={editSellPrice}
+								onChange={handleSellPriceChange}
 								className="col-span-3 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 							/>
 						</div>

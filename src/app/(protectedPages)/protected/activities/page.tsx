@@ -16,6 +16,8 @@ const ActivitiesPage = async () => {
 		symbol: userCoin.coinsListIDMap.symbol,
 		currentPrice: userCoin.coin.current_price as number,
 		quantity: userCoin.quantity as number,
+		buyPrice: userCoin.buy_price as number,
+		sellPrice: userCoin.sell_price as number,
 		image: userCoin.coin.image as string,
 	}))
 
