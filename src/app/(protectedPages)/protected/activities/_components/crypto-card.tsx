@@ -56,47 +56,24 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 	const totalValue = coin.currentPrice * coin.quantity
 	const changePercentagePrice = ((coin.currentPrice - coin.buyPrice) / coin.buyPrice) * 100
 
-	const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
+	const handleNumberInput = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
 		let value = e.target.value
 
 		// Разрешаем только цифры, точку и запятую
 		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
 
 		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
-		value = value.replace(',', '.')
+		value = value.replace(/,/g, '.')
 
+		// Проверяем количество точек
 		if ((value.match(/\./g) || []).length > 1) return
 
-		setEditQuantity(value)
+		setter(value)
 	}
 
-	const handleBuyPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-		let value = e.target.value
-
-		// Разрешаем только цифры, точку и запятую
-		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
-
-		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
-		value = value.replace(',', '.')
-
-		if ((value.match(/\./g) || []).length > 1) return
-
-		setEditBuyPrice(value)
-	}
-
-	const handleSellPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-		let value = e.target.value
-
-		// Разрешаем только цифры, точку и запятую
-		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
-
-		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
-		value = value.replace(',', '.')
-
-		if ((value.match(/\./g) || []).length > 1) return
-
-		setEditSellPrice(value)
-	}
+	const handleQuantityChange = handleNumberInput(setEditQuantity)
+	const handleBuyPriceChange = handleNumberInput(setEditBuyPrice)
+	const handleSellPriceChange = handleNumberInput(setEditSellPrice)
 
 	const handleUpdate = async () => {
 		try {
@@ -104,18 +81,18 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			await updateUserCrypto(coin.coinId, Number(editQuantity), Number(editBuyPrice), Number(editSellPrice))
 
 			// Уведомляем пользователя об успехе
-			toast.success('Crypto updated successfully')
+			toast.success('Coin updated successfully')
 
 			// Закрываем диалог
 			setIsDialogOpen(false)
 		} catch (error) {
 			// Уведомляем пользователя об ошибке
-			console.error('Error updating crypto:', error)
+			console.error('Error updating coin:', error)
 
 			if (error instanceof Error) {
 				toast.error(error.message)
 			} else {
-				toast.error('Failed to update crypto. Please try again')
+				toast.error('Failed to update coin. Please try again')
 			}
 		}
 	}
@@ -126,17 +103,17 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			await delleteCryptoFromUser(coin.coinId)
 
 			// Уведомляем пользователя об успехе
-			toast.success('Crypto removed successfully')
+			toast.success('Coin removed successfully')
 
 			setIsDeleteDialogOpen(false)
 		} catch (error) {
 			// Уведомляем пользователя об ошибке
-			console.error('Error removing crypto:', error)
+			console.error('Error removing coin:', error)
 
 			if (error instanceof Error) {
 				toast.error(error.message)
 			} else {
-				toast.error('Failed to remove crypto. Please try again')
+				toast.error('Failed to remove coin. Please try again')
 			}
 		}
 	}
@@ -147,7 +124,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 				'flex flex-col gap-1',
 				viewMode === 'grid'
 					? 'flex-grow flex-shrink-0 sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)] min-w-[18rem] max-w-[21rem] min-h-[10rem]'
-					: 'w-full',
+					: 'w-full gap-0',
 			)}
 		>
 			<CardHeader className="flex flex-row items-start justify-between px-3 py-1 pb-0">
@@ -158,30 +135,41 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 					)}
 				>
 					<CardTitle className="flex items-center gap-2">
-						<Image src={coin.image} alt={coin.name} width={24} height={24} className="rounded-full" />
+						<Image
+							src={coin.image || '/svg/coin-not-found.svg'}
+							alt={coin.name || 'Coin image'}
+							width={24}
+							height={24}
+							className="rounded-full"
+						/>
 
 						<span
 							onClick={() => onClick(coin.coinId)}
-							className="cursor-pointer truncate hover:text-[#397fee] dark:hover:text-[#75a6f4]"
+							className="cursor-pointer truncate max-w-[8rem] hover:text-[#397fee] dark:hover:text-[#75a6f4]"
 						>
 							{coin.name}
 						</span>
 
-						<span className="text-sm text-muted-foreground">({coin.symbol.toUpperCase()})</span>
+						<span className="text-sm text-muted-foreground max-[600px]:hidden">
+							({coin.symbol.toUpperCase()})
+						</span>
 					</CardTitle>
 
 					<CardDescription className="flex gap-2 items-center">
-						<div className={cn('flex', viewMode === 'grid' ? 'flex-col' : 'flex-row gap-4')}>
+						<div
+							className={cn('flex', viewMode === 'grid' ? 'flex-col' : 'flex-row gap-4 max-[1000px]:hidden')}
+						>
 							<span>Buy: ${formatPrice(coin.buyPrice)}</span>
 
 							<span>Curr: ${formatPrice(coin.currentPrice)}</span>
 
-							{coin.sellPrice && <span>Sell: ${formatPrice(coin.sellPrice)}</span>}
+							{coin.sellPrice ? <span>Sell: ${formatPrice(coin.sellPrice)}</span> : null}
 						</div>
 
 						<div
 							className={cn(
-								'flex items-center gap-2 rounded-full font-medium px-2 py-1 h-8',
+								'flex items-center gap-2 rounded-full font-medium px-2 py-1 h-8 ',
+								viewMode === 'grid' ? '' : 'max-[460px]:hidden',
 								coin.currentPrice > coin.buyPrice
 									? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
 									: 'bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item',
@@ -245,7 +233,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 
 			{/* Edit Dialog */}
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-				<DialogContent>
+				<DialogContent className="px-8 rounded-xl">
 					<DialogHeader>
 						<DialogTitle>Edit Quantity</DialogTitle>
 
@@ -312,7 +300,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 
 			{/* Delete Dialog */}
 			<Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-				<DialogContent>
+				<DialogContent className="px-8 rounded-xl">
 					<DialogHeader>
 						<DialogTitle>Delete {coin.name}</DialogTitle>
 

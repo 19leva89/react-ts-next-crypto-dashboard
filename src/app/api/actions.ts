@@ -247,7 +247,11 @@ export const addCryptoToUser = async (
 		}
 
 		if (typeof quantity !== 'number' || isNaN(quantity) || quantity <= 0) {
-			throw new Error('Quantity must be a valid number greater than 0')
+			throw new Error('Quantity must be greater than 0')
+		}
+
+		if (typeof buy_price !== 'number' || isNaN(buy_price) || buy_price <= 0) {
+			throw new Error('Buy price must be greater than 0')
 		}
 
 		// Проверяем, существует ли пользователь
@@ -267,26 +271,27 @@ export const addCryptoToUser = async (
 			throw new Error(`Failed to fetch data for coin ${coinId}`)
 		}
 
-		// Используем upsert для создания или обновления записи UserCoin
-		await prisma.userCoin.upsert({
+		// Check for existing coin first
+		const existingCoin = await prisma.userCoin.findUnique({
 			where: {
 				userId_coinId: {
 					userId: user.id,
 					coinId: coinId,
 				},
 			},
+		})
 
-			update: {
+		if (existingCoin) {
+			throw new Error('This coin already exists in your portfolio')
+		}
+
+		// Create new entry if not exists
+		await prisma.userCoin.create({
+			data: {
+				id: coinId,
 				quantity,
 				buy_price,
 				sell_price,
-			},
-			create: {
-				id: coinData.id,
-				quantity,
-				buy_price,
-				sell_price,
-
 				userId: user.id,
 				coinId: coinId,
 				coinsListIDMapId: coinData.id,

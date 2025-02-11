@@ -28,9 +28,9 @@ import { CoinsListIDMapData } from '@/app/api/types'
 import { addCryptoToUser, getCoinsListIDMap } from '@/app/api/actions'
 
 export const AddCrypto = () => {
-	const [quantity, setQuantity] = useState<string>('')
-	const [buyPrice, setBuyPrice] = useState<string>('')
-	const [sellPrice, setSellPrice] = useState<string>('')
+	const [editQuantity, setEditQuantity] = useState<string>('')
+	const [editBuyPrice, setEditBuyPrice] = useState<string>('')
+	const [editSellPrice, setEditSellPrice] = useState<string>('')
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [selectedCrypto, setSelectedCrypto] = useState<string>('')
@@ -65,58 +65,35 @@ export const AddCrypto = () => {
 			coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()),
 	)
 
-	const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
+	const handleNumberInput = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
 		let value = e.target.value
 
 		// Разрешаем только цифры, точку и запятую
 		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
 
 		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
-		value = value.replace(',', '.')
+		value = value.replace(/,/g, '.')
 
+		// Проверяем количество точек
 		if ((value.match(/\./g) || []).length > 1) return
 
-		setQuantity(value)
+		setter(value)
 	}
 
-	const handleBuyPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-		let value = e.target.value
-
-		// Разрешаем только цифры, точку и запятую
-		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
-
-		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
-		value = value.replace(',', '.')
-
-		if ((value.match(/\./g) || []).length > 1) return
-
-		setBuyPrice(value)
-	}
-
-	const handleSellPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-		let value = e.target.value
-
-		// Разрешаем только цифры, точку и запятую
-		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
-
-		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
-		value = value.replace(',', '.')
-
-		if ((value.match(/\./g) || []).length > 1) return
-
-		setSellPrice(value)
-	}
+	const handleQuantityChange = handleNumberInput(setEditQuantity)
+	const handleBuyPriceChange = handleNumberInput(setEditBuyPrice)
+	const handleSellPriceChange = handleNumberInput(setEditSellPrice)
 
 	const handleAddCrypto = async () => {
 		try {
 			// Проверяем, что выбрана криптовалюта и введено количество
-			if (!selectedCrypto || !quantity || !buyPrice) {
-				toast.error('Please select a cryptocurrency, enter a quantity and buy price')
+			if (!selectedCrypto || !editQuantity || !editBuyPrice) {
+				toast.error('Please select a coin, enter a quantity and buy price')
 				return
 			}
 
 			// Вызываем функцию для добавления криптовалюты
-			await addCryptoToUser(selectedCrypto, Number(quantity), Number(buyPrice), Number(sellPrice))
+			await addCryptoToUser(selectedCrypto, Number(editQuantity), Number(editBuyPrice), Number(editSellPrice))
 
 			// Уведомляем пользователя об успехе
 			toast.success('Crypto added successfully')
@@ -126,7 +103,7 @@ export const AddCrypto = () => {
 
 			// Очищаем поля
 			setSelectedCrypto('')
-			setQuantity('')
+			setEditQuantity('')
 		} catch (error) {
 			// Уведомляем пользователя об ошибке
 			console.error('Error adding crypto:', error)
@@ -150,7 +127,7 @@ export const AddCrypto = () => {
 						</Button>
 					</DialogTrigger>
 
-					<DialogContent>
+					<DialogContent className="px-8 rounded-xl">
 						<DialogHeader>
 							<DialogTitle>Add New Crypto</DialogTitle>
 
@@ -214,7 +191,7 @@ export const AddCrypto = () => {
 																	<div className="flex flex-row gap-2 h-5">
 																		<Image
 																			src={coin?.image || '/svg/coin-not-found.svg'}
-																			alt={coin?.name || 'Coin'}
+																			alt={coin?.name || 'Coin image'}
 																			width={20}
 																			height={20}
 																		/>
@@ -245,7 +222,7 @@ export const AddCrypto = () => {
 									placeholder="Enter quantity"
 									min={0}
 									step={0.01}
-									value={quantity}
+									value={editQuantity}
 									onChange={handleQuantityChange}
 									className="col-span-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 								/>
@@ -262,7 +239,7 @@ export const AddCrypto = () => {
 									placeholder="Enter buy price"
 									min={0}
 									step={0.01}
-									value={buyPrice}
+									value={editBuyPrice}
 									onChange={handleBuyPriceChange}
 									className="col-span-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 								/>
@@ -279,7 +256,7 @@ export const AddCrypto = () => {
 									placeholder="Enter sell price"
 									min={0}
 									step={0.01}
-									value={sellPrice}
+									value={editSellPrice}
 									onChange={handleSellPriceChange}
 									className="col-span-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 								/>

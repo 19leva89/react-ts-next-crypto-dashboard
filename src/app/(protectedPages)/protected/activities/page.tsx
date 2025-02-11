@@ -21,12 +21,23 @@ const ActivitiesPage = async () => {
 		image: userCoin.coin.image as string,
 	}))
 
-	// Вычисляем общую стоимость портфеля
+	// Calculate the total value of the portfolio
 	const totalPortfolioValue = cryptoData.reduce((total, crypto) => {
 		return total + crypto.currentPrice * crypto.quantity
 	}, 0)
 
-	return <ActivitiesContainer cryptoData={cryptoData} totalValue={totalPortfolioValue} />
+	// Calculate the total future profit of the portfolio
+	const plannedProfit = cryptoData.reduce((total, crypto) => {
+		return total + (crypto.sellPrice - crypto.buyPrice) * crypto.quantity
+	}, 0)
+
+	return (
+		<ActivitiesContainer
+			cryptoData={cryptoData}
+			totalValue={totalPortfolioValue}
+			plannedProfit={plannedProfit}
+		/>
+	)
 }
 
 export default ActivitiesPage
