@@ -15,7 +15,7 @@ async function up() {
 	// await getCoinsList()
 
 	// Создаем запись в Coin и UserCoin
-	// #1
+	// #1 1INCH
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
 			where: { id: '1inch' },
@@ -32,7 +32,7 @@ async function up() {
 				coinId: '1inch',
 				coinsListIDMapId: '1inch',
 				total_quantity: 20,
-				total_cost: 20 * 0.55394165,
+				total_cost: 11.08,
 				average_price: 0.55394165,
 				desired_sell_price: 7.5,
 			},
@@ -49,7 +49,7 @@ async function up() {
 		})
 	})
 
-	// #2
+	// #2 AAVE
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
 			where: { id: 'aave' },
@@ -66,7 +66,7 @@ async function up() {
 				coinId: 'aave',
 				coinsListIDMapId: 'aave',
 				total_quantity: 0.2,
-				total_cost: 0.2 * 66.07,
+				total_cost: 13.21,
 				average_price: 66.07,
 				desired_sell_price: 520,
 			},
@@ -83,7 +83,75 @@ async function up() {
 		})
 	})
 
-	// #3
+	// #3 ADA
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'cardano' },
+			update: {},
+			create: {
+				id: 'cardano',
+				coinsListIDMapId: 'cardano',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'cardano',
+				coinId: 'cardano',
+				coinsListIDMapId: 'cardano',
+				total_quantity: 20,
+				total_cost: 19.78,
+				average_price: 0.989,
+				desired_sell_price: 3,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'cardano',
+					quantity: 20,
+					price: 0.989,
+					date: new Date('2025-01-22T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #4 AEVO
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'aevo-exchange' },
+			update: {},
+			create: {
+				id: 'aevo-exchange',
+				coinsListIDMapId: 'aevo-exchange',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'aevo-exchange',
+				coinId: 'aevo-exchange',
+				coinsListIDMapId: 'aevo-exchange',
+				total_quantity: 60,
+				total_cost: 10.13,
+				average_price: 0.168783,
+				desired_sell_price: 3.2,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'aevo-exchange',
+					quantity: 60,
+					price: 0.168783,
+					date: new Date('2025-02-11T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #5 ALGO
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
 			where: { id: 'algorand' },
@@ -153,7 +221,211 @@ async function up() {
 		})
 	})
 
-	// #4
+	// #6 ALICE
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'my-neighbor-alice' },
+			update: {},
+			create: {
+				id: 'my-neighbor-alice',
+				coinsListIDMapId: 'my-neighbor-alice',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'my-neighbor-alice',
+				coinId: 'my-neighbor-alice',
+				coinsListIDMapId: 'my-neighbor-alice',
+				total_quantity: 17,
+				total_cost: 12.05,
+				average_price: 0.7088,
+				desired_sell_price: 24,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'my-neighbor-alice',
+					quantity: 17,
+					price: 0.7088,
+					date: new Date('2025-02-07T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #7 ALPACA
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'alpaca-finance' },
+			update: {},
+			create: {
+				id: 'alpaca-finance',
+				coinsListIDMapId: 'alpaca-finance',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'alpaca-finance',
+				coinId: 'alpaca-finance',
+				coinsListIDMapId: 'alpaca-finance',
+				total_quantity: 105,
+				total_cost: 12.32,
+				average_price: 0.1174,
+				desired_sell_price: 4,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'alpaca-finance',
+					quantity: 105,
+					price: 0.1174,
+					date: new Date('2025-02-07T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #8 ALT
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'altlayer' },
+			update: {},
+			create: {
+				id: 'altlayer',
+				coinsListIDMapId: 'altlayer',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'altlayer',
+				coinId: 'altlayer',
+				coinsListIDMapId: 'altlayer',
+				total_quantity: 230,
+				total_cost: 12.21,
+				average_price: 0.0531,
+				desired_sell_price: 0.7,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'altlayer',
+					quantity: 230,
+					price: 0.0531,
+					date: new Date('2025-02-07T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #9 APE
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'apecoin' },
+			update: {},
+			create: {
+				id: 'apecoin',
+				coinsListIDMapId: 'apecoin',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'apecoin',
+				coinId: 'apecoin',
+				coinsListIDMapId: 'apecoin',
+				total_quantity: 32,
+				total_cost: 22.33,
+				average_price: 0.6979,
+				desired_sell_price: 19,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'apecoin',
+					quantity: 32,
+					price: 0.6979,
+					date: new Date('2025-02-07T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #10 APT
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'aptos' },
+			update: {},
+			create: {
+				id: 'aptos',
+				coinsListIDMapId: 'aptos',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'aptos',
+				coinId: 'aptos',
+				coinsListIDMapId: 'aptos',
+				total_quantity: 3.00585339,
+				total_cost: 20.14,
+				average_price: 6.7,
+				desired_sell_price: 25,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'aptos',
+					quantity: 3.00585339,
+					price: 6.7,
+					date: new Date('2025-01-25T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #11 ARB
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'arbitrum' },
+			update: {},
+			create: {
+				id: 'arbitrum',
+				coinsListIDMapId: 'arbitrum',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'arbitrum',
+				coinId: 'arbitrum',
+				coinsListIDMapId: 'arbitrum',
+				total_quantity: 20,
+				total_cost: 9.86,
+				average_price: 0.493142,
+				desired_sell_price: 2.3,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'arbitrum',
+					quantity: 20,
+					price: 0.493142,
+					date: new Date('2025-02-11T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #12 ATOM
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
 			where: { id: 'cosmos' },
@@ -199,7 +471,41 @@ async function up() {
 		})
 	})
 
-	// #5
+	// #13 AURORA
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'aurora-near' },
+			update: {},
+			create: {
+				id: 'aurora-near',
+				coinsListIDMapId: 'aurora-near',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'aurora-near',
+				coinId: 'aurora-near',
+				coinsListIDMapId: 'aurora-near',
+				total_quantity: 65,
+				total_cost: 10.06,
+				average_price: 0.15469415,
+				desired_sell_price: 3.5,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'aurora-near',
+					quantity: 65,
+					price: 0.15469415,
+					date: new Date('2025-02-11T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #14 AVAX
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
 			where: { id: 'avalanche-2' },
@@ -233,7 +539,41 @@ async function up() {
 		})
 	})
 
-	// #6
+	// #15 BAKE
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'bakerytoken' },
+			update: {},
+			create: {
+				id: 'bakerytoken',
+				coinsListIDMapId: 'bakerytoken',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'bakerytoken',
+				coinId: 'bakerytoken',
+				coinsListIDMapId: 'bakerytoken',
+				total_quantity: 85,
+				total_cost: 12.17,
+				average_price: 0.1432,
+				desired_sell_price: 6.8,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'bakerytoken',
+					quantity: 85,
+					price: 0.1432,
+					date: new Date('2025-02-07T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #16 BAT
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
 			where: { id: 'basic-attention-token' },
@@ -250,8 +590,8 @@ async function up() {
 				coinId: 'basic-attention-token',
 				coinsListIDMapId: 'basic-attention-token',
 				total_quantity: 60,
-				total_cost: 0.171502,
-				average_price: 10.29,
+				total_cost: 10.29,
+				average_price: 0.171502,
 				desired_sell_price: 1.7,
 			},
 		})
@@ -267,7 +607,75 @@ async function up() {
 		})
 	})
 
-	// #7
+	// #17 BICO
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'biconomy' },
+			update: {},
+			create: {
+				id: 'biconomy',
+				coinsListIDMapId: 'biconomy',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'biconomy',
+				coinId: 'biconomy',
+				coinsListIDMapId: 'biconomy',
+				total_quantity: 55,
+				total_cost: 10.29,
+				average_price: 0.187022,
+				desired_sell_price: 13,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'biconomy',
+					quantity: 55,
+					price: 0.187022,
+					date: new Date('2025-02-11T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #18 BLUR
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'blur' },
+			update: {},
+			create: {
+				id: 'blur',
+				coinsListIDMapId: 'blur',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'blur',
+				coinId: 'blur',
+				coinsListIDMapId: 'blur',
+				total_quantity: 70,
+				total_cost: 10.23,
+				average_price: 0.146165,
+				desired_sell_price: 5,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'blur',
+					quantity: 70,
+					price: 0.146165,
+					date: new Date('2025-02-11T00:00:00'),
+				},
+			],
+		})
+	})
+
+	// #19 BTC
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({
 			where: { id: 'bitcoin' },
@@ -284,8 +692,8 @@ async function up() {
 				coinId: 'bitcoin',
 				coinsListIDMapId: 'bitcoin',
 				total_quantity: 0.009639,
-				total_cost: 643.83,
-				average_price: 29940,
+				total_cost: 326.98,
+				average_price: 33923,
 				desired_sell_price: 120000,
 			},
 		})
@@ -361,30 +769,39 @@ async function up() {
 		})
 	})
 
-	// // #8
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'pancakeswap-token' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'pancakeswap-token',
-	// 			coinsListIDMapId: 'pancakeswap-token',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'pancakeswap-token',
-	// 				coinId: 'pancakeswap-token',
-	// 				coinsListIDMapId: 'pancakeswap-token',
-	// 				quantity: 7,
-	// 				buy_price: 1.5,
-	// 				sell_price: 40,
-	// 			},
-	// 		],
-	// 	})
-	// })
+	// #20 CAKE
+	await prisma.$transaction(async (prisma) => {
+		await prisma.coin.upsert({
+			where: { id: 'pancakeswap-token' },
+			update: {},
+			create: {
+				id: 'pancakeswap-token',
+				coinsListIDMapId: 'pancakeswap-token',
+			},
+		})
+		await prisma.userCoin.create({
+			data: {
+				userId,
+				id: 'pancakeswap-token',
+				coinId: 'pancakeswap-token',
+				coinsListIDMapId: 'pancakeswap-token',
+				total_quantity: 7,
+				total_cost: 10.5,
+				average_price: 1.5,
+				desired_sell_price: 40,
+			},
+		})
+		await prisma.userCoinPurchase.createMany({
+			data: [
+				{
+					userCoinId: 'pancakeswap-token',
+					quantity: 7,
+					price: 1.5,
+					date: new Date('2023-08-07T00:00:00'),
+				},
+			],
+		})
+	})
 
 	// // #9
 	// await prisma.$transaction(async (prisma) => {
@@ -1359,31 +1776,6 @@ async function up() {
 	// 	})
 	// })
 
-	// // #48
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'aptos' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'aptos',
-	// 			coinsListIDMapId: 'aptos',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'aptos',
-	// 				coinId: 'aptos',
-	// 				coinsListIDMapId: 'aptos',
-	// 				quantity: 3.00585339,
-	// 				buy_price: 6.7,
-	// 				sell_price: 25,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
 	// // #49
 	// await prisma.$transaction(async (prisma) => {
 	// 	await prisma.coin.upsert({
@@ -1404,31 +1796,6 @@ async function up() {
 	// 				quantity: 15,
 	// 				buy_price: 1.3,
 	// 				sell_price: 15,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
-	// // #50
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'cardano' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'cardano',
-	// 			coinsListIDMapId: 'cardano',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'cardano',
-	// 				coinId: 'cardano',
-	// 				coinsListIDMapId: 'cardano',
-	// 				quantity: 20,
-	// 				buy_price: 0.989,
-	// 				sell_price: 3,
 	// 			},
 	// 		],
 	// 	})
@@ -1504,131 +1871,6 @@ async function up() {
 	// 				quantity: 0.0483667,
 	// 				buy_price: 2747.1,
 	// 				sell_price: 5000,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
-	// // #54
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'my-neighbor-alice' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'my-neighbor-alice',
-	// 			coinsListIDMapId: 'my-neighbor-alice',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'my-neighbor-alice',
-	// 				coinId: 'my-neighbor-alice',
-	// 				coinsListIDMapId: 'my-neighbor-alice',
-	// 				quantity: 17,
-	// 				buy_price: 0.7088,
-	// 				sell_price: 24,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
-	// // #55
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'alpaca-finance' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'alpaca-finance',
-	// 			coinsListIDMapId: 'alpaca-finance',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'alpaca-finance',
-	// 				coinId: 'alpaca-finance',
-	// 				coinsListIDMapId: 'alpaca-finance',
-	// 				quantity: 105,
-	// 				buy_price: 0.1174,
-	// 				sell_price: 4,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
-	// // #56
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'altlayer' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'altlayer',
-	// 			coinsListIDMapId: 'altlayer',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'altlayer',
-	// 				coinId: 'altlayer',
-	// 				coinsListIDMapId: 'altlayer',
-	// 				quantity: 230,
-	// 				buy_price: 0.0531,
-	// 				sell_price: 0.7,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
-	// // #57
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'apecoin' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'apecoin',
-	// 			coinsListIDMapId: 'apecoin',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'apecoin',
-	// 				coinId: 'apecoin',
-	// 				coinsListIDMapId: 'apecoin',
-	// 				quantity: 32,
-	// 				buy_price: 0.6979,
-	// 				sell_price: 19,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
-	// // #58
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'bakerytoken' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'bakerytoken',
-	// 			coinsListIDMapId: 'bakerytoken',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'bakerytoken',
-	// 				coinId: 'bakerytoken',
-	// 				coinsListIDMapId: 'bakerytoken',
-	// 				quantity: 85,
-	// 				buy_price: 0.1432,
-	// 				sell_price: 6.8,
 	// 			},
 	// 		],
 	// 	})
@@ -1754,131 +1996,6 @@ async function up() {
 	// 				quantity: 48,
 	// 				buy_price: 0.2523,
 	// 				sell_price: 2.7,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
-	// // #64
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'aevo-exchange' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'aevo-exchange',
-	// 			coinsListIDMapId: 'aevo-exchange',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'aevo-exchange',
-	// 				coinId: 'aevo-exchange',
-	// 				coinsListIDMapId: 'aevo-exchange',
-	// 				quantity: 60,
-	// 				buy_price: 0.168783,
-	// 				sell_price: 3.2,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
-	// // #65
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'arbitrum' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'arbitrum',
-	// 			coinsListIDMapId: 'arbitrum',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'arbitrum',
-	// 				coinId: 'arbitrum',
-	// 				coinsListIDMapId: 'arbitrum',
-	// 				quantity: 20,
-	// 				buy_price: 0.493142,
-	// 				sell_price: 2.3,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
-	// // #66
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'aurora-near' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'aurora-near',
-	// 			coinsListIDMapId: 'aurora-near',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'aurora-near',
-	// 				coinId: 'aurora-near',
-	// 				coinsListIDMapId: 'aurora-near',
-	// 				quantity: 65,
-	// 				buy_price: 0.15469415,
-	// 				sell_price: 3.5,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
-	// // #67
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'biconomy' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'biconomy',
-	// 			coinsListIDMapId: 'biconomy',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'biconomy',
-	// 				coinId: 'biconomy',
-	// 				coinsListIDMapId: 'biconomy',
-	// 				quantity: 55,
-	// 				buy_price: 0.187022,
-	// 				sell_price: 13,
-	// 			},
-	// 		],
-	// 	})
-	// })
-
-	// // #68
-	// await prisma.$transaction(async (prisma) => {
-	// 	await prisma.coin.upsert({
-	// 		where: { id: 'blur' },
-	// 		update: {},
-	// 		create: {
-	// 			id: 'blur',
-	// 			coinsListIDMapId: 'blur',
-	// 		},
-	// 	})
-	// 	await prisma.userCoin.createMany({
-	// 		data: [
-	// 			{
-	// 				userId,
-	// 				id: 'blur',
-	// 				coinId: 'blur',
-	// 				coinsListIDMapId: 'blur',
-	// 				quantity: 70,
-	// 				buy_price: 0.146165,
-	// 				sell_price: 5,
 	// 			},
 	// 		],
 	// 	})

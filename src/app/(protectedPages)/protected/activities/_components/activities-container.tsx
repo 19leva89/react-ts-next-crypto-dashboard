@@ -99,13 +99,13 @@ export const ActivitiesContainer = ({ cryptoData, totalValue, plannedProfit }: P
 				<div className="flex items-start gap-1 max-[1000px]:flex-col">
 					<div className="p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6">
 						<h2 className="text-xl font-bold max-[460px]:text-lg">
-							Total crypto: ${formatPrice(totalValue, true, 2, 2)}
+							Total crypto: ${formatPrice(totalValue, true)}
 						</h2>
 					</div>
 
 					<div className="p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6">
 						<h2 className="text-xl font-bold max-[460px]:text-lg">
-							Planned profit: ${formatPrice(plannedProfit, true, 2, 2)}
+							Planned profit: ${formatPrice(plannedProfit, true)}
 						</h2>
 					</div>
 				</div>

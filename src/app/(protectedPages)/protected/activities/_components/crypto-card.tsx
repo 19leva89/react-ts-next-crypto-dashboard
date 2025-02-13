@@ -234,7 +234,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			>
 				<p className="text-lg font-semibold">Quantity: {formatPrice(coin.totalQuantity)}</p>
 
-				<p className="text-lg font-semibold">Total Value: ${formatPrice(totalValue, false, 2, 2)}</p>
+				<p className="text-lg font-semibold">Total Value: ${formatPrice(totalValue, false)}</p>
 			</CardContent>
 
 			{/* Edit Dialog */}

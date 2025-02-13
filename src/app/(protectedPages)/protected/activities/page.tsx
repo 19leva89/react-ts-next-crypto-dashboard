@@ -18,7 +18,7 @@ const ActivitiesPage = async () => {
 		totalQuantity: userCoin.total_quantity,
 		totalCost: userCoin.total_cost,
 		averagePrice: userCoin.average_price,
-		sellPrice: userCoin.sell_price as number,
+		sellPrice: userCoin.desired_sell_price as number,
 		image: userCoin.coin.image as string,
 	}))
 

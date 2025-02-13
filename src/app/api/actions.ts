@@ -250,6 +250,10 @@ export const addCryptoToUser = async (
 			throw new Error('Invalid quantity. Use positive for buy, negative for sell')
 		}
 
+		if (typeof price !== 'number' || isNaN(price) || price < 0) {
+			throw new Error('Invalid price. Price must be greater than 0')
+		}
+
 		// Проверяем, существует ли пользователь
 		const user = await prisma.user.findUnique({
 			where: { id: session.user.id },
@@ -272,16 +276,15 @@ export const addCryptoToUser = async (
 				create: {
 					id: coinId,
 					desired_sell_price: desiredSellPrice,
+					total_quantity: 0,
+					total_cost: 0,
+					average_price: 0,
 					user: { connect: { id: session.user.id } },
 					coin: { connect: { id: coinId } },
 					coinsListIDMap: { connect: { id: coinId } },
 				},
 				include: { purchases: true },
 			})
-
-			if (!userCoin && quantity < 0) {
-				throw new Error('Cannot sell non-existing coins')
-			}
 
 			// 2. Проверка баланса для продаж
 			if (quantity < 0) {
@@ -291,7 +294,7 @@ export const addCryptoToUser = async (
 				}
 			}
 
-			// 2. Создаем запись о транзакции
+			// 3. Создаем запись о транзакции
 			await prisma.userCoinPurchase.create({
 				data: {
 					quantity,
@@ -301,21 +304,22 @@ export const addCryptoToUser = async (
 				},
 			})
 
-			// 3. Пересчитываем агрегированные данные
+			// 4. Пересчитываем агрегированные данные
+			let totalCost = userCoin.total_cost
 			const totalQuantity = userCoin.total_quantity + quantity
 
-			let totalCost = userCoin.total_cost
 			if (quantity > 0) {
 				// Покупка: добавляем стоимость
 				totalCost += quantity * price
 			} else {
 				// Продажа: уменьшаем стоимость пропорционально средней цене
-				totalCost -= Math.abs(quantity) * userCoin.average_price
+				totalCost += quantity * userCoin.average_price
 			}
 
+			// 5. Обновляем среднюю цену только для оставшихся монет
 			const averagePrice = totalQuantity > 0 ? totalCost / totalQuantity : 0
 
-			// 4. Обновляем UserCoin
+			// 6. Обновляем UserCoin
 			await prisma.userCoin.update({
 				where: { id: userCoin.id },
 				data: {
@@ -324,8 +328,14 @@ export const addCryptoToUser = async (
 					average_price: averagePrice,
 					desired_sell_price: desiredSellPrice ?? userCoin.desired_sell_price,
 				},
-				include: { purchases: true },
 			})
+
+			// 7. Автоматическое удаление записи при нулевом балансе
+			if (totalQuantity === 0) {
+				await prisma.userCoin.delete({
+					where: { id: userCoin.id },
+				})
+			}
 		})
 
 		revalidatePath('/')
@@ -336,9 +346,9 @@ export const addCryptoToUser = async (
 
 export const updateUserCrypto = async (
 	coinId: string,
-	quantity: number,
-	buyPrice: number,
-	sellPrice?: number,
+	totalQuantity: number,
+	averagePrice: number,
+	desiredSellPrice?: number,
 ) => {
 	try {
 		const session = await auth()
@@ -354,15 +364,15 @@ export const updateUserCrypto = async (
 		}
 
 		// Валидация входных данных
-		if (quantity <= 0) {
+		if (totalQuantity <= 0) {
 			throw new Error('Quantity must be greater than 0')
 		}
 
-		if (buyPrice <= 0) {
+		if (averagePrice <= 0) {
 			throw new Error('Buy price must be greater than 0')
 		}
 
-		if (sellPrice && sellPrice <= 0) {
+		if (desiredSellPrice && desiredSellPrice <= 0) {
 			throw new Error('Sell price must be greater than 0')
 		}
 
@@ -371,9 +381,9 @@ export const updateUserCrypto = async (
 				userId_coinId: { userId: session.user.id, coinId }, // Используем уникальный ключ
 			},
 			data: {
-				total_quantity: quantity,
-				average_price: buyPrice,
-				sell_price: sellPrice,
+				total_quantity: totalQuantity,
+				average_price: averagePrice,
+				desired_sell_price: desiredSellPrice,
 			},
 		})
 

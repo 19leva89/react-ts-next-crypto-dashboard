@@ -29,8 +29,8 @@ import { addCryptoToUser, getCoinsListIDMap } from '@/app/api/actions'
 
 export const AddCrypto = () => {
 	const [editQuantity, setEditQuantity] = useState<string>('')
-	const [editBuyPrice, setEditBuyPrice] = useState<string>('')
-	const [editSellPrice, setEditSellPrice] = useState<string>('')
+	const [editPrice, setEditPrice] = useState<string>('')
+	const [editDesiredSellPrice, setEditDesiredSellPrice] = useState<string>('')
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [selectedCrypto, setSelectedCrypto] = useState<string>('')
@@ -68,8 +68,8 @@ export const AddCrypto = () => {
 	const handleNumberInput = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
 		let value = e.target.value
 
-		// Разрешаем только цифры, точку и запятую
-		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
+		// Разрешаем цифры, точку, запятую и минус в начале строки
+		if (!/^-?[0-9]*[.,]?[0-9]*$/.test(value)) return
 
 		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
 		value = value.replace(/,/g, '.')
@@ -77,23 +77,34 @@ export const AddCrypto = () => {
 		// Проверяем количество точек
 		if ((value.match(/\./g) || []).length > 1) return
 
+		// Проверяем количество минусов
+		if ((value.match(/-/g) || []).length > 1) return
+
+		// Убедимся, что минус только в начале строки
+		if (value.includes('-') && value.indexOf('-') !== 0) return
+
 		setter(value)
 	}
 
 	const handleQuantityChange = handleNumberInput(setEditQuantity)
-	const handleBuyPriceChange = handleNumberInput(setEditBuyPrice)
-	const handleSellPriceChange = handleNumberInput(setEditSellPrice)
+	const handlePriceChange = handleNumberInput(setEditPrice)
+	const handleDesiredSellPriceChange = handleNumberInput(setEditDesiredSellPrice)
 
 	const handleAddCrypto = async () => {
 		try {
 			// Проверяем, что выбрана криптовалюта и введено количество
-			if (!selectedCrypto || !editQuantity || !editBuyPrice) {
+			if (!selectedCrypto || !editQuantity || !editPrice) {
 				toast.error('Please select a coin, enter a quantity and buy price')
 				return
 			}
 
 			// Вызываем функцию для добавления криптовалюты
-			await addCryptoToUser(selectedCrypto, Number(editQuantity), Number(editBuyPrice), Number(editSellPrice))
+			await addCryptoToUser(
+				selectedCrypto,
+				Number(editQuantity),
+				Number(editPrice),
+				Number(editDesiredSellPrice),
+			)
 
 			// Уведомляем пользователя об успехе
 			toast.success('Crypto added successfully')
@@ -129,9 +140,11 @@ export const AddCrypto = () => {
 
 					<DialogContent className="px-8 rounded-xl">
 						<DialogHeader>
-							<DialogTitle>Add New Crypto</DialogTitle>
+							<DialogTitle>Add or Sold Crypto</DialogTitle>
 
-							<DialogDescription>Select a cryptocurrency and enter the quantity</DialogDescription>
+							<DialogDescription>
+								Select a coin and enter the quantity (if quantity is negative, the crypto will be sold)
+							</DialogDescription>
 						</DialogHeader>
 
 						<div className="grid gap-4 py-4">
@@ -229,35 +242,35 @@ export const AddCrypto = () => {
 							</div>
 
 							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="buy-price" className="text-right">
-									Buy Price
+								<Label htmlFor="price" className="text-right">
+									Price
 								</Label>
 
 								<Input
-									id="buy-price"
+									id="price"
 									type="number"
-									placeholder="Enter buy price"
+									placeholder="Enter price"
 									min={0}
 									step={0.01}
-									value={editBuyPrice}
-									onChange={handleBuyPriceChange}
+									value={editPrice}
+									onChange={handlePriceChange}
 									className="col-span-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 								/>
 							</div>
 
 							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="sell-price" className="text-right">
-									Sell Price
+								<Label htmlFor="desired-sell-price" className="text-right">
+									Desired sell price
 								</Label>
 
 								<Input
-									id="sell-price"
+									id="desired-sell-price"
 									type="number"
-									placeholder="Enter sell price"
+									placeholder="Enter desired sell price"
 									min={0}
 									step={0.01}
-									value={editSellPrice}
-									onChange={handleSellPriceChange}
+									value={editDesiredSellPrice}
+									onChange={handleDesiredSellPriceChange}
 									className="col-span-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 								/>
 							</div>
@@ -265,7 +278,7 @@ export const AddCrypto = () => {
 
 						<DialogFooter>
 							<Button onClick={handleAddCrypto} className="rounded-xl text-white">
-								Add
+								Submit
 							</Button>
 						</DialogFooter>
 					</DialogContent>
