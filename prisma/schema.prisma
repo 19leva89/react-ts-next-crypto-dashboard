@@ -152,23 +152,43 @@ model Coin {
 }
 
 model UserCoin {
-  id               String         @id @unique
-  quantity         Float
-  buy_price        Float
-  sell_price       Float?
+  id                 String             @id @unique
+  total_quantity     Float              @default(0)
+  total_cost         Float              @default(0)
+  average_price      Float              @default(0)
+  desired_sell_price Float?
   //
-  coin             Coin           @relation(fields: [coinId], references: [id], onDelete: Cascade)
-  coinId           String
-  coinsListIDMap   CoinsListIDMap @relation(fields: [coinsListIDMapId], references: [id], onDelete: Cascade)
-  coinsListIDMapId String
-  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           String
+  purchases          UserCoinPurchase[]
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+  coin               Coin               @relation(fields: [coinId], references: [id], onDelete: Cascade)
+  coinId             String
+  coinsListIDMap     CoinsListIDMap     @relation(fields: [coinsListIDMapId], references: [id], onDelete: Cascade)
+  coinsListIDMapId   String
   //
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
 
   @@unique([userId, coinId])
+  @@index([userId])
+  @@index([coinId])
   @@map("user_coin")
+}
+
+model UserCoinPurchase {
+  id         String   @id @default(cuid())
+  quantity   Float
+  price      Float
+  date       DateTime
+  //
+  userCoin   UserCoin @relation(fields: [userCoinId], references: [id], onDelete: Cascade)
+  userCoinId String
+  //
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userCoinId])
+  @@map("user_coin_purchase")
 }
 
 model TrendingCoin {

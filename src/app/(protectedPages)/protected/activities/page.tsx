@@ -15,20 +15,21 @@ const ActivitiesPage = async () => {
 		name: userCoin.coinsListIDMap.name,
 		symbol: userCoin.coinsListIDMap.symbol,
 		currentPrice: userCoin.coin.current_price as number,
-		quantity: userCoin.quantity as number,
-		buyPrice: userCoin.buy_price as number,
+		totalQuantity: userCoin.total_quantity,
+		totalCost: userCoin.total_cost,
+		averagePrice: userCoin.average_price,
 		sellPrice: userCoin.sell_price as number,
 		image: userCoin.coin.image as string,
 	}))
 
 	// Calculate the total value of the portfolio
 	const totalPortfolioValue = cryptoData.reduce((total, crypto) => {
-		return total + crypto.currentPrice * crypto.quantity
+		return total + crypto.currentPrice * crypto.totalQuantity
 	}, 0)
 
 	// Calculate the total future profit of the portfolio
 	const plannedProfit = cryptoData.reduce((total, crypto) => {
-		return total + (crypto.sellPrice - crypto.buyPrice) * crypto.quantity
+		return total + crypto.sellPrice * crypto.totalQuantity
 	}, 0)
 
 	return (

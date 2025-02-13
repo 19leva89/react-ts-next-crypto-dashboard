@@ -34,8 +34,9 @@ export interface CryptoData {
 	name: string
 	symbol: string
 	currentPrice: number
-	quantity: number
-	buyPrice: number
+	totalQuantity: number
+	totalCost: number
+	averagePrice: number
 	sellPrice?: number
 	image: string
 }
@@ -48,13 +49,13 @@ interface Props {
 
 export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-	const [editQuantity, setEditQuantity] = useState<string>(String(coin.quantity))
-	const [editBuyPrice, setEditBuyPrice] = useState<string>(String(coin.buyPrice))
+	const [editTotalQuantity, setEditTotalQuantity] = useState<string>(String(coin.totalQuantity))
+	const [editAveragePrice, setEditAveragePrice] = useState<string>(String(coin.averagePrice))
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
 
-	const totalValue = coin.currentPrice * coin.quantity
-	const changePercentagePrice = ((coin.currentPrice - coin.buyPrice) / coin.buyPrice) * 100
+	const totalValue = coin.currentPrice * coin.totalQuantity
+	const changePercentagePrice = ((coin.currentPrice - coin.averagePrice) / coin.averagePrice) * 100
 
 	const handleNumberInput = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
 		let value = e.target.value
@@ -71,14 +72,19 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 		setter(value)
 	}
 
-	const handleQuantityChange = handleNumberInput(setEditQuantity)
-	const handleBuyPriceChange = handleNumberInput(setEditBuyPrice)
+	const handleTotalQuantityChange = handleNumberInput(setEditTotalQuantity)
+	const handleAveragePriceChange = handleNumberInput(setEditAveragePrice)
 	const handleSellPriceChange = handleNumberInput(setEditSellPrice)
 
 	const handleUpdate = async () => {
 		try {
 			// Вызываем функцию для обновления криптовалюты
-			await updateUserCrypto(coin.coinId, Number(editQuantity), Number(editBuyPrice), Number(editSellPrice))
+			await updateUserCrypto(
+				coin.coinId,
+				Number(editTotalQuantity),
+				Number(editAveragePrice),
+				Number(editSellPrice),
+			)
 
 			// Уведомляем пользователя об успехе
 			toast.success('Coin updated successfully')
@@ -159,7 +165,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 						<div
 							className={cn('flex', viewMode === 'grid' ? 'flex-col' : 'flex-row gap-4 max-[1000px]:hidden')}
 						>
-							<span>Buy: ${formatPrice(coin.buyPrice)}</span>
+							<span>Buy: ${formatPrice(coin.averagePrice)}</span>
 
 							<span>Curr: ${formatPrice(coin.currentPrice)}</span>
 
@@ -170,7 +176,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 							className={cn(
 								'flex items-center gap-2 rounded-full font-medium px-2 py-1 h-8 ',
 								viewMode === 'grid' ? '' : 'max-[460px]:hidden',
-								coin.currentPrice > coin.buyPrice
+								coin.currentPrice > coin.averagePrice
 									? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
 									: 'bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item',
 							)}
@@ -226,7 +232,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 					viewMode === 'grid' ? 'flex-col items-start' : 'flex-row items-center justify-between gap-8',
 				)}
 			>
-				<p className="text-lg font-semibold">Quantity: {formatPrice(coin.quantity)}</p>
+				<p className="text-lg font-semibold">Quantity: {formatPrice(coin.totalQuantity)}</p>
 
 				<p className="text-lg font-semibold">Total Value: ${formatPrice(totalValue, false, 2, 2)}</p>
 			</CardContent>
@@ -243,7 +249,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 					<div className="grid gap-4 py-4">
 						<div className="grid grid-cols-4 items-center gap-4">
 							<Label htmlFor="quantity" className="text-right">
-								Quantity
+								Total Quantity
 							</Label>
 
 							<Input
@@ -251,24 +257,24 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 								type="number"
 								min={0}
 								step={0.01}
-								value={editQuantity}
-								onChange={handleQuantityChange}
+								value={editTotalQuantity}
+								onChange={handleTotalQuantityChange}
 								className="col-span-3 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 							/>
 						</div>
 
 						<div className="grid grid-cols-4 items-center gap-4">
-							<Label htmlFor="buy-price" className="text-right">
-								Buy Price
+							<Label htmlFor="average-price" className="text-right">
+								Average Price
 							</Label>
 
 							<Input
-								id="buy-price"
+								id="average-price"
 								type="number"
 								min={0}
 								step={0.01}
-								value={editBuyPrice}
-								onChange={handleBuyPriceChange}
+								value={editAveragePrice}
+								onChange={handleAveragePriceChange}
 								className="col-span-3 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 							/>
 						</div>

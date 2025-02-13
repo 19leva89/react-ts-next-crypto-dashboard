@@ -39,10 +39,10 @@ export const ActivitiesContainer = ({ cryptoData, totalValue, plannedProfit }: P
 	const sortedCryptoData = [...cryptoData].sort((a, b) => {
 		switch (sortOption) {
 			case 'total-asc':
-				return a.currentPrice * a.quantity - b.currentPrice * b.quantity
+				return a.currentPrice * a.totalQuantity - b.currentPrice * b.totalQuantity
 
 			case 'total-desc':
-				return b.currentPrice * b.quantity - a.currentPrice * a.quantity
+				return b.currentPrice * b.totalQuantity - a.currentPrice * a.totalQuantity
 
 			case 'price-asc':
 				return a.currentPrice - b.currentPrice

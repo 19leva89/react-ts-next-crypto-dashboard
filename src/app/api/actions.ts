@@ -232,8 +232,8 @@ export const deleteUser = async (userId?: string) => {
 export const addCryptoToUser = async (
 	coinId: string,
 	quantity: number,
-	buy_price: number,
-	sell_price?: number,
+	price: number,
+	desiredSellPrice?: number,
 ) => {
 	try {
 		const session = await auth()
@@ -246,12 +246,8 @@ export const addCryptoToUser = async (
 			throw new Error('CoinId is required')
 		}
 
-		if (typeof quantity !== 'number' || isNaN(quantity) || quantity <= 0) {
-			throw new Error('Quantity must be greater than 0')
-		}
-
-		if (typeof buy_price !== 'number' || isNaN(buy_price) || buy_price <= 0) {
-			throw new Error('Buy price must be greater than 0')
+		if (typeof quantity !== 'number' || isNaN(quantity) || quantity === 0) {
+			throw new Error('Invalid quantity. Use positive for buy, negative for sell')
 		}
 
 		// Проверяем, существует ли пользователь
@@ -263,39 +259,73 @@ export const addCryptoToUser = async (
 			throw new Error('User not found')
 		}
 
-		// Получаем данные о монете из fetchCoinData
-		const coinData = await getCoinData(coinId)
-
-		// Если coinData пустое (ошибка получения данных), выбрасываем ошибку
-		if (!coinData || Object.keys(coinData).length === 0) {
-			throw new Error(`Failed to fetch data for coin ${coinId}`)
-		}
-
-		// Check for existing coin first
-		const existingCoin = await prisma.userCoin.findUnique({
-			where: {
-				userId_coinId: {
-					userId: user.id,
-					coinId: coinId,
+		await prisma.$transaction(async (prisma) => {
+			// 1. Получаем или создаем UserCoin
+			const userCoin = await prisma.userCoin.upsert({
+				where: {
+					userId_coinId: {
+						userId: session.user.id,
+						coinId: coinId,
+					},
 				},
-			},
-		})
+				update: {},
+				create: {
+					id: coinId,
+					desired_sell_price: desiredSellPrice,
+					user: { connect: { id: session.user.id } },
+					coin: { connect: { id: coinId } },
+					coinsListIDMap: { connect: { id: coinId } },
+				},
+				include: { purchases: true },
+			})
 
-		if (existingCoin) {
-			throw new Error('This coin already exists in your portfolio')
-		}
+			if (!userCoin && quantity < 0) {
+				throw new Error('Cannot sell non-existing coins')
+			}
 
-		// Create new entry if not exists
-		await prisma.userCoin.create({
-			data: {
-				id: coinId,
-				quantity,
-				buy_price,
-				sell_price,
-				userId: user.id,
-				coinId: coinId,
-				coinsListIDMapId: coinData.id,
-			},
+			// 2. Проверка баланса для продаж
+			if (quantity < 0) {
+				const available = userCoin.total_quantity || 0
+				if (Math.abs(quantity) > available) {
+					throw new Error(`Not enough coins to sell. Available: ${available}`)
+				}
+			}
+
+			// 2. Создаем запись о транзакции
+			await prisma.userCoinPurchase.create({
+				data: {
+					quantity,
+					price,
+					date: new Date(),
+					userCoinId: userCoin.id,
+				},
+			})
+
+			// 3. Пересчитываем агрегированные данные
+			const totalQuantity = userCoin.total_quantity + quantity
+
+			let totalCost = userCoin.total_cost
+			if (quantity > 0) {
+				// Покупка: добавляем стоимость
+				totalCost += quantity * price
+			} else {
+				// Продажа: уменьшаем стоимость пропорционально средней цене
+				totalCost -= Math.abs(quantity) * userCoin.average_price
+			}
+
+			const averagePrice = totalQuantity > 0 ? totalCost / totalQuantity : 0
+
+			// 4. Обновляем UserCoin
+			await prisma.userCoin.update({
+				where: { id: userCoin.id },
+				data: {
+					total_quantity: totalQuantity,
+					total_cost: totalCost,
+					average_price: averagePrice,
+					desired_sell_price: desiredSellPrice ?? userCoin.desired_sell_price,
+				},
+				include: { purchases: true },
+			})
 		})
 
 		revalidatePath('/')
@@ -307,8 +337,8 @@ export const addCryptoToUser = async (
 export const updateUserCrypto = async (
 	coinId: string,
 	quantity: number,
-	buy_price: number,
-	sell_price?: number,
+	buyPrice: number,
+	sellPrice?: number,
 ) => {
 	try {
 		const session = await auth()
@@ -328,11 +358,11 @@ export const updateUserCrypto = async (
 			throw new Error('Quantity must be greater than 0')
 		}
 
-		if (buy_price <= 0) {
+		if (buyPrice <= 0) {
 			throw new Error('Buy price must be greater than 0')
 		}
 
-		if (sell_price && sell_price <= 0) {
+		if (sellPrice && sellPrice <= 0) {
 			throw new Error('Sell price must be greater than 0')
 		}
 
@@ -341,9 +371,9 @@ export const updateUserCrypto = async (
 				userId_coinId: { userId: session.user.id, coinId }, // Используем уникальный ключ
 			},
 			data: {
-				quantity,
-				buy_price,
-				sell_price,
+				total_quantity: quantity,
+				average_price: buyPrice,
+				sell_price: sellPrice,
 			},
 		})
 
