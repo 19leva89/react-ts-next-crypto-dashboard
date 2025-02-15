@@ -20,6 +20,12 @@ const ActivitiesPage = async () => {
 		averagePrice: userCoin.average_price,
 		sellPrice: userCoin.desired_sell_price as number,
 		image: userCoin.coin.image as string,
+		purchases: userCoin.purchases.map((purchase) => ({
+			id: purchase.id,
+			quantity: purchase.quantity,
+			price: purchase.price,
+			date: purchase.date,
+		})),
 	}))
 
 	// Calculate the total value of the portfolio

@@ -3698,8 +3698,8 @@ async function up() {
 
 async function down() {
 	// await prisma.$executeRaw`DELETE FROM "user_coin" CASCADE;`
-	await prisma.$executeRaw`TRUNCATE TABLE "user_coin" RESTART IDENTITY CASCADE;`
-	await prisma.$executeRaw`TRUNCATE TABLE "user_coin_purchase" RESTART IDENTITY CASCADE;`
+	// await prisma.$executeRaw`TRUNCATE TABLE "user_coin" RESTART IDENTITY CASCADE;`
+	// await prisma.$executeRaw`TRUNCATE TABLE "user_coin_purchase" RESTART IDENTITY CASCADE;`
 }
 
 async function main() {

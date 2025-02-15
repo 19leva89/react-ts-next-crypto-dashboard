@@ -1,3 +1,5 @@
+immer
+
 Authentication and User Management:
 - Bcrypt.js (password hashing)
 - NextAuth 5 (authentication)

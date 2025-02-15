@@ -64,6 +64,12 @@ export function DataTable<TData, TValue>({
 	const table = useReactTable({
 		data,
 		columns,
+		state: {
+			sorting,
+			columnFilters,
+			columnVisibility,
+			rowSelection,
+		},
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
 		getCoreRowModel: getCoreRowModel(),
@@ -72,12 +78,6 @@ export function DataTable<TData, TValue>({
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
 		onRowSelectionChange: setRowSelection,
-		state: {
-			sorting,
-			columnFilters,
-			columnVisibility,
-			rowSelection,
-		},
 	})
 
 	const handleFilterChange = (value: string) => {
@@ -197,7 +197,7 @@ export function DataTable<TData, TValue>({
 				</div>
 			</div>
 
-			<div className="border">
+			<div className="relative w-full overflow-auto rounded-xl border">
 				<Table>
 					<TableHeader className="text-left bg-gray-100 dark:bg-slate-800 text-sm border-b dark:border-gray-700">
 						{table.getHeaderGroups().map((headerGroup) => (
@@ -249,7 +249,7 @@ export function DataTable<TData, TValue>({
 						) : (
 							<TableRow>
 								<TableCell colSpan={columns.length} className="h-24 text-center">
-									No results.
+									No results
 								</TableCell>
 							</TableRow>
 						)}

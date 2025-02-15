@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import toast from 'react-hot-toast'
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 import { EllipsisVertical, Pencil, Trash, TrendingDown, TrendingUp } from 'lucide-react'
 
 import {
@@ -12,23 +12,23 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-	Input,
-	Label,
 } from '@/components/ui'
 import { cn } from '@/lib'
+import { EditDialog } from './edit-dialog'
+import { DeleteDialog } from './delete-dialog'
 import { formatPrice } from '@/constants/format-price'
-import { delleteCryptoFromUser, updateUserCrypto } from '@/app/api/actions'
+import { deleteCryptoFromUser, updateUserCrypto } from '@/app/api/actions'
 
+export interface Purchase {
+	id: string
+	quantity: number
+	price: number
+	date: Date
+}
 export interface CryptoData {
 	coinId: string
 	name: string
@@ -39,6 +39,7 @@ export interface CryptoData {
 	averagePrice: number
 	sellPrice?: number
 	image: string
+	purchases: Purchase[]
 }
 
 interface Props {
@@ -49,42 +50,31 @@ interface Props {
 
 export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-	const [editTotalQuantity, setEditTotalQuantity] = useState<string>(String(coin.totalQuantity))
-	const [editAveragePrice, setEditAveragePrice] = useState<string>(String(coin.averagePrice))
-	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
+	const [editPurchases, setEditPurchases] = useState<Purchase[]>(coin.purchases)
 
 	const totalValue = coin.currentPrice * coin.totalQuantity
 	const changePercentagePrice = ((coin.currentPrice - coin.averagePrice) / coin.averagePrice) * 100
 
-	const handleNumberInput = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
-		let value = e.target.value
-
-		// Разрешаем только цифры, точку и запятую
-		if (!/^[0-9]*[.,]?[0-9]*$/.test(value)) return
-
-		// Заменяем запятую на точку (если вводится 4,001 -> 4.001)
-		value = value.replace(/,/g, '.')
-
-		// Проверяем количество точек
-		if ((value.match(/\./g) || []).length > 1) return
-
-		setter(value)
-	}
-
-	const handleTotalQuantityChange = handleNumberInput(setEditTotalQuantity)
-	const handleAveragePriceChange = handleNumberInput(setEditAveragePrice)
-	const handleSellPriceChange = handleNumberInput(setEditSellPrice)
-
-	const handleUpdate = async () => {
+	const handleUpdate = async (sellPrice: string) => {
 		try {
-			// Вызываем функцию для обновления криптовалюты
-			await updateUserCrypto(
-				coin.coinId,
-				Number(editTotalQuantity),
-				Number(editAveragePrice),
-				Number(editSellPrice),
+			const totalCost = editPurchases.reduce(
+				(total, purchase) => total + purchase.price * purchase.quantity,
+				0,
 			)
+			const totalQuantity = editPurchases.reduce((total, purchase) => total + purchase.quantity, 0)
+			const averagePrice = totalCost / totalQuantity
+
+			// Преобразуем данные о покупках в нужный формат
+			const updatedPurchases = editPurchases.map((purchase) => ({
+				...purchase,
+				quantity: purchase.quantity,
+				price: purchase.price,
+				date: new Date(purchase.date),
+			}))
+
+			// Вызываем функцию для обновления криптовалюты
+			await updateUserCrypto(coin.coinId, totalQuantity, averagePrice, Number(sellPrice), updatedPurchases)
 
 			// Уведомляем пользователя об успехе
 			toast.success('Coin updated successfully')
@@ -106,7 +96,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 	const handleDelete = async () => {
 		try {
 			// Вызываем функцию для удаления криптовалюты
-			await delleteCryptoFromUser(coin.coinId)
+			await deleteCryptoFromUser(coin.coinId)
 
 			// Уведомляем пользователя об успехе
 			toast.success('Coin removed successfully')
@@ -238,94 +228,22 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			</CardContent>
 
 			{/* Edit Dialog */}
-			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-				<DialogContent className="px-8 rounded-xl">
-					<DialogHeader>
-						<DialogTitle>Edit Quantity</DialogTitle>
-
-						<DialogDescription>Update the quantity of {coin.name} in your portfolio</DialogDescription>
-					</DialogHeader>
-
-					<div className="grid gap-4 py-4">
-						<div className="grid grid-cols-4 items-center gap-4">
-							<Label htmlFor="quantity" className="text-right">
-								Total Quantity
-							</Label>
-
-							<Input
-								id="quantity"
-								type="number"
-								min={0}
-								step={0.01}
-								value={editTotalQuantity}
-								onChange={handleTotalQuantityChange}
-								className="col-span-3 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-							/>
-						</div>
-
-						<div className="grid grid-cols-4 items-center gap-4">
-							<Label htmlFor="average-price" className="text-right">
-								Average Price
-							</Label>
-
-							<Input
-								id="average-price"
-								type="number"
-								min={0}
-								step={0.01}
-								value={editAveragePrice}
-								onChange={handleAveragePriceChange}
-								className="col-span-3 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-							/>
-						</div>
-
-						<div className="grid grid-cols-4 items-center gap-4">
-							<Label htmlFor="sell-price" className="text-right">
-								Sell Price
-							</Label>
-
-							<Input
-								id="sell-price"
-								type="number"
-								min={0}
-								step={0.01}
-								value={editSellPrice}
-								onChange={handleSellPriceChange}
-								className="col-span-3 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-							/>
-						</div>
-					</div>
-
-					<DialogFooter>
-						<Button onClick={handleUpdate} className="rounded-xl text-white">
-							Save changes
-						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
+			<EditDialog
+				coin={coin}
+				isOpen={isDialogOpen}
+				onClose={() => setIsDialogOpen(false)}
+				onSave={handleUpdate}
+				editPurchases={editPurchases}
+				setEditPurchases={setEditPurchases}
+			/>
 
 			{/* Delete Dialog */}
-			<Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-				<DialogContent className="px-8 rounded-xl">
-					<DialogHeader>
-						<DialogTitle>Delete {coin.name}</DialogTitle>
-
-						<DialogDescription>
-							Are you sure you want to delete this coin from your portfolio?
-						</DialogDescription>
-					</DialogHeader>
-
-					<DialogFooter className="gap-4">
-						<Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)} className="rounded-xl">
-							Cancel
-						</Button>
-
-						<Button onClick={handleDelete} variant="destructive" className="rounded-xl">
-							Delete
-						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
+			<DeleteDialog
+				coin={coin}
+				isOpen={isDeleteDialogOpen}
+				onClose={() => setIsDeleteDialogOpen(false)}
+				onDelete={handleDelete}
+			/>
 		</Card>
 	)
 }

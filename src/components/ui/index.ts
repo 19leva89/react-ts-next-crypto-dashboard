@@ -32,6 +32,7 @@ export {
 	PaginationPrevious,
 } from './pagination'
 export { Popover, PopoverTrigger, PopoverContent } from './popover'
+export { ScrollArea } from './scroll-area'
 export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
 export { Separator } from './separator'
 export {
