@@ -28,10 +28,12 @@ export const DeleteCrypto = ({ coin, isOpen, onClose, onDelete }: Props) => (
 				</AlertDialogDescription>
 			</AlertDialogHeader>
 
-			<AlertDialogFooter>
-				<AlertDialogCancel>Cancel</AlertDialogCancel>
+			<AlertDialogFooter className="gap-2">
+				<AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
 
-				<AlertDialogAction onClick={onDelete}>Delete</AlertDialogAction>
+				<AlertDialogAction onClick={onDelete} className="rounded-xl">
+					Delete
+				</AlertDialogAction>
 			</AlertDialogFooter>
 		</AlertDialogContent>
 	</AlertDialog>

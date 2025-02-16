@@ -27,7 +27,7 @@ export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
 				</Button>
 			</AlertDialogTrigger>
 
-			<AlertDialogContent>
+			<AlertDialogContent className="px-8 rounded-xl">
 				<AlertDialogHeader>
 					<AlertDialogTitle>Delete Transaction?</AlertDialogTitle>
 
@@ -36,10 +36,12 @@ export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 
-				<AlertDialogFooter>
-					<AlertDialogCancel>Cancel</AlertDialogCancel>
+				<AlertDialogFooter className="gap-2">
+					<AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
 
-					<AlertDialogAction onClick={() => onDelete(transactionId)}>Delete</AlertDialogAction>
+					<AlertDialogAction onClick={() => onDelete(transactionId)} className="rounded-xl">
+						Delete
+					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>

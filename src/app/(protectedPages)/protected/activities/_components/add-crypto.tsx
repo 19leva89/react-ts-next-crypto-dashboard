@@ -4,7 +4,7 @@ import Image from 'next/image'
 import toast from 'react-hot-toast'
 import { Plus } from 'lucide-react'
 import { FixedSizeList as List } from 'react-window'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
 
 import {
 	Button,
@@ -21,29 +21,26 @@ import {
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
-	SelectValue,
 	Skeleton,
 } from '@/components/ui'
 import { CoinsListIDMapData } from '@/app/api/types'
 import { addCryptoToUser, getCoinsListIDMap } from '@/app/api/actions'
 
 export const AddCrypto = () => {
-	const [editQuantity, setEditQuantity] = useState<string>('')
 	const [editPrice, setEditPrice] = useState<string>('')
+	const [editQuantity, setEditQuantity] = useState<string>('')
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [selectedCrypto, setSelectedCrypto] = useState<string>('')
-
-	const [getCoinData, setGetCoinData] = useState<boolean>(false)
-	const [coinsListIDMapData, setCoinsListIDMapData] = useState<CoinsListIDMapData>()
+	const [coinsListIDMapData, setCoinsListIDMapData] = useState<CoinsListIDMapData>([])
 
 	useEffect(() => {
 		if (!isDialogOpen) return
 
-		setGetCoinData(true)
-		setCoinsListIDMapData(undefined)
-
 		const fetchData = async () => {
+			setIsLoading(true)
+
 			try {
 				const coinsList = await getCoinsListIDMap()
 
@@ -51,17 +48,21 @@ export const AddCrypto = () => {
 			} catch (error) {
 				console.error('Error fetching CoinsListIDMap:', error)
 			} finally {
-				setGetCoinData(false)
+				setIsLoading(false)
 			}
 		}
 
 		fetchData()
-	}, [setCoinsListIDMapData, isDialogOpen])
+	}, [isDialogOpen])
 
-	const filteredCoins = coinsListIDMapData?.filter(
-		(coin) =>
-			coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()),
+	const filteredCoins = useMemo(
+		() =>
+			coinsListIDMapData.filter(
+				(coin) =>
+					coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+					coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()),
+			),
+		[coinsListIDMapData, searchQuery],
 	)
 
 	const handleNumberInput = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -93,8 +94,9 @@ export const AddCrypto = () => {
 			setIsDialogOpen(false)
 
 			// Очищаем поля
-			setSelectedCrypto('')
+			setEditPrice('')
 			setEditQuantity('')
+			setSelectedCrypto('')
 		} catch (error) {
 			// Уведомляем пользователя об ошибке
 			console.error('Error adding crypto:', error)
@@ -106,6 +108,43 @@ export const AddCrypto = () => {
 			}
 		}
 	}
+
+	const Row = useCallback(
+		({ index, style }: { index: number; style: CSSProperties }) => {
+			const coin = filteredCoins[index]
+
+			return (
+				<SelectItem
+					key={coin.id}
+					value={coin.id}
+					style={style}
+					className="rounded-lg truncate cursor-pointer"
+				>
+					<div className="flex items-center gap-2 h-5">
+						<Image
+							src={coin.image || '/svg/coin-not-found.svg'}
+							alt={coin.name || 'Coin image'}
+							width={20}
+							height={20}
+							onError={(e) => {
+								;(e.currentTarget as HTMLImageElement).src = '/svg/coin-not-found.svg'
+							}}
+						/>
+
+						<span className="truncate">
+							{coin.name} ({coin.symbol.toUpperCase()})
+						</span>
+					</div>
+				</SelectItem>
+			)
+		},
+		[filteredCoins],
+	)
+
+	const selectedCoinData = useMemo(
+		() => coinsListIDMapData.find((coin) => coin.id === selectedCrypto),
+		[selectedCrypto, coinsListIDMapData],
+	)
 
 	return (
 		<div className="flex flex-col gap-4 mx-6">
@@ -131,14 +170,23 @@ export const AddCrypto = () => {
 									Crypto
 								</Label>
 
-								<Select
-									value={selectedCrypto}
-									onValueChange={(value) => {
-										setSelectedCrypto(value)
-									}}
-								>
+								<Select value={selectedCrypto} onValueChange={(value) => setSelectedCrypto(value)}>
 									<SelectTrigger className="col-span-3">
-										<SelectValue placeholder="Select a cryptocurrency" />
+										{selectedCoinData ? (
+											<div className="flex items-center gap-2">
+												<Image
+													src={selectedCoinData.image || '/svg/coin-not-found.svg'}
+													alt={selectedCoinData.name}
+													width={20}
+													height={20}
+												/>
+												<span>
+													{selectedCoinData.name} ({selectedCoinData.symbol.toUpperCase()})
+												</span>
+											</div>
+										) : (
+											<span>Select a cryptocurrency</span>
+										)}
 									</SelectTrigger>
 
 									<SelectContent>
@@ -148,55 +196,25 @@ export const AddCrypto = () => {
 												type="text"
 												placeholder="Search coin..."
 												value={searchQuery}
-												onChange={(e) => setSearchQuery(e.target.value)}
+												onChange={(e) => {
+													setSearchQuery(e.target.value)
+													setSelectedCrypto('')
+												}}
 											/>
 										</div>
 
-										{getCoinData ? (
+										{isLoading ? (
 											<Skeleton className="h-52 w-full" />
 										) : (
-											(() => {
-												const selectedIndex = filteredCoins?.findIndex((coin) => coin.id === selectedCrypto)
-												const itemHeight = 40
-
-												return (
-													<List
-														height={200}
-														width={325}
-														itemSize={itemHeight}
-														itemCount={filteredCoins?.length as number}
-														initialScrollOffset={
-															(selectedIndex as number) > -1 ? (selectedIndex as number) * itemHeight : 0
-														}
-													>
-														{({ index, style }) => {
-															const coin = filteredCoins && filteredCoins[index]
-
-															return (
-																<SelectItem
-																	key={coin?.id}
-																	value={coin?.id as string}
-																	className="rounded-xl truncate"
-																	style={style}
-																>
-																	<div className="flex flex-row gap-2 h-5">
-																		<Image
-																			src={coin?.image || '/svg/coin-not-found.svg'}
-																			alt={coin?.name || 'Coin image'}
-																			width={20}
-																			height={20}
-																		/>
-
-																		<span className="truncate">
-																			{coin?.name} ({coin?.symbol.toUpperCase()})
-																		</span>
-																	</div>
-																</SelectItem>
-															)
-														}}
-													</List>
-												)
-											})()
+											<List
+												height={200}
+												width={325}
+												itemSize={40}
+												itemCount={filteredCoins.length}
+												overscanCount={15}
+											>
+												{Row}
+											</List>
 										)}
 									</SelectContent>
 								</Select>

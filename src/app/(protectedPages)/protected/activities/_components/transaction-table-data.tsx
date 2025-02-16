@@ -20,12 +20,12 @@ import {
 } from '@/components/ui'
 import { formatPrice } from '@/constants/format-price'
 
-interface Props<TData extends { quantity: number; price: number }> {
+interface Props<TData extends { quantity: number; price: number; date: Date }> {
 	data: TData[]
 	columns: ColumnDef<TData>[]
 }
 
-export function DataTable<TData extends { quantity: number; price: number }>({
+export function DataTable<TData extends { quantity: number; price: number; date: Date }>({
 	columns,
 	data,
 }: Props<TData>) {
@@ -43,16 +43,35 @@ export function DataTable<TData extends { quantity: number; price: number }>({
 	})
 
 	// Вычисляем общие значения
-	const totals = data.reduce(
+	const sortedData = data.slice().sort((a, b) => a.date.getTime() - b.date.getTime())
+
+	const totals = sortedData.reduce(
 		(acc, transaction) => {
-			acc.totalQuantity += transaction.quantity
-			acc.totalValue += transaction.quantity * transaction.price
+			const quantity = transaction.quantity
+			const price = transaction.price
+
+			if (quantity > 0) {
+				// Покупка: добавляем количество и стоимость
+				acc.totalQuantity += quantity
+				acc.totalCost += quantity * price
+			} else if (quantity < 0) {
+				// Продажа: списываем по текущей средней цене
+				const absoluteQty = -quantity
+				if (acc.totalQuantity <= 0 || absoluteQty === 0) return acc
+
+				// Если продажа больше доступного количества, продаём всё
+				const sellQty = Math.min(absoluteQty, acc.totalQuantity)
+				const averagePriceBefore = acc.totalCost / acc.totalQuantity
+				acc.totalCost -= sellQty * averagePriceBefore
+				acc.totalQuantity -= sellQty
+			}
+
 			return acc
 		},
-		{ totalQuantity: 0, totalValue: 0 },
+		{ totalQuantity: 0, totalCost: 0 },
 	)
 
-	const averagePrice = totals.totalQuantity > 0 ? totals.totalValue / totals.totalQuantity : 0
+	const averagePrice = totals.totalQuantity > 0 ? totals.totalCost / totals.totalQuantity : 0
 
 	return (
 		<ScrollArea className="h-[50vh] bg-background">
