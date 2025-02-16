@@ -100,7 +100,7 @@ export const getColumns = (
 						</Button>
 					</PopoverTrigger>
 
-					<PopoverContent className="w-auto p-0">
+					<PopoverContent className="w-auto p-0" autoFocus={true}>
 						<Calendar
 							mode="single"
 							selected={dateValue}
@@ -109,7 +109,6 @@ export const getColumns = (
 									onTransactionChange(row.original.id, 'date', selectedDate.toISOString())
 								}
 							}}
-							initialFocus
 						/>
 					</PopoverContent>
 				</Popover>
