@@ -18,12 +18,12 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui'
 import { cn } from '@/lib'
-import { EditDialog } from './edit-dialog'
-import { DeleteDialog } from './delete-dialog'
+import { EditCrypto } from './edit-crypto'
+import { DeleteCrypto } from './delete-crypto'
 import { formatPrice } from '@/constants/format-price'
 import { deleteCryptoFromUser, updateUserCrypto } from '@/app/api/actions'
 
-export interface Purchase {
+export interface Transaction {
 	id: string
 	quantity: number
 	price: number
@@ -39,7 +39,7 @@ export interface CryptoData {
 	averagePrice: number
 	sellPrice?: number
 	image: string
-	purchases: Purchase[]
+	transactions: Transaction[]
 }
 
 interface Props {
@@ -51,30 +51,30 @@ interface Props {
 export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
-	const [editPurchases, setEditPurchases] = useState<Purchase[]>(coin.purchases)
+	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
 
 	const totalValue = coin.currentPrice * coin.totalQuantity
 	const changePercentagePrice = ((coin.currentPrice - coin.averagePrice) / coin.averagePrice) * 100
 
 	const handleUpdate = async (sellPrice: string) => {
 		try {
-			const totalCost = editPurchases.reduce(
-				(total, purchase) => total + purchase.price * purchase.quantity,
+			const totalCost = editTransactions.reduce(
+				(total, transaction) => total + transaction.price * transaction.quantity,
 				0,
 			)
-			const totalQuantity = editPurchases.reduce((total, purchase) => total + purchase.quantity, 0)
+			const totalQuantity = editTransactions.reduce((total, transaction) => total + transaction.quantity, 0)
 			const averagePrice = totalCost / totalQuantity
 
 			// Преобразуем данные о покупках в нужный формат
-			const updatedPurchases = editPurchases.map((purchase) => ({
-				...purchase,
-				quantity: purchase.quantity,
-				price: purchase.price,
-				date: new Date(purchase.date),
+			const updatedTransactions = editTransactions.map((transaction) => ({
+				...transaction,
+				quantity: transaction.quantity,
+				price: transaction.price,
+				date: new Date(transaction.date),
 			}))
 
 			// Вызываем функцию для обновления криптовалюты
-			await updateUserCrypto(coin.coinId, totalQuantity, averagePrice, Number(sellPrice), updatedPurchases)
+			await updateUserCrypto(coin.coinId, totalQuantity, averagePrice, Number(sellPrice), updatedTransactions)
 
 			// Уведомляем пользователя об успехе
 			toast.success('Coin updated successfully')
@@ -228,17 +228,19 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			</CardContent>
 
 			{/* Edit Dialog */}
-			<EditDialog
+			<EditCrypto
+				key={`edit-${coin.coinId}`}
 				coin={coin}
 				isOpen={isDialogOpen}
 				onClose={() => setIsDialogOpen(false)}
 				onSave={handleUpdate}
-				editPurchases={editPurchases}
-				setEditPurchases={setEditPurchases}
+				editTransactions={editTransactions}
+				setEditTransactions={setEditTransactions}
 			/>
 
 			{/* Delete Dialog */}
-			<DeleteDialog
+			<DeleteCrypto
+				key={`delete-${coin.coinId}`}
 				coin={coin}
 				isOpen={isDeleteDialogOpen}
 				onClose={() => setIsDeleteDialogOpen(false)}

@@ -1,3 +1,14 @@
+export {
+	AlertDialog,
+	AlertDialogTrigger,
+	AlertDialogContent,
+	AlertDialogHeader,
+	AlertDialogFooter,
+	AlertDialogTitle,
+	AlertDialogDescription,
+	AlertDialogAction,
+	AlertDialogCancel,
+} from './alert-dialog'
 export { Avatar, AvatarFallback, AvatarImage } from './avatar'
 export { Button, buttonVariants } from './button'
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card'
@@ -32,7 +43,7 @@ export {
 	PaginationPrevious,
 } from './pagination'
 export { Popover, PopoverTrigger, PopoverContent } from './popover'
-export { ScrollArea } from './scroll-area'
+export { ScrollArea, ScrollBar } from './scroll-area'
 export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
 export { Separator } from './separator'
 export {

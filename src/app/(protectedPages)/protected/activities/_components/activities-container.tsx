@@ -180,7 +180,7 @@ export const ActivitiesContainer = ({ cryptoData, totalValue, plannedProfit }: P
 
 				{sortedCryptoData.map((coin) => (
 					<CryptoCard
-						key={`${coin.coinId}-${coin.purchases.length}`}
+						key={`${coin.coinId}-${coin.transactions.length}`}
 						coin={coin}
 						viewMode={viewMode}
 						onClick={handleCardClick}

@@ -37,7 +37,7 @@ async function up() {
 				desired_sell_price: 7.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: '1inch',
@@ -71,7 +71,7 @@ async function up() {
 				desired_sell_price: 520,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'aave',
@@ -105,7 +105,7 @@ async function up() {
 				desired_sell_price: 3,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'cardano',
@@ -139,7 +139,7 @@ async function up() {
 				desired_sell_price: 3.2,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'aevo-exchange',
@@ -173,7 +173,7 @@ async function up() {
 				desired_sell_price: 2.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'algorand',
@@ -243,7 +243,7 @@ async function up() {
 				desired_sell_price: 24,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'my-neighbor-alice',
@@ -277,7 +277,7 @@ async function up() {
 				desired_sell_price: 4,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'alpaca-finance',
@@ -311,7 +311,7 @@ async function up() {
 				desired_sell_price: 0.7,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'altlayer',
@@ -345,7 +345,7 @@ async function up() {
 				desired_sell_price: 19,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'apecoin',
@@ -379,7 +379,7 @@ async function up() {
 				desired_sell_price: 25,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'aptos',
@@ -413,7 +413,7 @@ async function up() {
 				desired_sell_price: 2.3,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'arbitrum',
@@ -447,7 +447,7 @@ async function up() {
 				desired_sell_price: 50,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'cosmos',
@@ -493,7 +493,7 @@ async function up() {
 				desired_sell_price: 3.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'aurora-near',
@@ -527,7 +527,7 @@ async function up() {
 				desired_sell_price: 125,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'avalanche-2',
@@ -561,7 +561,7 @@ async function up() {
 				desired_sell_price: 6.8,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'bakerytoken',
@@ -595,7 +595,7 @@ async function up() {
 				desired_sell_price: 1.7,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'basic-attention-token',
@@ -629,7 +629,7 @@ async function up() {
 				desired_sell_price: 13,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'biconomy',
@@ -663,7 +663,7 @@ async function up() {
 				desired_sell_price: 5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'blur',
@@ -697,7 +697,7 @@ async function up() {
 				desired_sell_price: 120000,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'bitcoin',
@@ -791,7 +791,7 @@ async function up() {
 				desired_sell_price: 40,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'pancakeswap-token',
@@ -825,7 +825,7 @@ async function up() {
 				desired_sell_price: 7.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'celo',
@@ -859,7 +859,7 @@ async function up() {
 				desired_sell_price: 0.15,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'celer-network',
@@ -893,7 +893,7 @@ async function up() {
 				desired_sell_price: 0.7,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'chiliz',
@@ -927,7 +927,7 @@ async function up() {
 				desired_sell_price: 5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'coin98',
@@ -961,7 +961,7 @@ async function up() {
 				desired_sell_price: 0.8,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'crypto-com-chain',
@@ -995,7 +995,7 @@ async function up() {
 				desired_sell_price: 11.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'curve-dao-token',
@@ -1029,7 +1029,7 @@ async function up() {
 				desired_sell_price: 1.3,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'casper-network',
@@ -1063,7 +1063,7 @@ async function up() {
 				desired_sell_price: 14,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'cyberconnect',
@@ -1097,7 +1097,7 @@ async function up() {
 				desired_sell_price: 8.12,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'dao-maker',
@@ -1131,7 +1131,7 @@ async function up() {
 				desired_sell_price: 450,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'dash',
@@ -1165,7 +1165,7 @@ async function up() {
 				desired_sell_price: 1,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'dmail-network',
@@ -1195,11 +1195,11 @@ async function up() {
 				coinsListIDMapId: 'dogecoin',
 				total_quantity: 300,
 				total_cost: 52.13,
-				average_price: 0.173776,
+				average_price: 0.1685133333,
 				desired_sell_price: 0.6,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'dogecoin',
@@ -1235,11 +1235,11 @@ async function up() {
 				coinsListIDMapId: 'polkadot',
 				total_quantity: 10,
 				total_cost: 65.13,
-				average_price: 6.51347,
+				average_price: 6.29,
 				desired_sell_price: 50,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'polkadot',
@@ -1303,7 +1303,7 @@ async function up() {
 				desired_sell_price: 1,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'derive',
@@ -1337,7 +1337,7 @@ async function up() {
 				desired_sell_price: 4.37,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'dydx-chain',
@@ -1367,11 +1367,11 @@ async function up() {
 				coinsListIDMapId: 'elrond-erd-2',
 				total_quantity: 1.2205455,
 				total_cost: 33.12,
-				average_price: 27.137,
+				average_price: 27.1,
 				desired_sell_price: 450,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'elrond-erd-2',
@@ -1417,7 +1417,7 @@ async function up() {
 				desired_sell_price: 14.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'eos',
@@ -1451,7 +1451,7 @@ async function up() {
 				desired_sell_price: 0.15,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'eesee',
@@ -1485,7 +1485,7 @@ async function up() {
 				desired_sell_price: 130,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'ethereum-classic',
@@ -1519,7 +1519,7 @@ async function up() {
 				desired_sell_price: 5000,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'ethereum',
@@ -1553,7 +1553,7 @@ async function up() {
 				desired_sell_price: 180,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'filecoin',
@@ -1587,7 +1587,7 @@ async function up() {
 				desired_sell_price: 28,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'flow',
@@ -1621,7 +1621,7 @@ async function up() {
 				desired_sell_price: 10,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'moonbeam',
@@ -1655,7 +1655,7 @@ async function up() {
 				desired_sell_price: 25,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'gitcoin',
@@ -1689,7 +1689,7 @@ async function up() {
 				desired_sell_price: 0.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'hedera-hashgraph',
@@ -1723,7 +1723,7 @@ async function up() {
 				desired_sell_price: 1,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'hashflow',
@@ -1757,7 +1757,7 @@ async function up() {
 				desired_sell_price: 0.02,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'holograph',
@@ -1791,7 +1791,7 @@ async function up() {
 				desired_sell_price: 1.7,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'space-id',
@@ -1825,7 +1825,7 @@ async function up() {
 				desired_sell_price: 55,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'internet-computer',
@@ -1855,11 +1855,11 @@ async function up() {
 				coinsListIDMapId: 'iota',
 				total_quantity: 110,
 				total_cost: 21.22,
-				average_price: 0.192914,
+				average_price: 0.1929142273,
 				desired_sell_price: 2.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'iota',
@@ -1917,7 +1917,7 @@ async function up() {
 				desired_sell_price: 5.8,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'iron-fish',
@@ -1951,7 +1951,7 @@ async function up() {
 				desired_sell_price: 10,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'jupiter-exchange-solana',
@@ -1985,7 +1985,7 @@ async function up() {
 				desired_sell_price: 8.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'kava',
@@ -2019,7 +2019,7 @@ async function up() {
 				desired_sell_price: 0.15,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'klever',
@@ -2053,7 +2053,7 @@ async function up() {
 				desired_sell_price: 600,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'kusama',
@@ -2087,7 +2087,7 @@ async function up() {
 				desired_sell_price: 0.12,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'cryptogpt-token',
@@ -2121,7 +2121,7 @@ async function up() {
 				desired_sell_price: 10,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'lido-dao',
@@ -2155,7 +2155,7 @@ async function up() {
 				desired_sell_price: 50,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'chainlink',
@@ -2189,7 +2189,7 @@ async function up() {
 				desired_sell_price: 3.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'loopring',
@@ -2223,7 +2223,7 @@ async function up() {
 				desired_sell_price: 500,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'litecoin',
@@ -2257,7 +2257,7 @@ async function up() {
 				desired_sell_price: 4,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'decentraland',
@@ -2291,7 +2291,7 @@ async function up() {
 				desired_sell_price: 4,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'manta-network',
@@ -2325,7 +2325,7 @@ async function up() {
 				desired_sell_price: 0.05,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'memecoin-2',
@@ -2359,7 +2359,7 @@ async function up() {
 				desired_sell_price: 280,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'metis-token',
@@ -2393,7 +2393,7 @@ async function up() {
 				desired_sell_price: 5600,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'maker',
@@ -2423,11 +2423,11 @@ async function up() {
 				coinsListIDMapId: 'near',
 				total_quantity: 7.1920949,
 				total_cost: 17.56,
-				average_price: 2.442,
+				average_price: 2.43,
 				desired_sell_price: 21,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'near',
@@ -2491,7 +2491,7 @@ async function up() {
 				desired_sell_price: 140,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'neo',
@@ -2525,7 +2525,7 @@ async function up() {
 				desired_sell_price: 3.4,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'neon',
@@ -2559,7 +2559,7 @@ async function up() {
 				desired_sell_price: 0.03,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'notcoin',
@@ -2593,7 +2593,7 @@ async function up() {
 				desired_sell_price: 24,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'omisego',
@@ -2627,7 +2627,7 @@ async function up() {
 				desired_sell_price: 15,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'ondo-finance',
@@ -2661,7 +2661,7 @@ async function up() {
 				desired_sell_price: 10,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'optimism',
@@ -2695,7 +2695,7 @@ async function up() {
 				desired_sell_price: 27,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'qtum',
@@ -2725,11 +2725,11 @@ async function up() {
 				coinsListIDMapId: 'reef',
 				total_quantity: 3600,
 				total_cost: 11.13,
-				average_price: 0.00309049,
+				average_price: 0.003090494,
 				desired_sell_price: 0.06,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'reef',
@@ -2769,7 +2769,7 @@ async function up() {
 				desired_sell_price: 1.4,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'republic-protocol',
@@ -2803,7 +2803,7 @@ async function up() {
 				desired_sell_price: 0.23,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'ravencoin',
@@ -2837,7 +2837,7 @@ async function up() {
 				desired_sell_price: 0.4,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'rowan-coin',
@@ -2871,7 +2871,7 @@ async function up() {
 				desired_sell_price: 9,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'sonic-3',
@@ -2905,7 +2905,7 @@ async function up() {
 				desired_sell_price: 6.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'the-sandbox',
@@ -2939,7 +2939,7 @@ async function up() {
 				desired_sell_price: 0.00009,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'shiba-inu',
@@ -2973,7 +2973,7 @@ async function up() {
 				desired_sell_price: 2000,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'solana',
@@ -3003,11 +3003,11 @@ async function up() {
 				coinsListIDMapId: 'sosovalue',
 				total_quantity: 53.49,
 				total_cost: 49.99,
-				average_price: 0.935,
+				average_price: 0.9345765564,
 				desired_sell_price: 2,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'sosovalue',
@@ -3047,7 +3047,7 @@ async function up() {
 				desired_sell_price: 2.7,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'starknet',
@@ -3081,7 +3081,7 @@ async function up() {
 				desired_sell_price: 21.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'sushi',
@@ -3115,7 +3115,7 @@ async function up() {
 				desired_sell_price: 20,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'celestia',
@@ -3145,11 +3145,11 @@ async function up() {
 				coinsListIDMapId: 'trust-wallet-token',
 				total_quantity: 15,
 				total_cost: 17.83,
-				average_price: 1.1883367,
+				average_price: 1.36,
 				desired_sell_price: 3.5,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'trust-wallet-token',
@@ -3201,7 +3201,7 @@ async function up() {
 				desired_sell_price: 33,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'uma',
@@ -3235,7 +3235,7 @@ async function up() {
 				desired_sell_price: 43,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'uniswap',
@@ -3269,7 +3269,7 @@ async function up() {
 				desired_sell_price: 2.24,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'ultra',
@@ -3302,7 +3302,7 @@ async function up() {
 				average_price: 1,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'usd-coin',
@@ -3335,7 +3335,7 @@ async function up() {
 				average_price: 1,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'tether',
@@ -3369,7 +3369,7 @@ async function up() {
 				desired_sell_price: 0.25,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'vechain',
@@ -3403,7 +3403,7 @@ async function up() {
 				desired_sell_price: 2,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'wormhole',
@@ -3433,11 +3433,11 @@ async function up() {
 				coinsListIDMapId: 'woo-network',
 				total_quantity: 50,
 				total_cost: 9.54,
-				average_price: 0.1908,
+				average_price: 0.18765,
 				desired_sell_price: 1.6,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'woo-network',
@@ -3477,7 +3477,7 @@ async function up() {
 				desired_sell_price: 1.52,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'xai-blockchain',
@@ -3511,7 +3511,7 @@ async function up() {
 				desired_sell_price: 500,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'chia',
@@ -3545,7 +3545,7 @@ async function up() {
 				desired_sell_price: 0.8,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'nem',
@@ -3575,11 +3575,11 @@ async function up() {
 				coinsListIDMapId: 'tezos',
 				total_quantity: 21.869092,
 				total_cost: 15.16,
-				average_price: 0.69322,
+				average_price: 0.7312940986,
 				desired_sell_price: 9.8,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'tezos',
@@ -3649,7 +3649,7 @@ async function up() {
 				desired_sell_price: 2.7,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'zetachain',
@@ -3683,7 +3683,7 @@ async function up() {
 				desired_sell_price: 0.24,
 			},
 		})
-		await prisma.userCoinPurchase.createMany({
+		await prisma.userCoinTransaction.createMany({
 			data: [
 				{
 					userCoinId: 'zilliqa',
@@ -3699,7 +3699,7 @@ async function up() {
 async function down() {
 	// await prisma.$executeRaw`DELETE FROM "user_coin" CASCADE;`
 	// await prisma.$executeRaw`TRUNCATE TABLE "user_coin" RESTART IDENTITY CASCADE;`
-	// await prisma.$executeRaw`TRUNCATE TABLE "user_coin_purchase" RESTART IDENTITY CASCADE;`
+	// await prisma.$executeRaw`TRUNCATE TABLE "user_coin_transaction" RESTART IDENTITY CASCADE;`
 }
 
 async function main() {

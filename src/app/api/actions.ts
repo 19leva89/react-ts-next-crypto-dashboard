@@ -282,7 +282,7 @@ export const addCryptoToUser = async (coinId: string, quantity: number, price: n
 					coin: { connect: { id: coinId } },
 					coinsListIDMap: { connect: { id: coinId } },
 				},
-				include: { purchases: true },
+				include: { transactions: true },
 			})
 
 			// 2. Проверка баланса для продаж
@@ -294,7 +294,7 @@ export const addCryptoToUser = async (coinId: string, quantity: number, price: n
 			}
 
 			// 3. Создаем запись о транзакции
-			await prisma.userCoinPurchase.create({
+			await prisma.userCoinTransaction.create({
 				data: {
 					quantity,
 					price,
@@ -340,7 +340,7 @@ export const updateUserCrypto = async (
 	totalQuantity: number,
 	averagePrice: number,
 	desiredSellPrice?: number,
-	purchases?: { id: string; quantity: number; price: number; date: Date }[],
+	transactions?: { id: string; quantity: number; price: number; date: Date }[],
 ) => {
 	try {
 		const session = await auth()
@@ -391,15 +391,15 @@ export const updateUserCrypto = async (
 		})
 
 		// Обновляем покупки если они переданы
-		if (purchases && purchases.length > 0) {
+		if (transactions && transactions.length > 0) {
 			await prisma.$transaction(
-				purchases.map((purchase) =>
-					prisma.userCoinPurchase.update({
-						where: { id: purchase.id },
+				transactions.map((transaction) =>
+					prisma.userCoinTransaction.update({
+						where: { id: transaction.id },
 						data: {
-							quantity: purchase.quantity,
-							price: purchase.price,
-							date: purchase.date,
+							quantity: transaction.quantity,
+							price: transaction.price,
+							date: transaction.date,
 						},
 					}),
 				),
@@ -438,6 +438,10 @@ export const deleteCryptoFromUser = async (coinId: string) => {
 			throw new Error('You do not have permission to perform this action')
 		}
 
+		if (!coinId) {
+			throw new Error('CoinId is required')
+		}
+
 		await prisma.userCoin.delete({
 			where: {
 				userId_coinId: { userId: session.user.id, coinId }, // Используем уникальный ключ
@@ -447,6 +451,73 @@ export const deleteCryptoFromUser = async (coinId: string) => {
 		revalidatePath('/')
 	} catch (error) {
 		handleError(error, 'DELETE_USER_CRYPTO')
+	}
+}
+
+export const deleteTransactionFromUser = async (coinTransactionId: string) => {
+	try {
+		const session = await auth()
+
+		// Проверяем, авторизован ли пользователь
+		if (!session?.user) {
+			throw new Error('User not authenticated')
+		}
+
+		// Проверяем права доступа
+		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
+			throw new Error('You do not have permission to perform this action')
+		}
+
+		if (!coinTransactionId) {
+			throw new Error('CoinTransactionId is required')
+		}
+
+		// Начинаем транзакцию
+		await prisma.$transaction(async (prisma) => {
+			// 1. Получаем удаляемую транзакцию
+			const transaction = await prisma.userCoinTransaction.findUnique({
+				where: { id: coinTransactionId },
+				select: { quantity: true, price: true, userCoinId: true },
+			})
+
+			if (!transaction) {
+				throw new Error('Transaction not found')
+			}
+
+			// 2. Удаляем транзакцию
+			await prisma.userCoinTransaction.delete({
+				where: { id: coinTransactionId },
+			})
+
+			// 3. Получаем текущие значения UserCoin
+			const userCoin = await prisma.userCoin.findUnique({
+				where: { id: transaction.userCoinId },
+				select: { total_quantity: true, total_cost: true },
+			})
+
+			if (!userCoin) {
+				throw new Error('UserCoin not found')
+			}
+
+			// 4. Пересчитываем значения
+			const newQuantity = userCoin.total_quantity - transaction.quantity
+			const newCost = userCoin.total_cost - transaction.quantity * transaction.price
+			const newAveragePrice = newQuantity > 0 ? newCost / newQuantity : 0
+
+			// 5. Обновляем UserCoin
+			await prisma.userCoin.update({
+				where: { id: transaction.userCoinId },
+				data: {
+					total_quantity: newQuantity,
+					total_cost: newCost,
+					average_price: newAveragePrice,
+				},
+			})
+		})
+
+		revalidatePath('/')
+	} catch (error) {
+		handleError(error, 'DELETE_USER_PURCHASE')
 	}
 }
 
@@ -701,7 +772,7 @@ export const getUserCoinsList = async () => {
 		// Отдаем старые данные сразу
 		const userCoins = await prisma.userCoin.findMany({
 			where: { userId: session.user.id },
-			include: { coinsListIDMap: true, coin: true, purchases: true },
+			include: { coinsListIDMap: true, coin: true, transactions: true },
 		})
 
 		// Запускаем обновление в фоне через API

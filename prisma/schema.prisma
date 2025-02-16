@@ -152,22 +152,22 @@ model Coin {
 }
 
 model UserCoin {
-  id                 String             @id @unique
-  total_quantity     Float              @default(0)
-  total_cost         Float              @default(0)
-  average_price      Float              @default(0)
+  id                 String                @id @unique
+  total_quantity     Float                 @default(0)
+  total_cost         Float                 @default(0)
+  average_price      Float                 @default(0)
   desired_sell_price Float?
   //
-  purchases          UserCoinPurchase[]
-  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions       UserCoinTransaction[]
+  user               User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             String
-  coin               Coin               @relation(fields: [coinId], references: [id], onDelete: Cascade)
+  coin               Coin                  @relation(fields: [coinId], references: [id], onDelete: Cascade)
   coinId             String
-  coinsListIDMap     CoinsListIDMap     @relation(fields: [coinsListIDMapId], references: [id], onDelete: Cascade)
+  coinsListIDMap     CoinsListIDMap        @relation(fields: [coinsListIDMapId], references: [id], onDelete: Cascade)
   coinsListIDMapId   String
   //
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
 
   @@unique([userId, coinId])
   @@index([userId])
@@ -175,7 +175,7 @@ model UserCoin {
   @@map("user_coin")
 }
 
-model UserCoinPurchase {
+model UserCoinTransaction {
   id         String   @id @default(cuid())
   quantity   Float
   price      Float
@@ -188,7 +188,7 @@ model UserCoinPurchase {
   updatedAt  DateTime @updatedAt
 
   @@index([userCoinId])
-  @@map("user_coin_purchase")
+  @@map("user_coin_transaction")
 }
 
 model TrendingCoin {
