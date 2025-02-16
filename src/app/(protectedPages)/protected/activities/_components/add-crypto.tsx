@@ -68,7 +68,7 @@ export const AddCrypto = () => {
 	const handleNumberInput = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value.replace(/,/g, '.')
 
-		if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+		if (/^-?[0-9]*\.?[0-9]*$/.test(value)) {
 			setter(value)
 		}
 	}
@@ -153,15 +153,15 @@ export const AddCrypto = () => {
 					<DialogTrigger asChild>
 						<Button variant="default" size="sm" className="rounded-xl text-white">
 							<Plus className="mr-2 h-4 w-4" />
-							Add Crypto
+							Add Transaction
 						</Button>
 					</DialogTrigger>
 
 					<DialogContent className="px-8 rounded-xl">
 						<DialogHeader>
-							<DialogTitle>Add Crypto</DialogTitle>
+							<DialogTitle>Add Transaction</DialogTitle>
 
-							<DialogDescription>Select a coin, enter the quantity and buy price</DialogDescription>
+							<DialogDescription>Select a coin, enter the quantity and price</DialogDescription>
 						</DialogHeader>
 
 						<div className="grid gap-4 py-4">
@@ -238,12 +238,12 @@ export const AddCrypto = () => {
 							</div>
 
 							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="buy-price" className="text-right">
-									Buy price
+								<Label htmlFor="price" className="text-right">
+									Price
 								</Label>
 
 								<Input
-									id="buy-price"
+									id="price"
 									type="number"
 									placeholder="Enter price"
 									min={0}

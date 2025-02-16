@@ -11,6 +11,7 @@ export {
 } from './alert-dialog'
 export { Avatar, AvatarFallback, AvatarImage } from './avatar'
 export { Button, buttonVariants } from './button'
+export { Calendar } from './calendar'
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card'
 export { ChartContainer, ChartTooltip, ChartTooltipContent } from './chart'
 export type { ChartConfig } from './chart'

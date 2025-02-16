@@ -6,11 +6,6 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
 
-import { auth, signIn } from '@/auth'
-import { makeReq } from './make-request'
-import { sendEmail } from '@/lib/send-email'
-import { saltAndHashPassword } from '@/lib/salt'
-import { VerificationUserTemplate } from '@/components/shared/email-temapltes'
 import {
 	AidropsData,
 	CategoriesData,
@@ -19,7 +14,13 @@ import {
 	TrendingData,
 	CoinsListIDMapData,
 	CoinsListData,
+	PrismaTransactionClient,
 } from './types'
+import { auth, signIn } from '@/auth'
+import { makeReq } from './make-request'
+import { sendEmail } from '@/lib/send-email'
+import { saltAndHashPassword } from '@/lib/salt'
+import { VerificationUserTemplate } from '@/components/shared/email-temapltes'
 
 const USER_COINS_UPDATE_INTERVAL = 5 // minutes
 const COINS_UPDATE_INTERVAL = 60 // minutes
@@ -34,6 +35,50 @@ const handleError = (error: unknown, context: string) => {
 	}
 
 	throw error
+}
+
+// Общая функция для пересчета агрегированных данных
+const recalculateAveragePrice = async (userId: string, coinId: string, prisma: PrismaTransactionClient) => {
+	const transactions = await prisma.userCoinTransaction.findMany({
+		where: { userCoin: { userId, coinId } },
+		orderBy: { date: 'asc' },
+	})
+
+	const totals = transactions.reduce(
+		(acc, { quantity, price }) => {
+			if (quantity > 0) {
+				acc.totalQuantity += quantity
+				acc.totalCost += quantity * price
+			} else {
+				const sellQty = Math.min(-quantity, acc.totalQuantity)
+				if (sellQty > 0) {
+					const averagePrice = acc.totalCost / acc.totalQuantity
+					acc.totalCost -= sellQty * averagePrice
+					acc.totalQuantity -= sellQty
+				}
+			}
+			return acc
+		},
+		{ totalQuantity: 0, totalCost: 0 },
+	)
+
+	return prisma.userCoin.upsert({
+		where: { userId_coinId: { userId, coinId } },
+		update: {
+			total_quantity: totals.totalQuantity,
+			total_cost: totals.totalCost,
+			average_price: totals.totalQuantity > 0 ? totals.totalCost / totals.totalQuantity : 0,
+		},
+		create: {
+			id: coinId,
+			user: { connect: { id: userId } },
+			coin: { connect: { id: coinId } },
+			coinsListIDMap: { connect: { id: coinId } },
+			total_quantity: totals.totalQuantity,
+			total_cost: totals.totalCost,
+			average_price: totals.totalCost / totals.totalQuantity,
+		},
+	})
 }
 
 export const registerUser = async (body: Prisma.UserCreateInput) => {
@@ -232,14 +277,11 @@ export const deleteUser = async (userId?: string) => {
 export const addCryptoToUser = async (coinId: string, quantity: number, price: number) => {
 	try {
 		const session = await auth()
+		const userId = session?.user?.id
 
-		if (!session?.user) {
-			throw new Error('User not authenticated')
-		}
-
-		if (!coinId) {
-			throw new Error('CoinId is required')
-		}
+		// Валидация
+		if (!userId) throw new Error('User not authenticated')
+		if (!coinId) throw new Error('CoinId is required')
 
 		if (typeof quantity !== 'number' || isNaN(quantity) || quantity === 0) {
 			throw new Error('Invalid quantity. Use positive for buy, negative for sell')
@@ -254,19 +296,15 @@ export const addCryptoToUser = async (coinId: string, quantity: number, price: n
 			where: { id: session.user.id },
 		})
 
-		if (!user) {
-			throw new Error('User not found')
-		}
+		if (!user) throw new Error('User not found')
 
 		// Получаем данные о монете из fetchCoinData
 		const coinData = await getCoinData(coinId)
 
 		// Если coinData пустое (ошибка получения данных), выбрасываем ошибку
-		if (!coinData || Object.keys(coinData).length === 0) {
-			throw new Error(`Failed to fetch data for coin ${coinId}`)
-		}
+		if (!coinData) throw new Error(`Failed to fetch data for coin ${coinId}`)
 
-		await prisma.$transaction(async (prisma) => {
+		await prisma.$transaction(async (transactionPrisma) => {
 			// 1. Получаем или создаем UserCoin
 			const userCoin = await prisma.userCoin.upsert({
 				where: {
@@ -286,11 +324,8 @@ export const addCryptoToUser = async (coinId: string, quantity: number, price: n
 			})
 
 			// 2. Проверка баланса для продаж
-			if (quantity < 0) {
-				const available = userCoin.total_quantity || 0
-				if (Math.abs(quantity) > available) {
-					throw new Error(`Not enough coins to sell. Available: ${available}`)
-				}
+			if (quantity < 0 && Math.abs(quantity) > (userCoin.total_quantity || 0)) {
+				throw new Error(`Not enough coins to sell. Available: ${userCoin.total_quantity}`)
 			}
 
 			// 3. Создаем запись о транзакции
@@ -304,29 +339,7 @@ export const addCryptoToUser = async (coinId: string, quantity: number, price: n
 			})
 
 			// 4. Пересчитываем агрегированные данные
-			let totalCost = userCoin.total_cost
-			const totalQuantity = userCoin.total_quantity + quantity
-
-			if (quantity > 0) {
-				// Покупка: добавляем стоимость
-				totalCost += quantity * price
-			} else {
-				// Продажа: уменьшаем стоимость пропорционально средней цене
-				totalCost += quantity * userCoin.average_price
-			}
-
-			// 5. Обновляем среднюю цену только для оставшихся монет
-			const averagePrice = totalQuantity > 0 ? totalCost / totalQuantity : 0
-
-			// 6. Обновляем UserCoin
-			await prisma.userCoin.update({
-				where: { id: userCoin.id },
-				data: {
-					total_quantity: totalQuantity,
-					total_cost: totalCost,
-					average_price: averagePrice,
-				},
-			})
+			await recalculateAveragePrice(session.user.id, coinId, transactionPrisma)
 		})
 
 		revalidatePath('/')
@@ -337,86 +350,56 @@ export const addCryptoToUser = async (coinId: string, quantity: number, price: n
 
 export const updateUserCrypto = async (
 	coinId: string,
-	totalQuantity: number,
-	averagePrice: number,
 	desiredSellPrice?: number,
 	transactions?: { id: string; quantity: number; price: number; date: Date }[],
 ) => {
 	try {
 		const session = await auth()
+		const userId = session?.user?.id
 
-		// Проверяем, авторизован ли пользователь
-		if (!session?.user) {
-			throw new Error('User not authenticated')
-		}
+		if (!userId) throw new Error('User not authenticated')
+		if (!coinId) throw new Error('Coin ID is required')
 
-		// Проверяем права доступа
-		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
-			throw new Error('You do not have permission to perform this action')
-		}
-
-		// Валидация входных данных
-		if (totalQuantity < 0) {
-			throw new Error('Quantity cannot be negative')
-		}
-
-		// Сбрасываем значения при нулевом количестве
-		const finalAveragePrice = totalQuantity > 0 ? averagePrice : 0
-		const finalTotalCost = totalQuantity * finalAveragePrice
-
-		// Всегда обновляем запись, даже при нулевом количестве
-		await prisma.userCoin.upsert({
-			where: {
-				userId_coinId: {
-					userId: session.user.id,
-					coinId,
-				},
-			},
-			update: {
-				total_quantity: totalQuantity,
-				total_cost: finalTotalCost,
-				average_price: finalAveragePrice,
-				desired_sell_price: totalQuantity > 0 ? desiredSellPrice : null,
-			},
-			create: {
-				id: coinId,
-				total_quantity: totalQuantity,
-				total_cost: finalTotalCost,
-				average_price: finalAveragePrice,
-				desired_sell_price: desiredSellPrice,
-				user: { connect: { id: session.user.id } },
-				coin: { connect: { id: coinId } },
-				coinsListIDMap: { connect: { id: coinId } },
-			},
-		})
-
-		// Обновляем покупки если они переданы
-		if (transactions && transactions.length > 0) {
-			await prisma.$transaction(
-				transactions.map((transaction) =>
-					prisma.userCoinTransaction.update({
-						where: { id: transaction.id },
-						data: {
-							quantity: transaction.quantity,
-							price: transaction.price,
-							date: transaction.date,
-						},
-					}),
-				),
-			)
-		}
-
-		// Очищаем желаемую цену продажи если количество 0
-		if (totalQuantity === 0) {
-			await prisma.userCoin.update({
-				where: {
-					userId_coinId: { userId: session.user.id, coinId },
-				},
-				data: {
-					desired_sell_price: null,
-				},
+		await prisma.$transaction(async (transactionPrisma) => {
+			const userCoin = await prisma.userCoin.findUnique({
+				where: { userId_coinId: { userId, coinId } },
+				include: { transactions: true },
 			})
-		}
+
+			if (!userCoin) throw new Error('Coin not found in portfolio')
+
+			// Обновление транзакций
+			if (transactions?.length) {
+				const existingIds = userCoin.transactions.map((t) => t.id)
+				const invalid = transactions.filter((t) => !existingIds.includes(t.id))
+
+				if (invalid.length) {
+					throw new Error(`Invalid transactions: ${invalid.map((t) => t.id).join(', ')}`)
+				}
+
+				await Promise.all(
+					transactions.map((t) =>
+						prisma.userCoinTransaction.update({
+							where: { id: t.id },
+							data: { ...t },
+						}),
+					),
+				)
+			}
+
+			// Обновление желаемой цены продажи
+			if (typeof desiredSellPrice !== 'undefined') {
+				await prisma.userCoin.update({
+					where: { userId_coinId: { userId, coinId } },
+					data: { desired_sell_price: desiredSellPrice },
+				})
+			}
+
+			// Полный пересчет если были изменения транзакций
+			if (transactions?.length) {
+				await recalculateAveragePrice(userId, coinId, transactionPrisma)
+			}
+		})
 
 		revalidatePath('/')
 	} catch (error) {

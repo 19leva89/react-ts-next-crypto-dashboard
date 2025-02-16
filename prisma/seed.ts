@@ -692,8 +692,8 @@ async function up() {
 				coinId: 'bitcoin',
 				coinsListIDMapId: 'bitcoin',
 				total_quantity: 0.009639,
-				total_cost: 326.98,
-				average_price: 33923,
+				total_cost: 322.13,
+				average_price: 33419.47,
 				desired_sell_price: 120000,
 			},
 		})

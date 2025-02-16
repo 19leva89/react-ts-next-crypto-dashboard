@@ -1,4 +1,5 @@
 immer
+date-fns
 
 Authentication and User Management:
 - Bcrypt.js (password hashing)

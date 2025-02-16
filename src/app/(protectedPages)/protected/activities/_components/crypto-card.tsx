@@ -58,13 +58,6 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 
 	const handleUpdate = async (sellPrice: string) => {
 		try {
-			const totalCost = editTransactions.reduce(
-				(total, transaction) => total + transaction.price * transaction.quantity,
-				0,
-			)
-			const totalQuantity = editTransactions.reduce((total, transaction) => total + transaction.quantity, 0)
-			const averagePrice = totalCost / totalQuantity
-
 			// Преобразуем данные о покупках в нужный формат
 			const updatedTransactions = editTransactions.map((transaction) => ({
 				...transaction,
@@ -74,7 +67,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			}))
 
 			// Вызываем функцию для обновления криптовалюты
-			await updateUserCrypto(coin.coinId, totalQuantity, averagePrice, Number(sellPrice), updatedTransactions)
+			await updateUserCrypto(coin.coinId, Number(sellPrice), updatedTransactions)
 
 			// Уведомляем пользователя об успехе
 			toast.success('Coin updated successfully')
