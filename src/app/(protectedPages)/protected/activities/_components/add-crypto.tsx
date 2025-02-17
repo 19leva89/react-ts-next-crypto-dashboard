@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import toast from 'react-hot-toast'
 import { Plus } from 'lucide-react'
 import { FixedSizeList as List } from 'react-window'
 import { ChangeEvent, CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
@@ -23,10 +22,12 @@ import {
 	SelectTrigger,
 	Skeleton,
 } from '@/components/ui'
+import { useToast } from '@/hooks'
 import { CoinsListIDMapData } from '@/app/api/types'
 import { addCryptoToUser, getCoinsListIDMap } from '@/app/api/actions'
 
 export const AddCrypto = () => {
+	const { toast } = useToast()
 	const [editPrice, setEditPrice] = useState<string>('')
 	const [editQuantity, setEditQuantity] = useState<string>('')
 	const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -80,7 +81,11 @@ export const AddCrypto = () => {
 		try {
 			// Проверяем, что выбрана криптовалюта и введено количество
 			if (!selectedCrypto || !editQuantity || !editPrice) {
-				toast.error('Please select a coin, enter a quantity and buy price')
+				toast({
+					title: 'Error 🚨',
+					description: 'Please select a coin, enter a quantity and buy price',
+					variant: 'destructive',
+				})
 				return
 			}
 
@@ -88,7 +93,11 @@ export const AddCrypto = () => {
 			await addCryptoToUser(selectedCrypto, Number(editQuantity), Number(editPrice))
 
 			// Уведомляем пользователя об успехе
-			toast.success('Crypto added successfully')
+			toast({
+				title: 'Success ✅',
+				description: 'Crypto added successfully',
+				variant: 'default',
+			})
 
 			// Закрываем диалог
 			setIsDialogOpen(false)
@@ -101,11 +110,11 @@ export const AddCrypto = () => {
 			// Уведомляем пользователя об ошибке
 			console.error('Error adding crypto:', error)
 
-			if (error instanceof Error) {
-				toast.error(error.message)
-			} else {
-				toast.error('Failed to add crypto. Please try again')
-			}
+			toast({
+				title: 'Error 🚨',
+				description: error instanceof Error ? error.message : 'Failed to add crypto. Please try again',
+				variant: 'destructive',
+			})
 		}
 	}
 

@@ -1,4 +1,3 @@
-import toast from 'react-hot-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -11,7 +10,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui'
-
+import { useToast } from '@/hooks'
 import { registerUser } from '@/app/api/actions'
 import { FormInput } from '@/components/shared/form'
 import { TFormRegisterValues, formRegisterSchema } from './schemas'
@@ -21,6 +20,8 @@ interface Props {
 }
 
 export const RegisterForm = ({ onClose }: Props) => {
+	const { toast } = useToast()
+
 	const form = useForm<TFormRegisterValues>({
 		resolver: zodResolver(formRegisterSchema),
 		defaultValues: {
@@ -39,17 +40,21 @@ export const RegisterForm = ({ onClose }: Props) => {
 				password: data.password,
 			})
 
-			toast.success('Registration successful 📝. Confirm your email')
+			toast({
+				title: 'Success ✅',
+				description: 'Registration successful 📝. Confirm your email',
+				variant: 'default',
+			})
 
 			onClose?.()
 		} catch (error) {
 			console.error('Error registering:', error)
 
-			if (error instanceof Error) {
-				toast.error(error.message)
-			} else {
-				toast.error('Error while registering')
-			}
+			toast({
+				title: 'Error 🚨',
+				description: error instanceof Error ? error.message : 'Error while registering',
+				variant: 'destructive',
+			})
 		}
 	}
 

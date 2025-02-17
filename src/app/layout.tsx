@@ -1,6 +1,7 @@
 import { Nunito } from 'next/font/google'
 import { PropsWithChildren } from 'react'
 
+import { Toaster } from '@/components/ui'
 import { constructMetadata } from '@/lib/utils'
 import { AppProvider, ThemeProvider } from '@/components/shared/providers'
 
@@ -23,6 +24,8 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 						{children}
 					</ThemeProvider>
 				</AppProvider>
+
+				<Toaster />
 			</body>
 		</html>
 	)

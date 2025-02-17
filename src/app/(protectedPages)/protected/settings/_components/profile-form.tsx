@@ -1,7 +1,5 @@
 'use client'
 
-import toast from 'react-hot-toast'
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signOut, useSession } from 'next-auth/react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -9,6 +7,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { User } from '@prisma/client'
 import { Button } from '@/components/ui'
 
+import { useToast } from '@/hooks'
 import { FormInput } from '@/components/shared/form'
 import { Container, Title } from '@/components/shared'
 import { deleteUser, updateUserInfo } from '@/app/api/actions'
@@ -19,6 +18,7 @@ interface Props {
 }
 
 export const ProfileForm = ({ data }: Props) => {
+	const { toast } = useToast()
 	const { update } = useSession()
 
 	const form = useForm({
@@ -39,17 +39,21 @@ export const ProfileForm = ({ data }: Props) => {
 				...(formData.password ? { password: formData.password } : {}),
 			})
 
-			toast.success('Data updated 📝')
+			toast({
+				title: 'Success ✅',
+				description: 'Data updated 📝',
+				variant: 'default',
+			})
 
 			await update()
 		} catch (error) {
 			console.error('Error updating user info:', error)
 
-			if (error instanceof Error) {
-				toast.error(error.message)
-			} else {
-				toast.error('Error while updating data')
-			}
+			toast({
+				title: 'Error 🚨',
+				description: error instanceof Error ? error.message : 'Error while updating data',
+				variant: 'destructive',
+			})
 		}
 	}
 
@@ -57,17 +61,21 @@ export const ProfileForm = ({ data }: Props) => {
 		try {
 			await deleteUser()
 
-			toast.success('Your account has been deleted')
+			toast({
+				title: 'Success ✅',
+				description: 'Your account has been deleted',
+				variant: 'default',
+			})
 
 			signOut()
 		} catch (error) {
 			console.error('Error deleting account:', error)
 
-			if (error instanceof Error) {
-				toast.error(error.message)
-			} else {
-				toast.error('Error while deleting account')
-			}
+			toast({
+				title: 'Error 🚨',
+				description: error instanceof Error ? error.message : 'Error while deleting account',
+				variant: 'destructive',
+			})
 		}
 	}
 

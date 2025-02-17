@@ -1,6 +1,3 @@
-immer
-date-fns
-
 Authentication and User Management:
 - Bcrypt.js (password hashing)
 - NextAuth 5 (authentication)
@@ -11,6 +8,7 @@ Core Technologies:
 - Next 15 (framework)
 
 Data Fetching and State Management:
+- Immer (immutable state management)
 - Prisma 6 (ORM for DB)
 - React Hook Form (working with forms)
 
@@ -26,9 +24,6 @@ Image Handling and Optimization:
 Middleware and Server Utilities:
 - Concurrently (all projects are running in tandem)
 
-Miscellaneous:
-- React hot toast (stylization message)
-
 Pagination:
 - React window (working with infinite scroll)
 
@@ -40,6 +35,7 @@ Styling and UI Frameworks:
 - Tailwind CSS (stylization)
 
 Utilities and Libraries:
+- Date-fns (date/time manipulation)
 - PostCSS (transforms CSS code to AST)
 
 
@@ -50,5 +46,5 @@ npm run lint (loading ESLint checker)
 npx prisma generate
 npx prisma db push
 npx prisma db pull
-npx prisma db seed (loading test database)
+npx prisma db seed (loading test DB)
 npx prisma migrate reset

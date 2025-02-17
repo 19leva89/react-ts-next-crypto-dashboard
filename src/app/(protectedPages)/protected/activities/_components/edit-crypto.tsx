@@ -1,4 +1,3 @@
-import toast from 'react-hot-toast'
 import { Draft, produce } from 'immer'
 import { ChangeEvent, useState } from 'react'
 
@@ -13,6 +12,7 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
+import { useToast } from '@/hooks'
 import { DataTable } from './transaction-table-data'
 import { CryptoData, Transaction } from './crypto-card'
 import { getColumns } from './transaction-table-columns'
@@ -35,6 +35,8 @@ export const EditCrypto = ({
 	editTransactions,
 	setEditTransactions,
 }: Props) => {
+	const { toast } = useToast()
+
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
 
 	const handleNumberInput = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,22 +65,53 @@ export const EditCrypto = ({
 		)
 	}
 
+	const handleAddTransaction = () => {
+		const newTransaction: Transaction = {
+			id: `temp-${Math.random().toString(36).substring(2)}`,
+			quantity: 0,
+			price: 0,
+			date: new Date(),
+			userCoinId: coin.coinId,
+		}
+		console.log('newTransaction:', newTransaction)
+
+		setEditTransactions([...editTransactions, newTransaction])
+	}
+
 	const handleTransactionDelete = async (transactionId: string) => {
+		// Если транзакция временная, удаляем сразу из состояния
+		if (transactionId.startsWith('temp-')) {
+			setEditTransactions(editTransactions.filter((t) => t.id !== transactionId))
+
+			toast({
+				title: 'Success ✅',
+				description: 'Transaction has been removed',
+				variant: 'default',
+			})
+
+			return
+		}
+
 		try {
 			// Вызываем функцию для удаления транзакции
 			await deleteTransactionFromUser(transactionId)
 
 			// Уведомляем пользователя об успехе
-			toast.success('Transaction removed successfully')
+			toast({
+				title: 'Success ✅',
+				description: 'Transaction has been removed',
+				variant: 'default',
+			})
 		} catch (error) {
 			// Уведомляем пользователя об ошибке
 			console.error('Error removing transaction:', error)
 
-			if (error instanceof Error) {
-				toast.error(error.message)
-			} else {
-				toast.error('Failed to remove transaction. Please try again')
-			}
+			toast({
+				title: 'Error 🚨',
+				description:
+					error instanceof Error ? error.message : 'Failed to remove transaction. Please try again',
+				variant: 'destructive',
+			})
 		}
 	}
 
@@ -119,7 +152,11 @@ export const EditCrypto = ({
 					</div>
 				</div>
 
-				<DialogFooter className="px-4">
+				<DialogFooter className="flex-row justify-end gap-3 px-4">
+					<Button variant={'outline'} onClick={handleAddTransaction} className="rounded-xl text-white">
+						Add transaction
+					</Button>
+
 					<Button onClick={() => onSave(editSellPrice)} className="rounded-xl text-white">
 						Save changes
 					</Button>

@@ -77,7 +77,7 @@ const SidebarProvider = forwardRef<
 		const [openMobile, setOpenMobile] = useState<boolean>(false)
 
 		// This is the internal state of the sidebar.
-		// We use openProp and setOpenProp for control from outside the component.
+		// Use openProp and setOpenProp for control from outside the component.
 		const [_open, _setOpen] = useState<boolean>(defaultOpen)
 		const open = openProp ?? _open
 		const setOpen = useCallback(
@@ -113,7 +113,7 @@ const SidebarProvider = forwardRef<
 			return () => window.removeEventListener('keydown', handleKeyDown)
 		}, [toggleSidebar])
 
-		// We add a state so that we can do data-state="expanded" or "collapsed".
+		// Add a state so that can do data-state="expanded" or "collapsed".
 		// This makes it easier to style the sidebar with Tailwind classes.
 		const state = open ? 'expanded' : 'collapsed'
 

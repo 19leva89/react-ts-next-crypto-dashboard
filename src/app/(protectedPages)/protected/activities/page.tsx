@@ -25,6 +25,7 @@ const ActivitiesPage = async () => {
 			quantity: transaction.quantity,
 			price: transaction.price,
 			date: transaction.date,
+			userCoinId: transaction.userCoinId,
 		})),
 	}))
 

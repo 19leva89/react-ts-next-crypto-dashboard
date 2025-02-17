@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import toast from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -13,6 +12,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui'
+import { useToast } from '@/hooks'
 import { FormInput } from '@/components/shared/form'
 import { TFormLoginValues, formLoginSchema } from './schemas'
 import { loginUser, loginUserWithCreds } from '@/app/api/actions'
@@ -22,6 +22,7 @@ interface Props {
 }
 
 export const LoginForm = ({ onClose }: Props) => {
+	const { toast } = useToast()
 	const { update } = useSession()
 
 	const form = useForm<TFormLoginValues>({
@@ -39,7 +40,11 @@ export const LoginForm = ({ onClose }: Props) => {
 				password: data.password,
 			})
 
-			toast.success('You have successfully logged in')
+			toast({
+				title: 'Success ✅',
+				description: 'You have successfully logged in',
+				variant: 'default',
+			})
 
 			onClose?.()
 
@@ -47,11 +52,11 @@ export const LoginForm = ({ onClose }: Props) => {
 		} catch (error) {
 			console.error('Error logging in:', error)
 
-			if (error instanceof Error) {
-				toast.error(error.message)
-			} else {
-				toast.error('Error while logging in')
-			}
+			toast({
+				title: 'Error 🚨',
+				description: error instanceof Error ? error.message : 'Error while logging in',
+				variant: 'destructive',
+			})
 		}
 	}
 

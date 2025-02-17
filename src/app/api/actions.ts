@@ -37,7 +37,7 @@ const handleError = (error: unknown, context: string) => {
 	throw error
 }
 
-// Общая функция для пересчета агрегированных данных
+// General function for recalculating aggregated data
 const recalculateAveragePrice = async (userId: string, coinId: string, prisma: PrismaTransactionClient) => {
 	const transactions = await prisma.userCoinTransaction.findMany({
 		where: { userCoin: { userId, coinId } },
@@ -62,6 +62,9 @@ const recalculateAveragePrice = async (userId: string, coinId: string, prisma: P
 		{ totalQuantity: 0, totalCost: 0 },
 	)
 
+	// Blocked going into minus
+	if (totals.totalQuantity < 0) throw new Error('Not enough coins to sell')
+
 	return prisma.userCoin.upsert({
 		where: { userId_coinId: { userId, coinId } },
 		update: {
@@ -76,7 +79,7 @@ const recalculateAveragePrice = async (userId: string, coinId: string, prisma: P
 			coinsListIDMap: { connect: { id: coinId } },
 			total_quantity: totals.totalQuantity,
 			total_cost: totals.totalCost,
-			average_price: totals.totalCost / totals.totalQuantity,
+			average_price: totals.totalQuantity > 0 ? totals.totalCost / totals.totalQuantity : 0,
 		},
 	})
 }
@@ -90,9 +93,7 @@ export const registerUser = async (body: Prisma.UserCreateInput) => {
 		})
 
 		if (user) {
-			if (!user.emailVerified) {
-				throw new Error('Email not confirmed')
-			}
+			if (!user.emailVerified) throw new Error('Email not confirmed')
 
 			throw new Error('User already exists')
 		}
@@ -138,23 +139,14 @@ export const loginUserWithCreds = async (body: Prisma.UserCreateInput) => {
 		include: { accounts: true },
 	})
 
-	if (!user) {
-		throw new Error('Invalid password or email')
-	}
-
-	if (user.accounts.length > 0) {
+	if (!user) throw new Error('Invalid password or email')
+	if (user.accounts.length > 0)
 		throw new Error('This email is linked to a social login. Please use GitHub or Google')
-	}
 
 	const isPasswordValid = await compare(body.password as string, user.password ?? '')
 
-	if (!isPasswordValid) {
-		throw new Error('Invalid password or email')
-	}
-
-	if (!user.emailVerified) {
-		throw new Error('Email is not verified')
-	}
+	if (!isPasswordValid) throw new Error('Invalid password or email')
+	if (!user.emailVerified) throw new Error('Email is not verified')
 
 	const data = {
 		email: body.email,
@@ -164,9 +156,7 @@ export const loginUserWithCreds = async (body: Prisma.UserCreateInput) => {
 
 	const result = await signIn('credentials', data)
 
-	if (result?.error) {
-		throw new Error(result.error)
-	}
+	if (result?.error) throw new Error(result.error)
 
 	revalidatePath('/')
 }
@@ -175,31 +165,24 @@ export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 	try {
 		const session = await auth()
 
-		if (!session?.user) {
-			throw new Error('User not found')
-		}
+		if (!session?.user) throw new Error('User not found')
 
 		const existingUser = await prisma.user.findFirst({
 			where: { id: session?.user.id },
 			include: { accounts: true },
 		})
 
-		if (!existingUser) {
-			throw new Error('User not found')
-		}
+		if (!existingUser) throw new Error('User not found')
 
-		// Проверяем, есть ли у пользователя OAuth-аккаунты
+		// Checking if the user has OAuth accounts
 		const hasOAuthAccounts = existingUser.accounts.length > 0
 
-		// Если пользователь вошел через OAuth, запрещаем изменение email и пароля
+		// If the user logged in via OAuth, prohibit changing the email and password
 		if (hasOAuthAccounts) {
-			if (body.email && body.email !== existingUser.email) {
+			if (body.email && body.email !== existingUser.email)
 				throw new Error('Email cannot be changed for OAuth users')
-			}
 
-			if (body.password) {
-				throw new Error('Password cannot be changed for OAuth users')
-			}
+			if (body.password) throw new Error('Password cannot be changed for OAuth users')
 		}
 
 		// Validation for email uniqueness
@@ -209,16 +192,15 @@ export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
 					email: body.email as string,
 				},
 			})
-			if (emailExists) {
-				throw new Error('Email is already in use')
-			}
+
+			if (emailExists) throw new Error('Email is already in use')
 		}
 
 		const updatedData: Prisma.UserUpdateInput = {
 			name: body.name,
 		}
 
-		// Если пользователь не OAuth, разрешаем обновление email и пароля
+		// If the user is not OAuth, allow email and password updates
 		if (!hasOAuthAccounts) {
 			updatedData.email = body.email ? body.email : existingUser.email
 			updatedData.password = body.password
@@ -243,28 +225,26 @@ export const deleteUser = async (userId?: string) => {
 	try {
 		const session = await auth()
 
-		// Проверяем, авторизован ли пользователь
-		if (!session?.user) {
-			throw new Error('User not authenticated')
-		}
+		// Checking if the user is authorized
+		if (!session?.user) throw new Error('User not authenticated')
 
-		// Если userId не передан, удаляем текущего пользователя
+		// If userId is not passed, delete the current user
 		const targetUserId = userId || session.user.id
 
-		// Проверяем, что пользователь удаляет только себя (или администратор может удалять других)
+		// Check that the user only deletes himself (or the administrator can delete others)
 		if (session.user.role !== 'ADMIN' && targetUserId !== session.user.id) {
 			throw new Error('You do not have permission to delete this user')
 		}
 
-		// Удаляем пользователя и все связанные данные (каскадное удаление)
+		// Delete the user and all associated data (cascade delete)
 		const deletedUser = await prisma.user.delete({
 			where: {
 				id: targetUserId,
 			},
 			include: {
-				accounts: true, // Удаляем связанные аккаунты
-				sessions: true, // Удаляем связанные сессии
-				verificationCode: true, // Удаляем код подтверждения
+				accounts: true,
+				sessions: true,
+				verificationCode: true,
 			},
 		})
 
@@ -368,18 +348,47 @@ export const updateUserCrypto = async (
 
 			if (!userCoin) throw new Error('Coin not found in portfolio')
 
-			// Обновление транзакций
-			if (transactions?.length) {
-				const existingIds = userCoin.transactions.map((t) => t.id)
-				const invalid = transactions.filter((t) => !existingIds.includes(t.id))
+			// Check: Is the user trying to sell more than he has?
+			const totalOwned = userCoin.transactions.reduce((sum, t) => sum + t.quantity, 0)
+			const totalSelling =
+				transactions?.filter((t) => t.quantity < 0).reduce((sum, t) => sum + t.quantity, 0) || 0
 
-				if (invalid.length) {
-					throw new Error(`Invalid transactions: ${invalid.map((t) => t.id).join(', ')}`)
+			if (totalOwned + totalSelling < 0) throw new Error('Not enough coins to sell')
+
+			// Updating transactions
+			if (transactions?.length) {
+				const existingTransactions = userCoin.transactions
+				const newTransactions = []
+				const updatedTransactions = []
+
+				// Separating new and existing transactions
+				for (const t of transactions) {
+					if (t.id.startsWith('temp-')) {
+						newTransactions.push({
+							quantity: t.quantity,
+							price: t.price,
+							date: t.date,
+							userCoinId: userCoin.id,
+						})
+					} else {
+						if (!existingTransactions.some((et) => et.id === t.id)) {
+							throw new Error(`Invalid transaction ID: ${t.id}`)
+						}
+						updatedTransactions.push(t)
+					}
 				}
 
+				// Creating new transactions
+				if (newTransactions.length > 0) {
+					await transactionPrisma.userCoinTransaction.createMany({
+						data: newTransactions,
+					})
+				}
+
+				// Updating existing transactions
 				await Promise.all(
-					transactions.map((t) =>
-						prisma.userCoinTransaction.update({
+					updatedTransactions.map((t) =>
+						transactionPrisma.userCoinTransaction.update({
 							where: { id: t.id },
 							data: { ...t },
 						}),
@@ -387,15 +396,15 @@ export const updateUserCrypto = async (
 				)
 			}
 
-			// Обновление желаемой цены продажи
+			// Update sale price
 			if (typeof desiredSellPrice !== 'undefined') {
-				await prisma.userCoin.update({
+				await transactionPrisma.userCoin.update({
 					where: { userId_coinId: { userId, coinId } },
 					data: { desired_sell_price: desiredSellPrice },
 				})
 			}
 
-			// Полный пересчет если были изменения транзакций
+			// Recalculation of the average price
 			if (transactions?.length) {
 				await recalculateAveragePrice(userId, coinId, transactionPrisma)
 			}
@@ -411,23 +420,19 @@ export const deleteCryptoFromUser = async (coinId: string) => {
 	try {
 		const session = await auth()
 
-		// Проверяем, авторизован ли пользователь
-		if (!session?.user) {
-			throw new Error('User not authenticated')
-		}
+		// Checking if the user is authorized
+		if (!session?.user) throw new Error('User not authenticated')
 
-		// Проверяем права доступа
+		// Checking access rights
 		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
 			throw new Error('You do not have permission to perform this action')
 		}
 
-		if (!coinId) {
-			throw new Error('CoinId is required')
-		}
+		if (!coinId) throw new Error('CoinId is required')
 
 		await prisma.userCoin.delete({
 			where: {
-				userId_coinId: { userId: session.user.id, coinId }, // Используем уникальный ключ
+				userId_coinId: { userId: session.user.id, coinId },
 			},
 		})
 
@@ -441,53 +446,45 @@ export const deleteTransactionFromUser = async (coinTransactionId: string) => {
 	try {
 		const session = await auth()
 
-		// Проверяем, авторизован ли пользователь
-		if (!session?.user) {
-			throw new Error('User not authenticated')
-		}
+		// Checking if the user is authorized
+		if (!session?.user) throw new Error('User not authenticated')
 
-		// Проверяем права доступа
+		// Checking access rights
 		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
 			throw new Error('You do not have permission to perform this action')
 		}
 
-		if (!coinTransactionId) {
-			throw new Error('CoinTransactionId is required')
-		}
+		if (!coinTransactionId) throw new Error('CoinTransactionId is required')
 
-		// Начинаем транзакцию
+		// Starting a transaction
 		await prisma.$transaction(async (prisma) => {
-			// 1. Получаем удаляемую транзакцию
+			// 1. Getting the transaction to be deleted
 			const transaction = await prisma.userCoinTransaction.findUnique({
 				where: { id: coinTransactionId },
 				select: { quantity: true, price: true, userCoinId: true },
 			})
 
-			if (!transaction) {
-				throw new Error('Transaction not found')
-			}
+			if (!transaction) throw new Error('Transaction not found')
 
-			// 2. Удаляем транзакцию
+			// 2. Delete transaction
 			await prisma.userCoinTransaction.delete({
 				where: { id: coinTransactionId },
 			})
 
-			// 3. Получаем текущие значения UserCoin
+			// 3. Get current UserCoin values
 			const userCoin = await prisma.userCoin.findUnique({
 				where: { id: transaction.userCoinId },
 				select: { total_quantity: true, total_cost: true },
 			})
 
-			if (!userCoin) {
-				throw new Error('UserCoin not found')
-			}
+			if (!userCoin) throw new Error('UserCoin not found')
 
-			// 4. Пересчитываем значения
+			// 4. Recalculate the values
 			const newQuantity = userCoin.total_quantity - transaction.quantity
 			const newCost = userCoin.total_cost - transaction.quantity * transaction.price
 			const newAveragePrice = newQuantity > 0 ? newCost / newQuantity : 0
 
-			// 5. Обновляем UserCoin
+			// 5. Updating UserCoin
 			await prisma.userCoin.update({
 				where: { id: transaction.userCoinId },
 				data: {
@@ -509,7 +506,7 @@ export const getTrendingData = async (): Promise<TrendingData> => {
 		const cachedData = await prisma.trendingCoin.findMany({
 			where: {
 				updatedAt: {
-					gte: new Date(Date.now() - 300 * 60 * 1000), // Данные обновлены не старше 300 минут
+					gte: new Date(Date.now() - 300 * 60 * 1000), // Data updated no older than 300 minutes
 				},
 			},
 		})
@@ -534,7 +531,7 @@ export const getTrendingData = async (): Promise<TrendingData> => {
 			}
 		}
 
-		// Если данных нет или они устарели, запрашиваем их через API
+		// If there is no data or it is outdated, request it via API
 		console.log('🔄 Outdated records, request TrendingData via API...')
 		const data = await makeReq('GET', '/gecko/trending')
 
@@ -544,7 +541,7 @@ export const getTrendingData = async (): Promise<TrendingData> => {
 			return { coins: [] } as TrendingData
 		}
 
-		// Преобразуем данные в нужный формат
+		// Transform the data into the required format
 		const trendingCoins = data.coins.map((coin: any) => ({
 			coin_id: coin.item.coin_id,
 			name: coin.item.name,
@@ -556,7 +553,7 @@ export const getTrendingData = async (): Promise<TrendingData> => {
 			data: coin.item.data,
 		}))
 
-		// Обновляем или создаем записи в БД
+		// Update or create records in the DB
 		for (const coin of trendingCoins) {
 			await prisma.trendingCoin.upsert({
 				where: { coin_id_slug: { coin_id: coin.coin_id, slug: coin.slug } },
@@ -577,7 +574,7 @@ export const getTrendingData = async (): Promise<TrendingData> => {
 
 export const getCategories = async (): Promise<CategoriesData> => {
 	try {
-		// Проверяем наличие категорий в базе данных
+		// Checking categories in the DB
 		const cachedData = await prisma.category.findMany()
 
 		if (cachedData.length > 0) {
@@ -589,7 +586,7 @@ export const getCategories = async (): Promise<CategoriesData> => {
 			}))
 		}
 
-		// Если данных нет или они устарели, запрашиваем их через API
+		// If there is no data or it is outdated, request it via API
 		console.log('🔄 Outdated records, request Categories via API...')
 		const data = await makeReq('GET', '/gecko/categories')
 
@@ -599,13 +596,13 @@ export const getCategories = async (): Promise<CategoriesData> => {
 			return [] as CategoriesData
 		}
 
-		// Преобразуем данные в нужный формат
+		// Transform the data into the required format
 		const categoriesData: CategoriesData = data.map((category: any) => ({
 			category_id: category.category_id,
 			name: category.name,
 		}))
 
-		// Обновляем или создаем записи в БД
+		// Update or create records in the DB
 		for (const category of categoriesData) {
 			await prisma.category.upsert({
 				where: { category_id: category.category_id },
@@ -625,7 +622,7 @@ export const getCategories = async (): Promise<CategoriesData> => {
 }
 
 export const getCoinsList = async (): Promise<CoinsListData> => {
-	// Отдаем старые данные сразу
+	// Return old data immediately
 	const cachedCoins = await prisma.coin.findMany({
 		include: {
 			coinsListIDMap: true,
@@ -640,7 +637,7 @@ export const getCoinsList = async (): Promise<CoinsListData> => {
 		}))
 	}
 
-	// Запускаем обновление в фоне через API
+	// Launch an update in the background via API
 	const response = await makeReq('GET', '/update/coins-list')
 
 	if (!response || !Array.isArray(response) || response.length === 0) {
@@ -654,7 +651,7 @@ export const getCoinsList = async (): Promise<CoinsListData> => {
 
 export const updateCoinsList = async (): Promise<any> => {
 	try {
-		// Получаем список монет
+		// Get a list of coins
 		const cachedCoins = await prisma.coin.findMany({
 			include: {
 				coinsListIDMap: true,
@@ -668,7 +665,7 @@ export const updateCoinsList = async (): Promise<any> => {
 		const currentTime = new Date()
 		const updateTime = new Date(currentTime.getTime() - COINS_UPDATE_INTERVAL * 60 * 1000)
 
-		// Фильтруем устаревшие монеты
+		// Filtering outdated coins
 		const coinsToUpdate = cachedCoins.filter((coin) => coin.updatedAt < updateTime)
 
 		if (!coinsToUpdate.length) {
@@ -676,14 +673,14 @@ export const updateCoinsList = async (): Promise<any> => {
 			return cachedCoins
 		}
 
-		// Формируем строку для API-запроса
+		// Forming a string for an API request
 		const coinList = coinsToUpdate
-			.sort(() => Math.random() - 0.5) // Перемешиваем массив случайным образом
-			.slice(0, 10) // Берем первые 10 элементов
+			.sort(() => Math.random() - 0.5) // Shuffle the array randomly
+			.slice(0, 10) // Take the first 10 elements
 			.map((coin) => encodeURIComponent(coin.id))
 			.join('%2C')
 
-		// Запрашиваем свежие данные с API
+		// Requesting fresh data from the API
 		console.log('🔄 Outdated records, request CoinsList via API...')
 		const response = await makeReq('GET', `/gecko/coins-upd/${coinList}`)
 
@@ -693,7 +690,7 @@ export const updateCoinsList = async (): Promise<any> => {
 		}
 
 		await prisma.$transaction([
-			// Обновляем coinsListIDMap
+			// Updating coinsListIDMap
 			...response.map((coin) =>
 				prisma.coinsListIDMap.upsert({
 					where: { id: coin.id },
@@ -709,7 +706,7 @@ export const updateCoinsList = async (): Promise<any> => {
 				}),
 			),
 
-			// Обновляем Coin
+			// Updating Coin
 			...response.map((coin) =>
 				prisma.coin.updateMany({
 					where: { id: coin.id },
@@ -734,7 +731,7 @@ export const updateCoinsList = async (): Promise<any> => {
 
 		console.log('✅ Records CoinsList updated!')
 
-		// Возвращаем обновленный список монет
+		// Returning an updated list of coins
 		return await prisma.coin.findMany({
 			include: { coinsListIDMap: true },
 		})
@@ -747,18 +744,16 @@ export const getUserCoinsList = async () => {
 	try {
 		const session = await auth()
 
-		// Проверяем, авторизован ли пользователь
-		if (!session?.user) {
-			throw new Error('User not authenticated')
-		}
+		// Checking if the user is authorized
+		if (!session?.user) throw new Error('User not authenticated')
 
-		// Отдаем старые данные сразу
+		// Return old data immediately
 		const userCoins = await prisma.userCoin.findMany({
 			where: { userId: session.user.id },
 			include: { coinsListIDMap: true, coin: true, transactions: true },
 		})
 
-		// Запускаем обновление в фоне через API
+		// Launch an update in the background via API
 		const response = await makeReq('GET', `/update/user-coins?userId=${session.user.id}`)
 
 		if (!response || !Array.isArray(response) || response.length === 0) {
@@ -777,7 +772,7 @@ export const getUserCoinsList = async () => {
 
 export const updateUserCoinsList = async (userId: string): Promise<any> => {
 	try {
-		// Получаем список монет пользователя
+		// Get a list of user coins
 		const userCoins = await prisma.userCoin.findMany({
 			where: { userId },
 			include: { coin: true },
@@ -790,7 +785,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 		const currentTime = new Date()
 		const updateTime = new Date(currentTime.getTime() - USER_COINS_UPDATE_INTERVAL * 60 * 1000)
 
-		// Фильтруем устаревшие монеты
+		// Filtering outdated coins
 		const coinsToUpdate = userCoins.filter((uc) => uc.updatedAt < updateTime)
 
 		if (!coinsToUpdate.length) {
@@ -798,14 +793,14 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 			return userCoins
 		}
 
-		// Формируем строку для API-запроса
+		// Forming a string for an API request
 		const coinList = coinsToUpdate
-			.sort(() => Math.random() - 0.5) // Перемешиваем массив случайным образом
-			.slice(0, 10) // Берем первые 10 элементов
+			.sort(() => Math.random() - 0.5) // Shuffle the array randomly
+			.slice(0, 10) // Take the first 10 elements
 			.map((uc) => encodeURIComponent(uc.coinId))
 			.join('%2C')
 
-		// Запрашиваем свежие данные с API
+		// Requesting fresh data from the API
 		console.log('🔄 Outdated records, request UserCoins via API...')
 		const response = await makeReq('GET', `/gecko/user/${coinList}`)
 
@@ -815,7 +810,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 		}
 
 		await prisma.$transaction([
-			// Обновляем coin
+			// Updating coin
 			...response.map((coin) =>
 				prisma.coin.upsert({
 					where: { id: coin.id },
@@ -834,7 +829,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 				}),
 			),
 
-			// Обновляем userCoin
+			// Updating userCoin
 			...response.map((coin) =>
 				prisma.userCoin.updateMany({
 					where: { userId, coinId: coin.id },
@@ -845,7 +840,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 
 		console.log('✅ Records UserCoinsList updated!')
 
-		// Возвращаем обновленный список монет
+		// Returning an updated list of coins
 		return await prisma.userCoin.findMany({
 			where: { userId },
 			include: { coin: true },
@@ -857,7 +852,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 
 export const getCoinsListIDMap = async (): Promise<CoinsListIDMapData> => {
 	try {
-		// Getting data from the database
+		// Getting data from the DB
 		const coins = await prisma.coinsListIDMap.findMany({
 			include: { coin: true },
 		})
@@ -882,19 +877,16 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 	try {
 		const session = await auth()
 
-		if (!session?.user) {
-			throw new Error('User not found')
-		}
+		if (!session?.user) throw new Error('User not found')
 
 		const existingUser = await prisma.user.findFirst({
 			where: { id: session?.user.id },
 			include: { accounts: true },
 		})
 
-		if (!existingUser) {
-			throw new Error('User not found')
-		}
-		// Проверяем наличие данных в базе данных
+		if (!existingUser) throw new Error('User not found')
+
+		// Checking the availability of data in the DB
 		const cachedData = await prisma.userCoin.findUnique({
 			where: {
 				userId_coinId: { userId: existingUser.id, coinId },
@@ -933,7 +925,7 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 			} as CoinData
 		}
 
-		// Если данных нет, делаем запрос к API
+		// If there is no data, make a request to the API
 		console.log('🔄 Outdated records, request CoinData via API...')
 		const data = await makeReq('GET', `/gecko/coins-get/${coinId}`)
 
@@ -1010,7 +1002,7 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 
 export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> => {
 	try {
-		// Проверяем наличие данных в базе данных
+		// Checking the availability of data in the DB
 		const cachedData = await prisma.coin.findMany({
 			where: {
 				categoryId: cate,
@@ -1020,7 +1012,7 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 			},
 		})
 
-		// Если данные есть, возвращаем их
+		// If there is data, return it
 		if (cachedData.length > 0) {
 			console.log('✅ Using cached CoinsListByCate from DB')
 			return cachedData.map((coin) => ({
@@ -1041,22 +1033,22 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 				price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
 			})) as CoinsListData
 		}
-		// Если данных нет, делаем запрос к API
+		// If there is no data, make a request to the API
 		console.log('🔄 Outdated records, request CoinsListByCate via API...')
 		const data = await makeReq('GET', `/gecko/${cate}/coins`)
 
-		// Если данные получены и они не пустые
+		// If the data is received and it is not empty
 		if (Array.isArray(data)) {
-			// Обрабатываем каждую монету из API
+			// Process each coin from the API
 			for (const coinData of data) {
-				// Убедимся, что запись в CoinsListIDMap существует
+				// Make sure that the entry in CoinsListIDMap exists
 				await prisma.coinsListIDMap.upsert({
 					where: { id: coinData.id },
 					update: { symbol: coinData.symbol, name: coinData.name },
 					create: { id: coinData.id, symbol: coinData.symbol, name: coinData.name },
 				})
 
-				// Обновляем или создаем запись в Coin
+				// Update or create an entry in Coin
 				await prisma.coin.upsert({
 					where: { id: coinData.id },
 					update: {
@@ -1072,7 +1064,7 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 						circulating_supply: coinData.circulating_supply,
 						sparkline_in_7d: coinData.sparkline_in_7d,
 						price_change_percentage_7d_in_currency: coinData.price_change_percentage_7d_in_currency,
-						categoryId: cate, // Связываем с категорией
+						categoryId: cate,
 					},
 					create: {
 						id: coinData.id,
@@ -1088,15 +1080,15 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 						circulating_supply: coinData.circulating_supply,
 						sparkline_in_7d: coinData.sparkline_in_7d,
 						price_change_percentage_7d_in_currency: coinData.price_change_percentage_7d_in_currency,
-						coinsListIDMapId: coinData.id, // Связываем с CoinsListIDMap
-						categoryId: cate, // Связываем с категорией
+						coinsListIDMapId: coinData.id,
+						categoryId: cate,
 					},
 				})
 			}
 
 			console.log('✅ Records CoinsListByCate updated!')
 
-			// Возвращаем данные в формате CoinsListData
+			// Return data in CoinsListData format
 			return data
 		} else {
 			console.warn('⚠️ Empty response from API, using old CoinsListByCate')
@@ -1111,7 +1103,7 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 
 export const getCoinsMarketChart = async (coinId: string): Promise<MarketChartData> => {
 	try {
-		// Получаем все данные о графиках из базы данных
+		// Get all the data about the charts from the DB
 		let cachedData = await prisma.marketChart.findUnique({
 			where: { id: coinId },
 			include: {
@@ -1123,17 +1115,17 @@ export const getCoinsMarketChart = async (coinId: string): Promise<MarketChartDa
 			},
 		})
 
-		// Запрашиваем данные с API
+		// Request data from the API
 		console.log('🔄 Fetching CoinsMarketChart from API...')
 		const data = await makeReq('GET', `/gecko/chart/${coinId}`)
 
-		// Если данных нет или они пустые, выводим предупреждение
+		// If there is no data or it is empty, display a warning
 		if (!data || !data.prices || data.prices.length === 0) {
 			console.warn('⚠️ Empty response from API, using old CoinsMarketChart')
 			return { prices: cachedData?.prices ?? [] } as MarketChartData
 		}
 
-		// Обновляем или создаем запись в БД
+		// Update or create a record in the DB
 		cachedData = await prisma.marketChart.upsert({
 			where: { id: coinId },
 			update: { prices: data.prices },
@@ -1168,7 +1160,7 @@ export const getCoinsMarketChart = async (coinId: string): Promise<MarketChartDa
 
 export const getAidrops = async (): Promise<AidropsData> => {
 	try {
-		// Получаем данные о airdrops из базы данных
+		// Getting airdrop data from the DB
 		const cachedData = await prisma.airdrop.findMany({
 			include: {
 				coin: true,
@@ -1176,7 +1168,7 @@ export const getAidrops = async (): Promise<AidropsData> => {
 			},
 		})
 
-		// Если данные о airdrops уже существуют в базе данных, возвращаем их
+		// If the airdrops data already exists in the DB, return it
 		if (cachedData.length > 0) {
 			console.log('✅ Using cached Aidrops from DB')
 
@@ -1200,7 +1192,7 @@ export const getAidrops = async (): Promise<AidropsData> => {
 			}
 		}
 
-		// Если данных нет или они устарели, запрашиваем их через API
+		// If there is no data or it is outdated, request it via API
 		console.log('🔄 Outdated records, request Aidrops via API...')
 		const data = await makeReq('GET', '/cmc/aidrops')
 
@@ -1210,7 +1202,7 @@ export const getAidrops = async (): Promise<AidropsData> => {
 			return { data: [] } as AidropsData
 		}
 
-		// Преобразуем данные в нужный формат
+		// Transform the data into the required format
 		const aidropsData: AidropsData = {
 			data: data.data.map((aidrop: any) => ({
 				id: aidrop.id,
@@ -1230,7 +1222,7 @@ export const getAidrops = async (): Promise<AidropsData> => {
 			})),
 		}
 
-		// Обновляем или создаем записи в БД
+		// Update or create records in the DB
 		for (const aidrop of aidropsData.data) {
 			await prisma.airdrop.upsert({
 				where: { id: aidrop.id },

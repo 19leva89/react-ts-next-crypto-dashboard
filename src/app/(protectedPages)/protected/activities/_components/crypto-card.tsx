@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import toast from 'react-hot-toast'
 import { useState } from 'react'
 import { EllipsisVertical, Pencil, Trash, TrendingDown, TrendingUp } from 'lucide-react'
 
@@ -18,6 +17,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui'
 import { cn } from '@/lib'
+import { useToast } from '@/hooks'
 import { EditCrypto } from './edit-crypto'
 import { DeleteCrypto } from './delete-crypto'
 import { formatPrice } from '@/constants/format-price'
@@ -28,6 +28,7 @@ export interface Transaction {
 	quantity: number
 	price: number
 	date: Date
+	userCoinId: string
 }
 export interface CryptoData {
 	coinId: string
@@ -49,6 +50,7 @@ interface Props {
 }
 
 export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
+	const { toast } = useToast()
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
@@ -70,7 +72,11 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			await updateUserCrypto(coin.coinId, Number(sellPrice), updatedTransactions)
 
 			// Уведомляем пользователя об успехе
-			toast.success('Coin updated successfully')
+			toast({
+				title: 'Success ✅',
+				description: 'Coin updated successfully',
+				variant: 'default',
+			})
 
 			// Закрываем диалог
 			setIsDialogOpen(false)
@@ -78,11 +84,11 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			// Уведомляем пользователя об ошибке
 			console.error('Error updating coin:', error)
 
-			if (error instanceof Error) {
-				toast.error(error.message)
-			} else {
-				toast.error('Failed to update coin. Please try again')
-			}
+			toast({
+				title: 'Error 🚨',
+				description: error instanceof Error ? error.message : 'Failed to update coin. Please try again',
+				variant: 'destructive',
+			})
 		}
 	}
 
@@ -92,18 +98,22 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			await deleteCryptoFromUser(coin.coinId)
 
 			// Уведомляем пользователя об успехе
-			toast.success('Coin removed successfully')
+			toast({
+				title: 'Success ✅',
+				description: 'Coin removed successfully',
+				variant: 'default',
+			})
 
 			setIsDeleteDialogOpen(false)
 		} catch (error) {
 			// Уведомляем пользователя об ошибке
 			console.error('Error removing coin:', error)
 
-			if (error instanceof Error) {
-				toast.error(error.message)
-			} else {
-				toast.error('Failed to remove coin. Please try again')
-			}
+			toast({
+				title: 'Error 🚨',
+				description: error instanceof Error ? error.message : 'Failed to remove coin. Please try again',
+				variant: 'destructive',
+			})
 		}
 	}
 
