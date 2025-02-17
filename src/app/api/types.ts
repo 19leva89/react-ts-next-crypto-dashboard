@@ -108,6 +108,7 @@ export type MarketChartData = {
 		high_24h: number
 		low_24h: number
 		coinsListIDMap: {
+			id: string
 			symbol: string
 			name: string
 		}

@@ -21,11 +21,12 @@ import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 
 interface Props {
 	cryptoData: CryptoData[]
+	totalInvestedValue: number
 	totalValue: number
 	plannedProfit: number
 }
 
-export const ActivitiesContainer = ({ cryptoData, totalValue, plannedProfit }: Props) => {
+export const ActivitiesContainer = ({ cryptoData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
 	const [isMounted, setIsMounted] = useState(false)
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
@@ -97,6 +98,12 @@ export const ActivitiesContainer = ({ cryptoData, totalValue, plannedProfit }: P
 		<div className="flex flex-col w-full">
 			<div className="flex items-center justify-between gap-1 max-[900px]:flex-wrap">
 				<div className="flex items-start gap-1 max-[1000px]:flex-col">
+					<div className="p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6">
+						<h2 className="text-xl font-bold max-[460px]:text-lg">
+							Total invested: ${formatPrice(totalInvestedValue, true)}
+						</h2>
+					</div>
+
 					<div className="p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6">
 						<h2 className="text-xl font-bold max-[460px]:text-lg">
 							Total crypto: ${formatPrice(totalValue, true)}

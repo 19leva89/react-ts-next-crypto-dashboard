@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react'
 import { Draft, produce } from 'immer'
 import { ChangeEvent, useState } from 'react'
 
@@ -14,6 +15,7 @@ import {
 } from '@/components/ui'
 import { useToast } from '@/hooks'
 import { DataTable } from './transaction-table-data'
+import { formatPrice } from '@/constants/format-price'
 import { CryptoData, Transaction } from './crypto-card'
 import { getColumns } from './transaction-table-columns'
 import { deleteTransactionFromUser } from '@/app/api/actions'
@@ -38,6 +40,8 @@ export const EditCrypto = ({
 	const { toast } = useToast()
 
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
+
+	const totalValue = coin.currentPrice * coin.totalQuantity
 
 	const handleNumberInput = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value.replace(/,/g, '.')
@@ -142,8 +146,16 @@ export const EditCrypto = ({
 					</div>
 
 					{/* Section for displaying transactions and sales */}
-					<div className="mt-6">
-						<h3 className="text-lg font-semibold mb-4 px-4">Transaction History</h3>
+					<div className="mt-2">
+						<div className="flex items-center justify-between mb-1">
+							<h3 className="px-4 text-lg font-semibold max-[400px]:text-sm">Transaction History</h3>
+
+							<div className="flex flex-col px-4 max-[600px]:text-sm">
+								<p className="">Total invested: ${formatPrice(coin.totalCost, false)}</p>
+
+								<p className="">Total value: ${formatPrice(totalValue, false)}</p>
+							</div>
+						</div>
 
 						<DataTable
 							columns={getColumns(onTransactionChange, handleTransactionDelete)}
@@ -154,7 +166,8 @@ export const EditCrypto = ({
 
 				<DialogFooter className="flex-row justify-end gap-3 px-4">
 					<Button variant={'outline'} onClick={handleAddTransaction} className="rounded-xl text-white">
-						Add transaction
+						<Plus className="mr-2 h-4 w-4" />
+						Transaction
 					</Button>
 
 					<Button onClick={() => onSave(editSellPrice)} className="rounded-xl text-white">

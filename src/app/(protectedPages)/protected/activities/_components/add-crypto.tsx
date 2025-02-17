@@ -162,7 +162,7 @@ export const AddCrypto = () => {
 					<DialogTrigger asChild>
 						<Button variant="default" size="sm" className="rounded-xl text-white">
 							<Plus className="mr-2 h-4 w-4" />
-							Add Transaction
+							Transaction
 						</Button>
 					</DialogTrigger>
 

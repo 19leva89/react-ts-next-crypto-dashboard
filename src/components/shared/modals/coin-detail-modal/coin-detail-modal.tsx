@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Image from 'next/image'
 import { Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -80,9 +81,15 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 							{getCoinData ? (
 								<Skeleton className="h-6 w-3/4" />
 							) : (
-								<h4 className="font-semibold text-md max-[500px]:text-sm">
-									{coinMarketChartData?.coin.coinsListIDMap.name}
-								</h4>
+								<Link
+									href={`https://coingecko.com/en/coins/${coinMarketChartData?.coin.coinsListIDMap.id}`}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<h4 className="cursor-pointer font-semibold text-md hover:text-[#397fee] dark:hover:text-[#75a6f4] max-[500px]:text-sm">
+										{coinMarketChartData?.coin.coinsListIDMap.name}
+									</h4>
+								</Link>
 							)}
 						</div>
 					</SheetTitle>
@@ -150,21 +157,29 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 					) : (
 						<>
 							<div className="flex justify-between items-center font-medium max-[500px]:text-sm">
-								<div className="items-center flex gap-2">
-									<Image
-										src={coinMarketChartData?.coin.image || '/svg/coin-not-found.svg'}
-										alt={coinMarketChartData?.coin.coinsListIDMap.name || 'Coin image'}
-										width={32}
-										height={32}
-										className="size-8 rounded-full max-[500px]:size-6"
-									/>
+								<Link
+									href={`https://coingecko.com/en/coins/${coinMarketChartData?.coin.coinsListIDMap.id}`}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<div className="items-center flex gap-2 cursor-pointer hover:text-[#397fee] dark:hover:text-[#75a6f4]">
+										<Image
+											src={coinMarketChartData?.coin.image || '/svg/coin-not-found.svg'}
+											alt={coinMarketChartData?.coin.coinsListIDMap.name || 'Coin image'}
+											width={32}
+											height={32}
+											className="size-8 rounded-full max-[500px]:size-6"
+										/>
 
-									<span className="font-medium">
-										<span>{coinMarketChartData?.coin.coinsListIDMap.name} </span>
+										<span className="font-medium">
+											<span>{coinMarketChartData?.coin.coinsListIDMap.name} </span>
 
-										<span className="uppercase">({coinMarketChartData?.coin.coinsListIDMap.symbol}/usd)</span>
-									</span>
-								</div>
+											<span className="uppercase">
+												({coinMarketChartData?.coin.coinsListIDMap.symbol}/usd)
+											</span>
+										</span>
+									</div>
+								</Link>
 
 								<div>${formatPrice(coinMarketChartData?.coin.current_price as number)}</div>
 							</div>

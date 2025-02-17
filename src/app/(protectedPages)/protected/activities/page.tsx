@@ -29,6 +29,11 @@ const ActivitiesPage = async () => {
 		})),
 	}))
 
+	// Calculate the total invested value of the portfolio
+	const totalInvestedValue = cryptoData.reduce((total, crypto) => {
+		return total + crypto.totalCost
+	}, 0)
+
 	// Calculate the total value of the portfolio
 	const totalPortfolioValue = cryptoData.reduce((total, crypto) => {
 		return total + crypto.currentPrice * crypto.totalQuantity
@@ -42,6 +47,7 @@ const ActivitiesPage = async () => {
 	return (
 		<ActivitiesContainer
 			cryptoData={cryptoData}
+			totalInvestedValue={totalInvestedValue}
 			totalValue={totalPortfolioValue}
 			plannedProfit={plannedProfit}
 		/>
