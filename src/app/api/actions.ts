@@ -502,41 +502,52 @@ export const deleteTransactionFromUser = async (coinTransactionId: string) => {
 
 export const getTrendingData = async (): Promise<TrendingData> => {
 	try {
-		const cachedData = await prisma.trendingCoin.findMany({
-			where: {
-				updatedAt: {
-					gte: new Date(Date.now() - 300 * 60 * 1000), // Data updated no older than 300 minutes
-				},
+		const data = await prisma.trendingCoin.findMany({
+			select: {
+				id: true,
+				coin_id: true,
+				name: true,
+				symbol: true,
+				market_cap_rank: true,
+				thumb: true,
+				slug: true,
+				price_btc: true,
+				data: true,
 			},
 		})
 
-		if (cachedData.length > 0) {
-			console.log('✅ Using cached TrendingData from DB')
+		console.log(data.length ? '✅ Using cached TrendingData from DB' : '⚠️ No TrendingData in DB')
 
-			return {
-				coins: cachedData.map((coin) => ({
-					item: {
-						id: coin.id,
-						coin_id: coin.coin_id,
-						name: coin.name,
-						symbol: coin.symbol,
-						market_cap_rank: coin.market_cap_rank ?? 0,
-						thumb: coin.thumb,
-						slug: coin.slug,
-						price_btc: coin.price_btc,
-						data: coin.data as any,
-					},
-				})),
-			}
+		return {
+			coins: data.map((coin) => ({
+				item: {
+					id: coin.id,
+					coin_id: coin.coin_id,
+					name: coin.name,
+					symbol: coin.symbol,
+					market_cap_rank: coin.market_cap_rank ?? 0,
+					thumb: coin.thumb,
+					slug: coin.slug,
+					price_btc: coin.price_btc,
+					data: coin.data as any,
+				},
+			})),
 		}
+	} catch (error) {
+		handleError(error, 'GET_TRENDING_DATA')
 
-		// If there is no data or it is outdated, request it via API
-		console.log('🔄 Outdated records, request TrendingData via API...')
+		return { coins: [] }
+	}
+}
+
+// cron
+export const updateTrendingData = async (): Promise<TrendingData> => {
+	try {
+		console.log('🔄 Starting TrendingData update via API...')
 		const data = await makeReq('GET', '/gecko/trending')
 
-		if (!data || !data.coins) {
-			console.warn('⚠️ Empty response from API, using old TrendingData')
-
+		if (!data?.length) {
+			console.warn('⚠️ Empty response from API, aborting update')
 			return { coins: [] } as TrendingData
 		}
 
@@ -552,67 +563,37 @@ export const getTrendingData = async (): Promise<TrendingData> => {
 			data: coin.item.data,
 		}))
 
-		// Update or create records in the DB
-		for (const coin of trendingCoins) {
-			await prisma.trendingCoin.upsert({
-				where: { coin_id_slug: { coin_id: coin.coin_id, slug: coin.slug } },
-				update: coin,
-				create: coin,
-			})
-		}
+		// Пакетное обновление
+		const transaction = await prisma.$transaction(
+			trendingCoins.map((coin: any) =>
+				prisma.trendingCoin.upsert({
+					where: { coin_id_slug: { coin_id: coin.coin_id, slug: coin.slug } },
+					update: coin,
+					create: coin,
+				}),
+			),
+		)
 
-		console.log('✅ Records TrendingData updated!')
-
+		console.log(`✅ Updated ${transaction.length} trendingCoins`)
 		return { coins: trendingCoins }
 	} catch (error) {
-		handleError(error, 'GET_TRENDING_DATA')
-
+		handleError(error, 'UPDATE_TRENDING_DATA')
 		return { coins: [] }
 	}
 }
 
 export const getCategories = async (): Promise<CategoriesData> => {
 	try {
-		// Checking categories in the DB
-		const cachedData = await prisma.category.findMany()
+		const data = await prisma.category.findMany({
+			select: {
+				category_id: true,
+				name: true,
+			},
+		})
 
-		if (cachedData.length > 0) {
-			console.log('✅ Using cached Categories from DB')
+		console.log(data.length ? '✅ Using cached Categories from DB' : '⚠️ No Categories in DB')
 
-			return cachedData.map((category) => ({
-				category_id: category.category_id,
-				name: category.name,
-			}))
-		}
-
-		// If there is no data or it is outdated, request it via API
-		console.log('🔄 Outdated records, request Categories via API...')
-		const data = await makeReq('GET', '/gecko/categories')
-
-		if (!data || !Array.isArray(data) || data.length === 0) {
-			console.warn('⚠️ Empty response from API, using old Categories')
-
-			return [] as CategoriesData
-		}
-
-		// Transform the data into the required format
-		const categoriesData: CategoriesData = data.map((category: any) => ({
-			category_id: category.category_id,
-			name: category.name,
-		}))
-
-		// Update or create records in the DB
-		for (const category of categoriesData) {
-			await prisma.category.upsert({
-				where: { category_id: category.category_id },
-				update: category,
-				create: category,
-			})
-		}
-
-		console.log('✅ Records Categories updated!')
-
-		return categoriesData
+		return data
 	} catch (error) {
 		handleError(error, 'GET_CATEGORIES')
 
@@ -636,18 +617,46 @@ export const getCoinsList = async (): Promise<CoinsListData> => {
 		}))
 	}
 
-	// Launch an update in the background via API
-	const response = await makeReq('GET', '/update/coins-list')
-
-	if (!response || !Array.isArray(response) || response.length === 0) {
-		console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')
-
-		return transformCoinData(cachedCoins)
-	}
-
 	return transformCoinData(cachedCoins)
 }
 
+// cron
+export const updateCategories = async (): Promise<CategoriesData> => {
+	try {
+		console.log('🔄 Starting categories update via API...')
+		const data = await makeReq('GET', '/gecko/categories')
+
+		if (!data?.length) {
+			console.warn('⚠️ Empty response from API, aborting update')
+			return []
+		}
+
+		// Преобразование данных
+		const categoriesData: CategoriesData = data.map((category: any) => ({
+			category_id: category.category_id,
+			name: category.name,
+		}))
+
+		// Пакетное обновление
+		const transaction = await prisma.$transaction(
+			categoriesData.map((category) =>
+				prisma.category.upsert({
+					where: { category_id: category.category_id },
+					update: category,
+					create: category,
+				}),
+			),
+		)
+
+		console.log(`✅ Updated ${transaction.length} categories`)
+		return categoriesData
+	} catch (error) {
+		handleError(error, 'UPDATE_CATEGORIES')
+		return []
+	}
+}
+
+// cron
 export const updateCoinsList = async (): Promise<any> => {
 	try {
 		// Get a list of coins
@@ -661,19 +670,8 @@ export const updateCoinsList = async (): Promise<any> => {
 			return []
 		}
 
-		const currentTime = new Date()
-		const updateTime = new Date(currentTime.getTime() - COINS_UPDATE_INTERVAL * 60 * 1000)
-
-		// Filtering outdated coins
-		const coinsToUpdate = cachedCoins.filter((coin) => coin.updatedAt < updateTime)
-
-		if (!coinsToUpdate.length) {
-			console.log('✅ Using cached Coins from DB')
-			return cachedCoins
-		}
-
 		// Forming a string for an API request
-		const coinList = coinsToUpdate
+		const coinList = cachedCoins
 			.sort(() => Math.random() - 0.5) // Shuffle the array randomly
 			.slice(0, 10) // Take the first 10 elements
 			.map((coin) => encodeURIComponent(coin.id))
@@ -722,7 +720,7 @@ export const updateCoinsList = async (): Promise<any> => {
 						circulating_supply: coin.circulating_supply,
 						sparkline_in_7d: coin.sparkline_in_7d,
 						price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
-						updatedAt: currentTime,
+						updatedAt: new Date(),
 					},
 				}),
 			),

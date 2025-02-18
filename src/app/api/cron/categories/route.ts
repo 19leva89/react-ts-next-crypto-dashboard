@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 
-import { updateCoinsList } from '@/app/api/actions'
+import { updateCategories } from '@/app/api/actions'
 
 export async function GET(req: NextRequest) {
 	try {
@@ -15,12 +15,12 @@ export async function GET(req: NextRequest) {
 			})
 		}
 
-		await updateCoinsList()
+		await updateCategories()
 
 		return NextResponse.json({ success: true })
 	} catch (error) {
-		console.error('Failed to update coins:', error)
+		console.error('Failed to update categories:', error)
 
-		return NextResponse.json({ error: 'Failed to update coins' }, { status: 500 })
+		return NextResponse.json({ error: 'Failed to update categories' }, { status: 500 })
 	}
 }
