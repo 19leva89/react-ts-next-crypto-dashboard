@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getCoinsList } from '../../actions-seed'
+import { updateCoinsList } from '@/app/api/actions'
 
 export async function GET(req: NextRequest) {
 	try {
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 			})
 		}
 
-		await getCoinsList()
+		await updateCoinsList()
 
 		return NextResponse.json({ success: true })
 	} catch (error) {

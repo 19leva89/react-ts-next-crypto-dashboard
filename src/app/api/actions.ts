@@ -22,8 +22,7 @@ import { sendEmail } from '@/lib/send-email'
 import { saltAndHashPassword } from '@/lib/salt'
 import { VerificationUserTemplate } from '@/components/shared/email-temapltes'
 
-const USER_COINS_UPDATE_INTERVAL = 5 // minutes
-const COINS_UPDATE_INTERVAL = 60 // minutes
+const COINS_UPDATE_INTERVAL = 10 // minutes
 
 const handleError = (error: unknown, context: string) => {
 	if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -750,7 +749,34 @@ export const getUserCoinsList = async () => {
 		// Return old data immediately
 		const userCoins = await prisma.userCoin.findMany({
 			where: { userId: session.user.id },
-			include: { coinsListIDMap: true, coin: true, transactions: true },
+			select: {
+				total_quantity: true,
+				total_cost: true,
+				average_price: true,
+				desired_sell_price: true,
+				coinsListIDMap: {
+					select: {
+						name: true,
+						symbol: true,
+					},
+				},
+				coin: {
+					select: {
+						id: true,
+						current_price: true,
+						image: true,
+					},
+				},
+				transactions: {
+					select: {
+						id: true,
+						quantity: true,
+						price: true,
+						date: true,
+						userCoinId: true,
+					},
+				},
+			},
 		})
 
 		// Launch an update in the background via API
@@ -778,12 +804,10 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 			include: { coin: true },
 		})
 
-		if (!userCoins.length) {
-			return []
-		}
+		if (!userCoins.length) return { status: 'success', message: 'No coins found' }
 
 		const currentTime = new Date()
-		const updateTime = new Date(currentTime.getTime() - USER_COINS_UPDATE_INTERVAL * 60 * 1000)
+		const updateTime = new Date(currentTime.getTime() - COINS_UPDATE_INTERVAL * 60 * 1000)
 
 		// Filtering outdated coins
 		const coinsToUpdate = userCoins.filter((uc) => uc.updatedAt < updateTime)
@@ -796,13 +820,13 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 		// Forming a string for an API request
 		const coinList = coinsToUpdate
 			.sort(() => Math.random() - 0.5) // Shuffle the array randomly
-			.slice(0, 10) // Take the first 10 elements
-			.map((uc) => encodeURIComponent(uc.coinId))
+			.slice(0, 15) // Take the first 15 elements
+			.map((uc) => uc.coinId)
 			.join('%2C')
 
 		// Requesting fresh data from the API
 		console.log('🔄 Outdated records, request UserCoins via API...')
-		const response = await makeReq('GET', `/gecko/user/${coinList}`)
+		const response = await makeReq('GET', `/gecko/user/${encodeURIComponent(coinList)}`)
 
 		if (!response || !Array.isArray(response) || response.length === 0) {
 			console.warn('⚠️ UPDATE_USER_COINS: Empty response from API, using old UserCoinsList')
