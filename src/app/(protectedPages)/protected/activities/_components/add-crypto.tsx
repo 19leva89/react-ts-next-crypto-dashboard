@@ -82,7 +82,7 @@ export const AddCrypto = () => {
 			// Проверяем, что выбрана криптовалюта и введено количество
 			if (!selectedCrypto || !editQuantity || !editPrice) {
 				toast({
-					title: 'Error 🚨',
+					title: '🚨 Error',
 					description: 'Please select a coin, enter a quantity and buy price',
 					variant: 'destructive',
 				})
@@ -94,7 +94,7 @@ export const AddCrypto = () => {
 
 			// Уведомляем пользователя об успехе
 			toast({
-				title: 'Success ✅',
+				title: '✅ Success',
 				description: 'Crypto added successfully',
 				variant: 'default',
 			})
@@ -111,7 +111,7 @@ export const AddCrypto = () => {
 			console.error('Error adding crypto:', error)
 
 			toast({
-				title: 'Error 🚨',
+				title: '🚨 Error',
 				description: error instanceof Error ? error.message : 'Failed to add crypto. Please try again',
 				variant: 'destructive',
 			})

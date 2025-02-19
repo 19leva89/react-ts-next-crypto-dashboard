@@ -6,7 +6,17 @@ import { getCgCoinsMarketChartRoute } from '@/app/api/ressources'
 export async function GET(req: NextRequest, context: { params: any }) {
 	try {
 		const { coinId } = await context.params
-		const url = getCgCoinsMarketChartRoute(coinId)
+		const daysParam = req.nextUrl.searchParams.get('days')
+		const days = parseInt(daysParam ?? '365')
+
+		if (isNaN(days)) {
+			return new NextResponse(JSON.stringify({ error: 'Invalid days parameter' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json' },
+			})
+		}
+
+		const url = getCgCoinsMarketChartRoute(coinId, days)
 
 		// Execute a request to the server
 		const result = await makeServerReq(url, 'GET')

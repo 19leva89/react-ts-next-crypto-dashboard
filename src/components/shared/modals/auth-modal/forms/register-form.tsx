@@ -41,7 +41,7 @@ export const RegisterForm = ({ onClose }: Props) => {
 			})
 
 			toast({
-				title: 'Success ✅',
+				title: '✅ Success',
 				description: 'Registration successful 📝. Confirm your email',
 				variant: 'default',
 			})
@@ -51,7 +51,7 @@ export const RegisterForm = ({ onClose }: Props) => {
 			console.error('Error registering:', error)
 
 			toast({
-				title: 'Error 🚨',
+				title: '🚨 Error',
 				description: error instanceof Error ? error.message : 'Error while registering',
 				variant: 'destructive',
 			})

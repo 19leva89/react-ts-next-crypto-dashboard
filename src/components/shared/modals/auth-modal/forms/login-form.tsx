@@ -41,7 +41,7 @@ export const LoginForm = ({ onClose }: Props) => {
 			})
 
 			toast({
-				title: 'Success ✅',
+				title: '✅ Success',
 				description: 'You have successfully logged in',
 				variant: 'default',
 			})
@@ -53,7 +53,7 @@ export const LoginForm = ({ onClose }: Props) => {
 			console.error('Error logging in:', error)
 
 			toast({
-				title: 'Error 🚨',
+				title: '🚨 Error',
 				description: error instanceof Error ? error.message : 'Error while logging in',
 				variant: 'destructive',
 			})

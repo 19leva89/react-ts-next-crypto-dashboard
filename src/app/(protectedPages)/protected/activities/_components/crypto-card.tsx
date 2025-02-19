@@ -73,7 +73,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 
 			// Уведомляем пользователя об успехе
 			toast({
-				title: 'Success ✅',
+				title: '✅ Success',
 				description: 'Coin updated successfully',
 				variant: 'default',
 			})
@@ -85,7 +85,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			console.error('Error updating coin:', error)
 
 			toast({
-				title: 'Error 🚨',
+				title: '🚨 Error',
 				description: error instanceof Error ? error.message : 'Failed to update coin. Please try again',
 				variant: 'destructive',
 			})
@@ -99,7 +99,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 
 			// Уведомляем пользователя об успехе
 			toast({
-				title: 'Success ✅',
+				title: '✅ Success',
 				description: 'Coin removed successfully',
 				variant: 'default',
 			})
@@ -110,7 +110,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			console.error('Error removing coin:', error)
 
 			toast({
-				title: 'Error 🚨',
+				title: '🚨 Error',
 				description: error instanceof Error ? error.message : 'Failed to remove coin. Please try again',
 				variant: 'destructive',
 			})

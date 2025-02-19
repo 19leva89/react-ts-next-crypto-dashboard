@@ -41,8 +41,8 @@ export const getCgCoinsListByCateRoute = (cate: string): string => {
 }
 
 // getCoinsMarketChart
-export const getCgCoinsMarketChartRoute = (coinId: string): string => {
-	return `${GECKO_ROUTE_V3}/coins/${coinId}/market_chart?vs_currency=usd&days=365&precision=1`
+export const getCgCoinsMarketChartRoute = (coinId: string, days: number): string => {
+	return `${GECKO_ROUTE_V3}/coins/${coinId}/market_chart?vs_currency=usd&days=${days}&precision=8`
 }
 
 // getAidrops

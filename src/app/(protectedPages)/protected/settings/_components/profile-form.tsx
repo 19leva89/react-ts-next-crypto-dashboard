@@ -40,7 +40,7 @@ export const ProfileForm = ({ data }: Props) => {
 			})
 
 			toast({
-				title: 'Success ✅',
+				title: '✅ Success',
 				description: 'Data updated 📝',
 				variant: 'default',
 			})
@@ -50,7 +50,7 @@ export const ProfileForm = ({ data }: Props) => {
 			console.error('Error updating user info:', error)
 
 			toast({
-				title: 'Error 🚨',
+				title: '🚨 Error',
 				description: error instanceof Error ? error.message : 'Error while updating data',
 				variant: 'destructive',
 			})
@@ -62,7 +62,7 @@ export const ProfileForm = ({ data }: Props) => {
 			await deleteUser()
 
 			toast({
-				title: 'Success ✅',
+				title: '✅ Success',
 				description: 'Your account has been deleted',
 				variant: 'default',
 			})
@@ -72,7 +72,7 @@ export const ProfileForm = ({ data }: Props) => {
 			console.error('Error deleting account:', error)
 
 			toast({
-				title: 'Error 🚨',
+				title: '🚨 Error',
 				description: error instanceof Error ? error.message : 'Error while deleting account',
 				variant: 'destructive',
 			})

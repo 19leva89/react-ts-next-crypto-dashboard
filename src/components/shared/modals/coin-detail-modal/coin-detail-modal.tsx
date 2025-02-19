@@ -30,6 +30,7 @@ interface Props {
 }
 
 export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) => {
+	const [days, setDays] = useState<number>(365)
 	const [getCoinData, setGetCoinData] = useState<boolean>(false)
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
 
@@ -41,7 +42,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 		const fetchData = async () => {
 			try {
-				const marketChart = await getCoinsMarketChart(coinId)
+				const marketChart = await getCoinsMarketChart(coinId, days)
 
 				setCoinMarketChartData(marketChart)
 			} catch (error) {
@@ -52,7 +53,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 		}
 
 		fetchData()
-	}, [coinId, showDetailModal])
+	}, [coinId, days, showDetailModal])
 
 	const chartConfig = {
 		prices: {
@@ -77,9 +78,9 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 			<SheetContent className="sm:max-w-xl overflow-y-auto" aria-describedby={undefined}>
 				<SheetHeader>
 					<SheetTitle>
-						<div className="flex justify-between items-center mb-8">
+						<div className="flex justify-between items-center">
 							{getCoinData ? (
-								<Skeleton className="h-6 w-3/4" />
+								<Skeleton className="h-7 w-3/4" />
 							) : (
 								<Link
 									href={`https://coingecko.com/en/coins/${coinMarketChartData?.coin.coinsListIDMap.id}`}
@@ -91,6 +92,24 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									</h4>
 								</Link>
 							)}
+						</div>
+
+						<div className="flex items-center justify-center gap-2 m-4 mb-2">
+							{[
+								{ label: '1 day', value: 1 },
+								{ label: '1 week', value: 7 },
+								{ label: '1 month', value: 30 },
+								{ label: '1 year', value: 365 },
+							].map(({ label, value }) => (
+								<Button
+									key={value}
+									variant={'outline'}
+									onClick={() => setDays(value)}
+									className={`px-2 py-1 h-6 rounded-xl ${days === value ? 'bg-blue-500 hover:bg-blue-500' : ''}`}
+								>
+									{label}
+								</Button>
+							))}
 						</div>
 					</SheetTitle>
 

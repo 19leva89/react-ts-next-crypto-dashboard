@@ -88,7 +88,7 @@ export const EditCrypto = ({
 			setEditTransactions(editTransactions.filter((t) => t.id !== transactionId))
 
 			toast({
-				title: 'Success ✅',
+				title: '✅ Success',
 				description: 'Transaction has been removed',
 				variant: 'default',
 			})
@@ -102,7 +102,7 @@ export const EditCrypto = ({
 
 			// Уведомляем пользователя об успехе
 			toast({
-				title: 'Success ✅',
+				title: '✅ Success',
 				description: 'Transaction has been removed',
 				variant: 'default',
 			})
@@ -111,7 +111,7 @@ export const EditCrypto = ({
 			console.error('Error removing transaction:', error)
 
 			toast({
-				title: 'Error 🚨',
+				title: '🚨 Error',
 				description:
 					error instanceof Error ? error.message : 'Failed to remove transaction. Please try again',
 				variant: 'destructive',

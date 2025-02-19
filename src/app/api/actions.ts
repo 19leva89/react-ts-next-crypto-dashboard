@@ -821,7 +821,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 		// Forming a string for an API request
 		const coinList = coinsToUpdate
 			.sort(() => Math.random() - 0.5) // Shuffle the array randomly
-			.slice(0, 20) // Take the first 20 elements
+			.slice(0, 50) // Take the first 50 elements
 			.map((uc) => uc.coinId)
 			.join('%2C')
 
@@ -1126,7 +1126,7 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 	}
 }
 
-export const getCoinsMarketChart = async (coinId: string): Promise<MarketChartData> => {
+export const getCoinsMarketChart = async (coinId: string, days: number): Promise<MarketChartData> => {
 	try {
 		// Get all the data about the charts from the DB
 		let cachedData = await prisma.marketChart.findUnique({
@@ -1142,7 +1142,7 @@ export const getCoinsMarketChart = async (coinId: string): Promise<MarketChartDa
 
 		// Request data from the API
 		console.log('🔄 Fetching CoinsMarketChart from API...')
-		const response = await makeReq('GET', `/gecko/chart/${coinId}`)
+		const response = await makeReq('GET', `/gecko/chart/${coinId}`, { days })
 
 		// If there is no data or it is empty, display a warning
 		if (!response || !response.prices || !response.prices.length) {
