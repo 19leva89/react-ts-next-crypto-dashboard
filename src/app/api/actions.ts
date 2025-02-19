@@ -15,6 +15,7 @@ import {
 	CoinsListIDMapData,
 	CoinsListData,
 	PrismaTransactionClient,
+	TrendingCoin,
 } from './types'
 import { auth, signIn } from '@/auth'
 import { makeReq } from './make-request'
@@ -540,36 +541,38 @@ export const getTrendingData = async (): Promise<TrendingData> => {
 	}
 }
 
-// cron
+// cron 60min
 export const updateTrendingData = async (): Promise<TrendingData> => {
 	try {
 		console.log('🔄 Starting TrendingData update via API...')
-		const data = await makeReq('GET', '/gecko/trending')
+		const response = await makeReq('GET', '/gecko/trending')
 
-		if (!data?.length) {
+		if (!response || !response.coins || !response.coins.length) {
 			console.warn('⚠️ Empty response from API, aborting update')
 			return { coins: [] } as TrendingData
 		}
 
 		// Transform the data into the required format
-		const trendingCoins = data.coins.map((coin: any) => ({
-			coin_id: coin.item.coin_id,
-			name: coin.item.name,
-			symbol: coin.item.symbol,
-			market_cap_rank: coin.item.market_cap_rank ?? 0,
-			thumb: coin.item.thumb,
-			slug: coin.item.slug,
-			price_btc: parseFloat(coin.item.price_btc),
-			data: coin.item.data,
+		const trendingCoins = response.coins.map((coin: TrendingCoin) => ({
+			item: {
+				coin_id: coin.item.coin_id,
+				name: coin.item.name,
+				symbol: coin.item.symbol,
+				market_cap_rank: coin.item.market_cap_rank,
+				thumb: coin.item.thumb,
+				slug: coin.item.slug,
+				price_btc: coin.item.price_btc,
+				data: coin.item.data,
+			},
 		}))
 
-		// Пакетное обновление
+		// Batch update
 		const transaction = await prisma.$transaction(
-			trendingCoins.map((coin: any) =>
+			trendingCoins.map((coin: TrendingCoin) =>
 				prisma.trendingCoin.upsert({
-					where: { coin_id_slug: { coin_id: coin.coin_id, slug: coin.slug } },
-					update: coin,
-					create: coin,
+					where: { coin_id_slug: { coin_id: coin.item.coin_id, slug: coin.item.slug } },
+					update: coin.item,
+					create: coin.item,
 				}),
 			),
 		)
@@ -620,19 +623,19 @@ export const getCoinsList = async (): Promise<CoinsListData> => {
 	return transformCoinData(cachedCoins)
 }
 
-// cron
+// cron 60min
 export const updateCategories = async (): Promise<CategoriesData> => {
 	try {
 		console.log('🔄 Starting categories update via API...')
-		const data = await makeReq('GET', '/gecko/categories')
+		const response = await makeReq('GET', '/gecko/categories')
 
-		if (!data?.length) {
+		if (!response || !response.length) {
 			console.warn('⚠️ Empty response from API, aborting update')
 			return []
 		}
 
 		// Преобразование данных
-		const categoriesData: CategoriesData = data.map((category: any) => ({
+		const categoriesData: CategoriesData = response.map((category: any) => ({
 			category_id: category.category_id,
 			name: category.name,
 		}))
@@ -656,7 +659,7 @@ export const updateCategories = async (): Promise<CategoriesData> => {
 	}
 }
 
-// cron
+// cron 5min
 export const updateCoinsList = async (): Promise<any> => {
 	try {
 		// Get a list of coins
@@ -681,7 +684,7 @@ export const updateCoinsList = async (): Promise<any> => {
 		console.log('🔄 Outdated records, request CoinsList via API...')
 		const response = await makeReq('GET', `/gecko/coins-upd/${coinList}`)
 
-		if (!response || !Array.isArray(response) || response.length === 0) {
+		if (!response || !Array.isArray(response) || !response.length) {
 			console.warn('⚠️ UPDATE_COINS: Empty response from API, using old CoinsList')
 			return cachedCoins
 		}
@@ -826,7 +829,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 		console.log('🔄 Outdated records, request UserCoins via API...')
 		const response = await makeReq('GET', `/gecko/user/${encodeURIComponent(coinList)}`)
 
-		if (!response || !Array.isArray(response) || response.length === 0) {
+		if (!response || !Array.isArray(response) || !response.length) {
 			console.warn('⚠️ UPDATE_USER_COINS: Empty response from API, using old UserCoinsList')
 			return userCoins
 		}
@@ -949,15 +952,15 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 
 		// If there is no data, make a request to the API
 		console.log('🔄 Outdated records, request CoinData via API...')
-		const data = await makeReq('GET', `/gecko/coins-get/${coinId}`)
+		const response = await makeReq('GET', `/gecko/coins-get/${coinId}`)
 
 		// Validate the API response
-		if (!data || typeof data !== 'object' || Array.isArray(data)) {
+		if (!response || typeof response !== 'object' || Array.isArray(response)) {
 			console.warn('⚠️ Empty response from API, using old CoinData')
 			return {} as CoinData
 		}
 
-		const { id, symbol, name, image, description, market_cap_rank, market_data } = data
+		const { id, symbol, name, image, description, market_cap_rank, market_data } = response
 
 		// Ensure CoinsListIDMap exists
 		await prisma.coinsListIDMap.upsert({
@@ -1057,12 +1060,12 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 		}
 		// If there is no data, make a request to the API
 		console.log('🔄 Outdated records, request CoinsListByCate via API...')
-		const data = await makeReq('GET', `/gecko/${cate}/coins`)
+		const response = await makeReq('GET', `/gecko/${cate}/coins`)
 
 		// If the data is received and it is not empty
-		if (Array.isArray(data)) {
+		if (Array.isArray(response)) {
 			// Process each coin from the API
-			for (const coinData of data) {
+			for (const coinData of response) {
 				// Make sure that the entry in CoinsListIDMap exists
 				await prisma.coinsListIDMap.upsert({
 					where: { id: coinData.id },
@@ -1111,7 +1114,7 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 			console.log('✅ Records CoinsListByCate updated!')
 
 			// Return data in CoinsListData format
-			return data
+			return response
 		} else {
 			console.warn('⚠️ Empty response from API, using old CoinsListByCate')
 			return [] as CoinsListData
@@ -1139,10 +1142,10 @@ export const getCoinsMarketChart = async (coinId: string): Promise<MarketChartDa
 
 		// Request data from the API
 		console.log('🔄 Fetching CoinsMarketChart from API...')
-		const data = await makeReq('GET', `/gecko/chart/${coinId}`)
+		const response = await makeReq('GET', `/gecko/chart/${coinId}`)
 
 		// If there is no data or it is empty, display a warning
-		if (!data || !data.prices || data.prices.length === 0) {
+		if (!response || !response.prices || !response.prices.length) {
 			console.warn('⚠️ Empty response from API, using old CoinsMarketChart')
 			return { prices: cachedData?.prices ?? [] } as MarketChartData
 		}
@@ -1150,10 +1153,10 @@ export const getCoinsMarketChart = async (coinId: string): Promise<MarketChartDa
 		// Update or create a record in the DB
 		cachedData = await prisma.marketChart.upsert({
 			where: { id: coinId },
-			update: { prices: data.prices },
+			update: { prices: response.prices },
 			create: {
 				id: coinId,
-				prices: data.prices,
+				prices: response.prices,
 				coin: {
 					connect: { id: coinId },
 				},
@@ -1170,7 +1173,7 @@ export const getCoinsMarketChart = async (coinId: string): Promise<MarketChartDa
 		console.log('✅ Records CoinsMarketChart updated!')
 
 		return {
-			prices: data.prices,
+			prices: response.prices,
 			coin: cachedData.coin,
 		} as MarketChartData
 	} catch (error) {
@@ -1216,9 +1219,9 @@ export const getAidrops = async (): Promise<AidropsData> => {
 
 		// If there is no data or it is outdated, request it via API
 		console.log('🔄 Outdated records, request Aidrops via API...')
-		const data = await makeReq('GET', '/cmc/aidrops')
+		const response = await makeReq('GET', '/cmc/aidrops')
 
-		if (!data || !Array.isArray(data.data) || data.data.length === 0) {
+		if (!response || !Array.isArray(response.data) || !response.data.length) {
 			console.warn('⚠️ Empty response from API, using old Aidrops')
 
 			return { data: [] } as AidropsData
@@ -1226,7 +1229,7 @@ export const getAidrops = async (): Promise<AidropsData> => {
 
 		// Transform the data into the required format
 		const aidropsData: AidropsData = {
-			data: data.data.map((aidrop: any) => ({
+			data: response.data.map((aidrop: any) => ({
 				id: aidrop.id,
 				project_name: aidrop.project_name,
 				description: aidrop.description,
