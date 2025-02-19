@@ -1,5 +1,3 @@
-'use server'
-
 import { NextRequest, NextResponse } from 'next/server'
 
 import { updateTrendingData } from '@/app/api/actions'
