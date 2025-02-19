@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { updateTrendingData } from '@/app/api/actions'
 
+export const maxDuration = 20
+
 export async function GET(req: NextRequest) {
 	try {
 		// Проверка авторизации для cron-запросов

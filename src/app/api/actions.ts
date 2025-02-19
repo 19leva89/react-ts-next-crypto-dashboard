@@ -604,6 +604,42 @@ export const getCategories = async (): Promise<CategoriesData> => {
 	}
 }
 
+// cron 24h
+export const updateCategories = async (): Promise<CategoriesData> => {
+	try {
+		console.log('🔄 Starting categories update via API...')
+		const response = await makeReq('GET', '/gecko/categories')
+
+		if (!response || !response.length) {
+			console.warn('⚠️ Empty response from API, aborting update')
+			return []
+		}
+
+		// Data transformation
+		const categoriesData: CategoriesData = response.map((category: any) => ({
+			category_id: category.category_id,
+			name: category.name,
+		}))
+
+		// Batch update
+		const transaction = await prisma.$transaction(
+			categoriesData.map((category) =>
+				prisma.category.upsert({
+					where: { category_id: category.category_id },
+					update: category,
+					create: category,
+				}),
+			),
+		)
+
+		console.log(`✅ Updated ${transaction.length} categories`)
+		return categoriesData
+	} catch (error) {
+		handleError(error, 'UPDATE_CATEGORIES')
+		return []
+	}
+}
+
 export const getCoinsList = async (): Promise<CoinsListData> => {
 	// Return old data immediately
 	const cachedCoins = await prisma.coin.findMany({
@@ -623,42 +659,6 @@ export const getCoinsList = async (): Promise<CoinsListData> => {
 	return transformCoinData(cachedCoins)
 }
 
-// cron 60min
-export const updateCategories = async (): Promise<CategoriesData> => {
-	try {
-		console.log('🔄 Starting categories update via API...')
-		const response = await makeReq('GET', '/gecko/categories')
-
-		if (!response || !response.length) {
-			console.warn('⚠️ Empty response from API, aborting update')
-			return []
-		}
-
-		// Преобразование данных
-		const categoriesData: CategoriesData = response.map((category: any) => ({
-			category_id: category.category_id,
-			name: category.name,
-		}))
-
-		// Пакетное обновление
-		const transaction = await prisma.$transaction(
-			categoriesData.map((category) =>
-				prisma.category.upsert({
-					where: { category_id: category.category_id },
-					update: category,
-					create: category,
-				}),
-			),
-		)
-
-		console.log(`✅ Updated ${transaction.length} categories`)
-		return categoriesData
-	} catch (error) {
-		handleError(error, 'UPDATE_CATEGORIES')
-		return []
-	}
-}
-
 // cron 5min
 export const updateCoinsList = async (): Promise<any> => {
 	try {
@@ -676,7 +676,7 @@ export const updateCoinsList = async (): Promise<any> => {
 		// Forming a string for an API request
 		const coinList = cachedCoins
 			.sort(() => Math.random() - 0.5) // Shuffle the array randomly
-			.slice(0, 10) // Take the first 10 elements
+			.slice(0, 50) // Take the first 50 elements
 			.map((coin) => encodeURIComponent(coin.id))
 			.join('%2C')
 
@@ -821,7 +821,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 		// Forming a string for an API request
 		const coinList = coinsToUpdate
 			.sort(() => Math.random() - 0.5) // Shuffle the array randomly
-			.slice(0, 15) // Take the first 15 elements
+			.slice(0, 20) // Take the first 20 elements
 			.map((uc) => uc.coinId)
 			.join('%2C')
 
