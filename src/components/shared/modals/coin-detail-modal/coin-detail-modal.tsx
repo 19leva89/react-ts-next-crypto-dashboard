@@ -19,6 +19,7 @@ import {
 	SheetTitle,
 	Skeleton,
 } from '@/components/ui'
+import { ValidDays } from '@/app/api/constants'
 import { MarketChartData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
 import { getCoinsMarketChart } from '@/app/api/actions'
@@ -28,6 +29,13 @@ interface Props {
 	showDetailModal: boolean
 	closeModal: (value: boolean) => void
 }
+
+const DAY_OPTIONS: { label: string; value: ValidDays }[] = [
+	{ label: '1 day', value: 1 },
+	{ label: '1 week', value: 7 },
+	{ label: '1 month', value: 30 },
+	{ label: '1 year', value: 365 },
+]
 
 export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) => {
 	const [days, setDays] = useState<number>(365)
@@ -64,11 +72,44 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
+	// Format data for the chart based on the selected time range
 	const formattedData =
-		coinMarketChartData?.prices.map(([timestamp, price]) => ({
-			Month: months[new Date(timestamp).getMonth()],
-			Price: price,
-		})) || []
+		coinMarketChartData?.prices.map(([timestamp, price]) => {
+			const date = new Date(timestamp)
+			let label = ''
+
+			switch (true) {
+				case days === 1:
+					// Show time, day and month for "1 day" (e.g., 15:45, 15 Mar)
+					const hours = date.getHours().toString().padStart(2, '0')
+					const minutes = date.getMinutes().toString().padStart(2, '0')
+					const day = date.getDate()
+					const month = months[date.getMonth()]
+					label = `${hours}:${minutes}, ${day} ${month}`
+					break
+
+				case days <= 30:
+					// Show day and month for "1 week" and "1 month" (e.g., 15 Mar)
+					const monthDay = date.getDate()
+					const monthName = months[date.getMonth()]
+					label = `${monthDay} ${monthName}`
+					break
+
+				case days <= 365:
+					// Show month and year for "1 year" (e.g., Mar 2025)
+					const monthYear = months[date.getMonth()]
+					const year = date.getFullYear()
+					label = `${monthYear} ${year}`
+					break
+
+				default:
+					// For other cases, use the year only (e.g., 2025)
+					label = date.getFullYear().toString()
+					break
+			}
+
+			return { Label: label, Price: price }
+		}) || []
 
 	const minPrice = Math.min(...formattedData.map((h) => h.Price))
 	const maxPrice = Math.max(...formattedData.map((h) => h.Price))
@@ -80,7 +121,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 					<SheetTitle>
 						<div className="flex justify-between items-center">
 							{getCoinData ? (
-								<Skeleton className="h-7 w-3/4" />
+								<Skeleton className="h-7 w-3/4 max-[500px]:h-5" />
 							) : (
 								<Link
 									href={`https://coingecko.com/en/coins/${coinMarketChartData?.coin.coinsListIDMap.id}`}
@@ -95,19 +136,20 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 						</div>
 
 						<div className="flex items-center justify-center gap-2 m-4 mb-2">
-							{[
-								{ label: '1 day', value: 1 },
-								{ label: '1 week', value: 7 },
-								{ label: '1 month', value: 30 },
-								{ label: '1 year', value: 365 },
-							].map(({ label, value }) => (
+							{DAY_OPTIONS.map(({ label, value }) => (
 								<Button
 									key={value}
 									variant={'outline'}
 									onClick={() => setDays(value)}
 									className={`px-2 py-1 h-6 rounded-xl ${days === value ? 'bg-blue-500 hover:bg-blue-500' : ''}`}
 								>
-									{label}
+									{/* Full text for screens wider than 640px */}
+									<span className="hidden sm:inline">{label}</span>
+
+									{/* Shortened text for screens strather than 640px */}
+									<span className="inline sm:hidden">
+										{label === '1 day' ? '1d' : label === '1 week' ? '1w' : label === '1 month' ? '1m' : '1y'}
+									</span>
 								</Button>
 							))}
 						</div>
@@ -120,7 +162,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 					{getCoinData ? (
 						<Skeleton className="h-72 w-full" />
 					) : (
-						<div className="w-[420px] mx-auto">
+						<div className="w-full">
 							<ChartContainer config={chartConfig}>
 								<LineChart
 									accessibilityLayer
@@ -130,33 +172,40 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 										right: 12,
 									}}
 								>
-									{/* Сетка */}
+									{/* Grid */}
 									<CartesianGrid vertical={true} strokeDasharray="4 4" />
 
-									{/* Ось X */}
+									{/* Axis X */}
 									<XAxis
-										dataKey="Month"
+										dataKey="Label"
 										tickLine={false}
 										axisLine={false}
 										tick={true}
 										tickMargin={10}
-										tickFormatter={(value) => value.slice(0, 3)}
+										tickFormatter={(value) => value}
 									/>
 
-									{/* Ось Y */}
+									{/* Axis Y */}
 									<YAxis
 										dataKey="Price"
 										domain={[minPrice, maxPrice]}
 										axisLine={false}
 										tickLine={false}
 										tick={true}
-										tickMargin={10}
+										tickMargin={4}
+										tickFormatter={(value) => {
+											if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`
+											if (value >= 1000) return `${(value / 1000).toFixed(1)}K`
+											if (value >= 1) return value.toFixed(2)
+
+											return value.toFixed(5)
+										}}
 									/>
 
-									{/* Тултип */}
+									{/* Popup tooltip */}
 									<ChartTooltip cursor={true} content={<ChartTooltipContent />} />
 
-									{/* Линия */}
+									{/* Line on chart */}
 									<Line
 										dataKey="Price"
 										type="natural"

@@ -218,10 +218,24 @@ model Category {
 }
 
 model MarketChart {
-  id     String @id @unique
-  prices Json
-  coin   Coin   @relation(fields: [coinId], references: [id], onDelete: Cascade)
-  coinId String
+  id             String    @id @unique
+  //
+  prices_1d      Json?
+  updatedAt_1d   DateTime?
+  //
+  prices_7d      Json?
+  updatedAt_7d   DateTime?
+  //
+  prices_30d     Json?
+  updatedAt_30d  DateTime?
+  //
+  prices_365d    Json?
+  updatedAt_365d DateTime?
+  //
+  coin           Coin      @relation(fields: [coinId], references: [id], onDelete: Cascade)
+  coinId         String
+  //
+  createdAt      DateTime  @default(now())
 
   @@map("market_chart")
 }

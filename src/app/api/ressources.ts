@@ -1,4 +1,4 @@
-import { GECKO_ROUTE_V3, MARKETCAP_ROUTE_V1 } from './constants'
+import { GECKO_ROUTE_V3, MARKETCAP_ROUTE_V1, ValidDays } from './constants'
 
 // getTrendingData
 export const getCgTrendingRoute = (): string => {
@@ -41,7 +41,7 @@ export const getCgCoinsListByCateRoute = (cate: string): string => {
 }
 
 // getCoinsMarketChart
-export const getCgCoinsMarketChartRoute = (coinId: string, days: number): string => {
+export const getCgCoinsMarketChartRoute = (coinId: string, days: ValidDays): string => {
 	return `${GECKO_ROUTE_V3}/coins/${coinId}/market_chart?vs_currency=usd&days=${days}&precision=8`
 }
 

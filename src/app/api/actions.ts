@@ -4,7 +4,7 @@ import { compare } from 'bcryptjs'
 import { revalidatePath } from 'next/cache'
 
 import { prisma } from '@/lib/prisma'
-import { Prisma } from '@prisma/client'
+import { MarketChart, Prisma } from '@prisma/client'
 
 import {
 	AidropsData,
@@ -22,8 +22,7 @@ import { makeReq } from './make-request'
 import { sendEmail } from '@/lib/send-email'
 import { saltAndHashPassword } from '@/lib/salt'
 import { VerificationUserTemplate } from '@/components/shared/email-temapltes'
-
-const COINS_UPDATE_INTERVAL = 10 // minutes
+import { COINS_UPDATE_INTERVAL, DAYS_MAPPING, MARKET_CHART_UPDATE_INTERVAL, ValidDays } from './constants'
 
 const handleError = (error: unknown, context: string) => {
 	if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -82,6 +81,10 @@ const recalculateAveragePrice = async (userId: string, coinId: string, prisma: P
 			average_price: totals.totalQuantity > 0 ? totals.totalCost / totals.totalQuantity : 0,
 		},
 	})
+}
+
+const getFieldForDays = (days: number): (typeof DAYS_MAPPING)[ValidDays] | null => {
+	return DAYS_MAPPING[days as ValidDays] || null
 }
 
 export const registerUser = async (body: Prisma.UserCreateInput) => {
@@ -808,7 +811,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 		if (!userCoins.length) return { status: 'success', message: 'No coins found' }
 
 		const currentTime = new Date()
-		const updateTime = new Date(currentTime.getTime() - COINS_UPDATE_INTERVAL * 60 * 1000)
+		const updateTime = new Date(currentTime.getTime() - COINS_UPDATE_INTERVAL)
 
 		// Filtering outdated coins
 		const coinsToUpdate = userCoins.filter((uc) => uc.updatedAt < updateTime)
@@ -1126,10 +1129,15 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 	}
 }
 
-export const getCoinsMarketChart = async (coinId: string, days: number): Promise<MarketChartData> => {
+export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Promise<MarketChartData> => {
 	try {
+		const field = getFieldForDays(days)
+		const updatedField = `updatedAt_${days}d` as keyof MarketChart
+
+		if (!field || !updatedField) throw new Error('Invalid days parameter')
+
 		// Get all the data about the charts from the DB
-		let cachedData = await prisma.marketChart.findUnique({
+		const cachedData = await prisma.marketChart.findUnique({
 			where: { id: coinId },
 			include: {
 				coin: {
@@ -1140,23 +1148,37 @@ export const getCoinsMarketChart = async (coinId: string, days: number): Promise
 			},
 		})
 
+		const currentTime = new Date()
+		const updateTime = new Date(currentTime.getTime() - MARKET_CHART_UPDATE_INTERVAL)
+
+		// Если данные за нужный период уже есть - возвращаем их
+		if (cachedData?.[field] && cachedData?.[updatedField] && cachedData[updatedField]! > updateTime) {
+			return {
+				prices: cachedData[field],
+				coin: cachedData.coin,
+			} as MarketChartData
+		}
+
 		// Request data from the API
-		console.log('🔄 Fetching CoinsMarketChart from API...')
+		console.log(`🔄 Fetching CoinsMarketChart from API for ${days} day(s)...`)
 		const response = await makeReq('GET', `/gecko/chart/${coinId}`, { days })
 
 		// If there is no data or it is empty, display a warning
 		if (!response || !response.prices || !response.prices.length) {
-			console.warn('⚠️ Empty response from API, using old CoinsMarketChart')
-			return { prices: cachedData?.prices ?? [] } as MarketChartData
+			throw new Error('⚠️ Empty response from API')
 		}
 
 		// Update or create a record in the DB
-		cachedData = await prisma.marketChart.upsert({
+		const updatedData = await prisma.marketChart.upsert({
 			where: { id: coinId },
-			update: { prices: response.prices },
+			update: {
+				[field]: response.prices,
+				[updatedField]: currentTime,
+			},
 			create: {
 				id: coinId,
-				prices: response.prices,
+				[field]: response.prices,
+				[updatedField]: currentTime,
 				coin: {
 					connect: { id: coinId },
 				},
@@ -1170,11 +1192,11 @@ export const getCoinsMarketChart = async (coinId: string, days: number): Promise
 			},
 		})
 
-		console.log('✅ Records CoinsMarketChart updated!')
+		console.log(`✅ Records CoinsMarketChart updated for ${days} day(s)!`)
 
 		return {
 			prices: response.prices,
-			coin: cachedData.coin,
+			coin: updatedData.coin,
 		} as MarketChartData
 	} catch (error) {
 		handleError(error, 'GET_COINS_MARKET_CHART')

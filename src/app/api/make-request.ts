@@ -6,14 +6,15 @@ import { absoluteUrl } from './../../lib/utils'
 async function makeReq(
 	method: string,
 	url: string,
-	data: Record<string, any> = {},
+	params: Record<string, any> = {},
 	headers: Record<string, string> = {},
 ): Promise<any> {
 	try {
 		const response = await axios({
 			method,
 			url: absoluteUrl(url),
-			data: Object.keys(data).length ? data : undefined,
+			params: method === 'GET' ? params : undefined,
+			data: method !== 'GET' && Object.keys(params).length ? params : undefined,
 			headers,
 		})
 

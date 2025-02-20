@@ -101,7 +101,7 @@ export type TrendingData = {
 }
 
 export type MarketChartData = {
-	prices: [number, number][]
+	prices: number[][]
 	coin: {
 		current_price: number
 		description: string

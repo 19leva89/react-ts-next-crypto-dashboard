@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+import { ValidDays } from '@/app/api/constants'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgCoinsMarketChartRoute } from '@/app/api/ressources'
 
@@ -7,16 +8,19 @@ export async function GET(req: NextRequest, context: { params: any }) {
 	try {
 		const { coinId } = await context.params
 		const daysParam = req.nextUrl.searchParams.get('days')
-		const days = parseInt(daysParam ?? '365')
+		const days = daysParam ? parseInt(daysParam) : 365
 
-		if (isNaN(days)) {
-			return new NextResponse(JSON.stringify({ error: 'Invalid days parameter' }), {
-				status: 400,
-				headers: { 'Content-Type': 'application/json' },
-			})
+		if (![1, 7, 30, 365].includes(days)) {
+			return new NextResponse(
+				JSON.stringify({ error: 'Invalid days parameter. Allowed values: 1, 7, 30, 365' }),
+				{
+					status: 400,
+					headers: { 'Content-Type': 'application/json' },
+				},
+			)
 		}
 
-		const url = getCgCoinsMarketChartRoute(coinId, days)
+		const url = getCgCoinsMarketChartRoute(coinId, days as ValidDays)
 
 		// Execute a request to the server
 		const result = await makeServerReq(url, 'GET')
