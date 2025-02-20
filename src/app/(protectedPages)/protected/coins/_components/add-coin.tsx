@@ -24,16 +24,16 @@ import {
 } from '@/components/ui'
 import { useToast } from '@/hooks'
 import { CoinsListIDMapData } from '@/app/api/types'
-import { addCryptoToUser, getCoinsListIDMap } from '@/app/api/actions'
+import { addCoinToUser, getCoinsListIDMap } from '@/app/api/actions'
 
-export const AddCrypto = () => {
+export const AddCoin = () => {
 	const { toast } = useToast()
 	const [editPrice, setEditPrice] = useState<string>('')
 	const [editQuantity, setEditQuantity] = useState<string>('')
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-	const [selectedCrypto, setSelectedCrypto] = useState<string>('')
+	const [selectedCoin, setSelectedCoin] = useState<string>('')
 	const [coinsListIDMapData, setCoinsListIDMapData] = useState<CoinsListIDMapData>([])
 
 	useEffect(() => {
@@ -77,10 +77,10 @@ export const AddCrypto = () => {
 	const handlePriceChange = handleNumberInput(setEditPrice)
 	const handleQuantityChange = handleNumberInput(setEditQuantity)
 
-	const handleAddCrypto = async () => {
+	const handleAddCoin = async () => {
 		try {
 			// Проверяем, что выбрана криптовалюта и введено количество
-			if (!selectedCrypto || !editQuantity || !editPrice) {
+			if (!selectedCoin || !editQuantity || !editPrice) {
 				toast({
 					title: '🚨 Error',
 					description: 'Please select a coin, enter a quantity and buy price',
@@ -90,12 +90,12 @@ export const AddCrypto = () => {
 			}
 
 			// Вызываем функцию для добавления криптовалюты
-			await addCryptoToUser(selectedCrypto, Number(editQuantity), Number(editPrice))
+			await addCoinToUser(selectedCoin, Number(editQuantity), Number(editPrice))
 
 			// Уведомляем пользователя об успехе
 			toast({
 				title: '✅ Success',
-				description: 'Crypto added successfully',
+				description: 'Coin added successfully',
 				variant: 'default',
 			})
 
@@ -105,14 +105,14 @@ export const AddCrypto = () => {
 			// Очищаем поля
 			setEditPrice('')
 			setEditQuantity('')
-			setSelectedCrypto('')
+			setSelectedCoin('')
 		} catch (error) {
 			// Уведомляем пользователя об ошибке
-			console.error('Error adding crypto:', error)
+			console.error('Error adding coin:', error)
 
 			toast({
 				title: '🚨 Error',
-				description: error instanceof Error ? error.message : 'Failed to add crypto. Please try again',
+				description: error instanceof Error ? error.message : 'Failed to add coin. Please try again',
 				variant: 'destructive',
 			})
 		}
@@ -151,8 +151,8 @@ export const AddCrypto = () => {
 	)
 
 	const selectedCoinData = useMemo(
-		() => coinsListIDMapData.find((coin) => coin.id === selectedCrypto),
-		[selectedCrypto, coinsListIDMapData],
+		() => coinsListIDMapData.find((coin) => coin.id === selectedCoin),
+		[selectedCoin, coinsListIDMapData],
 	)
 
 	return (
@@ -175,11 +175,11 @@ export const AddCrypto = () => {
 
 						<div className="grid gap-4 py-4">
 							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="crypto" className="text-right">
-									Crypto
+								<Label htmlFor="coin" className="text-right">
+									Coin
 								</Label>
 
-								<Select value={selectedCrypto} onValueChange={(value) => setSelectedCrypto(value)}>
+								<Select value={selectedCoin} onValueChange={(value) => setSelectedCoin(value)}>
 									<SelectTrigger className="col-span-3">
 										{selectedCoinData ? (
 											<div className="flex items-center gap-2">
@@ -194,7 +194,7 @@ export const AddCrypto = () => {
 												</span>
 											</div>
 										) : (
-											<span>Select a cryptocurrency</span>
+											<span>Select a coincurrency</span>
 										)}
 									</SelectTrigger>
 
@@ -207,7 +207,7 @@ export const AddCrypto = () => {
 												value={searchQuery}
 												onChange={(e) => {
 													setSearchQuery(e.target.value)
-													setSelectedCrypto('')
+													setSelectedCoin('')
 												}}
 											/>
 										</div>
@@ -265,7 +265,7 @@ export const AddCrypto = () => {
 						</div>
 
 						<DialogFooter>
-							<Button onClick={handleAddCrypto} className="rounded-xl text-white">
+							<Button onClick={handleAddCoin} className="rounded-xl text-white">
 								Submit
 							</Button>
 						</DialogFooter>

@@ -14,22 +14,20 @@ import {
 	Skeleton,
 } from '@/components/ui'
 import { cn } from '@/lib'
-import { AddCrypto } from './add-crypto'
+import { AddCoin } from './add-coin'
+import { CoinCard } from './coin-card'
+import { UserCoinData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
-import { CryptoCard, CryptoData } from './crypto-card'
-import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 
 interface Props {
-	cryptoData: CryptoData[]
+	coinData: UserCoinData[]
 	totalInvestedValue: number
 	totalValue: number
 	plannedProfit: number
 }
 
-export const ActivitiesContainer = ({ cryptoData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
+export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
 	const [isMounted, setIsMounted] = useState(false)
-	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
 	const [viewMode, setViewMode] = useLocalStorageState<'list' | 'grid'>('viewMode', {
 		defaultValue: 'grid',
 	})
@@ -37,7 +35,7 @@ export const ActivitiesContainer = ({ cryptoData, totalInvestedValue, totalValue
 		'total-asc' | 'total-desc' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc'
 	>('total-desc')
 
-	const sortedCryptoData = [...cryptoData].sort((a, b) => {
+	const sortedCoinData = [...coinData].sort((a, b) => {
 		switch (sortOption) {
 			case 'total-asc':
 				return a.currentPrice * a.totalQuantity - b.currentPrice * b.totalQuantity
@@ -61,18 +59,6 @@ export const ActivitiesContainer = ({ cryptoData, totalInvestedValue, totalValue
 				return 0
 		}
 	})
-
-	// Handle card detail modal
-	const toggleDetailModal = () => {
-		setIsModalOpen(!isModalOpen)
-	}
-
-	const handleCardClick = (coinId: string) => {
-		if (coinId) {
-			setSelectedCoinId(coinId)
-			toggleDetailModal()
-		}
-	}
 
 	useEffect(() => {
 		setIsMounted(true)
@@ -106,7 +92,7 @@ export const ActivitiesContainer = ({ cryptoData, totalInvestedValue, totalValue
 
 					<div className="p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6">
 						<h2 className="text-xl font-bold max-[460px]:text-lg">
-							Total crypto: ${formatPrice(totalValue, true)}
+							Total coin: ${formatPrice(totalValue, true)}
 						</h2>
 					</div>
 
@@ -118,7 +104,7 @@ export const ActivitiesContainer = ({ cryptoData, totalInvestedValue, totalValue
 				</div>
 
 				<div className="flex items-center gap-2 max-[870px]:flex-row-reverse max-[550px]:flex-wrap max-[550px]:flex-col max-[550px]:items-start">
-					<AddCrypto />
+					<AddCoin />
 
 					<div className="flex items-center max-[870px]:flex-row-reverse">
 						<div className="flex items-center gap-2">
@@ -141,7 +127,7 @@ export const ActivitiesContainer = ({ cryptoData, totalInvestedValue, totalValue
 							</Button>
 						</div>
 
-						{/* Sort crypto */}
+						{/* Sort coin */}
 						<div className="mx-6">
 							<Select
 								value={sortOption}
@@ -181,21 +167,14 @@ export const ActivitiesContainer = ({ cryptoData, totalInvestedValue, totalValue
 					viewMode === 'grid' ? 'flex-row flex-wrap gap-4' : 'flex-col gap-2',
 				)}
 			>
-				{cryptoData.length === 0 && (
-					<h2 className="flex justify-center w-full">No cryptos added. Add your first crypto!</h2>
+				{coinData.length === 0 && (
+					<h2 className="flex justify-center w-full">No coins added. Add your first coin!</h2>
 				)}
 
-				{sortedCryptoData.map((coin) => (
-					<CryptoCard
-						key={`${coin.coinId}-${coin.transactions.length}`}
-						coin={coin}
-						viewMode={viewMode}
-						onClick={handleCardClick}
-					/>
+				{sortedCoinData.map((coin) => (
+					<CoinCard key={`${coin.coinId}-${coin.transactions.length}`} coin={coin} viewMode={viewMode} />
 				))}
 			</div>
-
-			<CoinDetailModal coinId={selectedCoinId} showDetailModal={isModalOpen} closeModal={toggleDetailModal} />
 		</div>
 	)
 }

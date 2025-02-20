@@ -2,12 +2,12 @@
 
 import Link from 'next/link'
 import {
-	Activity,
 	Bell,
 	ChevronDown,
 	Clipboard,
 	CreditCard,
 	FileText,
+	HandCoins,
 	HelpCircle,
 	Home,
 	LogOut,
@@ -58,9 +58,9 @@ const sideBarData = [
 		protected: false,
 	},
 	{
-		title: 'Activities',
-		url: '/protected/activities',
-		icon: Activity,
+		title: 'Coins',
+		url: '/protected/coins',
+		icon: HandCoins,
 		protected: true,
 	},
 	{

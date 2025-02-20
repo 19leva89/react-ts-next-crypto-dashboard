@@ -16,12 +16,12 @@ import {
 import { useToast } from '@/hooks'
 import { DataTable } from './transaction-table-data'
 import { formatPrice } from '@/constants/format-price'
-import { CryptoData, Transaction } from './crypto-card'
 import { getColumns } from './transaction-table-columns'
+import { Transaction, UserCoinData } from '@/app/api/types'
 import { deleteTransactionFromUser } from '@/app/api/actions'
 
 interface Props {
-	coin: CryptoData
+	coin: UserCoinData
 	isOpen: boolean
 	onClose: () => void
 	onSave: (sellPrice: string) => void
@@ -29,14 +29,7 @@ interface Props {
 	setEditTransactions: (transactions: Transaction[]) => void
 }
 
-export const EditCrypto = ({
-	coin,
-	isOpen,
-	onClose,
-	onSave,
-	editTransactions,
-	setEditTransactions,
-}: Props) => {
+export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setEditTransactions }: Props) => {
 	const { toast } = useToast()
 
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
@@ -53,7 +46,7 @@ export const EditCrypto = ({
 
 	const handleSellPriceChange = handleNumberInput(setEditSellPrice)
 
-	const onTransactionChange = (id: string, field: keyof CryptoData['transactions'][0], value: string) => {
+	const onTransactionChange = (id: string, field: keyof UserCoinData['transactions'][0], value: string) => {
 		setEditTransactions(
 			produce(editTransactions, (draft: Draft<Transaction[]>) => {
 				const transaction = draft.find((p) => p.id === id)

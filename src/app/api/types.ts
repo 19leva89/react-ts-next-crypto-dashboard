@@ -68,6 +68,27 @@ export type CoinData = {
 	}
 }
 
+export interface Transaction {
+	id: string
+	quantity: number
+	price: number
+	date: Date
+	userCoinId: string
+}
+
+export interface UserCoinData {
+	coinId: string
+	name: string
+	symbol: string
+	currentPrice: number
+	totalQuantity: number
+	totalCost: number
+	averagePrice: number
+	sellPrice?: number
+	image: string
+	transactions: Transaction[]
+}
+
 export type TrendingItem = {
 	id: string
 	coin_id: number

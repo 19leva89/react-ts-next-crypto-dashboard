@@ -9,13 +9,14 @@ import { MarketChart, Prisma } from '@prisma/client'
 import {
 	AidropsData,
 	CategoriesData,
-	CoinData,
+	UserCoinData,
 	MarketChartData,
 	TrendingData,
 	CoinsListIDMapData,
 	CoinsListData,
 	PrismaTransactionClient,
 	TrendingCoin,
+	CoinData,
 } from './types'
 import { auth, signIn } from '@/auth'
 import { makeReq } from './make-request'
@@ -257,7 +258,7 @@ export const deleteUser = async (userId?: string) => {
 	}
 }
 
-export const addCryptoToUser = async (coinId: string, quantity: number, price: number) => {
+export const addCoinToUser = async (coinId: string, quantity: number, price: number) => {
 	try {
 		const session = await auth()
 		const userId = session?.user?.id
@@ -331,7 +332,7 @@ export const addCryptoToUser = async (coinId: string, quantity: number, price: n
 	}
 }
 
-export const updateUserCrypto = async (
+export const updateUserCoin = async (
 	coinId: string,
 	desiredSellPrice?: number,
 	transactions?: { id: string; quantity: number; price: number; date: Date }[],
@@ -419,7 +420,7 @@ export const updateUserCrypto = async (
 	}
 }
 
-export const deleteCryptoFromUser = async (coinId: string) => {
+export const deleteCoinFromUser = async (coinId: string) => {
 	try {
 		const session = await auth()
 
@@ -1027,6 +1028,89 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 		return {} as CoinData
 	}
 }
+
+export const getUserCoinData = async (coinId: string): Promise<UserCoinData> => {
+	try {
+		const session = await auth()
+
+		// Checking if the user is authorized
+		if (!session?.user) throw new Error('User not authenticated')
+
+		// Return old data immediately
+		const userCoin = await prisma.userCoin.findUnique({
+			where: { userId_coinId: { userId: session.user.id, coinId } },
+			select: {
+				total_quantity: true,
+				total_cost: true,
+				average_price: true,
+				desired_sell_price: true,
+				coinsListIDMap: {
+					select: {
+						name: true,
+						symbol: true,
+					},
+				},
+				coin: {
+					select: {
+						id: true,
+						current_price: true,
+						image: true,
+					},
+				},
+				transactions: {
+					select: {
+						id: true,
+						quantity: true,
+						price: true,
+						date: true,
+						userCoinId: true,
+					},
+				},
+			},
+		})
+
+		if (userCoin === null) {
+			throw new Error('User coin data not found')
+		}
+
+		// Transform the userCoin object to match the UserCoinData type
+		const transformedUserCoin: UserCoinData = {
+			coinId: userCoin.coin.id,
+			name: userCoin.coinsListIDMap.name,
+			symbol: userCoin.coinsListIDMap.symbol,
+			currentPrice: userCoin.coin.current_price as number,
+			totalQuantity: userCoin.total_quantity,
+			totalCost: userCoin.total_cost,
+			averagePrice: userCoin.average_price,
+			sellPrice: userCoin.desired_sell_price as number,
+			image: userCoin.coin.image as string,
+			transactions: userCoin.transactions.map((transaction) => ({
+				id: transaction.id,
+				quantity: transaction.quantity,
+				price: transaction.price,
+				date: transaction.date,
+				userCoinId: transaction.userCoinId,
+			})),
+		}
+
+		// Launch an update in the background via API
+		const response = await makeReq('GET', `/update/user-coin/${coinId}`)
+
+		if (!response || !Array.isArray(response) || response.length === 0) {
+			console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')
+
+			return transformedUserCoin
+		}
+
+		return transformedUserCoin
+	} catch (error) {
+		handleError(error, 'GET_USER_COIN_DATA')
+
+		return {} as UserCoinData
+	}
+}
+
+export const updateUserCoinData = async (coinId: string) => {}
 
 export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> => {
 	try {

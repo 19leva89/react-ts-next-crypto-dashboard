@@ -38,7 +38,7 @@ const DAY_OPTIONS: { label: string; value: ValidDays }[] = [
 ]
 
 export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) => {
-	const [days, setDays] = useState<number>(365)
+	const [days, setDays] = useState<number>(1)
 	const [getCoinData, setGetCoinData] = useState<boolean>(false)
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
 

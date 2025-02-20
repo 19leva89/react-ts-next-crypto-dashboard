@@ -8,16 +8,16 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui'
-import { CryptoData } from './crypto-card'
+import { UserCoinData } from '@/app/api/types'
 
 interface Props {
-	coin: CryptoData
+	coin: UserCoinData
 	isOpen: boolean
 	onClose: () => void
 	onDelete: () => void
 }
 
-export const DeleteCrypto = ({ coin, isOpen, onClose, onDelete }: Props) => (
+export const DeleteCoin = ({ coin, isOpen, onClose, onDelete }: Props) => (
 	<AlertDialog open={isOpen} onOpenChange={onClose}>
 		<AlertDialogContent className="px-8 rounded-xl">
 			<AlertDialogHeader>

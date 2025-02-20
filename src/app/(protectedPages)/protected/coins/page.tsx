@@ -1,16 +1,16 @@
 import { constructMetadata } from '@/lib'
 import { getUserCoinsList } from '@/app/api/actions'
-import { ActivitiesContainer } from './_components/activities-container'
+import { CoinsContainer } from './_components/container'
 
-export const metadata = constructMetadata({ title: 'Activities' })
+export const metadata = constructMetadata({ title: 'Coins' })
 
 // The page must be rendered on the server side
 export const dynamic = 'force-dynamic'
 
-const ActivitiesPage = async () => {
-	const userCryptos = await getUserCoinsList()
+const CoinsPage = async () => {
+	const userCoins = await getUserCoinsList()
 
-	const cryptoData = userCryptos.map((userCoin) => ({
+	const coinData = userCoins.map((userCoin) => ({
 		coinId: userCoin.coin.id,
 		name: userCoin.coinsListIDMap.name,
 		symbol: userCoin.coinsListIDMap.symbol,
@@ -30,23 +30,23 @@ const ActivitiesPage = async () => {
 	}))
 
 	// Calculate the total invested value of the portfolio
-	const totalInvestedValue = cryptoData.reduce((total, crypto) => {
-		return total + crypto.totalCost
+	const totalInvestedValue = coinData.reduce((total, coin) => {
+		return total + coin.totalCost
 	}, 0)
 
 	// Calculate the total value of the portfolio
-	const totalPortfolioValue = cryptoData.reduce((total, crypto) => {
-		return total + crypto.currentPrice * crypto.totalQuantity
+	const totalPortfolioValue = coinData.reduce((total, coin) => {
+		return total + coin.currentPrice * coin.totalQuantity
 	}, 0)
 
 	// Calculate the total future profit of the portfolio
-	const plannedProfit = cryptoData.reduce((total, crypto) => {
-		return total + crypto.sellPrice * crypto.totalQuantity
+	const plannedProfit = coinData.reduce((total, coin) => {
+		return total + coin.sellPrice * coin.totalQuantity
 	}, 0)
 
 	return (
-		<ActivitiesContainer
-			cryptoData={cryptoData}
+		<CoinsContainer
+			coinData={coinData}
 			totalInvestedValue={totalInvestedValue}
 			totalValue={totalPortfolioValue}
 			plannedProfit={plannedProfit}
@@ -54,4 +54,4 @@ const ActivitiesPage = async () => {
 	)
 }
 
-export default ActivitiesPage
+export default CoinsPage

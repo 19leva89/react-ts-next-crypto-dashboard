@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
 import { EllipsisVertical, Pencil, Trash, TrendingDown, TrendingUp } from 'lucide-react'
@@ -18,38 +19,18 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { useToast } from '@/hooks'
-import { EditCrypto } from './edit-crypto'
-import { DeleteCrypto } from './delete-crypto'
+import { EditCoin } from './edit-coin'
+import { DeleteCoin } from './delete-coin'
 import { formatPrice } from '@/constants/format-price'
-import { deleteCryptoFromUser, updateUserCrypto } from '@/app/api/actions'
-
-export interface Transaction {
-	id: string
-	quantity: number
-	price: number
-	date: Date
-	userCoinId: string
-}
-export interface CryptoData {
-	coinId: string
-	name: string
-	symbol: string
-	currentPrice: number
-	totalQuantity: number
-	totalCost: number
-	averagePrice: number
-	sellPrice?: number
-	image: string
-	transactions: Transaction[]
-}
+import { UserCoinData, Transaction } from '@/app/api/types'
+import { deleteCoinFromUser, updateUserCoin } from '@/app/api/actions'
 
 interface Props {
-	coin: CryptoData
+	coin: UserCoinData
 	viewMode: 'list' | 'grid'
-	onClick: (coinId: string) => void
 }
 
-export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
+export const CoinCard = ({ coin, viewMode }: Props) => {
 	const { toast } = useToast()
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
@@ -69,7 +50,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			}))
 
 			// Вызываем функцию для обновления криптовалюты
-			await updateUserCrypto(coin.coinId, Number(sellPrice), updatedTransactions)
+			await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
 
 			// Уведомляем пользователя об успехе
 			toast({
@@ -95,7 +76,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 	const handleDelete = async () => {
 		try {
 			// Вызываем функцию для удаления криптовалюты
-			await deleteCryptoFromUser(coin.coinId)
+			await deleteCoinFromUser(coin.coinId)
 
 			// Уведомляем пользователя об успехе
 			toast({
@@ -142,12 +123,12 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 							className="rounded-full"
 						/>
 
-						<span
-							onClick={() => onClick(coin.coinId)}
+						<Link
+							href={`/protected/coins/${coin.coinId}`}
 							className="cursor-pointer truncate max-w-[8rem] hover:text-[#397fee] dark:hover:text-[#75a6f4]"
 						>
 							{coin.name}
-						</span>
+						</Link>
 
 						<span className="text-sm text-muted-foreground max-[600px]:hidden">
 							({coin.symbol.toUpperCase()})
@@ -231,7 +212,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			</CardContent>
 
 			{/* Edit Dialog */}
-			<EditCrypto
+			<EditCoin
 				key={`edit-${coin.coinId}`}
 				coin={coin}
 				isOpen={isDialogOpen}
@@ -242,7 +223,7 @@ export const CryptoCard = ({ coin, viewMode, onClick }: Props) => {
 			/>
 
 			{/* Delete Dialog */}
-			<DeleteCrypto
+			<DeleteCoin
 				key={`delete-${coin.coinId}`}
 				coin={coin}
 				isOpen={isDeleteDialogOpen}

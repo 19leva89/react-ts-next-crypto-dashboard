@@ -8,7 +8,7 @@ export async function GET(req: NextRequest, context: { params: any }) {
 	try {
 		const { coinId } = await context.params
 		const daysParam = req.nextUrl.searchParams.get('days')
-		const days = daysParam ? parseInt(daysParam) : 365
+		const days = daysParam ? parseInt(daysParam) : 1
 
 		if (![1, 7, 30, 365].includes(days)) {
 			return new NextResponse(
