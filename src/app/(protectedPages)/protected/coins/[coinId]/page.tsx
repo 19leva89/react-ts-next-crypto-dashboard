@@ -2,20 +2,32 @@ import { constructMetadata } from '@/lib'
 import { getUserCoinData } from '@/app/api/actions'
 import { CoinIdContainer } from './_components/container'
 
-// export const generateMetadata = async ({ params }: { params: { coinId: string } }) => {
-// 	const title = await Promise.resolve(params.coinId)
-// 	return constructMetadata({ title })
-// }
-
 // The page must be rendered on the server side
 export const dynamic = 'force-dynamic'
 
-const CoinIdPage = async ({ params }: { params: { coinId: string } }) => {
-	if (!params || !params.coinId) {
+interface Props {
+	params: Promise<{ coinId: string }>
+}
+
+export async function generateMetadata({ params }: Props) {
+	const { coinId } = await params
+
+	const formattedCoinId =
+		coinId.charAt(0).toUpperCase() +
+		coinId
+			.slice(1) // First letter is capitalized
+			.replace(/-/g, ' ') // Replace all "-" with spaces " "
+
+	return constructMetadata({ title: `${formattedCoinId}` })
+}
+
+const CoinIdPage = async ({ params }: Props) => {
+	const { coinId } = await params
+
+	if (!coinId) {
 		return <div>Invalid coin ID</div>
 	}
 
-	const coinId = await Promise.resolve(params.coinId)
 	const userCoin = await getUserCoinData(coinId)
 
 	// Если данных нет, отобразить сообщение

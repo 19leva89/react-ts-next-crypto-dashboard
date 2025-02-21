@@ -205,6 +205,7 @@ export const AddCoin = () => {
 												type="text"
 												placeholder="Search coin..."
 												value={searchQuery}
+												autoFocus={false}
 												onChange={(e) => {
 													setSearchQuery(e.target.value)
 													setSelectedCoin('')

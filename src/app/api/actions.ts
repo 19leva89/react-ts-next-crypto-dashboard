@@ -309,7 +309,7 @@ export const addCoinToUser = async (coinId: string, quantity: number, price: num
 
 			// 2. Проверка баланса для продаж
 			if (quantity < 0 && Math.abs(quantity) > (userCoin.total_quantity || 0)) {
-				throw new Error(`Not enough coins to sell. Available: ${userCoin.total_quantity}`)
+				throw new Error('Not enough coins to sell')
 			}
 
 			// 3. Создаем запись о транзакции
@@ -328,7 +328,7 @@ export const addCoinToUser = async (coinId: string, quantity: number, price: num
 
 		revalidatePath('/')
 	} catch (error) {
-		handleError(error, 'ADD_CRYPTO_TO_USER')
+		handleError(error, 'ADD_COIN_TO_USER')
 	}
 }
 
@@ -352,12 +352,27 @@ export const updateUserCoin = async (
 
 			if (!userCoin) throw new Error('Coin not found in portfolio')
 
-			// Check: Is the user trying to sell more than he has?
-			const totalOwned = userCoin.transactions.reduce((sum, t) => sum + t.quantity, 0)
-			const totalSelling =
-				transactions?.filter((t) => t.quantity < 0).reduce((sum, t) => sum + t.quantity, 0) || 0
+			// Check: Is the user trying to sell more than they have?
+			if (transactions?.some((t) => t.quantity < 0)) {
+				const totalOwned = userCoin.transactions
+					.filter((t) => t.quantity > 0) // Only consider owned coins
+					.reduce((sum, t) => sum + t.quantity, 0)
 
-			if (totalOwned + totalSelling < 0) throw new Error('Not enough coins to sell')
+				const totalSelling = transactions
+					.filter((t) => t.quantity < 0) // Only consider selling coins
+					.reduce((sum, t) => sum + t.quantity, 0)
+
+				// Include temporary transactions (those with 'temp-' prefix)
+				const tempTransactions = transactions.filter((t) => t.id.startsWith('temp-'))
+				const tempTotal = tempTransactions.reduce((sum, t) => sum + t.quantity, 0)
+
+				// Calculate total available for selling, including temporary ones
+				const totalAvailableForSelling = totalOwned + tempTotal
+
+				if (totalAvailableForSelling + totalSelling < 0) {
+					throw new Error('Not enough coins to sell')
+				}
+			}
 
 			// Updating transactions
 			if (transactions?.length) {
@@ -416,7 +431,7 @@ export const updateUserCoin = async (
 
 		revalidatePath('/')
 	} catch (error) {
-		handleError(error, 'UPDATE_USER_CRYPTO')
+		handleError(error, 'UPDATE_USER_COIN')
 	}
 }
 
@@ -442,7 +457,7 @@ export const deleteCoinFromUser = async (coinId: string) => {
 
 		revalidatePath('/')
 	} catch (error) {
-		handleError(error, 'DELETE_USER_CRYPTO')
+		handleError(error, 'DELETE_USER_COIN')
 	}
 }
 
