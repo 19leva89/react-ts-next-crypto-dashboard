@@ -1,5 +1,4 @@
 import { Plus } from 'lucide-react'
-import { Draft, produce } from 'immer'
 import { ChangeEvent, useState } from 'react'
 
 import {
@@ -13,12 +12,10 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
-import { useToast } from '@/hooks'
-import { DataTable } from './transaction-table-data'
+
 import { formatPrice } from '@/constants/format-price'
-import { getColumns } from './transaction-table-columns'
 import { Transaction, UserCoinData } from '@/app/api/types'
-import { deleteTransactionFromUser } from '@/app/api/actions'
+import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 
 interface Props {
 	coin: UserCoinData
@@ -30,8 +27,6 @@ interface Props {
 }
 
 export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setEditTransactions }: Props) => {
-	const { toast } = useToast()
-
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
 
 	const totalValue = coin.currentPrice * coin.totalQuantity
@@ -46,22 +41,6 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 
 	const handleSellPriceChange = handleNumberInput(setEditSellPrice)
 
-	const onTransactionChange = (id: string, field: keyof UserCoinData['transactions'][0], value: string) => {
-		setEditTransactions(
-			produce(editTransactions, (draft: Draft<Transaction[]>) => {
-				const transaction = draft.find((p) => p.id === id)
-
-				if (transaction) {
-					if (field === 'date') {
-						;(transaction[field] as Date) = new Date(value)
-					} else {
-						;(transaction[field] as number) = parseFloat(value) || 0
-					}
-				}
-			}),
-		)
-	}
-
 	const handleAddTransaction = () => {
 		const newTransaction: Transaction = {
 			id: `temp-${Math.random().toString(36).substring(2)}`,
@@ -70,46 +49,8 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 			date: new Date(),
 			userCoinId: coin.coinId,
 		}
-		console.log('newTransaction:', newTransaction)
 
 		setEditTransactions([...editTransactions, newTransaction])
-	}
-
-	const handleTransactionDelete = async (transactionId: string) => {
-		// Если транзакция временная, удаляем сразу из состояния
-		if (transactionId.startsWith('temp-')) {
-			setEditTransactions(editTransactions.filter((t) => t.id !== transactionId))
-
-			toast({
-				title: '✅ Success',
-				description: 'Transaction has been removed',
-				variant: 'default',
-			})
-
-			return
-		}
-
-		try {
-			// Вызываем функцию для удаления транзакции
-			await deleteTransactionFromUser(transactionId)
-
-			// Уведомляем пользователя об успехе
-			toast({
-				title: '✅ Success',
-				description: 'Transaction has been removed',
-				variant: 'default',
-			})
-		} catch (error) {
-			// Уведомляем пользователя об ошибке
-			console.error('Error removing transaction:', error)
-
-			toast({
-				title: '🚨 Error',
-				description:
-					error instanceof Error ? error.message : 'Failed to remove transaction. Please try again',
-				variant: 'destructive',
-			})
-		}
 	}
 
 	return (
@@ -124,7 +65,7 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 				<div className="flex flex-col gap-4 py-4">
 					<div className="flex items-center justify-start gap-4 px-4">
 						<Label htmlFor="sell-price" className="w-[20%]">
-							Sell Price
+							Sell price
 						</Label>
 
 						<Input
@@ -150,9 +91,10 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 							</div>
 						</div>
 
-						<DataTable
-							columns={getColumns(onTransactionChange, handleTransactionDelete)}
-							data={editTransactions}
+						<TableContainer
+							editTransactions={editTransactions}
+							setEditTransactions={setEditTransactions}
+							className="h-[50vh]"
 						/>
 					</div>
 				</div>
