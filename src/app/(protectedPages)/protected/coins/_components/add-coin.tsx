@@ -175,12 +175,12 @@ export const AddCoin = () => {
 
 						<div className="grid gap-4 py-4">
 							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="coin" className="text-right">
+								<Label htmlFor="coin" className="text-right" autoFocus={false}>
 									Coin
 								</Label>
 
 								<Select value={selectedCoin} onValueChange={(value) => setSelectedCoin(value)}>
-									<SelectTrigger className="col-span-3">
+									<SelectTrigger className="col-span-3" autoFocus={false}>
 										{selectedCoinData ? (
 											<div className="flex items-center gap-2">
 												<Image
@@ -198,7 +198,7 @@ export const AddCoin = () => {
 										)}
 									</SelectTrigger>
 
-									<SelectContent>
+									<SelectContent autoFocus={false}>
 										{/* Input for search filter */}
 										<div className="p-2">
 											<Input
