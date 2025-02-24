@@ -74,6 +74,7 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 							min={0}
 							step={0.01}
 							value={editSellPrice}
+							autoFocus={false}
 							onChange={handleSellPriceChange}
 							className="w-[80%] rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 						/>

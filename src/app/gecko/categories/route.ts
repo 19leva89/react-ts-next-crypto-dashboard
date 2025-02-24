@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { makeServerReq } from '@/app/api/make-request'
-import { getCgCategoriesRoute } from '@/app/api/ressources'
+import { getCgCategoriesRoute } from '@/app/api/resources'
 
 export async function GET() {
 	try {

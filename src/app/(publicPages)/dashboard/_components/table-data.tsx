@@ -43,18 +43,18 @@ interface Props<TData, TValue> {
 	data: TData[]
 	columns: ColumnDef<TData, TValue>[]
 	categories: { category_id: string; name: string }[]
-	currentCategorie: string
+	currentCategory: string
 	onCoinsClick: (coinId: string) => void
-	onCategorieClick: (categorie: string, name?: string) => void
+	onCategoryClick: (category: string, name?: string) => void
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
 	categories,
-	currentCategorie,
+	currentCategory,
 	onCoinsClick,
-	onCategorieClick,
+	onCategoryClick,
 }: Props<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([{ id: 'total_volume', desc: true }])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -105,13 +105,13 @@ export function DataTable<TData, TValue>({
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button
-									id="categorie-btn"
+									id="category-btn"
 									variant="outline"
 									size="lg"
 									disabled={!categories.length}
 									className="w-full h-10 py-2 px-4 justify-between rounded-xl group"
 								>
-									<span className="truncate">{currentCategorie || 'Categories'}</span>
+									<span className="truncate">{currentCategory || 'Categories'}</span>
 
 									<ChevronDown
 										size={16}
@@ -129,7 +129,7 @@ export function DataTable<TData, TValue>({
 										<button
 											className="p-2 w-full text-start rounded-xl"
 											onClick={() => {
-												onCategorieClick('')
+												onCategoryClick('')
 											}}
 										>
 											All categories
@@ -151,7 +151,7 @@ export function DataTable<TData, TValue>({
 												<button
 													className="p-2 w-full text-start rounded-xl"
 													onClick={() =>
-														onCategorieClick(categories[index].category_id, categories[index].name)
+														onCategoryClick(categories[index].category_id, categories[index].name)
 													}
 												>
 													{categories[index].name}

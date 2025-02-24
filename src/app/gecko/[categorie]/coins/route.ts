@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { makeServerReq } from '@/app/api/make-request'
-import { getCgCoinsListByCateRoute } from '@/app/api/ressources'
+import { getCgCoinsListByCateRoute } from '@/app/api/resources'
 
 export async function GET(req: NextRequest, context: { params: any }) {
 	try {
-		const { categorie } = await context.params
-		const url = getCgCoinsListByCateRoute(categorie)
+		const { category } = await context.params
+		const url = getCgCoinsListByCateRoute(category)
 
 		// Execute a request to the server
 		const result = await makeServerReq(url, 'GET')

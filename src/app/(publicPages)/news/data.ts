@@ -3,7 +3,7 @@ export const cryptoNews = [
 		since: '2 hours ago',
 		title: 'Analysts Share Latest Cryptocurrency Predictions',
 		text: 'Bitcoin price attempts a rapid return to $57,500. Analysts share mixed evaluations of the current market. Continue Reading:Analysts Share Latest C...',
-		recation: 26,
+		reaction: 26,
 		commentCount: 9,
 		url: 'https://coinmarketcap.com/community/articles/66d897e1831ab6459e55d204/',
 		cover:
@@ -13,7 +13,7 @@ export const cryptoNews = [
 		since: '8 hours ago',
 		title: 'Bitfarms responds to Riot Platforms’ proposed board changes',
 		text: 'Bitfarms issued a response to Riot Platforms’ open letter to Bitfarms shareholders rebuking claims that the company’s corporate governance is broken.',
-		recation: 32,
+		reaction: 32,
 		commentCount: 5,
 		url: 'https://coinmarketcap.com/community/articles/66d897e0a86aa37b4a7b9e19/',
 		cover:
@@ -23,7 +23,7 @@ export const cryptoNews = [
 		since: '7 hours ago',
 		title: 'World Liberty Financial Emphasizes Security and Stablecoin Adoption',
 		text: 'World Liberty Financial is prioritizing security by collaborating with top industry experts and aims to drive stablecoin adoption.',
-		recation: 8,
+		reaction: 8,
 		commentCount: 6,
 		url: 'https://coinmarketcap.com/community/articles/66d897ed831ab6459e55d206/',
 		cover:

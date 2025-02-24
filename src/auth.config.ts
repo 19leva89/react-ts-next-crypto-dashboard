@@ -52,7 +52,7 @@ export default {
 						return null
 					}
 
-					// Если у пользователя есть OAuth аккаунт, запрещаем вход по паролю
+					// If the user has an OAuth account, prohibit login by password
 					if (user.accounts.length > 0) {
 						console.error('This email is linked to a social login. Please use GitHub or Google')
 						return null

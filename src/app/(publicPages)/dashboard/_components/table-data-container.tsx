@@ -19,22 +19,22 @@ export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 	const [fetchingCoins, setFetchingCoins] = useState<boolean>(false)
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
-	const [currentCategorie, setCurrentCategorie] = useState<string>('All')
+	const [currentCategory, setCurrentCategory] = useState<string>('All')
 
 	// Handle category selection
-	const onCategorieClick = async (cate: string, name?: string) => {
+	const onCategoryClick = async (cate: string, name?: string) => {
 		setFetchingCoins(true)
 		setCoinsList([])
 
 		if (cate) {
-			name && setCurrentCategorie(name)
+			name && setCurrentCategory(name)
 
 			const resp = await getCoinsListByCate(cate)
 			setFetchingCoins(false)
 
 			if (resp) setCoinsList(resp)
 		} else {
-			setCurrentCategorie('All')
+			setCurrentCategory('All')
 
 			const resp = await getCoinsList()
 			setFetchingCoins(false)
@@ -64,9 +64,9 @@ export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 					columns={columns}
 					data={coinsList}
 					categories={categories}
-					currentCategorie={currentCategorie}
+					currentCategory={currentCategory}
 					onCoinsClick={handleCoinClick}
-					onCategorieClick={onCategorieClick}
+					onCategoryClick={onCategoryClick}
 				/>
 			)}
 

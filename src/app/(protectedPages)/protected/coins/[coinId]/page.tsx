@@ -30,7 +30,6 @@ const CoinIdPage = async ({ params }: Props) => {
 
 	const userCoin = await getUserCoinData(coinId)
 
-	// Если данных нет, отобразить сообщение
 	if (!userCoin || Array.isArray(userCoin)) {
 		return <div>Coin not found</div>
 	}

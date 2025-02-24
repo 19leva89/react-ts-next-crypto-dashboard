@@ -79,7 +79,7 @@ export const AddCoin = () => {
 
 	const handleAddCoin = async () => {
 		try {
-			// Проверяем, что выбрана криптовалюта и введено количество
+			// Check that the cryptocurrency is selected and the amount is entered
 			if (!selectedCoin || !editQuantity || !editPrice) {
 				toast({
 					title: '🚨 Error',
@@ -89,25 +89,25 @@ export const AddCoin = () => {
 				return
 			}
 
-			// Вызываем функцию для добавления криптовалюты
+			// Calling the function to add cryptocurrency
 			await addCoinToUser(selectedCoin, Number(editQuantity), Number(editPrice))
 
-			// Уведомляем пользователя об успехе
+			// Notify the user of success
 			toast({
 				title: '✅ Success',
 				description: 'Coin added successfully',
 				variant: 'default',
 			})
 
-			// Закрываем диалог
+			// Close the dialogue
 			setIsDialogOpen(false)
 
-			// Очищаем поля
+			// Clearing the fields
 			setEditPrice('')
 			setEditQuantity('')
 			setSelectedCoin('')
 		} catch (error) {
-			// Уведомляем пользователя об ошибке
+			// Notifying the user about the error
 			console.error('Error adding coin:', error)
 
 			toast({
@@ -194,7 +194,7 @@ export const AddCoin = () => {
 												</span>
 											</div>
 										) : (
-											<span>Select a coincurrency</span>
+											<span>Select a coin currency</span>
 										)}
 									</SelectTrigger>
 

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { makeServerReq } from '@/app/api/make-request'
-import { getCgCoinsListIDMap } from '@/app/api/ressources'
+import { getCgCoinsListIDMap } from '@/app/api/resources'
 
 export async function GET() {
 	try {

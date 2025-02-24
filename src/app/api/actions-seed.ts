@@ -33,13 +33,13 @@ export const updateCoinsListIDMapFromAPI = async (): Promise<void> => {
 
 		console.log(`📊 CoinsListIDMap is available in API: ${response.length}`)
 
-		// Разбиваем данные на чанки
+		// Breaking data into chunks
 		const coinIdChunks = chunk(response, BATCH_SIZE)
 
-		// Обновляем монеты батчами
+		// Update coins in batches
 		for (const batch of coinIdChunks) {
 			await prisma.$transaction([
-				// Обновляем coinsListIDMap
+				// Update coinsListIDMap
 				...batch.map((coin) =>
 					prisma.coinsListIDMap.upsert({
 						where: { id: coin.id },
@@ -71,13 +71,13 @@ export const getCoinsList = async (): Promise<CoinsListData> => {
 
 		console.log(`📊 CoinsList is available in API: ${response.length}`)
 
-		// Разбиваем данные на чанки
+		// Breaking data into chunks
 		const coinIdChunks = chunk(response, BATCH_SIZE)
 
-		// Обновляем монеты батчами
+		// Update coins in batches
 		for (const batch of coinIdChunks) {
 			await prisma.$transaction([
-				// Обновляем coinsListIDMap
+				// Update coinsListIDMap
 				...batch.map((coin) =>
 					prisma.coinsListIDMap.upsert({
 						where: { id: coin.id },

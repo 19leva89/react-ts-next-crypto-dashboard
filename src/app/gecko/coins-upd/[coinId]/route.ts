@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { makeServerReq } from '@/app/api/make-request'
-import { getCgUpdateCoinsListRoute } from '@/app/api/ressources'
+import { getCgUpdateCoinsListRoute } from '@/app/api/resources'
 
 export async function GET(req: NextRequest, context: { params: any }) {
 	try {

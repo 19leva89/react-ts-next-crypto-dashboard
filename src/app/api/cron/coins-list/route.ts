@@ -6,7 +6,7 @@ export const maxDuration = 60
 
 export async function GET(req: NextRequest) {
 	try {
-		// Проверка авторизации для cron-запросов
+		// Checking authorization for cron requests
 		const authHeader = req.headers.get('authorization')
 
 		if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {

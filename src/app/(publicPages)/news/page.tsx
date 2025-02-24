@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowUp, Heart, MessageSquareText } from 'lucide-react'
 
-import { cryptoNews } from './datas'
+import { cryptoNews } from './data'
 import { constructMetadata } from '@/lib'
 
 export const metadata = constructMetadata({ title: 'News' })
@@ -54,7 +54,7 @@ const NewsPage = () => {
 							<div className="flex items-center gap-1">
 								<Heart size={20} />
 
-								<span>{news.recation}</span>
+								<span>{news.reaction}</span>
 							</div>
 
 							<div className="flex items-center gap-1">

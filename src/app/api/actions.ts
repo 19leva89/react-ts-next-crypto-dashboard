@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma'
 import { MarketChart, Prisma } from '@prisma/client'
 
 import {
-	AidropsData,
+	AirdropsData,
 	CategoriesData,
 	UserCoinData,
 	MarketChartData,
@@ -22,7 +22,7 @@ import { auth, signIn } from '@/auth'
 import { makeReq } from './make-request'
 import { sendEmail } from '@/lib/send-email'
 import { saltAndHashPassword } from '@/lib/salt'
-import { VerificationUserTemplate } from '@/components/shared/email-temapltes'
+import { VerificationUserTemplate } from '@/components/shared/email-templates'
 import { COINS_UPDATE_INTERVAL, DAYS_MAPPING, MARKET_CHART_UPDATE_INTERVAL, ValidDays } from './constants'
 
 const handleError = (error: unknown, context: string) => {
@@ -263,7 +263,7 @@ export const addCoinToUser = async (coinId: string, quantity: number, price: num
 		const session = await auth()
 		const userId = session?.user?.id
 
-		// Валидация
+		// Validation
 		if (!userId) throw new Error('User not authenticated')
 		if (!coinId) throw new Error('CoinId is required')
 
@@ -275,21 +275,21 @@ export const addCoinToUser = async (coinId: string, quantity: number, price: num
 			throw new Error('Invalid price. Price must be greater than 0')
 		}
 
-		// Проверяем, существует ли пользователь
+		// Check if user exists
 		const user = await prisma.user.findUnique({
 			where: { id: session.user.id },
 		})
 
 		if (!user) throw new Error('User not found')
 
-		// Получаем данные о монете из fetchCoinData
+		// Getting coin data from fetchCoinData
 		const coinData = await getCoinData(coinId)
 
-		// Если coinData пустое (ошибка получения данных), выбрасываем ошибку
+		// If coinData is empty (error getting data), throw an error
 		if (!coinData) throw new Error(`Failed to fetch data for coin ${coinId}`)
 
 		await prisma.$transaction(async (transactionPrisma) => {
-			// 1. Получаем или создаем UserCoin
+			// 1. Receive or create UserCoin
 			const userCoin = await prisma.userCoin.upsert({
 				where: {
 					userId_coinId: {
@@ -307,12 +307,12 @@ export const addCoinToUser = async (coinId: string, quantity: number, price: num
 				include: { transactions: true },
 			})
 
-			// 2. Проверка баланса для продаж
+			// 2. Checking balance for sales
 			if (quantity < 0 && Math.abs(quantity) > (userCoin.total_quantity || 0)) {
 				throw new Error('Not enough coins to sell')
 			}
 
-			// 3. Создаем запись о транзакции
+			// 3. Create a transaction record
 			await prisma.userCoinTransaction.create({
 				data: {
 					quantity,
@@ -322,7 +322,7 @@ export const addCoinToUser = async (coinId: string, quantity: number, price: num
 				},
 			})
 
-			// 4. Пересчитываем агрегированные данные
+			// 4. Recalculating aggregated data
 			await recalculateAveragePrice(session.user.id, coinId, transactionPrisma)
 		})
 
@@ -694,7 +694,7 @@ export const updateCoinsList = async (): Promise<any> => {
 
 		// Forming a string for an API request
 		const coinList = cachedCoins
-			.sort(() => Math.random() - 0.5) // Shuffle the array randomly
+			.sort((a, b) => (a.updatedAt?.getTime() || 0) - (b.updatedAt?.getTime() || 0)) // ASC sort
 			.slice(0, 50) // Take the first 50 elements
 			.map((coin) => encodeURIComponent(coin.id))
 			.join('%2C')
@@ -839,7 +839,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 
 		// Forming a string for an API request
 		const coinList = coinsToUpdate
-			.sort(() => Math.random() - 0.5) // Shuffle the array randomly
+			.sort((a, b) => (a.updatedAt?.getTime() || 0) - (b.updatedAt?.getTime() || 0)) // ASC sort
 			.slice(0, 50) // Take the first 50 elements
 			.map((uc) => uc.coinId)
 			.join('%2C')
@@ -1250,7 +1250,7 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 		const currentTime = new Date()
 		const updateTime = new Date(currentTime.getTime() - MARKET_CHART_UPDATE_INTERVAL)
 
-		// Если данные за нужный период уже есть - возвращаем их
+		// If the data for the required period already exists, return it
 		if (cachedData?.[field] && cachedData?.[updatedField] && cachedData[updatedField]! > updateTime) {
 			return {
 				prices: cachedData[field],
@@ -1304,7 +1304,7 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 	}
 }
 
-export const getAidrops = async (): Promise<AidropsData> => {
+export const getAirdrops = async (): Promise<AirdropsData> => {
 	try {
 		// Getting airdrop data from the DB
 		const cachedData = await prisma.airdrop.findMany({
@@ -1316,7 +1316,7 @@ export const getAidrops = async (): Promise<AidropsData> => {
 
 		// If the airdrops data already exists in the DB, return it
 		if (cachedData.length > 0) {
-			console.log('✅ Using cached Aidrops from DB')
+			console.log('✅ Using cached Airdrops from DB')
 
 			return {
 				data: cachedData.map((airdrop) => ({
@@ -1339,73 +1339,73 @@ export const getAidrops = async (): Promise<AidropsData> => {
 		}
 
 		// If there is no data or it is outdated, request it via API
-		console.log('🔄 Outdated records, request Aidrops via API...')
-		const response = await makeReq('GET', '/cmc/aidrops')
+		console.log('🔄 Outdated records, request Airdrops via API...')
+		const response = await makeReq('GET', '/cmc/airdrops')
 
 		if (!response || !Array.isArray(response.data) || !response.data.length) {
-			console.warn('⚠️ Empty response from API, using old Aidrops')
+			console.warn('⚠️ Empty response from API, using old Airdrops')
 
-			return { data: [] } as AidropsData
+			return { data: [] } as AirdropsData
 		}
 
 		// Transform the data into the required format
-		const aidropsData: AidropsData = {
-			data: response.data.map((aidrop: any) => ({
-				id: aidrop.id,
-				project_name: aidrop.project_name,
-				description: aidrop.description,
-				status: aidrop.status,
+		const airdropsData: AirdropsData = {
+			data: response.data.map((airdrop: any) => ({
+				id: airdrop.id,
+				project_name: airdrop.project_name,
+				description: airdrop.description,
+				status: airdrop.status,
 				coin: {
-					id: aidrop.coin.id,
-					name: aidrop.coin.name,
-					symbol: aidrop.coin.symbol,
+					id: airdrop.coin.id,
+					name: airdrop.coin.name,
+					symbol: airdrop.coin.symbol,
 				},
-				start_date: aidrop.start_date,
-				end_date: aidrop.end_date,
-				total_prize: aidrop.total_prize,
-				winner_count: aidrop.winner_count,
-				link: aidrop.link,
+				start_date: airdrop.start_date,
+				end_date: airdrop.end_date,
+				total_prize: airdrop.total_prize,
+				winner_count: airdrop.winner_count,
+				link: airdrop.link,
 			})),
 		}
 
 		// Update or create records in the DB
-		for (const aidrop of aidropsData.data) {
+		for (const airdrop of airdropsData.data) {
 			await prisma.airdrop.upsert({
-				where: { id: aidrop.id },
+				where: { id: airdrop.id },
 				update: {
-					project_name: aidrop.project_name,
-					description: aidrop.description,
-					status: aidrop.status,
-					coinId: aidrop.coin.id,
-					coinsListIDMapId: aidrop.coin.id,
-					start_date: new Date(aidrop.start_date),
-					end_date: new Date(aidrop.end_date),
-					total_prize: aidrop.total_prize,
-					winner_count: aidrop.winner_count,
-					link: aidrop.link,
+					project_name: airdrop.project_name,
+					description: airdrop.description,
+					status: airdrop.status,
+					coinId: airdrop.coin.id,
+					coinsListIDMapId: airdrop.coin.id,
+					start_date: new Date(airdrop.start_date),
+					end_date: new Date(airdrop.end_date),
+					total_prize: airdrop.total_prize,
+					winner_count: airdrop.winner_count,
+					link: airdrop.link,
 				},
 				create: {
-					id: aidrop.id,
-					project_name: aidrop.project_name,
-					description: aidrop.description,
-					status: aidrop.status,
-					coinId: aidrop.coin.id,
-					coinsListIDMapId: aidrop.coin.id,
-					start_date: new Date(aidrop.start_date),
-					end_date: new Date(aidrop.end_date),
-					total_prize: aidrop.total_prize,
-					winner_count: aidrop.winner_count,
-					link: aidrop.link,
+					id: airdrop.id,
+					project_name: airdrop.project_name,
+					description: airdrop.description,
+					status: airdrop.status,
+					coinId: airdrop.coin.id,
+					coinsListIDMapId: airdrop.coin.id,
+					start_date: new Date(airdrop.start_date),
+					end_date: new Date(airdrop.end_date),
+					total_prize: airdrop.total_prize,
+					winner_count: airdrop.winner_count,
+					link: airdrop.link,
 				},
 			})
 		}
 
-		console.log('✅ Records Aidrops updated!')
+		console.log('✅ Records Airdrops updated!')
 
-		return aidropsData
+		return airdropsData
 	} catch (error) {
-		handleError(error, 'GET_AIDROPS')
+		handleError(error, 'GET_AIRDROPS')
 
-		return { data: [] } as AidropsData
+		return { data: [] } as AirdropsData
 	}
 }

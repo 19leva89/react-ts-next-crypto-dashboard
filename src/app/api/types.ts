@@ -140,7 +140,7 @@ export type MarketChartData = {
 	}
 }
 
-export type AidropsData = {
+export type AirdropsData = {
 	data: {
 		id: string
 		project_name: string

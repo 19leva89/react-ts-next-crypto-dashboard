@@ -4,17 +4,17 @@ import { getCoinsList, updateCoinsListIDMapFromAPI } from './../src/app/api/acti
 
 //! To run the command "npx prisma db seed" the server must be running
 
-// ID пользователя
+// User ID
 export const userId = 'cm736nm3z0000o80c4valc9jp'
 
 async function up() {
-	// Запускает обновление списка криптовалют ~20мин
+	// Updating the list of cryptocurrencies ~20min
 	// await updateCoinsListIDMapFromAPI()
 
-	// Получаем список криптовалют TOP250
+	// Get a list of cryptocurrencies TOP250
 	// await getCoinsList()
 
-	// Создаем запись в Coin и UserCoin
+	// Create a record in Coin and UserCoin
 	// #1 1INCH
 	await prisma.$transaction(async (prisma) => {
 		await prisma.coin.upsert({

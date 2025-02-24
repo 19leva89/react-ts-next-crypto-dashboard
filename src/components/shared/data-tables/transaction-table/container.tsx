@@ -34,7 +34,7 @@ export const TableContainer = ({ editTransactions, setEditTransactions, classNam
 	}
 
 	const handleTransactionDelete = async (transactionId: string) => {
-		// Если транзакция временная, удаляем сразу из состояния
+		// If the transaction is temporary, remove it from the state immediately
 		if (transactionId.startsWith('temp-')) {
 			setEditTransactions(editTransactions.filter((t) => t.id !== transactionId))
 
@@ -48,17 +48,14 @@ export const TableContainer = ({ editTransactions, setEditTransactions, classNam
 		}
 
 		try {
-			// Вызываем функцию для удаления транзакции
 			await deleteTransactionFromUser(transactionId)
 
-			// Уведомляем пользователя об успехе
 			toast({
 				title: '✅ Success',
 				description: 'Transaction has been removed',
 				variant: 'default',
 			})
 		} catch (error) {
-			// Уведомляем пользователя об ошибке
 			console.error('Error removing transaction:', error)
 
 			toast({

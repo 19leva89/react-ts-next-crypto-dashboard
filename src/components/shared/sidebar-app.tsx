@@ -108,7 +108,7 @@ export const SidebarApp = () => {
 
 	const [openAuthModal, setOpenAuthModal] = useState<boolean>(false)
 
-	// Фильтруем sideBarData в зависимости от авторизации
+	// Filtering sideBarData based on authorization
 	const filteredSideBarData = sideBarData.filter((item) => {
 		if (item.protected && !session?.user) {
 			return false

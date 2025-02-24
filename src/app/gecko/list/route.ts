@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { makeServerReq } from '@/app/api/make-request'
-import { getCgCoinsListRoute } from '@/app/api/ressources'
+import { getCgCoinsListRoute } from '@/app/api/resources'
 
 export async function GET() {
 	try {
@@ -19,7 +19,7 @@ export async function GET() {
 		}
 
 		// If there is an error, return it
-		return new NextResponse(JSON.stringify({ error: 'Failed to fetch trending data' }), {
+		return new NextResponse(JSON.stringify({ error: 'Failed to fetch list data' }), {
 			status: result.status,
 			headers: { 'Content-Type': 'application/json' },
 		})

@@ -20,10 +20,10 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 
 	const handleBlur = () => {
 		setIsEditing(false)
-		// Разрешаем числа с минусом и запятой
+		// Allow numbers with a minus sign and a comma
 		let numericValue = parseFloat(displayValue.replace(',', '.').replace(/[^0-9.-]/g, ''))
 
-		// Если не число, возвращаем исходное значение
+		// If not a number, return the original value
 		if (isNaN(numericValue)) {
 			numericValue = 0
 		}
@@ -35,9 +35,9 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		let newValue = e.target.value
 
-		// Разрешаем минус только в начале
+		// Allow minus only at the beginning
 		if (newValue.includes('-') && newValue.indexOf('-') !== 0) {
-			newValue = newValue.replace(/-/g, '') // Удаляем лишние минусы
+			newValue = newValue.replace(/-/g, '') // Remove unnecessary minuses
 		}
 
 		setDisplayValue(newValue)

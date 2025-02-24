@@ -45,12 +45,12 @@ export const getCgCoinsMarketChartRoute = (coinId: string, days: ValidDays): str
 	return `${GECKO_ROUTE_V3}/coins/${coinId}/market_chart?vs_currency=usd&days=${days}&precision=8`
 }
 
-// getAidrops
-export const getCmcOngoingAidropsDataRoute = (): string => {
+// getAirdrops
+export const getCmcOngoingAirdropsDataRoute = (): string => {
 	return `${MARKETCAP_ROUTE_V1}/cryptocurrency/airdrops?limit=300&status="ONGOING"`
 }
 
-// getAidrops
-export const getCmcUpcomingAidropsDataRoute = (): string => {
+// getAirdrops
+export const getCmcUpcomingAirdropsDataRoute = (): string => {
 	return `${MARKETCAP_ROUTE_V1}/cryptocurrency/airdrops?limit=300&status="UPCOMING"`
 }

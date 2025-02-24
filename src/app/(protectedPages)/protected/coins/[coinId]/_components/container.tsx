@@ -70,7 +70,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-	// Сортируем транзакции по дате (от старых к новым)
+	// Sort transactions by date (oldest to newest)
 	const sortedTransactions = [...coin.transactions].sort(
 		(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
 	)
@@ -110,7 +110,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					break
 			}
 
-			// Находим актуальное totalQuantity на этот момент времени
+			// Find the current totalQuantity at this point in time
 			const currentQuantity = sortedTransactions
 				.filter((transaction) => new Date(transaction.date).getTime() <= timestamp)
 				.reduce((sum, transaction) => sum + transaction.quantity, 0)
@@ -118,7 +118,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 			return {
 				Label: label,
 				Price: price,
-				TotalValue: currentQuantity * price, // Берем актуальное количество монет и умножаем на цену
+				TotalValue: currentQuantity * price, // Take the current number of coins and multiply it by the price
 			}
 		}) || []
 
@@ -149,7 +149,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 	const handleUpdate = async (sellPrice: string) => {
 		try {
-			// Преобразуем данные о покупках в нужный формат
+			// Transform purchase data into the required format
 			const updatedTransactions = editTransactions.map((transaction) => ({
 				...transaction,
 				quantity: transaction.quantity,
@@ -157,17 +157,17 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				date: new Date(transaction.date),
 			}))
 
-			// Вызываем функцию для обновления криптовалюты
+			// Calling a function to update the cryptocurrency
 			await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
 
-			// Уведомляем пользователя об успехе
+			// Notify the user of success
 			toast({
 				title: '✅ Success',
 				description: 'Coin updated successfully',
 				variant: 'default',
 			})
 		} catch (error) {
-			// Уведомляем пользователя об ошибке
+			// Notify the user about the error
 			console.error('Error updating coin:', error)
 
 			toast({
@@ -199,6 +199,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					min={0}
 					step={0.01}
 					value={editSellPrice}
+					autoFocus={false}
 					onChange={handleSellPriceChange}
 					className="w-[80%] rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 				/>
@@ -214,10 +215,10 @@ export const CoinIdContainer = ({ coin }: Props) => {
 							onClick={() => setDays(value)}
 							className={`px-2 py-1 h-6 rounded-xl ${days === value ? 'bg-blue-500 hover:bg-blue-500' : ''}`}
 						>
-							{/* Full text for screens wider than 640px */}
+							{/* Full text for screens > 640px */}
 							<span className="hidden sm:inline">{label}</span>
 
-							{/* Shortened text for screens strather than 640px */}
+							{/* Shortened text for screens < 640px */}
 							<span className="inline sm:hidden">
 								{label === '1 day' ? '1d' : label === '1 week' ? '1w' : label === '1 month' ? '1m' : '1y'}
 							</span>

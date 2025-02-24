@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { makeServerReq } from '@/app/api/make-request'
-import { getCgTrendingRoute } from '@/app/api/ressources'
+import { getCgTrendingRoute } from '@/app/api/resources'
 
 export async function GET() {
 	try {

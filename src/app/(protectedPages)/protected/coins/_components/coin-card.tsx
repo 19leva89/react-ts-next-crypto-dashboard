@@ -41,7 +41,6 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 	const handleUpdate = async (sellPrice: string) => {
 		try {
-			// Преобразуем данные о покупках в нужный формат
 			const updatedTransactions = editTransactions.map((transaction) => ({
 				...transaction,
 				quantity: transaction.quantity,
@@ -49,20 +48,16 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 				date: new Date(transaction.date),
 			}))
 
-			// Вызываем функцию для обновления криптовалюты
 			await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
 
-			// Уведомляем пользователя об успехе
 			toast({
 				title: '✅ Success',
 				description: 'Coin updated successfully',
 				variant: 'default',
 			})
 
-			// Закрываем диалог
 			setIsDialogOpen(false)
 		} catch (error) {
-			// Уведомляем пользователя об ошибке
 			console.error('Error updating coin:', error)
 
 			toast({
@@ -75,10 +70,8 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 	const handleDelete = async () => {
 		try {
-			// Вызываем функцию для удаления криптовалюты
 			await deleteCoinFromUser(coin.coinId)
 
-			// Уведомляем пользователя об успехе
 			toast({
 				title: '✅ Success',
 				description: 'Coin removed successfully',
@@ -87,7 +80,6 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 			setIsDeleteDialogOpen(false)
 		} catch (error) {
-			// Уведомляем пользователя об ошибке
 			console.error('Error removing coin:', error)
 
 			toast({

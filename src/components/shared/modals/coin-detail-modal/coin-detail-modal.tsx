@@ -143,10 +143,10 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									onClick={() => setDays(value)}
 									className={`px-2 py-1 h-6 rounded-xl ${days === value ? 'bg-blue-500 hover:bg-blue-500' : ''}`}
 								>
-									{/* Full text for screens wider than 640px */}
+									{/* Full text for screens > 640px */}
 									<span className="hidden sm:inline">{label}</span>
 
-									{/* Shortened text for screens strather than 640px */}
+									{/* Shortened text for screens < 640px */}
 									<span className="inline sm:hidden">
 										{label === '1 day' ? '1d' : label === '1 week' ? '1w' : label === '1 month' ? '1m' : '1y'}
 									</span>
@@ -294,7 +294,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 								</div>
 							</div>
 
-							<div className="mt-8 crypto-descr">
+							<div className="mt-8">
 								<span className="font-medium max-[500px]:text-sm">Description</span>
 
 								<p

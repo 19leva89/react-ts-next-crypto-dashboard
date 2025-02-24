@@ -216,7 +216,6 @@ export const columns: ColumnDef<CoinListData>[] = [
 			const coin = row.original
 			const priceChange = coin.price_change_percentage_7d_in_currency as number
 
-			// Проверяем наличие данных sparkline_in_7d и price
 			if (!coin.sparkline_in_7d || !coin.sparkline_in_7d.price) {
 				return null
 			}
