@@ -94,7 +94,7 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 
 						<TableContainer
 							editTransactions={editTransactions}
-							setEditTransactions={setEditTransactions}
+							onChange={setEditTransactions}
 							className="h-[50vh]"
 						/>
 					</div>

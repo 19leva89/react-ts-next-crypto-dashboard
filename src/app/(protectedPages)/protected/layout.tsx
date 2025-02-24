@@ -16,7 +16,7 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
 				<>
 					<Navbar />
 
-					<div className="flex px-4 h-full">{children}</div>
+					<div className="mx-16 max-[1200px]:mx-10 max-[800px]:mx-6 max-[600px]:mx-2">{children}</div>
 				</>
 
 				<Footer />

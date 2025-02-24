@@ -327,6 +327,7 @@ export const addCoinToUser = async (coinId: string, quantity: number, price: num
 		})
 
 		revalidatePath('/')
+		revalidatePath('/protected/coins')
 	} catch (error) {
 		handleError(error, 'ADD_COIN_TO_USER')
 	}
@@ -430,6 +431,8 @@ export const updateUserCoin = async (
 		})
 
 		revalidatePath('/')
+		revalidatePath('/protected/coins')
+		revalidatePath(`/protected/coins/${coinId}`)
 	} catch (error) {
 		handleError(error, 'UPDATE_USER_COIN')
 	}
@@ -456,6 +459,8 @@ export const deleteCoinFromUser = async (coinId: string) => {
 		})
 
 		revalidatePath('/')
+		revalidatePath('/protected/coins')
+		revalidatePath(`/protected/coins/${coinId}`)
 	} catch (error) {
 		handleError(error, 'DELETE_USER_COIN')
 	}
@@ -467,43 +472,38 @@ export const deleteTransactionFromUser = async (coinTransactionId: string) => {
 
 		// Checking if the user is authorized
 		if (!session?.user) throw new Error('User not authenticated')
-
-		// Checking access rights
-		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
-			throw new Error('You do not have permission to perform this action')
-		}
-
 		if (!coinTransactionId) throw new Error('CoinTransactionId is required')
 
-		// Starting a transaction
-		await prisma.$transaction(async (prisma) => {
-			// 1. Getting the transaction to be deleted
+		// 1. Get the coinId inside the transaction and return its result
+		const coinId = await prisma.$transaction(async (prisma) => {
 			const transaction = await prisma.userCoinTransaction.findUnique({
 				where: { id: coinTransactionId },
-				select: { quantity: true, price: true, userCoinId: true },
+				include: {
+					userCoin: {
+						select: {
+							coinId: true,
+							total_quantity: true,
+							total_cost: true,
+						},
+					},
+				},
 			})
 
-			if (!transaction) throw new Error('Transaction not found')
+			if (!transaction?.userCoin) throw new Error('Transaction not found')
+
+			const currentCoinId = transaction.userCoin.coinId
 
 			// 2. Delete transaction
 			await prisma.userCoinTransaction.delete({
 				where: { id: coinTransactionId },
 			})
 
-			// 3. Get current UserCoin values
-			const userCoin = await prisma.userCoin.findUnique({
-				where: { id: transaction.userCoinId },
-				select: { total_quantity: true, total_cost: true },
-			})
-
-			if (!userCoin) throw new Error('UserCoin not found')
-
-			// 4. Recalculate the values
-			const newQuantity = userCoin.total_quantity - transaction.quantity
-			const newCost = userCoin.total_cost - transaction.quantity * transaction.price
+			// 3. Recalculate the values
+			const newQuantity = transaction.userCoin.total_quantity - transaction.quantity
+			const newCost = transaction.userCoin.total_cost - transaction.quantity * transaction.price
 			const newAveragePrice = newQuantity > 0 ? newCost / newQuantity : 0
 
-			// 5. Updating UserCoin
+			// 4. Updating UserCoin
 			await prisma.userCoin.update({
 				where: { id: transaction.userCoinId },
 				data: {
@@ -512,8 +512,12 @@ export const deleteTransactionFromUser = async (coinTransactionId: string) => {
 					average_price: newAveragePrice,
 				},
 			})
+
+			return currentCoinId
 		})
 
+		revalidatePath(`/protected/coins/${coinId}`)
+		revalidatePath('/protected/coins')
 		revalidatePath('/')
 	} catch (error) {
 		handleError(error, 'DELETE_USER_PURCHASE')

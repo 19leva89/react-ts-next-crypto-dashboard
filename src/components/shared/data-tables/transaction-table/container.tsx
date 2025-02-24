@@ -1,4 +1,5 @@
 import { Draft, produce } from 'immer'
+import { useRouter } from 'next/navigation'
 
 import { cn } from '@/lib'
 import { useToast } from '@/hooks'
@@ -10,15 +11,17 @@ import { deleteTransactionFromUser } from '@/app/api/actions'
 
 interface Props {
 	editTransactions: Transaction[]
-	setEditTransactions: (transactions: Transaction[]) => void
+	onChange: (transactions: Transaction[]) => void
 	className?: string
 }
 
-export const TableContainer = ({ editTransactions, setEditTransactions, className }: Props) => {
+export const TableContainer = ({ editTransactions, onChange, className }: Props) => {
+	const router = useRouter()
+
 	const { toast } = useToast()
 
 	const onTransactionChange = (id: string, field: keyof UserCoinData['transactions'][0], value: string) => {
-		setEditTransactions(
+		onChange(
 			produce(editTransactions, (draft: Draft<Transaction[]>) => {
 				const transaction = draft.find((p) => p.id === id)
 
@@ -36,13 +39,15 @@ export const TableContainer = ({ editTransactions, setEditTransactions, classNam
 	const handleTransactionDelete = async (transactionId: string) => {
 		// If the transaction is temporary, remove it from the state immediately
 		if (transactionId.startsWith('temp-')) {
-			setEditTransactions(editTransactions.filter((t) => t.id !== transactionId))
+			onChange(editTransactions.filter((t) => t.id !== transactionId))
 
 			toast({
 				title: '✅ Success',
 				description: 'Transaction has been removed',
 				variant: 'default',
 			})
+
+			router.refresh()
 
 			return
 		}
@@ -55,6 +60,8 @@ export const TableContainer = ({ editTransactions, setEditTransactions, classNam
 				description: 'Transaction has been removed',
 				variant: 'default',
 			})
+
+			router.refresh()
 		} catch (error) {
 			console.error('Error removing transaction:', error)
 

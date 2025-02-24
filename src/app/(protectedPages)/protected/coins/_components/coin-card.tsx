@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { EllipsisVertical, Pencil, Trash, TrendingDown, TrendingUp } from 'lucide-react'
 
 import {
@@ -31,7 +32,10 @@ interface Props {
 }
 
 export const CoinCard = ({ coin, viewMode }: Props) => {
+	const router = useRouter()
+
 	const { toast } = useToast()
+
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
@@ -57,6 +61,8 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 			})
 
 			setIsDialogOpen(false)
+
+			router.refresh()
 		} catch (error) {
 			console.error('Error updating coin:', error)
 
@@ -79,6 +85,8 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 			})
 
 			setIsDeleteDialogOpen(false)
+
+			router.refresh()
 		} catch (error) {
 			console.error('Error removing coin:', error)
 

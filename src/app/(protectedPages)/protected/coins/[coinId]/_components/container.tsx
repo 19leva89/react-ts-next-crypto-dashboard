@@ -1,6 +1,7 @@
 'use client'
 
-import { Plus } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Plus } from 'lucide-react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
@@ -32,6 +33,8 @@ const DAY_OPTIONS: { label: string; value: ValidDays }[] = [
 ]
 
 export const CoinIdContainer = ({ coin }: Props) => {
+	const router = useRouter()
+
 	const { toast } = useToast()
 
 	const [days, setDays] = useState<number>(1)
@@ -166,6 +169,8 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				description: 'Coin updated successfully',
 				variant: 'default',
 			})
+
+			router.refresh()
 		} catch (error) {
 			// Notify the user about the error
 			console.error('Error updating coin:', error)
@@ -179,16 +184,22 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	}
 
 	return (
-		<div className="flex flex-col items-center gap-4 py-4 w-full">
-			<div className="flex flex-row items-center justify-start gap-3 px-4 w-2/3 max-[1200px]:w-auto max-[700px]:w-full max-[700px]:flex-col max-[700px]:items-start max-[700px]:gap-1 max-[600px]:text-sm">
-				<p>Quantity: {formatPrice(coin.totalQuantity, false)}</p>
+		<div className="flex flex-col gap-4 mx-72 max-[1700px]:mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0">
+			<div className="flex flex-row items-center justify-between gap-3 pr-4 max-[600px]:items-start max-[700px]:text-sm">
+				<Button variant="ghost" size="icon" onClick={() => router.back()}>
+					<ArrowLeft />
+				</Button>
 
-				<p>Total invested: ${formatPrice(coin.totalCost, false)}</p>
+				<div className="flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1">
+					<p>Quantity: {formatPrice(coin.totalQuantity, false)}</p>
 
-				<p>Total value: ${formatPrice(totalValue, false)}</p>
+					<p>Total invested: ${formatPrice(coin.totalCost, false)}</p>
+
+					<p>Total value: ${formatPrice(totalValue, false)}</p>
+				</div>
 			</div>
 
-			<div className="flex items-center justify-start gap-4 px-4 w-2/3 max-[700px]:w-full">
+			<div className="flex items-center justify-start gap-4 px-4">
 				<Label htmlFor="sell-price" className="w-[30%]">
 					Sell price
 				</Label>
@@ -206,7 +217,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 			</div>
 
 			{/* Chart */}
-			<div className="w-2/3 max-[1200px]:w-auto max-[700px]:w-full">
+			<div>
 				<div className="flex items-center justify-center gap-2 m-4 mb-2">
 					{DAY_OPTIONS.map(({ label, value }) => (
 						<Button
@@ -298,14 +309,14 @@ export const CoinIdContainer = ({ coin }: Props) => {
 			</div>
 
 			{/* Section for displaying transactions and sales */}
-			<div className="w-2/3 mt-2 max-[1200px]:w-auto max-[700px]:w-full">
+			<div>
 				<div className="flex items-center justify-between mb-1">
 					<h3 className="px-4 text-lg font-semibold max-[400px]:text-sm">Transaction History</h3>
 				</div>
 
 				<TableContainer
 					editTransactions={editTransactions}
-					setEditTransactions={setEditTransactions}
+					onChange={setEditTransactions}
 					className="h-auto"
 				/>
 
