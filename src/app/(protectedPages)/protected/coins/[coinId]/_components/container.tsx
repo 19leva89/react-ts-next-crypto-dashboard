@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Plus } from 'lucide-react'
+import { ArrowLeft, Loader2, Plus } from 'lucide-react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
@@ -14,12 +14,12 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
-import { useToast } from '@/hooks'
+import { useCoinActions } from '@/hooks'
 import { ValidDays } from '@/app/api/constants'
 import { formatPrice } from '@/constants/format-price'
-import { getCoinsMarketChart, updateUserCoin } from '@/app/api/actions'
 import { MarketChartData, Transaction, UserCoinData } from '@/app/api/types'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
+import { createTransactionForUser, getCoinsMarketChart, updateUserCoin } from '@/app/api/actions'
 
 interface Props {
 	coin: UserCoinData
@@ -35,9 +35,10 @@ const DAY_OPTIONS: { label: string; value: ValidDays }[] = [
 export const CoinIdContainer = ({ coin }: Props) => {
 	const router = useRouter()
 
-	const { toast } = useToast()
+	const { handleAction } = useCoinActions()
 
 	const [days, setDays] = useState<number>(1)
+	const [isCreating, setIsCreating] = useState(false)
 	const [getCoinData, setGetCoinData] = useState<boolean>(false)
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
@@ -138,49 +139,44 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 	const handleSellPriceChange = handleNumberInput(setEditSellPrice)
 
-	const handleAddTransaction = () => {
-		const newTransaction: Transaction = {
-			id: `temp-${Math.random().toString(36).substring(2)}`,
-			quantity: 0,
-			price: 0,
-			date: new Date(),
-			userCoinId: coin.coinId,
-		}
+	const handleAddTransaction = async () => {
+		setIsCreating(true)
+		try {
+			await handleAction(
+				async () => {
+					const newTransaction = await createTransactionForUser(coin.coinId, {
+						quantity: 0,
+						price: 0,
+						date: new Date(),
+					})
 
-		setEditTransactions([...editTransactions, newTransaction])
+					if (newTransaction) {
+						setEditTransactions([...editTransactions, newTransaction])
+					}
+				},
+				'Transaction created successfully',
+				'Failed to create transaction',
+			)
+		} finally {
+			setIsCreating(false)
+		}
 	}
 
 	const handleUpdate = async (sellPrice: string) => {
-		try {
-			// Transform purchase data into the required format
-			const updatedTransactions = editTransactions.map((transaction) => ({
-				...transaction,
-				quantity: transaction.quantity,
-				price: transaction.price,
-				date: new Date(transaction.date),
-			}))
+		await handleAction(
+			async () => {
+				const updatedTransactions = editTransactions.map((transaction) => ({
+					...transaction,
+					quantity: transaction.quantity,
+					price: transaction.price,
+					date: new Date(transaction.date),
+				}))
 
-			// Calling a function to update the cryptocurrency
-			await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
-
-			// Notify the user of success
-			toast({
-				title: '✅ Success',
-				description: 'Coin updated successfully',
-				variant: 'default',
-			})
-
-			router.refresh()
-		} catch (error) {
-			// Notify the user about the error
-			console.error('Error updating coin:', error)
-
-			toast({
-				title: '🚨 Error',
-				description: error instanceof Error ? error.message : 'Failed to update coin. Please try again',
-				variant: 'destructive',
-			})
-		}
+				await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
+			},
+			'Coin updated successfully',
+			'Failed to update coin',
+		)
 	}
 
 	return (
@@ -222,7 +218,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					{DAY_OPTIONS.map(({ label, value }) => (
 						<Button
 							key={value}
-							variant={'outline'}
+							variant="outline"
 							onClick={() => setDays(value)}
 							className={`px-2 py-1 h-6 rounded-xl ${days === value ? 'bg-blue-500 hover:bg-blue-500' : ''}`}
 						>
@@ -315,15 +311,30 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				</div>
 
 				<TableContainer
+					key={Date.now()}
 					editTransactions={editTransactions}
 					onChange={setEditTransactions}
 					className="h-auto"
 				/>
 
 				<div className="flex flex-row items-center justify-end gap-3 px-4 mt-4">
-					<Button variant={'outline'} onClick={handleAddTransaction} className="rounded-xl text-white">
-						<Plus className="mr-2 h-4 w-4" />
-						Transaction
+					<Button
+						variant="outline"
+						onClick={handleAddTransaction}
+						disabled={isCreating}
+						className="flex items-center gap-2 rounded-xl text-white"
+					>
+						{isCreating ? (
+							<>
+								<Loader2 className="h-4 w-4 animate-spin" />
+								<span>Creating...</span>
+							</>
+						) : (
+							<>
+								<Plus className="h-4 w-4" />
+								<span>Transaction</span>
+							</>
+						)}
 					</Button>
 
 					<Button onClick={() => handleUpdate(editSellPrice)} className="rounded-xl text-white">

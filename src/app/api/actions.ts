@@ -17,6 +17,7 @@ import {
 	PrismaTransactionClient,
 	TrendingCoin,
 	CoinData,
+	Transaction,
 } from './types'
 import { auth, signIn } from '@/auth'
 import { makeReq } from './make-request'
@@ -326,7 +327,6 @@ export const addCoinToUser = async (coinId: string, quantity: number, price: num
 			await recalculateAveragePrice(session.user.id, coinId, transactionPrisma)
 		})
 
-		revalidatePath('/')
 		revalidatePath('/protected/coins')
 	} catch (error) {
 		handleError(error, 'ADD_COIN_TO_USER')
@@ -346,68 +346,23 @@ export const updateUserCoin = async (
 		if (!coinId) throw new Error('Coin ID is required')
 
 		await prisma.$transaction(async (transactionPrisma) => {
-			const userCoin = await prisma.userCoin.findUnique({
-				where: { userId_coinId: { userId, coinId } },
-				include: { transactions: true },
-			})
-
-			if (!userCoin) throw new Error('Coin not found in portfolio')
-
-			// Check: Is the user trying to sell more than they have?
+			// Validation for transactions
 			if (transactions?.some((t) => t.quantity < 0)) {
-				const totalOwned = userCoin.transactions
-					.filter((t) => t.quantity > 0) // Only consider owned coins
-					.reduce((sum, t) => sum + t.quantity, 0)
+				const totalOwned = transactions.filter((t) => t.quantity > 0).reduce((sum, t) => sum + t.quantity, 0)
 
-				const totalSelling = transactions
-					.filter((t) => t.quantity < 0) // Only consider selling coins
-					.reduce((sum, t) => sum + t.quantity, 0)
+				const totalSelling = Math.abs(
+					transactions.filter((t) => t.quantity < 0).reduce((sum, t) => sum + t.quantity, 0),
+				)
 
-				// Include temporary transactions (those with 'temp-' prefix)
-				const tempTransactions = transactions.filter((t) => t.id.startsWith('temp-'))
-				const tempTotal = tempTransactions.reduce((sum, t) => sum + t.quantity, 0)
-
-				// Calculate total available for selling, including temporary ones
-				const totalAvailableForSelling = totalOwned + tempTotal
-
-				if (totalAvailableForSelling + totalSelling < 0) {
+				if (totalSelling > totalOwned) {
 					throw new Error('Not enough coins to sell')
 				}
 			}
 
-			// Updating transactions
+			// Update transactions
 			if (transactions?.length) {
-				const existingTransactions = userCoin.transactions
-				const newTransactions = []
-				const updatedTransactions = []
-
-				// Separating new and existing transactions
-				for (const t of transactions) {
-					if (t.id.startsWith('temp-')) {
-						newTransactions.push({
-							quantity: t.quantity,
-							price: t.price,
-							date: t.date,
-							userCoinId: userCoin.id,
-						})
-					} else {
-						if (!existingTransactions.some((et) => et.id === t.id)) {
-							throw new Error(`Invalid transaction ID: ${t.id}`)
-						}
-						updatedTransactions.push(t)
-					}
-				}
-
-				// Creating new transactions
-				if (newTransactions.length > 0) {
-					await transactionPrisma.userCoinTransaction.createMany({
-						data: newTransactions,
-					})
-				}
-
-				// Updating existing transactions
 				await Promise.all(
-					updatedTransactions.map((t) =>
+					transactions.map((t) =>
 						transactionPrisma.userCoinTransaction.update({
 							where: { id: t.id },
 							data: { ...t },
@@ -430,7 +385,6 @@ export const updateUserCoin = async (
 			}
 		})
 
-		revalidatePath('/')
 		revalidatePath('/protected/coins')
 		revalidatePath(`/protected/coins/${coinId}`)
 	} catch (error) {
@@ -458,11 +412,47 @@ export const deleteCoinFromUser = async (coinId: string) => {
 			},
 		})
 
-		revalidatePath('/')
 		revalidatePath('/protected/coins')
 		revalidatePath(`/protected/coins/${coinId}`)
 	} catch (error) {
 		handleError(error, 'DELETE_USER_COIN')
+	}
+}
+
+export const createTransactionForUser = async (
+	coinId: string,
+	transactionData: Omit<Transaction, 'id' | 'userCoinId'>,
+) => {
+	try {
+		const session = await auth()
+		const userId = session?.user?.id
+
+		if (!userId) throw new Error('User not authenticated')
+		if (!coinId) throw new Error('Coin ID is required')
+
+		const result = await prisma.$transaction(async (prisma) => {
+			// Creating a new transaction
+			const newTransaction = await prisma.userCoinTransaction.create({
+				data: {
+					...transactionData,
+					userCoin: {
+						connect: { userId_coinId: { userId, coinId } },
+					},
+				},
+			})
+
+			// Recalculation of the average price
+			await recalculateAveragePrice(userId, coinId, prisma)
+
+			return newTransaction
+		})
+
+		revalidatePath('/protected/coins')
+		revalidatePath(`/protected/coins/${coinId}`)
+
+		return result
+	} catch (error) {
+		handleError(error, 'CREATE_TRANSACTION')
 	}
 }
 
@@ -475,50 +465,43 @@ export const deleteTransactionFromUser = async (coinTransactionId: string) => {
 		if (!coinTransactionId) throw new Error('CoinTransactionId is required')
 
 		// 1. Get the coinId inside the transaction and return its result
-		const coinId = await prisma.$transaction(async (prisma) => {
-			const transaction = await prisma.userCoinTransaction.findUnique({
+		const deletedTransaction = await prisma.$transaction(async (prisma) => {
+			// 1. Find and validate transaction
+			const transaction = await prisma.userCoinTransaction.findUniqueOrThrow({
 				where: { id: coinTransactionId },
-				include: {
-					userCoin: {
-						select: {
-							coinId: true,
-							total_quantity: true,
-							total_cost: true,
-						},
-					},
-				},
+				include: { userCoin: true },
 			})
-
-			if (!transaction?.userCoin) throw new Error('Transaction not found')
-
-			const currentCoinId = transaction.userCoin.coinId
 
 			// 2. Delete transaction
 			await prisma.userCoinTransaction.delete({
 				where: { id: coinTransactionId },
 			})
 
-			// 3. Recalculate the values
-			const newQuantity = transaction.userCoin.total_quantity - transaction.quantity
-			const newCost = transaction.userCoin.total_cost - transaction.quantity * transaction.price
-			const newAveragePrice = newQuantity > 0 ? newCost / newQuantity : 0
-
-			// 4. Updating UserCoin
-			await prisma.userCoin.update({
+			// 3. Atomic update of UserCoin
+			const updatedUserCoin = await prisma.userCoin.update({
 				where: { id: transaction.userCoinId },
 				data: {
-					total_quantity: newQuantity,
-					total_cost: newCost,
-					average_price: newAveragePrice,
+					total_quantity: { decrement: transaction.quantity },
+					total_cost: { decrement: transaction.quantity * transaction.price },
 				},
 			})
 
-			return currentCoinId
+			// 4. Calculate new average price
+			const newAveragePrice =
+				updatedUserCoin.total_quantity > 0 ? updatedUserCoin.total_cost / updatedUserCoin.total_quantity : 0
+
+			// 5. Update average price
+			return await prisma.userCoin.update({
+				where: { id: transaction.userCoinId },
+				data: { average_price: newAveragePrice },
+				include: { transactions: true },
+			})
 		})
 
-		revalidatePath(`/protected/coins/${coinId}`)
 		revalidatePath('/protected/coins')
-		revalidatePath('/')
+		revalidatePath(`/protected/coins/${deletedTransaction.coinId}`)
+
+		return deletedTransaction
 	} catch (error) {
 		handleError(error, 'DELETE_USER_PURCHASE')
 	}
@@ -974,7 +957,7 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 		}
 
 		// If there is no data, make a request to the API
-		console.log('🔄 Outdated records, request CoinData via API...')
+		console.log(`🔄 Outdated records, request CoinData ${coinId} via API...`)
 		const response = await makeReq('GET', `/gecko/coins-get/${coinId}`)
 
 		// Validate the API response

@@ -139,7 +139,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 							{DAY_OPTIONS.map(({ label, value }) => (
 								<Button
 									key={value}
-									variant={'outline'}
+									variant="outline"
 									onClick={() => setDays(value)}
 									className={`px-2 py-1 h-6 rounded-xl ${days === value ? 'bg-blue-500 hover:bg-blue-500' : ''}`}
 								>

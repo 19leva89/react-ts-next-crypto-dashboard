@@ -1,10 +1,9 @@
 import { Draft, produce } from 'immer'
-import { useRouter } from 'next/navigation'
 
 import { cn } from '@/lib'
-import { useToast } from '@/hooks'
 import { DataTable } from './data'
 import { getColumns } from './columns'
+import { useCoinActions } from '@/hooks'
 import { ScrollArea } from '@/components/ui'
 import { Transaction, UserCoinData } from '@/app/api/types'
 import { deleteTransactionFromUser } from '@/app/api/actions'
@@ -16,9 +15,7 @@ interface Props {
 }
 
 export const TableContainer = ({ editTransactions, onChange, className }: Props) => {
-	const router = useRouter()
-
-	const { toast } = useToast()
+	const { handleAction } = useCoinActions()
 
 	const onTransactionChange = (id: string, field: keyof UserCoinData['transactions'][0], value: string) => {
 		onChange(
@@ -37,41 +34,15 @@ export const TableContainer = ({ editTransactions, onChange, className }: Props)
 	}
 
 	const handleTransactionDelete = async (transactionId: string) => {
-		// If the transaction is temporary, remove it from the state immediately
-		if (transactionId.startsWith('temp-')) {
-			onChange(editTransactions.filter((t) => t.id !== transactionId))
+		await handleAction(
+			async () => {
+				await deleteTransactionFromUser(transactionId)
 
-			toast({
-				title: '✅ Success',
-				description: 'Transaction has been removed',
-				variant: 'default',
-			})
-
-			router.refresh()
-
-			return
-		}
-
-		try {
-			await deleteTransactionFromUser(transactionId)
-
-			toast({
-				title: '✅ Success',
-				description: 'Transaction has been removed',
-				variant: 'default',
-			})
-
-			router.refresh()
-		} catch (error) {
-			console.error('Error removing transaction:', error)
-
-			toast({
-				title: '🚨 Error',
-				description:
-					error instanceof Error ? error.message : 'Failed to remove transaction. Please try again',
-				variant: 'destructive',
-			})
-		}
+				onChange(editTransactions.filter((t) => t.id !== transactionId))
+			},
+			'Transaction has been removed',
+			'Failed to remove transaction. Please try again',
+		)
 	}
 
 	return (

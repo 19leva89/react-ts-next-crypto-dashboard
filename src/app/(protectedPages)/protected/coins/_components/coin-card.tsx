@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { EllipsisVertical, Pencil, Trash, TrendingDown, TrendingUp } from 'lucide-react'
 
 import {
@@ -19,8 +18,8 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui'
 import { cn } from '@/lib'
-import { useToast } from '@/hooks'
 import { EditCoin } from './edit-coin'
+import { useCoinActions } from '@/hooks'
 import { DeleteCoin } from './delete-coin'
 import { formatPrice } from '@/constants/format-price'
 import { UserCoinData, Transaction } from '@/app/api/types'
@@ -32,9 +31,7 @@ interface Props {
 }
 
 export const CoinCard = ({ coin, viewMode }: Props) => {
-	const router = useRouter()
-
-	const { toast } = useToast()
+	const { handleAction } = useCoinActions()
 
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
@@ -44,58 +41,30 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 	const changePercentagePrice = ((coin.currentPrice - coin.averagePrice) / coin.averagePrice) * 100
 
 	const handleUpdate = async (sellPrice: string) => {
-		try {
-			const updatedTransactions = editTransactions.map((transaction) => ({
-				...transaction,
-				quantity: transaction.quantity,
-				price: transaction.price,
-				date: new Date(transaction.date),
-			}))
+		const success = await handleAction(
+			async () => {
+				const updatedTransactions = editTransactions.map((transaction) => ({
+					...transaction,
+					date: new Date(transaction.date),
+				}))
 
-			await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
+				await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
+			},
+			'Coin updated successfully',
+			'Failed to update coin',
+		)
 
-			toast({
-				title: '✅ Success',
-				description: 'Coin updated successfully',
-				variant: 'default',
-			})
-
-			setIsDialogOpen(false)
-
-			router.refresh()
-		} catch (error) {
-			console.error('Error updating coin:', error)
-
-			toast({
-				title: '🚨 Error',
-				description: error instanceof Error ? error.message : 'Failed to update coin. Please try again',
-				variant: 'destructive',
-			})
-		}
+		if (success) setIsDialogOpen(false)
 	}
 
 	const handleDelete = async () => {
-		try {
-			await deleteCoinFromUser(coin.coinId)
+		const success = await handleAction(
+			async () => await deleteCoinFromUser(coin.coinId),
+			'Coin removed successfully',
+			'Failed to remove coin',
+		)
 
-			toast({
-				title: '✅ Success',
-				description: 'Coin removed successfully',
-				variant: 'default',
-			})
-
-			setIsDeleteDialogOpen(false)
-
-			router.refresh()
-		} catch (error) {
-			console.error('Error removing coin:', error)
-
-			toast({
-				title: '🚨 Error',
-				description: error instanceof Error ? error.message : 'Failed to remove coin. Please try again',
-				variant: 'destructive',
-			})
-		}
+		if (success) setIsDeleteDialogOpen(false)
 	}
 
 	return (

@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react'
+import { Loader2, Plus } from 'lucide-react'
 import { ChangeEvent, useState } from 'react'
 
 import {
@@ -13,8 +13,10 @@ import {
 	Label,
 } from '@/components/ui'
 
+import { useCoinActions } from '@/hooks'
 import { formatPrice } from '@/constants/format-price'
 import { Transaction, UserCoinData } from '@/app/api/types'
+import { createTransactionForUser } from '@/app/api/actions'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 
 interface Props {
@@ -27,6 +29,9 @@ interface Props {
 }
 
 export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setEditTransactions }: Props) => {
+	const { handleAction } = useCoinActions()
+
+	const [isCreating, setIsCreating] = useState(false)
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
 
 	const totalValue = coin.currentPrice * coin.totalQuantity
@@ -41,16 +46,27 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 
 	const handleSellPriceChange = handleNumberInput(setEditSellPrice)
 
-	const handleAddTransaction = () => {
-		const newTransaction: Transaction = {
-			id: `temp-${Math.random().toString(36).substring(2)}`,
-			quantity: 0,
-			price: 0,
-			date: new Date(),
-			userCoinId: coin.coinId,
-		}
+	const handleAddTransaction = async () => {
+		setIsCreating(true)
+		try {
+			await handleAction(
+				async () => {
+					const newTransaction = await createTransactionForUser(coin.coinId, {
+						quantity: 0,
+						price: 0,
+						date: new Date(),
+					})
 
-		setEditTransactions([...editTransactions, newTransaction])
+					if (newTransaction) {
+						setEditTransactions([...editTransactions, newTransaction])
+					}
+				},
+				'Transaction created successfully',
+				'Failed to create transaction',
+			)
+		} finally {
+			setIsCreating(false)
+		}
 	}
 
 	return (
@@ -93,6 +109,7 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 						</div>
 
 						<TableContainer
+							key={Date.now()}
 							editTransactions={editTransactions}
 							onChange={setEditTransactions}
 							className="h-[50vh]"
@@ -101,9 +118,23 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 				</div>
 
 				<DialogFooter className="flex-row justify-end gap-3 px-4">
-					<Button variant={'outline'} onClick={handleAddTransaction} className="rounded-xl text-white">
-						<Plus className="mr-2 h-4 w-4" />
-						Transaction
+					<Button
+						variant="outline"
+						onClick={handleAddTransaction}
+						disabled={isCreating}
+						className="flex items-center gap-2 rounded-xl text-white"
+					>
+						{isCreating ? (
+							<>
+								<Loader2 className="h-4 w-4 animate-spin" />
+								<span>Creating...</span>
+							</>
+						) : (
+							<>
+								<Plus className="h-4 w-4" />
+								<span>Transaction</span>
+							</>
+						)}
 					</Button>
 
 					<Button onClick={() => onSave(editSellPrice)} className="rounded-xl text-white">
