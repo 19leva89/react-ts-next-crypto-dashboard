@@ -98,7 +98,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 			)
 		},
 		cell: ({ row }) => {
-			const amount = parseFloat(row.getValue('current_price'))
+			const amount = parseFloat(row.getValue('current_price')) || 0
 
 			const formatted = formatPrice(amount, true)
 
@@ -172,7 +172,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 			)
 		},
 		cell: ({ row }) => {
-			const amount = parseFloat(row.getValue('total_volume'))
+			const amount = parseFloat(row.getValue('total_volume')) || 0
 
 			const formatted = formatPrice(amount, true)
 
@@ -200,7 +200,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 			)
 		},
 		cell: ({ row }) => {
-			const amount = parseFloat(row.getValue('market_cap'))
+			const amount = parseFloat(row.getValue('market_cap')) || 0
 
 			const formatted = formatPrice(amount, true)
 

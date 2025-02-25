@@ -512,7 +512,6 @@ export const getTrendingData = async (): Promise<TrendingData> => {
 		const data = await prisma.trendingCoin.findMany({
 			select: {
 				id: true,
-				coin_id: true,
 				name: true,
 				symbol: true,
 				market_cap_rank: true,
@@ -525,18 +524,16 @@ export const getTrendingData = async (): Promise<TrendingData> => {
 
 		console.log(data.length ? '✅ Using cached TrendingData from DB' : '⚠️ No TrendingData in DB')
 
+		if (data.length === 0) {
+			await updateTrendingData()
+		}
+
 		return {
 			coins: data.map((coin) => ({
 				item: {
-					id: coin.id,
-					coin_id: coin.coin_id,
-					name: coin.name,
-					symbol: coin.symbol,
+					...coin,
 					market_cap_rank: coin.market_cap_rank ?? 0,
-					thumb: coin.thumb,
-					slug: coin.slug,
-					price_btc: coin.price_btc,
-					data: coin.data as any,
+					data: typeof coin.data === 'string' ? JSON.parse(coin.data) : coin.data,
 				},
 			})),
 		}
@@ -558,10 +555,14 @@ export const updateTrendingData = async (): Promise<TrendingData> => {
 			return { coins: [] } as TrendingData
 		}
 
+		// Delete old data
+		await prisma.trendingCoin.deleteMany()
+		console.log('🗑️ Old trending data deleted.')
+
 		// Transform the data into the required format
 		const trendingCoins = response.coins.map((coin: TrendingCoin) => ({
 			item: {
-				coin_id: coin.item.coin_id,
+				id: coin.item.id,
 				name: coin.item.name,
 				symbol: coin.item.symbol,
 				market_cap_rank: coin.item.market_cap_rank,
@@ -575,10 +576,8 @@ export const updateTrendingData = async (): Promise<TrendingData> => {
 		// Batch update
 		const transaction = await prisma.$transaction(
 			trendingCoins.map((coin: TrendingCoin) =>
-				prisma.trendingCoin.upsert({
-					where: { coin_id_slug: { coin_id: coin.item.coin_id, slug: coin.item.slug } },
-					update: coin.item,
-					create: coin.item,
+				prisma.trendingCoin.create({
+					data: coin.item,
 				}),
 			),
 		)
@@ -906,51 +905,33 @@ export const getCoinsListIDMap = async (): Promise<CoinsListIDMapData> => {
 
 export const getCoinData = async (coinId: string): Promise<CoinData> => {
 	try {
-		const session = await auth()
-
-		if (!session?.user) throw new Error('User not found')
-
-		const existingUser = await prisma.user.findFirst({
-			where: { id: session?.user.id },
-			include: { accounts: true },
-		})
-
-		if (!existingUser) throw new Error('User not found')
+		const currentTime = new Date()
+		const updateTime = new Date(currentTime.getTime() - COINS_UPDATE_INTERVAL)
 
 		// Checking the availability of data in the DB
-		const cachedData = await prisma.userCoin.findUnique({
-			where: {
-				userId_coinId: { userId: existingUser.id, coinId },
-			},
+		const cachedData = await prisma.coin.findUnique({
+			where: { id: coinId },
 			include: {
 				coinsListIDMap: true,
-				coin: true,
 			},
 		})
 
-		if (cachedData) {
+		if (cachedData && cachedData.updatedAt > updateTime) {
 			console.log('✅ Using cached CoinData from DB')
+
 			return {
-				id: cachedData.coinId,
+				id: cachedData.id,
 				symbol: cachedData.coinsListIDMap.symbol,
 				name: cachedData.coinsListIDMap.name,
-				description: { en: cachedData.coin.description || '' },
-				image: { thumb: cachedData.coin.image || '' },
-				market_cap_rank: cachedData.coin.market_cap_rank || 0,
+				description: { en: cachedData.description || '' },
+				image: { thumb: cachedData.image || '' },
+				market_cap_rank: cachedData.market_cap_rank || 0,
 				market_data: {
-					current_price: {
-						usd: cachedData.coin.current_price || 0,
-					},
-					market_cap: {
-						usd: cachedData.coin.market_cap || 0,
-					},
-					high_24h: {
-						usd: cachedData.coin.high_24h || 0,
-					},
-					low_24h: {
-						usd: cachedData.coin.low_24h || 0,
-					},
-					circulating_supply: cachedData.coin.circulating_supply || 0,
+					current_price: { usd: cachedData.current_price || 0 },
+					market_cap: { usd: cachedData.market_cap || 0 },
+					high_24h: { usd: cachedData.high_24h || 0 },
+					low_24h: { usd: cachedData.low_24h || 0 },
+					circulating_supply: cachedData.circulating_supply || 0,
 				},
 				last_updated: cachedData.updatedAt.toISOString(),
 			} as CoinData
@@ -990,6 +971,7 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 				price_change_percentage_24h: market_data?.price_change_percentage_24h || 0,
 				circulating_supply: market_data?.circulating_supply || 0,
 				price_change_percentage_7d_in_currency: market_data?.price_change_percentage_7d_in_currency?.usd || 0,
+				updatedAt: new Date(),
 			},
 			create: {
 				id,
@@ -1004,9 +986,11 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 				price_change_percentage_24h: market_data?.price_change_percentage_24h || 0,
 				circulating_supply: market_data?.circulating_supply || 0,
 				price_change_percentage_7d_in_currency: market_data?.price_change_percentage_7d_in_currency?.usd || 0,
+				updatedAt: new Date(),
 				coinsListIDMapId: id,
 			},
 		})
+
 		console.log('✅ Records CoinData updated!')
 
 		return {
@@ -1225,13 +1209,6 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 		// Get all the data about the charts from the DB
 		const cachedData = await prisma.marketChart.findUnique({
 			where: { id: coinId },
-			include: {
-				coin: {
-					include: {
-						coinsListIDMap: true,
-					},
-				},
-			},
 		})
 
 		const currentTime = new Date()
@@ -1239,10 +1216,7 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 
 		// If the data for the required period already exists, return it
 		if (cachedData?.[field] && cachedData?.[updatedField] && cachedData[updatedField]! > updateTime) {
-			return {
-				prices: cachedData[field],
-				coin: cachedData.coin,
-			} as MarketChartData
+			return { prices: cachedData[field] } as MarketChartData
 		}
 
 		// Request data from the API
@@ -1255,7 +1229,7 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 		}
 
 		// Update or create a record in the DB
-		const updatedData = await prisma.marketChart.upsert({
+		await prisma.marketChart.upsert({
 			where: { id: coinId },
 			update: {
 				[field]: response.prices,
@@ -1269,21 +1243,11 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 					connect: { id: coinId },
 				},
 			},
-			include: {
-				coin: {
-					include: {
-						coinsListIDMap: true,
-					},
-				},
-			},
 		})
 
 		console.log(`✅ Records CoinsMarketChart updated for ${days} day(s)!`)
 
-		return {
-			prices: response.prices,
-			coin: updatedData.coin,
-		} as MarketChartData
+		return { prices: response.prices } as MarketChartData
 	} catch (error) {
 		handleError(error, 'GET_COINS_MARKET_CHART')
 

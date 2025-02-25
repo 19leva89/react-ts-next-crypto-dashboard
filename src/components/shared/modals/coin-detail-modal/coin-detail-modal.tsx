@@ -20,9 +20,9 @@ import {
 	Skeleton,
 } from '@/components/ui'
 import { ValidDays } from '@/app/api/constants'
-import { MarketChartData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
-import { getCoinsMarketChart } from '@/app/api/actions'
+import { CoinData, MarketChartData } from '@/app/api/types'
+import { getCoinData, getCoinsMarketChart } from '@/app/api/actions'
 
 interface Props {
 	coinId: string
@@ -39,24 +39,27 @@ const DAY_OPTIONS: { label: string; value: ValidDays }[] = [
 
 export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) => {
 	const [days, setDays] = useState<number>(1)
-	const [getCoinData, setGetCoinData] = useState<boolean>(false)
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
+	const [coinData, setCoinData] = useState<CoinData>()
 
 	useEffect(() => {
 		if (!showDetailModal) return
 
-		setGetCoinData(true)
+		setIsLoading(true)
 		setCoinMarketChartData(undefined)
 
 		const fetchData = async () => {
 			try {
 				const marketChart = await getCoinsMarketChart(coinId, days)
+				const coinData = await getCoinData(coinId)
 
 				setCoinMarketChartData(marketChart)
+				setCoinData(coinData)
 			} catch (error) {
 				console.error('Error fetching coin details:', error)
 			} finally {
-				setGetCoinData(false)
+				setIsLoading(false)
 			}
 		}
 
@@ -120,16 +123,16 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 				<SheetHeader>
 					<SheetTitle>
 						<div className="flex justify-between items-center">
-							{getCoinData ? (
+							{isLoading ? (
 								<Skeleton className="h-7 w-3/4 max-[500px]:h-5" />
 							) : (
 								<Link
-									href={`https://coingecko.com/en/coins/${coinMarketChartData?.coin.coinsListIDMap.id}`}
+									href={`https://coingecko.com/en/coins/${coinData?.id}`}
 									target="_blank"
 									rel="noopener noreferrer"
 								>
 									<h4 className="cursor-pointer font-semibold text-md hover:text-[#397fee] dark:hover:text-[#75a6f4] max-[500px]:text-sm">
-										{coinMarketChartData?.coin.coinsListIDMap.name}
+										{coinData?.name}
 									</h4>
 								</Link>
 							)}
@@ -159,7 +162,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 				</SheetHeader>
 
 				<div className="flex justify-center">
-					{getCoinData ? (
+					{isLoading ? (
 						<Skeleton className="h-72 w-full" />
 					) : (
 						<div className="w-full">
@@ -220,36 +223,34 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 				</div>
 
 				<div className="mt-10">
-					{getCoinData ? (
+					{isLoading ? (
 						<Skeleton className="h-72 w-full" />
 					) : (
 						<>
 							<div className="flex justify-between items-center font-medium max-[500px]:text-sm">
 								<Link
-									href={`https://coingecko.com/en/coins/${coinMarketChartData?.coin.coinsListIDMap.id}`}
+									href={`https://coingecko.com/en/coins/${coinData?.id}`}
 									target="_blank"
 									rel="noopener noreferrer"
 								>
 									<div className="items-center flex gap-2 cursor-pointer hover:text-[#397fee] dark:hover:text-[#75a6f4]">
 										<Image
-											src={coinMarketChartData?.coin.image || '/svg/coin-not-found.svg'}
-											alt={coinMarketChartData?.coin.coinsListIDMap.name || 'Coin image'}
+											src={coinData?.image.thumb || '/svg/coin-not-found.svg'}
+											alt={coinData?.name || 'Coin image'}
 											width={32}
 											height={32}
 											className="size-8 rounded-full max-[500px]:size-6"
 										/>
 
 										<span className="font-medium">
-											<span>{coinMarketChartData?.coin.coinsListIDMap.name} </span>
+											<span>{coinData?.name} </span>
 
-											<span className="uppercase">
-												({coinMarketChartData?.coin.coinsListIDMap.symbol}/usd)
-											</span>
+											<span className="uppercase">({coinData?.symbol}/usd)</span>
 										</span>
 									</div>
 								</Link>
 
-								<div>${formatPrice(coinMarketChartData?.coin.current_price as number)}</div>
+								<div>${formatPrice(coinData?.market_data.current_price.usd as number)}</div>
 							</div>
 
 							<div className="mt-8 flex flex-col gap-2 text-md max-[500px]:text-sm">
@@ -257,7 +258,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span>Crypto market rank</span>
 
 									<span className="bg-slate-100 dark:bg-gray-600 px-2 rounded-full text-sm flex items-center">
-										Rank #{coinMarketChartData?.coin.market_cap_rank}
+										Rank #{coinData?.market_cap_rank}
 									</span>
 								</div>
 
@@ -265,7 +266,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span>Market cap</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										${formatPrice(coinMarketChartData?.coin.market_cap as number, true)}
+										${formatPrice(coinData?.market_data.market_cap.usd as number, true)}
 									</span>
 								</div>
 
@@ -273,7 +274,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span>Circulating supply</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										${formatPrice(coinMarketChartData?.coin.circulating_supply as number, true)}
+										${formatPrice(coinData?.market_data.circulating_supply as number, true)}
 									</span>
 								</div>
 
@@ -281,7 +282,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span className="capitalize">24 hour high</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										${formatPrice(coinMarketChartData?.coin.high_24h as number, true)}
+										${formatPrice(coinData?.market_data.high_24h.usd as number, true)}
 									</span>
 								</div>
 
@@ -289,7 +290,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span className="capitalize">24 hour low</span>
 
 									<span className="text-gray-600 dark:text-gray-300">
-										${formatPrice(coinMarketChartData?.coin.low_24h as number, true)}
+										${formatPrice(coinData?.market_data.low_24h.usd as number, true)}
 									</span>
 								</div>
 							</div>
@@ -299,7 +300,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 								<p
 									className="mt-3 text-gray-600 dark:text-gray-300 prose prose-sm prose-a:text-blue-700 prose-a:hover:underline dark:prose-a:text-blue-700 dark:prose-a:hover:underline duration-200"
-									dangerouslySetInnerHTML={{ __html: coinMarketChartData?.coin.description as string }}
+									dangerouslySetInnerHTML={{ __html: coinData?.description.en as string }}
 								/>
 							</div>
 						</>

@@ -28,12 +28,13 @@ import { addCoinToUser, getCoinsListIDMap } from '@/app/api/actions'
 
 export const AddCoin = () => {
 	const { toast } = useToast()
+
 	const [editPrice, setEditPrice] = useState<string>('')
-	const [editQuantity, setEditQuantity] = useState<string>('')
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [searchQuery, setSearchQuery] = useState<string>('')
-	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+	const [editQuantity, setEditQuantity] = useState<string>('')
 	const [selectedCoin, setSelectedCoin] = useState<string>('')
+	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [coinsListIDMapData, setCoinsListIDMapData] = useState<CoinsListIDMapData>([])
 
 	useEffect(() => {

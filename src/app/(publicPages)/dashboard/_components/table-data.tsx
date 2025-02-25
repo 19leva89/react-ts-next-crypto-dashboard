@@ -95,7 +95,7 @@ export function DataTable<TData, TValue>({
 						placeholder="Filter coins..."
 						value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
 						onChange={(e) => handleFilterChange(e.target.value)}
-						className="pl-10 rounded-xl"
+						className="pl-10 rounded-xl max-[600px]:pl-10"
 					/>
 				</div>
 

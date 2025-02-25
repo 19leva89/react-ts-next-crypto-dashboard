@@ -39,13 +39,13 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 	const [days, setDays] = useState<number>(1)
 	const [isCreating, setIsCreating] = useState(false)
-	const [getCoinData, setGetCoinData] = useState<boolean>(false)
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
 
 	useEffect(() => {
-		setGetCoinData(true)
+		setIsLoading(true)
 		setCoinMarketChartData(undefined)
 
 		const fetchData = async () => {
@@ -56,7 +56,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 			} catch (error) {
 				console.error('Error fetching coin details:', error)
 			} finally {
-				setGetCoinData(false)
+				setIsLoading(false)
 			}
 		}
 

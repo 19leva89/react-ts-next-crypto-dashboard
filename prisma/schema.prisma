@@ -192,8 +192,7 @@ model UserCoinTransaction {
 }
 
 model TrendingCoin {
-  id              String   @id @default(cuid())
-  coin_id         Int
+  id              String   @id @unique
   name            String
   symbol          String
   market_cap_rank Int?
@@ -205,7 +204,6 @@ model TrendingCoin {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  @@unique([coin_id, slug])
   @@map("trending_coin")
 }
 
