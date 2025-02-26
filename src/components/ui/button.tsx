@@ -1,7 +1,7 @@
 import { Loader2 } from 'lucide-react'
 import { Slot } from '@radix-ui/react-slot'
-import { ButtonHTMLAttributes, forwardRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
+import { ButtonHTMLAttributes, Children, forwardRef, isValidElement } from 'react'
 
 import { cn } from '@/lib'
 
@@ -41,6 +41,32 @@ export interface ButtonProps
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	({ className, variant, size, asChild = false, children, disabled, loading, ...props }, ref) => {
 		const Comp = asChild ? Slot : 'button'
+		const childArray = Children.toArray(children)
+
+		let content
+
+		if (loading) {
+			if (childArray.length === 2 && isValidElement(childArray[0])) {
+				// If two parts are passed (icon + text), replace the first one with Loader2
+				content = (
+					<>
+						<Loader2 className="w-5 h-5 animate-spin" />
+						{childArray[1]}
+					</>
+				)
+			} else {
+				// If there is no icon, just add Loader2 to the left
+				content = (
+					<>
+						<Loader2 className="w-5 h-5 animate-spin" />
+						{children}
+					</>
+				)
+			}
+		} else {
+			content = children
+		}
+
 		return (
 			<Comp
 				disabled={disabled || loading}
@@ -48,7 +74,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				ref={ref}
 				{...props}
 			>
-				{!loading ? children : <Loader2 className="w-5 h-5 animate-spin" />}
+				{content}
 			</Comp>
 		)
 	},

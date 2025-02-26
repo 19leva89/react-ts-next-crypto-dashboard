@@ -19,11 +19,9 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { EditCoin } from './edit-coin'
-import { useCoinActions } from '@/hooks'
 import { DeleteCoin } from './delete-coin'
+import { UserCoinData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
-import { UserCoinData, Transaction } from '@/app/api/types'
-import { deleteCoinFromUser, updateUserCoin } from '@/app/api/actions'
 
 interface Props {
 	coin: UserCoinData
@@ -31,41 +29,11 @@ interface Props {
 }
 
 export const CoinCard = ({ coin, viewMode }: Props) => {
-	const { handleAction } = useCoinActions()
-
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
-	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
 
 	const totalValue = coin.currentPrice * coin.totalQuantity
 	const changePercentagePrice = ((coin.currentPrice - coin.averagePrice) / coin.averagePrice) * 100
-
-	const handleUpdate = async (sellPrice: string) => {
-		const success = await handleAction(
-			async () => {
-				const updatedTransactions = editTransactions.map((transaction) => ({
-					...transaction,
-					date: new Date(transaction.date),
-				}))
-
-				await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
-			},
-			'Coin updated successfully',
-			'Failed to update coin',
-		)
-
-		if (success) setIsDialogOpen(false)
-	}
-
-	const handleDelete = async () => {
-		const success = await handleAction(
-			async () => await deleteCoinFromUser(coin.coinId),
-			'Coin removed successfully',
-			'Failed to remove coin',
-		)
-
-		if (success) setIsDeleteDialogOpen(false)
-	}
 
 	return (
 		<Card
@@ -186,9 +154,6 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 				coin={coin}
 				isOpen={isDialogOpen}
 				onClose={() => setIsDialogOpen(false)}
-				onSave={handleUpdate}
-				editTransactions={editTransactions}
-				setEditTransactions={setEditTransactions}
 			/>
 
 			{/* Delete Dialog */}
@@ -197,7 +162,6 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 				coin={coin}
 				isOpen={isDeleteDialogOpen}
 				onClose={() => setIsDeleteDialogOpen(false)}
-				onDelete={handleDelete}
 			/>
 		</Card>
 	)

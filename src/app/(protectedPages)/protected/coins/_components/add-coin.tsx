@@ -22,14 +22,16 @@ import {
 	SelectTrigger,
 	Skeleton,
 } from '@/components/ui'
-import { useToast } from '@/hooks'
+import { useCoinActions, useToast } from '@/hooks'
 import { CoinsListIDMapData } from '@/app/api/types'
 import { addCoinToUser, getCoinsListIDMap } from '@/app/api/actions'
 
 export const AddCoin = () => {
 	const { toast } = useToast()
+	const { handleAction } = useCoinActions()
 
 	const [editPrice, setEditPrice] = useState<string>('')
+	const [isAdding, setIsAdding] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [editQuantity, setEditQuantity] = useState<string>('')
@@ -79,6 +81,8 @@ export const AddCoin = () => {
 	const handleQuantityChange = handleNumberInput(setEditQuantity)
 
 	const handleAddCoin = async () => {
+		setIsAdding(true)
+
 		try {
 			// Check that the cryptocurrency is selected and the amount is entered
 			if (!selectedCoin || !editQuantity || !editPrice) {
@@ -90,32 +94,20 @@ export const AddCoin = () => {
 				return
 			}
 
-			// Calling the function to add cryptocurrency
-			await addCoinToUser(selectedCoin, Number(editQuantity), Number(editPrice))
+			await handleAction(
+				async () => addCoinToUser(selectedCoin, Number(editQuantity), Number(editPrice)),
+				'Coin added successfully',
+				'Failed to add coin. Please try again',
+			)
 
-			// Notify the user of success
-			toast({
-				title: '✅ Success',
-				description: 'Coin added successfully',
-				variant: 'default',
-			})
-
-			// Close the dialogue
 			setIsDialogOpen(false)
+		} finally {
+			setIsAdding(false)
 
 			// Clearing the fields
 			setEditPrice('')
 			setEditQuantity('')
 			setSelectedCoin('')
-		} catch (error) {
-			// Notifying the user about the error
-			console.error('Error adding coin:', error)
-
-			toast({
-				title: '🚨 Error',
-				description: error instanceof Error ? error.message : 'Failed to add coin. Please try again',
-				variant: 'destructive',
-			})
 		}
 	}
 
@@ -267,7 +259,14 @@ export const AddCoin = () => {
 						</div>
 
 						<DialogFooter>
-							<Button onClick={handleAddCoin} className="rounded-xl text-white">
+							<Button
+								variant="default"
+								size="default"
+								onClick={handleAddCoin}
+								disabled={isLoading || isAdding}
+								loading={isAdding}
+								className="rounded-xl text-white"
+							>
 								Submit
 							</Button>
 						</DialogFooter>

@@ -8,33 +8,46 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui'
+import { useCoinActions } from '@/hooks'
 import { UserCoinData } from '@/app/api/types'
+import { deleteCoinFromUser } from '@/app/api/actions'
 
 interface Props {
 	coin: UserCoinData
 	isOpen: boolean
 	onClose: () => void
-	onDelete: () => void
 }
 
-export const DeleteCoin = ({ coin, isOpen, onClose, onDelete }: Props) => (
-	<AlertDialog open={isOpen} onOpenChange={onClose}>
-		<AlertDialogContent className="px-8 rounded-xl">
-			<AlertDialogHeader>
-				<AlertDialogTitle>Delete {coin.name}?</AlertDialogTitle>
+export const DeleteCoin = ({ coin, isOpen, onClose }: Props) => {
+	const { handleAction } = useCoinActions()
 
-				<AlertDialogDescription>
-					Are you sure you want to delete this coin from your portfolio? This action cannot be undone.
-				</AlertDialogDescription>
-			</AlertDialogHeader>
+	const handleDelete = async () => {
+		await handleAction(
+			async () => await deleteCoinFromUser(coin.coinId),
+			'Coin removed successfully',
+			'Failed to remove coin',
+		)
+	}
 
-			<AlertDialogFooter className="gap-2">
-				<AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+	return (
+		<AlertDialog open={isOpen} onOpenChange={onClose}>
+			<AlertDialogContent className="px-8 rounded-xl">
+				<AlertDialogHeader>
+					<AlertDialogTitle>Delete {coin.name}?</AlertDialogTitle>
 
-				<AlertDialogAction onClick={onDelete} className="rounded-xl">
-					Delete
-				</AlertDialogAction>
-			</AlertDialogFooter>
-		</AlertDialogContent>
-	</AlertDialog>
-)
+					<AlertDialogDescription>
+						Are you sure you want to delete this coin from your portfolio? This action cannot be undone.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+
+				<AlertDialogFooter className="gap-2">
+					<AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+
+					<AlertDialogAction onClick={handleDelete} className="rounded-xl">
+						Delete
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	)
+}

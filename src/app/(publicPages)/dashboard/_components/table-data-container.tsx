@@ -15,11 +15,11 @@ interface Props {
 }
 
 export const DataTableContainer = ({ categories, initialCoins }: Props) => {
-	const [coinsList, setCoinsList] = useState(initialCoins)
-	const [fetchingCoins, setFetchingCoins] = useState<boolean>(false)
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
+	const [fetchingCoins, setFetchingCoins] = useState<boolean>(false)
 	const [currentCategory, setCurrentCategory] = useState<string>('All')
+	const [coinsList, setCoinsList] = useState<CoinListData[]>(initialCoins)
 
 	// Handle category selection
 	const onCategoryClick = async (cate: string, name?: string) => {

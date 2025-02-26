@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const AccountTrendingSection = ({ trendingData }: Props) => {
-	const [isLoading, setIsLoading] = useState(false)
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
 	const [dataIndex, setDataIndex] = useState<{ start: number; end: number }>({ start: 0, end: 5 })
@@ -97,8 +97,8 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 								</div>
 
 								<div className="mt-3 flex flex-col gap-1">
-									<Skeleton className="h-[18px] w-24" />
 									<Skeleton className="h-[14px] w-16" />
+									<Skeleton className="h-[14px] w-24" />
 								</div>
 							</div>
 						))}
@@ -154,8 +154,8 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 								</div>
 
 								<div className="mt-3 flex flex-col ">
-									<span className="text-gray-500 dark:text-slate-200 font-semibold overflow-hidden">
-										{formatPrice(Number(data.item.data.total_volume_btc), false)} {data.item.symbol}
+									<span className="text-gray-600 dark:text-slate-400 text-xs">
+										₿{formatPrice(Number(data.item.data.market_cap_btc), true)}
 									</span>
 
 									<span className="text-gray-600 dark:text-slate-400 text-xs">

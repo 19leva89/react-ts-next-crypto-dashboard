@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Loader2, Plus } from 'lucide-react'
+import { ArrowLeft, Plus } from 'lucide-react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
@@ -38,7 +38,8 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const { handleAction } = useCoinActions()
 
 	const [days, setDays] = useState<number>(1)
-	const [isCreating, setIsCreating] = useState(false)
+	const [isAdding, setIsAdding] = useState<boolean>(false)
+	const [isSaving, setIsSaving] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
@@ -140,7 +141,8 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const handleSellPriceChange = handleNumberInput(setEditSellPrice)
 
 	const handleAddTransaction = async () => {
-		setIsCreating(true)
+		setIsAdding(true)
+
 		try {
 			await handleAction(
 				async () => {
@@ -151,32 +153,38 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					})
 
 					if (newTransaction) {
-						setEditTransactions([...editTransactions, newTransaction])
+						setEditTransactions((prev) => [...prev, newTransaction])
 					}
 				},
 				'Transaction created successfully',
 				'Failed to create transaction',
 			)
 		} finally {
-			setIsCreating(false)
+			setIsAdding(false)
 		}
 	}
 
 	const handleUpdate = async (sellPrice: string) => {
-		await handleAction(
-			async () => {
-				const updatedTransactions = editTransactions.map((transaction) => ({
-					...transaction,
-					quantity: transaction.quantity,
-					price: transaction.price,
-					date: new Date(transaction.date),
-				}))
+		setIsSaving(true)
 
-				await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
-			},
-			'Coin updated successfully',
-			'Failed to update coin',
-		)
+		try {
+			await handleAction(
+				async () => {
+					const updatedTransactions = editTransactions.map((transaction) => ({
+						...transaction,
+						quantity: transaction.quantity,
+						price: transaction.price,
+						date: new Date(transaction.date),
+					}))
+
+					await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
+				},
+				'Coin updated successfully',
+				'Failed to update coin',
+			)
+		} finally {
+			setIsSaving(false)
+		}
 	}
 
 	return (
@@ -320,25 +328,25 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				<div className="flex flex-row items-center justify-end gap-3 px-4 mt-4">
 					<Button
 						variant="outline"
+						size="default"
 						onClick={handleAddTransaction}
-						disabled={isCreating}
-						className="flex items-center gap-2 rounded-xl text-white"
+						disabled={isAdding || isSaving}
+						loading={isAdding}
+						className="rounded-xl"
 					>
-						{isCreating ? (
-							<>
-								<Loader2 className="h-4 w-4 animate-spin" />
-								<span>Creating...</span>
-							</>
-						) : (
-							<>
-								<Plus className="h-4 w-4" />
-								<span>Transaction</span>
-							</>
-						)}
+						<Plus className="h-4 w-4" />
+						<span>Transaction</span>
 					</Button>
 
-					<Button onClick={() => handleUpdate(editSellPrice)} className="rounded-xl text-white">
-						Save changes
+					<Button
+						variant="default"
+						size="default"
+						onClick={() => handleUpdate(editSellPrice)}
+						disabled={isSaving || isAdding}
+						loading={isSaving}
+						className="rounded-xl text-white"
+					>
+						<span>Save changes</span>
 					</Button>
 				</div>
 			</div>

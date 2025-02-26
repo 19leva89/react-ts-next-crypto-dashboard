@@ -10,8 +10,8 @@ interface Props {
 }
 
 export const InputFormatPrice = ({ value, onChange }: Props) => {
-	const [isEditing, setIsEditing] = useState(false)
-	const [displayValue, setDisplayValue] = useState(value.toString())
+	const [isEditing, setIsEditing] = useState<boolean>(false)
+	const [displayValue, setDisplayValue] = useState<string>(value.toString())
 
 	const handleFocus = () => {
 		setIsEditing(true)

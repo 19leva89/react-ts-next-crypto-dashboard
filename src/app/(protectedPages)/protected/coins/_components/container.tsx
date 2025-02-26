@@ -27,7 +27,7 @@ interface Props {
 }
 
 export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
-	const [isMounted, setIsMounted] = useState(false)
+	const [isMounted, setIsMounted] = useState<boolean>(false)
 	const [viewMode, setViewMode] = useLocalStorageState<'list' | 'grid'>('viewMode', {
 		defaultValue: 'grid',
 	})

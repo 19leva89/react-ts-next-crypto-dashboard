@@ -56,10 +56,10 @@ export function DataTable<TData, TValue>({
 	onCoinsClick,
 	onCategoryClick,
 }: Props<TData, TValue>) {
-	const [sorting, setSorting] = useState<SortingState>([{ id: 'total_volume', desc: true }])
+	const [rowSelection, setRowSelection] = useState({})
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-	const [rowSelection, setRowSelection] = useState({})
+	const [sorting, setSorting] = useState<SortingState>([{ id: 'total_volume', desc: true }])
 
 	const table = useReactTable({
 		data,

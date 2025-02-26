@@ -1,4 +1,4 @@
-import { Loader2, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { ChangeEvent, useState } from 'react'
 
 import {
@@ -12,27 +12,25 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
-
 import { useCoinActions } from '@/hooks'
 import { formatPrice } from '@/constants/format-price'
 import { Transaction, UserCoinData } from '@/app/api/types'
-import { createTransactionForUser } from '@/app/api/actions'
+import { createTransactionForUser, updateUserCoin } from '@/app/api/actions'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 
 interface Props {
 	coin: UserCoinData
 	isOpen: boolean
 	onClose: () => void
-	onSave: (sellPrice: string) => void
-	editTransactions: Transaction[]
-	setEditTransactions: (transactions: Transaction[]) => void
 }
 
-export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setEditTransactions }: Props) => {
+export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 	const { handleAction } = useCoinActions()
 
-	const [isCreating, setIsCreating] = useState(false)
+	const [isSaving, setIsSaving] = useState<boolean>(false)
+	const [isAdding, setIsAdding] = useState<boolean>(false)
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
+	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
 
 	const totalValue = coin.currentPrice * coin.totalQuantity
 
@@ -47,7 +45,8 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 	const handleSellPriceChange = handleNumberInput(setEditSellPrice)
 
 	const handleAddTransaction = async () => {
-		setIsCreating(true)
+		setIsAdding(true)
+
 		try {
 			await handleAction(
 				async () => {
@@ -58,14 +57,37 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 					})
 
 					if (newTransaction) {
-						setEditTransactions([...editTransactions, newTransaction])
+						setEditTransactions((prev) => [...prev, newTransaction])
 					}
 				},
 				'Transaction created successfully',
 				'Failed to create transaction',
 			)
 		} finally {
-			setIsCreating(false)
+			setIsAdding(false)
+		}
+	}
+
+	const handleUpdate = async (sellPrice: string) => {
+		setIsSaving(true)
+
+		try {
+			await handleAction(
+				async () => {
+					const updatedTransactions = editTransactions.map((transaction) => ({
+						...transaction,
+						quantity: transaction.quantity,
+						price: transaction.price,
+						date: new Date(transaction.date),
+					}))
+
+					await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
+				},
+				'Coin updated successfully',
+				'Failed to update coin',
+			)
+		} finally {
+			setIsSaving(false)
 		}
 	}
 
@@ -120,25 +142,25 @@ export const EditCoin = ({ coin, isOpen, onClose, onSave, editTransactions, setE
 				<DialogFooter className="flex-row justify-end gap-3 px-4">
 					<Button
 						variant="outline"
+						size="default"
 						onClick={handleAddTransaction}
-						disabled={isCreating}
-						className="flex items-center gap-2 rounded-xl text-white"
+						disabled={isAdding || isSaving}
+						loading={isAdding}
+						className="rounded-xl"
 					>
-						{isCreating ? (
-							<>
-								<Loader2 className="h-4 w-4 animate-spin" />
-								<span>Creating...</span>
-							</>
-						) : (
-							<>
-								<Plus className="h-4 w-4" />
-								<span>Transaction</span>
-							</>
-						)}
+						<Plus className="h-4 w-4" />
+						<span>Transaction</span>
 					</Button>
 
-					<Button onClick={() => onSave(editSellPrice)} className="rounded-xl text-white">
-						Save changes
+					<Button
+						variant="default"
+						size="default"
+						onClick={() => handleUpdate(editSellPrice)}
+						disabled={isSaving || isAdding}
+						loading={isSaving}
+						className="rounded-xl text-white"
+					>
+						<span>Save changes</span>
 					</Button>
 				</DialogFooter>
 			</DialogContent>
