@@ -19,9 +19,9 @@ import {
 	SheetTitle,
 	Skeleton,
 } from '@/components/ui'
-import { ValidDays } from '@/app/api/constants'
 import { formatPrice } from '@/constants/format-price'
 import { CoinData, MarketChartData } from '@/app/api/types'
+import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 import { getCoinData, getCoinsMarketChart } from '@/app/api/actions'
 
 interface Props {
@@ -29,13 +29,6 @@ interface Props {
 	showDetailModal: boolean
 	closeModal: (value: boolean) => void
 }
-
-const DAY_OPTIONS: { label: string; value: ValidDays }[] = [
-	{ label: '1 day', value: 1 },
-	{ label: '1 week', value: 7 },
-	{ label: '1 month', value: 30 },
-	{ label: '1 year', value: 365 },
-]
 
 export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) => {
 	const [days, setDays] = useState<number>(1)
@@ -73,8 +66,6 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 		},
 	} satisfies ChartConfig
 
-	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
 	// Format data for the chart based on the selected time range
 	const formattedData =
 		coinMarketChartData?.prices.map(([timestamp, price]) => {
@@ -87,20 +78,20 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 					const hours = date.getHours().toString().padStart(2, '0')
 					const minutes = date.getMinutes().toString().padStart(2, '0')
 					const day = date.getDate()
-					const month = months[date.getMonth()]
+					const month = MONTH_OPTIONS[date.getMonth()]
 					label = `${hours}:${minutes}, ${day} ${month}`
 					break
 
 				case days <= 30:
 					// Show day and month for "1 week" and "1 month" (e.g., 15 Mar)
 					const monthDay = date.getDate()
-					const monthName = months[date.getMonth()]
+					const monthName = MONTH_OPTIONS[date.getMonth()]
 					label = `${monthDay} ${monthName}`
 					break
 
 				case days <= 365:
 					// Show month and year for "1 year" (e.g., Mar 2025)
-					const monthYear = months[date.getMonth()]
+					const monthYear = MONTH_OPTIONS[date.getMonth()]
 					const year = date.getFullYear()
 					label = `${monthYear} ${year}`
 					break

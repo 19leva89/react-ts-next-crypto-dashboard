@@ -15,8 +15,8 @@ import {
 	Label,
 } from '@/components/ui'
 import { useCoinActions } from '@/hooks'
-import { ValidDays } from '@/app/api/constants'
 import { formatPrice } from '@/constants/format-price'
+import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 import { MarketChartData, Transaction, UserCoinData } from '@/app/api/types'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 import { createTransactionForUser, getCoinsMarketChart, updateUserCoin } from '@/app/api/actions'
@@ -24,13 +24,6 @@ import { createTransactionForUser, getCoinsMarketChart, updateUserCoin } from '@
 interface Props {
 	coin: UserCoinData
 }
-
-const DAY_OPTIONS: { label: string; value: ValidDays }[] = [
-	{ label: '1 day', value: 1 },
-	{ label: '1 week', value: 7 },
-	{ label: '1 month', value: 30 },
-	{ label: '1 year', value: 365 },
-]
 
 export const CoinIdContainer = ({ coin }: Props) => {
 	const router = useRouter()
@@ -73,8 +66,6 @@ export const CoinIdContainer = ({ coin }: Props) => {
 		},
 	} satisfies ChartConfig
 
-	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
 	// Sort transactions by date (oldest to newest)
 	const sortedTransactions = [...coin.transactions].sort(
 		(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
@@ -91,20 +82,20 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					const hours = date.getHours().toString().padStart(2, '0')
 					const minutes = date.getMinutes().toString().padStart(2, '0')
 					const day = date.getDate()
-					const month = months[date.getMonth()]
+					const month = MONTH_OPTIONS[date.getMonth()]
 					label = `${hours}:${minutes}, ${day} ${month}`
 					break
 
 				case days <= 30:
 					// Show day and month for "1 week" and "1 month" (e.g., 15 Mar)
 					const monthDay = date.getDate()
-					const monthName = months[date.getMonth()]
+					const monthName = MONTH_OPTIONS[date.getMonth()]
 					label = `${monthDay} ${monthName}`
 					break
 
 				case days <= 365:
 					// Show month and year for "1 year" (e.g., Mar 2025)
-					const monthYear = months[date.getMonth()]
+					const monthYear = MONTH_OPTIONS[date.getMonth()]
 					const year = date.getFullYear()
 					label = `${monthYear} ${year}`
 					break
