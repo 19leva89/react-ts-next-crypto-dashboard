@@ -18,12 +18,15 @@ export const AuthModal = ({ open, onClose }: Props) => {
 
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
-			<DialogContent className="w-[480px] p-10 bg-white dark:bg-card rounded-xl" aria-describedby={undefined}>
+			<DialogContent
+				className="w-[480px] p-10 bg-white dark:bg-card rounded-xl max-[500px]:w-[95%] max-[500px]:px-4"
+				aria-describedby={undefined}
+			>
 				<DialogTitle className="hidden" />
 
 				<DialogDescription className="hidden" />
 
-				<Tabs defaultValue="account" className="w-[400px]">
+				<Tabs defaultValue="account" className="w-[400px] max-[500px]:w-full">
 					<TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-dark">
 						<TabsTrigger
 							value="login"

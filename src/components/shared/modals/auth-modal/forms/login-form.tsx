@@ -85,16 +85,23 @@ export const LoginForm = ({ onClose }: Props) => {
 					</div>
 
 					<CardFooter className="flex flex-col gap-4">
-						<Button loading={form.formState.isSubmitting} className="h-12 text-base w-full" type="submit">
+						<Button
+							variant="default"
+							size="lg"
+							type="submit"
+							loading={form.formState.isSubmitting}
+							className="text-base text-white w-full rounded-xl"
+						>
 							Login
 						</Button>
 
 						<div className="flex gap-2 w-full">
 							<Button
 								variant="outline"
-								onClick={() => handleLogin('github')}
+								size="lg"
 								type="button"
-								className="gap-2 h-12 p-2 flex-1"
+								onClick={() => handleLogin('github')}
+								className="gap-2 p-2 flex-1 rounded-xl"
 							>
 								<Image width={24} height={24} alt="GitHub" src="/svg/github-icon.svg" />
 								GitHub
@@ -102,9 +109,10 @@ export const LoginForm = ({ onClose }: Props) => {
 
 							<Button
 								variant="outline"
-								onClick={() => handleLogin('google')}
+								size="lg"
 								type="button"
-								className="gap-2 h-12 p-2 flex-1"
+								onClick={() => handleLogin('google')}
+								className="gap-2 p-2 flex-1 rounded-xl"
 							>
 								<Image width={24} height={24} alt="Google" src="/svg/google-icon.svg" />
 								Google

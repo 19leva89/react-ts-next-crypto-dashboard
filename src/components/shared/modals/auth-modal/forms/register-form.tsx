@@ -81,7 +81,13 @@ export const RegisterForm = ({ onClose }: Props) => {
 					</div>
 
 					<CardFooter className="flex flex-col gap-4">
-						<Button loading={form.formState.isSubmitting} className="h-12 text-base w-full" type="submit">
+						<Button
+							variant="default"
+							size="lg"
+							type="submit"
+							loading={form.formState.isSubmitting}
+							className="text-base text-white w-full rounded-xl"
+						>
 							Register
 						</Button>
 					</CardFooter>

@@ -35,7 +35,7 @@ export const FormTextarea = ({ className, name, label, required, ...props }: Pro
 			</p>
 
 			<div className="relative">
-				<Textarea className="h-12 text-md" {...register(name)} {...props} />
+				<Textarea className="h-11 text-md" {...register(name)} {...props} />
 
 				{value && <ClearButton onClick={onClickClear} />}
 			</div>
