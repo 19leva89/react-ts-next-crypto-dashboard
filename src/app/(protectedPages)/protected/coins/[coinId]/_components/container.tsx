@@ -232,7 +232,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					))}
 				</div>
 
-				<ChartContainer config={chartConfig}>
+				<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
 					<LineChart
 						accessibilityLayer
 						data={formattedData}
@@ -257,7 +257,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 						{/* Axis Y */}
 						<YAxis
 							dataKey="TotalValue"
-							domain={[minValue, maxValue]}
+							domain={[minValue * 0.98, maxValue * 1.02]}
 							axisLine={false}
 							tickLine={false}
 							tick={true}

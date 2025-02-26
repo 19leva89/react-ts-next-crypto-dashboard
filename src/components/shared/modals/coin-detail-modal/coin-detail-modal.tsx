@@ -157,7 +157,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 						<Skeleton className="h-72 w-full" />
 					) : (
 						<div className="w-full">
-							<ChartContainer config={chartConfig}>
+							<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
 								<LineChart
 									accessibilityLayer
 									data={formattedData}
@@ -182,7 +182,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									{/* Axis Y */}
 									<YAxis
 										dataKey="Price"
-										domain={[minPrice, maxPrice]}
+										domain={[minPrice * 0.98, maxPrice * 1.02]}
 										axisLine={false}
 										tickLine={false}
 										tick={true}
