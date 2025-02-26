@@ -84,7 +84,10 @@ export const ProfileForm = ({ data }: Props) => {
 			<Title text="Personal information" size="md" className="font-bold" />
 
 			<FormProvider {...form}>
-				<form className="flex flex-col gap-5 w-96 mt-10" onSubmit={form.handleSubmit(onSubmit)}>
+				<form
+					className="flex flex-col gap-5 w-96 mt-10 max-[400px]:w-full"
+					onSubmit={form.handleSubmit(onSubmit)}
+				>
 					<FormInput name="email" label="Email" type="email" required />
 
 					<FormInput name="name" label="Full name" type="text" required />
@@ -94,20 +97,22 @@ export const ProfileForm = ({ data }: Props) => {
 					<FormInput name="confirmPassword" label="Repeat password" type="password" />
 
 					<Button
+						variant="default"
+						size="lg"
 						type="submit"
 						disabled={form.formState.isSubmitting}
-						className="h-12 text-base mt-10 rounded-xl"
+						className="text-base text-white mt-10 rounded-xl"
 					>
 						Save
 					</Button>
 
 					<Button
 						variant="destructive"
-						size="sm"
+						size="lg"
 						type="button"
 						onClick={handleDeleteAccount}
 						disabled={form.formState.isSubmitting}
-						className="h-12 text-base rounded-xl"
+						className="text-base rounded-xl"
 					>
 						Delete account
 					</Button>

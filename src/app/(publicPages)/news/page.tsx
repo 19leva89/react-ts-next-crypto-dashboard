@@ -7,6 +7,9 @@ import { constructMetadata } from '@/lib'
 
 export const metadata = constructMetadata({ title: 'News' })
 
+// The page must be rendered on the server side
+export const dynamic = 'force-dynamic'
+
 const NewsPage = () => {
 	return (
 		<>

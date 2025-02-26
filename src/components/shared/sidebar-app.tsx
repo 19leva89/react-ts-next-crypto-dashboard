@@ -3,8 +3,8 @@
 import Link from 'next/link'
 import {
 	Bell,
+	ChartNoAxesCombined,
 	ChevronDown,
-	Clipboard,
 	CreditCard,
 	FileText,
 	HandCoins,
@@ -64,6 +64,12 @@ const sideBarData = [
 		protected: true,
 	},
 	{
+		title: 'Charts',
+		url: '/protected/charts',
+		icon: ChartNoAxesCombined,
+		protected: true,
+	},
+	{
 		title: 'Cards',
 		url: '/protected/cards',
 		icon: CreditCard,
@@ -87,12 +93,7 @@ const sideBarData = [
 		icon: Wallet,
 		protected: true,
 	},
-	{
-		title: 'Invoices',
-		url: '/protected/invoices',
-		icon: Clipboard,
-		protected: true,
-	},
+
 	{
 		title: 'Help center',
 		url: '/help',
