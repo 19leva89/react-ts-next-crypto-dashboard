@@ -124,6 +124,11 @@ export type MarketChartData = {
 	prices: number[][]
 }
 
+export type MarketChartDataPoint = {
+	timestamp: Date
+	value: number
+}
+
 export type AirdropsData = {
 	data: {
 		id: string

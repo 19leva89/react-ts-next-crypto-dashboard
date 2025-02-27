@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
-import { UserCoinData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
+import { getUserCoinsListMarketChart, updateCoinsMarketChart } from '@/app/api/actions'
+import { MarketChartDataPoint, UserCoinData } from '@/app/api/types'
 import { Button, ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui'
 
 interface Props {
@@ -17,6 +18,28 @@ interface Props {
 
 export const ChartsContainer = ({ coinData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
 	const [days, setDays] = useState<number>(1)
+	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [data, setData] = useState<MarketChartDataPoint[]>()
+
+	useEffect(() => {
+		setIsLoading(true)
+		setData(undefined)
+
+		const fetchData = async () => {
+			try {
+				// await updateCoinsMarketChart(days)
+				const marketChart = await getUserCoinsListMarketChart(days)
+
+				setData(marketChart)
+			} catch (error) {
+				console.error('Error fetching coin details:', error)
+			} finally {
+				setIsLoading(false)
+			}
+		}
+
+		fetchData()
+	}, [days])
 
 	const chartConfig = {
 		prices: {
@@ -25,41 +48,8 @@ export const ChartsContainer = ({ coinData, totalInvestedValue, totalValue, plan
 		},
 	} satisfies ChartConfig
 
-	const sortedTransactions = coinData
-		.flatMap((coin) => coin.transactions)
-		.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-
-	const generateTimePointsAndValues = () => {
-		const timePoints: { timestamp: number; totalValue: number }[] = []
-		const interval = days === 1 ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000
-		const totalSteps = days === 1 ? 24 : days
-
-		for (let i = totalSteps - 1; i >= 0; i--) {
-			const timestamp = Date.now() - i * interval
-
-			let totalValue = 0
-
-			coinData.forEach((coin) => {
-				// Filter transactions by coin and date
-				const coinTransactions = sortedTransactions.filter(
-					(tx) => tx.userCoinId === coin.coinId && new Date(tx.date).getTime() <= timestamp,
-				)
-
-				// Calculate total quantity
-				const totalQuantity = coinTransactions.reduce((sum, tx) => sum + tx.quantity, 0)
-
-				// Calculate total value
-				totalValue += totalQuantity * coin.currentPrice
-			})
-
-			timePoints.push({ timestamp, totalValue })
-		}
-
-		return timePoints
-	}
-
 	const formattedData =
-		generateTimePointsAndValues().map(({ timestamp, totalValue }) => {
+		data?.map(({ timestamp, value }) => {
 			const date = new Date(timestamp)
 			let label = ''
 
@@ -95,7 +85,7 @@ export const ChartsContainer = ({ coinData, totalInvestedValue, totalValue, plan
 
 			return {
 				Label: label,
-				TotalValue: totalValue,
+				TotalValue: value,
 			}
 		}) || []
 

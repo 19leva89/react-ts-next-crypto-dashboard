@@ -1,6 +1,8 @@
 'use server'
 
+import axios from 'axios'
 import { compare } from 'bcryptjs'
+import { isValid } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 
 import { prisma } from '@/lib/prisma'
@@ -18,6 +20,7 @@ import {
 	TrendingCoin,
 	CoinData,
 	Transaction,
+	MarketChartDataPoint,
 } from './types'
 import { auth, signIn } from '@/auth'
 import { makeReq } from './make-request'
@@ -29,10 +32,12 @@ import { COINS_UPDATE_INTERVAL, DAYS_MAPPING, MARKET_CHART_UPDATE_INTERVAL, Vali
 const handleError = (error: unknown, context: string) => {
 	if (error instanceof Prisma.PrismaClientKnownRequestError) {
 		console.error(`💾 Prisma error [${context}]:`, error.code, error.message)
+	} else if (axios.isAxiosError(error)) {
+		console.error(`🌐 API error [${context}]:`, error.response?.status, error.message)
 	} else if (error instanceof Error) {
 		console.error(`🚨 Unexpected error [${context}]:`, error.message)
 	} else {
-		console.error(`❌ Error [${context}]`, error)
+		console.error(`❌ Unknown error [${context}]`, error)
 	}
 
 	throw error
@@ -85,8 +90,24 @@ const recalculateAveragePrice = async (userId: string, coinId: string, prisma: P
 	})
 }
 
-const getFieldForDays = (days: number): (typeof DAYS_MAPPING)[ValidDays] | null => {
-	return DAYS_MAPPING[days as ValidDays] || null
+const getFieldForDays = (days: number): keyof MarketChart | null => {
+	return (DAYS_MAPPING[days as ValidDays] as keyof MarketChart) || null
+}
+
+const getLatestBefore = <T extends { timestamp: Date }>(entries: T[], target: Date): T | null => {
+	let left = 0
+	let right = entries.length - 1
+	let resultIdx = -1
+	const targetTime = target.getTime()
+
+	while (left <= right) {
+		const mid = Math.floor((left + right) / 2)
+		const midTime = entries[mid].timestamp.getTime()
+
+		midTime <= targetTime ? ((resultIdx = mid), (left = mid + 1)) : (right = mid - 1)
+	}
+
+	return resultIdx >= 0 ? entries[resultIdx] : null
 }
 
 export const registerUser = async (body: Prisma.UserCreateInput) => {
@@ -880,6 +901,79 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 	}
 }
 
+export const getUserCoinsListMarketChart = async (days: ValidDays): Promise<MarketChartDataPoint[]> => {
+	try {
+		// Checking if the user is authorized
+		const session = await auth()
+		if (!session?.user) throw new Error('User not authenticated')
+
+		const field = getFieldForDays(days)
+		if (!field) throw new Error('Invalid days parameter')
+
+		const priceField = `prices_${days}d` as keyof MarketChart
+
+		// Get all user coins with transactions and MarketChart data
+		const userCoins = await prisma.userCoin.findMany({
+			where: { userId: session.user.id },
+			select: {
+				transactions: { orderBy: { date: 'asc' } },
+				coin: {
+					select: {
+						marketCharts: true,
+					},
+				},
+			},
+		})
+
+		// 2. Coins processing
+		const coinsData = userCoins.map(({ transactions, coin }) => {
+			// 2.1. Collecting timeline
+			let quantity = 0
+
+			const timeline = transactions.map((tx) => {
+				return {
+					timestamp: tx.date,
+					quantity: (quantity += tx.quantity),
+				}
+			})
+
+			// 2.2. Price processing
+			const marketChart = coin.marketCharts?.find((chart) => chart[priceField])
+
+			const prices = (marketChart?.[priceField] as [number, number][]) ?? []
+
+			const pricePoints = prices
+				.map(([timestampMs, price]) => ({ timestamp: new Date(timestampMs), price }))
+				.filter(({ timestamp }) => isValid(timestamp))
+
+			return { timeline, pricePoints }
+		})
+
+		// 3. Collecting timestamps
+		const timestamps = Array.from(
+			new Set(coinsData.flatMap((c) => c.pricePoints.map((p) => p.timestamp.getTime()))),
+		)
+			.sort((a, b) => a - b)
+			.map((t) => new Date(t))
+
+		// 4. Calculating cost for each timestamp
+		return timestamps
+			.map((timestamp) => ({
+				timestamp,
+				value: coinsData.reduce((total, { timeline, pricePoints }) => {
+					const quantity = getLatestBefore(timeline, timestamp)?.quantity ?? 0
+					const price = getLatestBefore(pricePoints, timestamp)?.price ?? 0
+					return total + quantity * price
+				}, 0),
+			}))
+			.filter(({ value }) => value > 0)
+	} catch (error) {
+		handleError(error, 'GET_USER_COINS_MARKET_CHART')
+
+		return {} as MarketChartDataPoint[]
+	}
+}
+
 export const getCoinsListIDMap = async (): Promise<CoinsListIDMapData> => {
 	try {
 		// Getting data from the DB
@@ -1202,9 +1296,9 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Promise<MarketChartData> => {
 	try {
 		const field = getFieldForDays(days)
-		const updatedField = `updatedAt_${days}d` as keyof MarketChart
+		if (!field) throw new Error('Invalid days parameter')
 
-		if (!field || !updatedField) throw new Error('Invalid days parameter')
+		const updatedField = `updatedAt_${days}d` as keyof MarketChart
 
 		// Get all the data about the charts from the DB
 		const cachedData = await prisma.marketChart.findUnique({
@@ -1250,6 +1344,103 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 		return { prices: response.prices } as MarketChartData
 	} catch (error) {
 		handleError(error, 'GET_COINS_MARKET_CHART')
+
+		return {} as MarketChartData
+	}
+}
+
+export const updateCoinsMarketChart = async (days: ValidDays): Promise<MarketChartData> => {
+	const RPM_LIMIT = 30 // 30 requests per minute
+	const DELAY = (60 * 1000) / RPM_LIMIT + 100 // 2100ms between requests
+	let requestCount = 0
+
+	try {
+		const field = getFieldForDays(days)
+		if (!field) throw new Error('Invalid days parameter')
+
+		const updatedField = `updatedAt_${days}d` as keyof MarketChart
+
+		const coins = await prisma.coin.findMany({
+			select: { id: true },
+		})
+
+		console.log(`🔄 Fetching market data for ${coins.length} coins (${days} day(s))...`)
+
+		const results = {
+			success: 0,
+			errors: 0,
+			skipped: 0,
+		}
+
+		// Process each coin sequentially
+		for (const { id: coinId } of coins) {
+			try {
+				const startTime = Date.now()
+
+				// Pause before each request
+				if (requestCount > 0) {
+					await new Promise((resolve) => setTimeout(resolve, DELAY))
+				}
+
+				// Request data for a specific coin
+				const response = await makeReq('GET', `/gecko/chart/${coinId}`, { days })
+				requestCount++
+
+				if (!response || !response.prices || !response.prices.length) {
+					results.skipped++
+
+					console.warn(`⚠️ No data for ${coinId}`)
+
+					continue
+				}
+
+				// Updating a record in DB
+				await prisma.marketChart.upsert({
+					where: { id: coinId },
+					update: {
+						[field]: response.prices,
+						[updatedField]: new Date(),
+					},
+					create: {
+						id: coinId,
+						[field]: response.prices,
+						[updatedField]: new Date(),
+						coin: { connect: { id: coinId } },
+					},
+				})
+
+				console.log(`✅ Updated ${coinId}`)
+				results.success++
+
+				// Compensate for the query execution time
+				const executionTime = Date.now() - startTime
+				if (executionTime < DELAY) {
+					await new Promise((resolve) => setTimeout(resolve, DELAY - executionTime))
+				}
+			} catch (error) {
+				results.errors++
+
+				if (error instanceof Error) {
+					if (error.message.includes('429') || error.message.includes('500')) {
+						console.warn(`⚠️ Rate limit detected, waiting 60 seconds...`)
+						await new Promise((resolve) => setTimeout(resolve, 60 * 1000))
+
+						requestCount = 0 // Reset the counter after waiting
+					}
+					console.error(`✗ Error processing ${coinId}:`, error.message)
+				}
+
+				handleError(error, 'UPDATE_COIN_MARKET_CHART')
+			}
+		}
+
+		console.log(
+			`✅ Results: ${results.success} updated, ${results.skipped} skipped, ${results.errors} errors`,
+		)
+
+		return { success: true } as unknown as MarketChartData
+	} catch (error) {
+		handleError(error, 'UPDATE_COINS_MARKET_CHART')
 
 		return {} as MarketChartData
 	}

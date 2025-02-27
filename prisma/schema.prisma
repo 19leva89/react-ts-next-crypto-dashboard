@@ -235,6 +235,7 @@ model MarketChart {
   //
   createdAt      DateTime  @default(now())
 
+  @@index([coinId, createdAt])
   @@map("market_chart")
 }
 
