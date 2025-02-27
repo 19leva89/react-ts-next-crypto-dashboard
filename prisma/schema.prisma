@@ -123,31 +123,38 @@ model CoinsListIDMap {
 }
 
 model Coin {
-  id                                     String         @id @unique
-  current_price                          Float?
-  description                            String?
-  image                                  String?
-  market_cap                             Float?
-  market_cap_rank                        Int?
-  total_volume                           Float?
-  high_24h                               Float?
-  low_24h                                Float?
-  price_change_percentage_24h            Float?
-  circulating_supply                     Float?
-  sparkline_in_7d                        Json?
-  price_change_percentage_7d_in_currency Float?
-  //
-  userCoins                              UserCoin[]
-  airdrops                               Airdrop[]
-  marketCharts                           MarketChart[]
-  coinsListIDMap                         CoinsListIDMap @relation(fields: [id], references: [id], onDelete: Cascade)
-  coinsListIDMapId                       String
-  category                               Category?      @relation(fields: [categoryId], references: [category_id])
-  categoryId                             String?
-  //
-  createdAt                              DateTime       @default(now())
-  updatedAt                              DateTime       @updatedAt
+  id                                      String  @id @unique
+  current_price                           Float?
+  description                             String?
+  image                                   String?
+  market_cap                              Float?
+  market_cap_rank                         Int?
+  total_volume                            Float?
+  high_24h                                Float?
+  low_24h                                 Float?
+  price_change_percentage_24h             Float?
+  circulating_supply                      Float?
+  sparkline_in_7d                         Json?
+  price_change_percentage_1h_in_currency  Float?
+  price_change_percentage_24h_in_currency Float?
+  price_change_percentage_7d_in_currency  Float?
+  price_change_percentage_30d_in_currency Float?
+  price_change_percentage_1y_in_currency  Float?
 
+  //
+  userCoins        UserCoin[]
+  airdrops         Airdrop[]
+  marketCharts     MarketChart[]
+  coinsListIDMap   CoinsListIDMap @relation(fields: [id], references: [id], onDelete: Cascade)
+  coinsListIDMapId String
+  category         Category?      @relation(fields: [categoryId], references: [category_id])
+  categoryId       String?
+  //
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([coinsListIDMapId])
+  @@index([categoryId])
   @@map("coin")
 }
 
@@ -172,6 +179,7 @@ model UserCoin {
   @@unique([userId, coinId])
   @@index([userId])
   @@index([coinId])
+  @@index([coinsListIDMapId])
   @@map("user_coin")
 }
 
@@ -256,5 +264,7 @@ model Airdrop {
   coinsListIDMapId String
 
   @@unique([project_name, coinId])
+  @@index([coinId])
+  @@index([coinsListIDMapId])
   @@map("airdrop")
 }

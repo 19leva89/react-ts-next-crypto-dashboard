@@ -3,6 +3,7 @@
 import axios from 'axios'
 import { compare } from 'bcryptjs'
 import { isValid } from 'date-fns'
+import { omit, pick } from 'lodash'
 import { revalidatePath } from 'next/cache'
 
 import { prisma } from '@/lib/prisma'
@@ -21,6 +22,7 @@ import {
 	CoinData,
 	Transaction,
 	MarketChartDataPoint,
+	Airdrop,
 } from './types'
 import { auth, signIn } from '@/auth'
 import { makeReq } from './make-request'
@@ -693,79 +695,53 @@ export const getCoinsList = async (): Promise<CoinsListData> => {
 // cron 5min
 export const updateCoinsList = async (): Promise<any> => {
 	try {
-		// Get a list of coins
-		const cachedCoins = await prisma.coin.findMany({
-			include: {
-				coinsListIDMap: true,
-			},
+		// Getting a list of outdated coins
+		const coinsToUpdate = await prisma.coin.findMany({
+			orderBy: { updatedAt: 'asc' },
+			take: 50, // Limit in DB
+			select: { id: true, updatedAt: true },
 		})
 
-		if (!cachedCoins.length) {
-			return []
-		}
+		if (!coinsToUpdate.length) return []
 
 		// Forming a string for an API request
-		const coinList = cachedCoins
-			.sort((a, b) => (a.updatedAt?.getTime() || 0) - (b.updatedAt?.getTime() || 0)) // ASC sort
-			.slice(0, 50) // Take the first 50 elements
-			.map((coin) => encodeURIComponent(coin.id))
-			.join('%2C')
+		const coinIds = coinsToUpdate.map((coin) => encodeURIComponent(coin.id)).join('%2C')
 
 		// Requesting fresh data from the API
 		console.log('🔄 Outdated records, request CoinsList via API...')
-		const response = await makeReq('GET', `/gecko/coins-upd/${coinList}`)
+		const response = await makeReq('GET', `/gecko/coins-upd/${coinIds}`)
 
 		if (!response || !Array.isArray(response) || !response.length) {
 			console.warn('⚠️ UPDATE_COINS: Empty response from API, using old CoinsList')
-			return cachedCoins
+
+			return prisma.coin.findMany({ include: { coinsListIDMap: true } })
 		}
 
-		await prisma.$transaction([
-			// Updating coinsListIDMap
-			...response.map((coin) =>
-				prisma.coinsListIDMap.upsert({
-					where: { id: coin.id },
-					update: {
-						symbol: coin.symbol,
-						name: coin.name,
-					},
-					create: {
-						id: coin.id,
-						symbol: coin.symbol,
-						name: coin.name,
-					},
-				}),
-			),
+		// Batch update
+		const updateOperations = response.flatMap((coin) => [
+			// Upsert for CoinsListIDMap
+			prisma.coinsListIDMap.upsert({
+				where: { id: coin.id },
+				update: { symbol: coin.symbol, name: coin.name },
+				create: { id: coin.id, symbol: coin.symbol, name: coin.name },
+			}),
 
-			// Updating Coin
-			...response.map((coin) =>
-				prisma.coin.updateMany({
-					where: { id: coin.id },
-					data: {
-						description: coin.description,
-						image: coin.image,
-						current_price: coin.current_price,
-						market_cap: coin.market_cap,
-						market_cap_rank: coin.market_cap_rank,
-						total_volume: coin.total_volume,
-						high_24h: coin.high_24h,
-						low_24h: coin.low_24h,
-						price_change_percentage_24h: coin.price_change_percentage_24h,
-						circulating_supply: coin.circulating_supply,
-						sparkline_in_7d: coin.sparkline_in_7d,
-						price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
-						updatedAt: new Date(),
-					},
-				}),
-			),
+			// Update for Coin
+			prisma.coin.update({
+				where: { id: coin.id },
+				data: {
+					...coin,
+					updatedAt: new Date(),
+				},
+			}),
 		])
+
+		await prisma.$transaction(updateOperations)
 
 		console.log('✅ Records CoinsList updated!')
 
 		// Returning an updated list of coins
-		return await prisma.coin.findMany({
-			include: { coinsListIDMap: true },
-		})
+		return prisma.coin.findMany({ include: { coinsListIDMap: true } })
 	} catch (error) {
 		handleError(error, 'UPDATE_COINS_LIST')
 	}
@@ -830,69 +806,75 @@ export const getUserCoinsList = async () => {
 
 export const updateUserCoinsList = async (userId: string): Promise<any> => {
 	try {
-		// Get a list of user coins
-		const userCoins = await prisma.userCoin.findMany({
-			where: { userId },
-			include: { coin: true },
-		})
-
-		if (!userCoins.length) return { status: 'success', message: 'No coins found' }
-
 		const currentTime = new Date()
 		const updateTime = new Date(currentTime.getTime() - COINS_UPDATE_INTERVAL)
 
-		// Filtering outdated coins
-		const coinsToUpdate = userCoins.filter((uc) => uc.updatedAt < updateTime)
+		// Get a list of user coins
+		const coinsToUpdate = await prisma.userCoin.findMany({
+			where: {
+				userId,
+				updatedAt: { lt: updateTime },
+			},
+			orderBy: { updatedAt: 'asc' },
+			take: 50, // Limit in DB
+			select: {
+				coinId: true,
+				coin: { select: { id: true } },
+			},
+		})
 
 		if (!coinsToUpdate.length) {
-			console.log('✅ Using cached UserCoins from DB')
-			return userCoins
+			console.log('✅ Using cached UserCoins')
+
+			return prisma.userCoin.findMany({
+				where: { userId },
+				include: { coin: true },
+			})
 		}
 
 		// Forming a string for an API request
-		const coinList = coinsToUpdate
-			.sort((a, b) => (a.updatedAt?.getTime() || 0) - (b.updatedAt?.getTime() || 0)) // ASC sort
-			.slice(0, 50) // Take the first 50 elements
-			.map((uc) => uc.coinId)
-			.join('%2C')
+		const coinIds = coinsToUpdate.map((coin) => encodeURIComponent(coin.coinId)).join('%2C')
 
 		// Requesting fresh data from the API
 		console.log('🔄 Outdated records, request UserCoins via API...')
-		const response = await makeReq('GET', `/gecko/user/${encodeURIComponent(coinList)}`)
+		const response = await makeReq('GET', `/gecko/user/${coinIds}`)
 
 		if (!response || !Array.isArray(response) || !response.length) {
 			console.warn('⚠️ UPDATE_USER_COINS: Empty response from API, using old UserCoinsList')
-			return userCoins
+
+			return prisma.userCoin.findMany({
+				where: { userId },
+				include: { coin: true },
+			})
 		}
 
-		await prisma.$transaction([
-			// Updating coin
-			...response.map((coin) =>
-				prisma.coin.upsert({
-					where: { id: coin.id },
-					update: {
-						current_price: coin.current_price,
-						image: coin.image,
-						updatedAt: currentTime,
-					},
-					create: {
-						id: coin.id,
-						coinsListIDMapId: coin.id,
-						current_price: coin.current_price,
-						image: coin.image,
-						updatedAt: currentTime,
-					},
-				}),
-			),
-
-			// Updating userCoin
-			...response.map((coin) =>
-				prisma.userCoin.updateMany({
-					where: { userId, coinId: coin.id },
-					data: { updatedAt: currentTime },
-				}),
-			),
+		// Batch update
+		const updateOperations = response.flatMap((coin) => [
+			prisma.coin.upsert({
+				where: { id: coin.id },
+				update: {
+					current_price: coin.current_price,
+					image: coin.image,
+					updatedAt: currentTime,
+				},
+				create: {
+					id: coin.id,
+					coinsListIDMapId: coin.id,
+					current_price: coin.current_price,
+					image: coin.image,
+					updatedAt: currentTime,
+				},
+			}),
+			prisma.userCoin.updateMany({
+				where: {
+					userId,
+					coinId: coin.id,
+				},
+				data: { updatedAt: currentTime },
+			}),
 		])
+
+		await prisma.$transaction(updateOperations)
 
 		console.log('✅ Records UserCoinsList updated!')
 
@@ -1004,36 +986,34 @@ export const getCoinsListIDMap = async (): Promise<CoinsListIDMapData> => {
 
 export const getCoinData = async (coinId: string): Promise<CoinData> => {
 	try {
-		const currentTime = new Date()
-		const updateTime = new Date(currentTime.getTime() - COINS_UPDATE_INTERVAL)
+		const updateTime = new Date(Date.now() - COINS_UPDATE_INTERVAL)
 
 		// Checking the availability of data in the DB
 		const cachedData = await prisma.coin.findUnique({
 			where: { id: coinId },
-			include: {
-				coinsListIDMap: true,
+			include: { coinsListIDMap: true },
+		})
+
+		const mapToCoinData = (data: any): CoinData => ({
+			id: data.id,
+			symbol: data.coinsListIDMap.symbol,
+			name: data.coinsListIDMap.name,
+			description: { en: data.description || '' },
+			image: { thumb: data.image || '' },
+			market_cap_rank: data.market_cap_rank || 0,
+			market_data: {
+				current_price: { usd: data.current_price || 0 },
+				market_cap: { usd: data.market_cap || 0 },
+				high_24h: { usd: data.high_24h || 0 },
+				low_24h: { usd: data.low_24h || 0 },
+				circulating_supply: data.circulating_supply || 0,
 			},
 		})
 
 		if (cachedData && cachedData.updatedAt > updateTime) {
 			console.log('✅ Using cached CoinData from DB')
 
-			return {
-				id: cachedData.id,
-				symbol: cachedData.coinsListIDMap.symbol,
-				name: cachedData.coinsListIDMap.name,
-				description: { en: cachedData.description || '' },
-				image: { thumb: cachedData.image || '' },
-				market_cap_rank: cachedData.market_cap_rank || 0,
-				market_data: {
-					current_price: { usd: cachedData.current_price || 0 },
-					market_cap: { usd: cachedData.market_cap || 0 },
-					high_24h: { usd: cachedData.high_24h || 0 },
-					low_24h: { usd: cachedData.low_24h || 0 },
-					circulating_supply: cachedData.circulating_supply || 0,
-				},
-				last_updated: cachedData.updatedAt.toISOString(),
-			} as CoinData
+			return mapToCoinData(cachedData)
 		}
 
 		// If there is no data, make a request to the API
@@ -1043,70 +1023,52 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 		// Validate the API response
 		if (!response || typeof response !== 'object' || Array.isArray(response)) {
 			console.warn('⚠️ Empty response from API, using old CoinData')
-			return {} as CoinData
+
+			return cachedData ? mapToCoinData(cachedData) : ({} as CoinData)
 		}
 
-		const { id, symbol, name, image, description, market_cap_rank, market_data } = response
+		const { id, symbol, name } = response
 
-		// Ensure CoinsListIDMap exists
-		await prisma.coinsListIDMap.upsert({
-			where: { id },
-			update: { symbol, name },
-			create: { id, symbol, name },
+		const mapToDbFields = (data: any) => ({
+			current_price: data.market_data?.current_price?.usd || 0,
+			description: data.description?.en || '',
+			image: data.image?.thumb || '',
+			market_cap: data.market_data?.market_cap?.usd || 0,
+			market_cap_rank: data.market_cap_rank || 0,
+			high_24h: data.market_data?.high_24h?.usd || 0,
+			low_24h: data.market_data?.low_24h?.usd || 0,
+			circulating_supply: data.market_data?.circulating_supply || 0,
+			price_change_percentage_24h: data.market_data?.price_change_percentage_24h || 0,
+			price_change_percentage_7d_in_currency:
+				data.market_data?.price_change_percentage_7d_in_currency?.usd || 0,
+			total_volume: data.market_data?.total_volume?.usd || 0,
+			updatedAt: new Date(),
 		})
 
-		// Update or create the Coin record
-		await prisma.coin.upsert({
-			where: { id },
-			update: {
-				current_price: market_data?.current_price?.usd || 0,
-				description: description?.en || '',
-				image: image?.thumb || '',
-				market_cap: market_data?.market_cap?.usd || 0,
-				market_cap_rank: market_cap_rank || 0,
-				total_volume: market_data?.total_volume?.usd || 0,
-				high_24h: market_data?.high_24h?.usd || 0,
-				low_24h: market_data?.low_24h?.usd || 0,
-				price_change_percentage_24h: market_data?.price_change_percentage_24h || 0,
-				circulating_supply: market_data?.circulating_supply || 0,
-				price_change_percentage_7d_in_currency: market_data?.price_change_percentage_7d_in_currency?.usd || 0,
-				updatedAt: new Date(),
-			},
-			create: {
-				id,
-				current_price: market_data?.current_price?.usd || 0,
-				description: description?.en || '',
-				image: image?.thumb || '',
-				market_cap: market_data?.market_cap?.usd || 0,
-				market_cap_rank: market_cap_rank || 0,
-				total_volume: market_data?.total_volume?.usd || 0,
-				high_24h: market_data?.high_24h?.usd || 0,
-				low_24h: market_data?.low_24h?.usd || 0,
-				price_change_percentage_24h: market_data?.price_change_percentage_24h || 0,
-				circulating_supply: market_data?.circulating_supply || 0,
-				price_change_percentage_7d_in_currency: market_data?.price_change_percentage_7d_in_currency?.usd || 0,
-				updatedAt: new Date(),
-				coinsListIDMapId: id,
-			},
-		})
+		// Merged transaction
+		await prisma.$transaction([
+			prisma.coinsListIDMap.upsert({
+				where: { id },
+				update: { symbol, name },
+				create: { id, symbol, name },
+			}),
+			prisma.coin.upsert({
+				where: { id },
+				update: {
+					...mapToDbFields(response),
+					updatedAt: new Date(),
+				},
+				create: {
+					id,
+					coinsListIDMapId: id,
+					...mapToDbFields(response),
+				},
+			}),
+		])
 
 		console.log('✅ Records CoinData updated!')
 
-		return {
-			id,
-			symbol,
-			name,
-			description: { en: description?.en || '' },
-			image: { thumb: image?.thumb || '' },
-			market_cap_rank: market_cap_rank || 0,
-			market_data: {
-				current_price: { usd: market_data?.current_price?.usd || 0 },
-				market_cap: { usd: market_data?.market_cap?.usd || 0 },
-				high_24h: { usd: market_data?.high_24h?.usd || 0 },
-				low_24h: { usd: market_data?.low_24h?.usd || 0 },
-				circulating_supply: market_data?.circulating_supply || 0,
-			},
-		} as CoinData
+		return mapToCoinData({ ...response, updatedAt: new Date() })
 	} catch (error) {
 		handleError(error, 'GET_COIN_DATA')
 
@@ -1201,96 +1163,84 @@ export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> =
 	try {
 		// Checking the availability of data in the DB
 		const cachedData = await prisma.coin.findMany({
-			where: {
-				categoryId: cate,
-			},
+			where: { categoryId: cate },
 			include: {
-				coinsListIDMap: true,
+				coinsListIDMap: {
+					select: { symbol: true, name: true },
+				},
 			},
 		})
 
 		// If there is data, return it
 		if (cachedData.length > 0) {
 			console.log('✅ Using cached CoinsListByCate from DB')
-			return cachedData.map((coin) => ({
-				id: coin.id,
-				symbol: coin.coinsListIDMap.symbol,
-				name: coin.coinsListIDMap.name,
-				description: coin.description,
-				image: coin.image,
-				current_price: coin.current_price,
-				market_cap: coin.market_cap,
-				market_cap_rank: coin.market_cap_rank,
-				total_volume: coin.total_volume,
-				high_24h: coin.high_24h,
-				low_24h: coin.low_24h,
-				price_change_percentage_24h: coin.price_change_percentage_24h,
-				circulating_supply: coin.circulating_supply,
-				sparkline_in_7d: coin.sparkline_in_7d,
-				price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
+
+			return cachedData.map(({ coinsListIDMap, ...coin }) => ({
+				...coin,
+				...coinsListIDMap,
+				sparkline_in_7d: { price: coin.sparkline_in_7d },
 			})) as CoinsListData
 		}
+
 		// If there is no data, make a request to the API
 		console.log('🔄 Outdated records, request CoinsListByCate via API...')
 		const response = await makeReq('GET', `/gecko/${cate}/coins`)
 
-		// If the data is received and it is not empty
-		if (Array.isArray(response)) {
-			// Process each coin from the API
-			for (const coinData of response) {
-				// Make sure that the entry in CoinsListIDMap exists
-				await prisma.coinsListIDMap.upsert({
-					where: { id: coinData.id },
-					update: { symbol: coinData.symbol, name: coinData.name },
-					create: { id: coinData.id, symbol: coinData.symbol, name: coinData.name },
-				})
-
-				// Update or create an entry in Coin
-				await prisma.coin.upsert({
-					where: { id: coinData.id },
-					update: {
-						description: coinData.description,
-						image: coinData.image,
-						current_price: coinData.current_price,
-						market_cap: coinData.market_cap,
-						market_cap_rank: coinData.market_cap_rank,
-						total_volume: coinData.total_volume,
-						high_24h: coinData.high_24h,
-						low_24h: coinData.low_24h,
-						price_change_percentage_24h: coinData.price_change_percentage_24h,
-						circulating_supply: coinData.circulating_supply,
-						sparkline_in_7d: coinData.sparkline_in_7d,
-						price_change_percentage_7d_in_currency: coinData.price_change_percentage_7d_in_currency,
-						categoryId: cate,
-					},
-					create: {
-						id: coinData.id,
-						description: coinData.description,
-						image: coinData.image,
-						current_price: coinData.current_price,
-						market_cap: coinData.market_cap,
-						market_cap_rank: coinData.market_cap_rank,
-						total_volume: coinData.total_volume,
-						high_24h: coinData.high_24h,
-						low_24h: coinData.low_24h,
-						price_change_percentage_24h: coinData.price_change_percentage_24h,
-						circulating_supply: coinData.circulating_supply,
-						sparkline_in_7d: coinData.sparkline_in_7d,
-						price_change_percentage_7d_in_currency: coinData.price_change_percentage_7d_in_currency,
-						coinsListIDMapId: coinData.id,
-						categoryId: cate,
-					},
-				})
-			}
-
-			console.log('✅ Records CoinsListByCate updated!')
-
-			// Return data in CoinsListData format
-			return response
-		} else {
+		if (!Array.isArray(response) || !response.length) {
 			console.warn('⚠️ Empty response from API, using old CoinsListByCate')
-			return [] as CoinsListData
+
+			return []
 		}
+
+		const transformCoinData = (data: any, category: string) => ({
+			...pick(data, [
+				'description',
+				'image',
+				'current_price',
+				'market_cap',
+				'market_cap_rank',
+				'total_volume',
+				'high_24h',
+				'low_24h',
+				'price_change_percentage_24h',
+				'circulating_supply',
+				'sparkline_in_7d',
+				'price_change_percentage_1h_in_currency',
+				'price_change_percentage_24h_in_currency',
+				'price_change_percentage_7d_in_currency',
+				'price_change_percentage_30d_in_currency',
+				'price_change_percentage_1y_in_currency',
+			]),
+			categoryId: category,
+		})
+
+		// Batch processing via transaction
+		const upsertOperations = response.flatMap((coinData) => [
+			prisma.coinsListIDMap.upsert({
+				where: { id: coinData.id },
+				update: { symbol: coinData.symbol, name: coinData.name },
+				create: { id: coinData.id, ...pick(coinData, ['symbol', 'name']) },
+			}),
+			prisma.coin.upsert({
+				where: { id: coinData.id },
+				update: { ...transformCoinData(coinData, cate) },
+				create: {
+					id: coinData.id,
+					coinsListIDMapId: coinData.id,
+					...transformCoinData(coinData, cate),
+				},
+			}),
+		])
+
+		await prisma.$transaction(upsertOperations)
+
+		console.log('✅ Records CoinsListByCate updated!')
+
+		// Return data in CoinsListData format
+		return response.map((coin) => ({
+			...pick(coin, ['id', 'symbol', 'name', 'description', 'image']),
+			...omit(coin, ['id', 'symbol', 'name', 'description', 'image']),
+		})) as CoinsListData
 	} catch (error) {
 		handleError(error, 'GET_COINS_LIST_BY_CATE')
 
@@ -1457,31 +1407,24 @@ export const getAirdrops = async (): Promise<AirdropsData> => {
 		// Getting airdrop data from the DB
 		const cachedData = await prisma.airdrop.findMany({
 			include: {
-				coin: true,
-				coinsListIDMap: true,
+				coin: { select: { id: true } },
+				coinsListIDMap: { select: { name: true, symbol: true } },
 			},
 		})
 
 		// If the airdrops data already exists in the DB, return it
-		if (cachedData.length > 0) {
+		if (cachedData.length) {
 			console.log('✅ Using cached Airdrops from DB')
 
 			return {
-				data: cachedData.map((airdrop) => ({
-					id: airdrop.id,
-					project_name: airdrop.project_name,
-					description: airdrop.description,
-					status: airdrop.status,
-					coin: {
-						id: airdrop.coin.id,
-						name: airdrop.coinsListIDMap.name,
-						symbol: airdrop.coinsListIDMap.symbol,
-					},
-					start_date: airdrop.start_date.toISOString(),
-					end_date: airdrop.end_date.toISOString(),
-					total_prize: airdrop.total_prize,
-					winner_count: airdrop.winner_count,
-					link: airdrop.link,
+				data: cachedData.map(({ coin, coinsListIDMap, start_date, end_date, ...rest }) => ({
+					...rest,
+					coin: { id: coin.id, ...coinsListIDMap },
+					startDate: new Date(start_date.toISOString()),
+					endDate: new Date(end_date.toISOString()),
+					projectName: rest.project_name,
+					totalPrize: rest.total_prize,
+					winnerCount: rest.winner_count,
 				})),
 			}
 		}
@@ -1496,61 +1439,54 @@ export const getAirdrops = async (): Promise<AirdropsData> => {
 			return { data: [] } as AirdropsData
 		}
 
-		// Transform the data into the required format
-		const airdropsData: AirdropsData = {
-			data: response.data.map((airdrop: any) => ({
-				id: airdrop.id,
-				project_name: airdrop.project_name,
-				description: airdrop.description,
-				status: airdrop.status,
-				coin: {
-					id: airdrop.coin.id,
-					name: airdrop.coin.name,
-					symbol: airdrop.coin.symbol,
-				},
-				start_date: airdrop.start_date,
-				end_date: airdrop.end_date,
-				total_prize: airdrop.total_prize,
-				winner_count: airdrop.winner_count,
-				link: airdrop.link,
-			})),
-		}
+		const transformAirdropData = (airdrop: Airdrop) => ({
+			project_name: airdrop.projectName,
+			description: airdrop.description,
+			status: airdrop.status,
+			coinId: airdrop.coin.id,
+			coinsListIDMapId: airdrop.coin.id,
+			start_date: new Date(airdrop.startDate),
+			end_date: new Date(airdrop.endDate),
+			total_prize: airdrop.totalPrize,
+			winner_count: airdrop.winnerCount,
+			link: airdrop.link,
+		})
 
-		// Update or create records in the DB
-		for (const airdrop of airdropsData.data) {
-			await prisma.airdrop.upsert({
+		// Batch processing via transaction
+		const upsertOperations = response.data.map((airdrop: Airdrop) =>
+			prisma.airdrop.upsert({
 				where: { id: airdrop.id },
-				update: {
-					project_name: airdrop.project_name,
-					description: airdrop.description,
-					status: airdrop.status,
-					coinId: airdrop.coin.id,
-					coinsListIDMapId: airdrop.coin.id,
-					start_date: new Date(airdrop.start_date),
-					end_date: new Date(airdrop.end_date),
-					total_prize: airdrop.total_prize,
-					winner_count: airdrop.winner_count,
-					link: airdrop.link,
-				},
+				update: transformAirdropData(airdrop),
 				create: {
 					id: airdrop.id,
-					project_name: airdrop.project_name,
-					description: airdrop.description,
-					status: airdrop.status,
-					coinId: airdrop.coin.id,
-					coinsListIDMapId: airdrop.coin.id,
-					start_date: new Date(airdrop.start_date),
-					end_date: new Date(airdrop.end_date),
-					total_prize: airdrop.total_prize,
-					winner_count: airdrop.winner_count,
-					link: airdrop.link,
+					...transformAirdropData(airdrop),
 				},
-			})
-		}
+			}),
+		)
+
+		await prisma.$transaction(upsertOperations)
+
+		// Returning current data from DB
+		const updatedData = await prisma.airdrop.findMany({
+			include: {
+				coin: { select: { id: true } },
+				coinsListIDMap: { select: { name: true, symbol: true } },
+			},
+		})
 
 		console.log('✅ Records Airdrops updated!')
 
-		return airdropsData
+		return {
+			data: updatedData.map(({ coin, coinsListIDMap, start_date, end_date, ...rest }) => ({
+				...rest,
+				coin: { id: coin.id, ...coinsListIDMap },
+				startDate: new Date(start_date),
+				endDate: new Date(end_date),
+				projectName: rest.project_name,
+				totalPrize: rest.total_prize,
+				winnerCount: rest.winner_count,
+			})),
+		}
 	} catch (error) {
 		handleError(error, 'GET_AIRDROPS')
 

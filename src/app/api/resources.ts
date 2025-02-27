@@ -12,17 +12,17 @@ export const getCgCategoriesRoute = (): string => {
 
 // getCoinsList
 export const getCgCoinsListRoute = (): string => {
-	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&per_page=250&sparkline=true&price_change_percentage=7d`
+	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&per_page=250&sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y`
 }
 
 // updateCoinsList
 export const getCgUpdateCoinsListRoute = (coinList: string): string => {
-	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&ids=${coinList}&per_page=250&sparkline=false`
+	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&ids=${coinList}&per_page=250&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y`
 }
 
 // updateUserCoinsList
 export const getCgUserCoinsListRoute = (coinList: string): string => {
-	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&ids=${coinList}&per_page=250&sparkline=false`
+	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&ids=${coinList}&per_page=250&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y`
 }
 
 // getCoinsListIDMap
@@ -37,7 +37,7 @@ export const getCgCoinsDataRoute = (coinId: string): string => {
 
 // getCoinsListByCate
 export const getCgCoinsListByCateRoute = (cate: string): string => {
-	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&category=${cate}&per_page=250&sparkline=true&price_change_percentage=7d`
+	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&category=${cate}&per_page=250&sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y`
 }
 
 // getCoinsMarketChart

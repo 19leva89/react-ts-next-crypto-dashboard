@@ -34,7 +34,11 @@ export type CoinListData = {
 	sparkline_in_7d: {
 		price: number[]
 	}
+	price_change_percentage_1h_in_currency: number
+	price_change_percentage_24h_in_currency: number
 	price_change_percentage_7d_in_currency: number
+	price_change_percentage_30d_in_currency: number
+	price_change_percentage_1y_in_currency: number
 }
 
 export type CoinsListData = CoinListData[]
@@ -129,21 +133,23 @@ export type MarketChartDataPoint = {
 	value: number
 }
 
-export type AirdropsData = {
-	data: {
+export type Airdrop = {
+	id: string
+	projectName: string
+	description: string
+	status: 'UPCOMING' | 'ONGOING' | 'ENDED'
+	coin: {
 		id: string
-		project_name: string
-		description: string
-		status: 'UPCOMING' | 'ONGOING' | 'ENDED'
-		coin: {
-			id: string
-			name: string
-			symbol: string
-		}
-		start_date: string
-		end_date: string
-		total_prize: number
-		winner_count: number
-		link: string
-	}[]
+		name: string
+		symbol: string
+	}
+	startDate: Date
+	endDate: Date
+	totalPrize: number
+	winnerCount: number
+	link: string
+}
+
+export type AirdropsData = {
+	data: Airdrop[]
 }
