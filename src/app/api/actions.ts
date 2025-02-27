@@ -104,7 +104,12 @@ const getLatestBefore = <T extends { timestamp: Date }>(entries: T[], target: Da
 		const mid = Math.floor((left + right) / 2)
 		const midTime = entries[mid].timestamp.getTime()
 
-		midTime <= targetTime ? ((resultIdx = mid), (left = mid + 1)) : (right = mid - 1)
+		if (midTime <= targetTime) {
+			resultIdx = mid
+			left = mid + 1
+		} else {
+			right = mid - 1
+		}
 	}
 
 	return resultIdx >= 0 ? entries[resultIdx] : null
@@ -565,7 +570,7 @@ export const getTrendingData = async (): Promise<TrendingData> => {
 	}
 }
 
-// cron 60min
+// cron 24h
 export const updateTrendingData = async (): Promise<TrendingData> => {
 	try {
 		console.log('🔄 Starting TrendingData update via API...')
@@ -1349,6 +1354,7 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 	}
 }
 
+// cron 24h
 export const updateCoinsMarketChart = async (days: ValidDays): Promise<MarketChartData> => {
 	const RPM_LIMIT = 30 // 30 requests per minute
 	const DELAY = (60 * 1000) / RPM_LIMIT + 100 // 2100ms between requests
@@ -1427,7 +1433,7 @@ export const updateCoinsMarketChart = async (days: ValidDays): Promise<MarketCha
 
 						requestCount = 0 // Reset the counter after waiting
 					}
-					console.error(`✗ Error processing ${coinId}:`, error.message)
+					console.error(`❌ Error processing ${coinId}:`, error.message)
 				}
 
 				handleError(error, 'UPDATE_COIN_MARKET_CHART')
