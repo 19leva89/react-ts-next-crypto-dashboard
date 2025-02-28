@@ -90,6 +90,11 @@ export interface UserCoinData {
 	averagePrice: number
 	sellPrice?: number
 	image: string
+	pricePercentage_1h: number
+	pricePercentage_24h: number
+	pricePercentage_7d: number
+	pricePercentage_30d: number
+	pricePercentage_1y: number
 	transactions: Transaction[]
 }
 

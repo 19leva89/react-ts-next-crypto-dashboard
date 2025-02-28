@@ -1,12 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
 import { formatPrice } from '@/constants/format-price'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
-import { getUserCoinsListMarketChart, updateCoinsMarketChart } from '@/app/api/actions'
-import { MarketChartDataPoint, UserCoinData } from '@/app/api/types'
+import { UserCoinData } from '@/app/api/types'
 import { Button, ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui'
 
 interface Props {
@@ -16,30 +15,62 @@ interface Props {
 	plannedProfit: number
 }
 
+interface MarketChartDataPoint {
+	timestamp: number
+	value: number
+}
+
+function getPeriodKey(days: number): keyof UserCoinData {
+	switch (days) {
+		case 1:
+			return 'pricePercentage_24h'
+		case 7:
+			return 'pricePercentage_7d'
+		case 30:
+			return 'pricePercentage_30d'
+		case 365:
+			return 'pricePercentage_1y'
+		default:
+			return 'pricePercentage_24h'
+	}
+}
+
 export const ChartsContainer = ({ coinData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
 	const [days, setDays] = useState<number>(1)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [data, setData] = useState<MarketChartDataPoint[]>()
 
-	useEffect(() => {
-		setIsLoading(true)
-		setData(undefined)
+	const calculatedData = useMemo(() => {
+		if (!coinData.length || days <= 0) return []
 
-		const fetchData = async () => {
-			try {
-				// await updateCoinsMarketChart(days)
-				const marketChart = await getUserCoinsListMarketChart(days)
+		const periodKey = getPeriodKey(days)
+		const now = Date.now()
+		const oneDayMs = 86400000
 
-				setData(marketChart)
-			} catch (error) {
-				console.error('Error fetching coin details:', error)
-			} finally {
-				setIsLoading(false)
-			}
+		let startValue = 0
+		coinData.forEach((coin) => {
+			const pct = coin[periodKey] as number | undefined
+			if (pct === undefined || pct === null) return
+
+			const startPrice = coin.currentPrice / (1 + pct / 100)
+			startValue += startPrice * coin.totalQuantity
+		})
+
+		if (startValue <= 0) return []
+
+		const dataPoints: MarketChartDataPoint[] = []
+		const totalChange = totalValue / startValue - 1
+		const daysMs = days * oneDayMs
+
+		for (let i = 0; i <= days; i++) {
+			const timestamp = now - daysMs + i * oneDayMs
+			const progress = i / days
+			const value = startValue * (1 + totalChange * progress)
+			dataPoints.push({ timestamp, value })
 		}
 
-		fetchData()
-	}, [days])
+		return dataPoints
+	}, [coinData, days, totalValue])
 
 	const chartConfig = {
 		prices: {
@@ -49,7 +80,7 @@ export const ChartsContainer = ({ coinData, totalInvestedValue, totalValue, plan
 	} satisfies ChartConfig
 
 	const formattedData =
-		data?.map(({ timestamp, value }) => {
+		calculatedData?.map(({ timestamp, value }) => {
 			const date = new Date(timestamp)
 			let label = ''
 
