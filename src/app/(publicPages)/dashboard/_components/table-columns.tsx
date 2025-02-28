@@ -216,7 +216,11 @@ export const columns: ColumnDef<CoinListData>[] = [
 			const coin = row.original
 			const priceChange = coin.price_change_percentage_7d_in_currency as number
 
-			if (!coin.sparkline_in_7d || !coin.sparkline_in_7d.price) {
+			if (
+				!coin.sparkline_in_7d?.price ||
+				!Array.isArray(coin.sparkline_in_7d.price) || // <-- Add array check
+				coin.sparkline_in_7d.price.length === 0 // <-- Add empty array check
+			) {
 				return null
 			}
 
@@ -227,13 +231,19 @@ export const columns: ColumnDef<CoinListData>[] = [
 				},
 			} satisfies ChartConfig
 
-			const formattedData = coin.sparkline_in_7d.price.map((price, index) => ({
-				Hour: index,
-				Price: price,
-			}))
+			const formattedData = coin.sparkline_in_7d.price
+				.map((price, index) => ({
+					Hour: index,
+					Price: Number(price),
+				}))
+				.filter((item) => !isNaN(item.Price)) // <-- Filter invalid numbers
 
-			const minPrice = Math.min(...formattedData?.map((h) => h.Price))
-			const maxPrice = Math.max(...formattedData?.map((h) => h.Price))
+			// Handle empty data after filtering
+			if (formattedData.length === 0) return null
+
+			const prices = formattedData.map((h) => h.Price)
+			const minPrice = Math.min(...prices)
+			const maxPrice = Math.max(...prices)
 
 			const lineColor = priceChange > 0 ? '#22c55ed6' : priceChange < 0 ? '#dc2626d6' : '#22c55ed6'
 

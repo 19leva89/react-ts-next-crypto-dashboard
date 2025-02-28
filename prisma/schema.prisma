@@ -146,7 +146,7 @@ model Coin {
   airdrops         Airdrop[]
   marketCharts     MarketChart[]
   coinsListIDMap   CoinsListIDMap @relation(fields: [id], references: [id], onDelete: Cascade)
-  coinsListIDMapId String
+  coinsListIDMapId String?
   category         Category?      @relation(fields: [categoryId], references: [category_id])
   categoryId       String?
   //

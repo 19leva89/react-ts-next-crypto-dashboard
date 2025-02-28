@@ -730,7 +730,24 @@ export const updateCoinsList = async (): Promise<any> => {
 			prisma.coin.update({
 				where: { id: coin.id },
 				data: {
-					...coin,
+					...pick(coin, [
+						'current_price',
+						'description',
+						'image',
+						'market_cap',
+						'market_cap_rank',
+						'total_volume',
+						'high_24h',
+						'low_24h',
+						'price_change_percentage_24h',
+						'circulating_supply',
+						'sparkline_in_7d',
+						'price_change_percentage_1h_in_currency',
+						'price_change_percentage_24h_in_currency',
+						'price_change_percentage_7d_in_currency',
+						'price_change_percentage_30d_in_currency',
+						'price_change_percentage_1y_in_currency',
+					]),
 					updatedAt: new Date(),
 				},
 			}),
@@ -994,26 +1011,25 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 			include: { coinsListIDMap: true },
 		})
 
-		const mapToCoinData = (data: any): CoinData => ({
-			id: data.id,
-			symbol: data.coinsListIDMap.symbol,
-			name: data.coinsListIDMap.name,
-			description: { en: data.description || '' },
-			image: { thumb: data.image || '' },
-			market_cap_rank: data.market_cap_rank || 0,
-			market_data: {
-				current_price: { usd: data.current_price || 0 },
-				market_cap: { usd: data.market_cap || 0 },
-				high_24h: { usd: data.high_24h || 0 },
-				low_24h: { usd: data.low_24h || 0 },
-				circulating_supply: data.circulating_supply || 0,
-			},
-		})
-
 		if (cachedData && cachedData.updatedAt > updateTime) {
 			console.log('✅ Using cached CoinData from DB')
 
-			return mapToCoinData(cachedData)
+			return {
+				id: cachedData.id,
+				symbol: cachedData.coinsListIDMap.symbol,
+				name: cachedData.coinsListIDMap.name,
+				description: { en: cachedData.description || '' },
+				image: { thumb: cachedData.image || '' },
+				market_cap_rank: cachedData.market_cap_rank || 0,
+				market_data: {
+					current_price: { usd: cachedData.current_price || 0 },
+					market_cap: { usd: cachedData.market_cap || 0 },
+					high_24h: { usd: cachedData.high_24h || 0 },
+					low_24h: { usd: cachedData.low_24h || 0 },
+					circulating_supply: cachedData.circulating_supply || 0,
+				},
+				last_updated: cachedData.updatedAt.toISOString(),
+			} as CoinData
 		}
 
 		// If there is no data, make a request to the API
@@ -1024,10 +1040,10 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 		if (!response || typeof response !== 'object' || Array.isArray(response)) {
 			console.warn('⚠️ Empty response from API, using old CoinData')
 
-			return cachedData ? mapToCoinData(cachedData) : ({} as CoinData)
+			return {} as CoinData
 		}
 
-		const { id, symbol, name } = response
+		const { id, symbol, name, image, description, market_cap_rank, market_data } = response
 
 		const mapToDbFields = (data: any) => ({
 			current_price: data.market_data?.current_price?.usd || 0,
@@ -1068,7 +1084,21 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 
 		console.log('✅ Records CoinData updated!')
 
-		return mapToCoinData({ ...response, updatedAt: new Date() })
+		return {
+			id,
+			symbol,
+			name,
+			description: { en: description?.en || '' },
+			image: { thumb: image?.thumb || '' },
+			market_cap_rank: market_cap_rank || 0,
+			market_data: {
+				current_price: { usd: market_data?.current_price?.usd || 0 },
+				market_cap: { usd: market_data?.market_cap?.usd || 0 },
+				high_24h: { usd: market_data?.high_24h?.usd || 0 },
+				low_24h: { usd: market_data?.low_24h?.usd || 0 },
+				circulating_supply: market_data?.circulating_supply || 0,
+			},
+		} as CoinData
 	} catch (error) {
 		handleError(error, 'GET_COIN_DATA')
 
