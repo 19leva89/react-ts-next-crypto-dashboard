@@ -14,12 +14,13 @@ const CoinsPage = async () => {
 		coinId: userCoin.coin.id,
 		name: userCoin.coinsListIDMap.name,
 		symbol: userCoin.coinsListIDMap.symbol,
-		currentPrice: userCoin.coin.current_price as number,
-		totalQuantity: userCoin.total_quantity,
-		totalCost: userCoin.total_cost,
-		averagePrice: userCoin.average_price,
-		sellPrice: userCoin.desired_sell_price as number,
+		current_price: userCoin.coin.current_price as number,
+		total_quantity: userCoin.total_quantity,
+		total_cost: userCoin.total_cost,
+		average_price: userCoin.average_price,
+		desired_sell_price: userCoin.desired_sell_price as number,
 		image: userCoin.coin.image as string,
+		sparkline_in_7d: userCoin.coin.sparkline_in_7d as { price: number[] },
 		transactions: userCoin.transactions.map((transaction) => ({
 			id: transaction.id,
 			quantity: transaction.quantity,
@@ -31,17 +32,17 @@ const CoinsPage = async () => {
 
 	// Calculate the total invested value of the portfolio
 	const totalInvestedValue = coinData.reduce((total, coin) => {
-		return total + coin.totalCost
+		return total + coin.total_cost
 	}, 0)
 
 	// Calculate the total value of the portfolio
 	const totalPortfolioValue = coinData.reduce((total, coin) => {
-		return total + coin.currentPrice * coin.totalQuantity
+		return total + coin.current_price * coin.total_quantity
 	}, 0)
 
 	// Calculate the total future profit of the portfolio
 	const plannedProfit = coinData.reduce((total, coin) => {
-		return total + coin.sellPrice * coin.totalQuantity
+		return total + coin.desired_sell_price * coin.total_quantity
 	}, 0)
 
 	return (

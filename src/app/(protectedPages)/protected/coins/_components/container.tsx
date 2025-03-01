@@ -38,16 +38,16 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 	const sortedCoinData = [...coinData].sort((a, b) => {
 		switch (sortOption) {
 			case 'total-asc':
-				return a.currentPrice * a.totalQuantity - b.currentPrice * b.totalQuantity
+				return a.current_price * a.total_quantity - b.current_price * b.total_quantity
 
 			case 'total-desc':
-				return b.currentPrice * b.totalQuantity - a.currentPrice * a.totalQuantity
+				return b.current_price * b.total_quantity - a.current_price * a.total_quantity
 
 			case 'price-asc':
-				return a.currentPrice - b.currentPrice
+				return a.current_price - b.current_price
 
 			case 'price-desc':
-				return b.currentPrice - a.currentPrice
+				return b.current_price - a.current_price
 
 			case 'name-asc':
 				return a.name.localeCompare(b.name)

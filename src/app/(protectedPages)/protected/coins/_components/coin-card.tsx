@@ -32,8 +32,8 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
 
-	const totalValue = coin.currentPrice * coin.totalQuantity
-	const changePercentagePrice = ((coin.currentPrice - coin.averagePrice) / coin.averagePrice) * 100
+	const totalValue = coin.current_price * coin.total_quantity
+	const changePercentagePrice = ((coin.current_price - coin.average_price) / coin.average_price) * 100
 
 	return (
 		<Card
@@ -76,18 +76,18 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 						<div
 							className={cn('flex', viewMode === 'grid' ? 'flex-col' : 'flex-row gap-4 max-[1000px]:hidden')}
 						>
-							<span>Buy: ${formatPrice(coin.averagePrice)}</span>
+							<span>Buy: ${formatPrice(coin.average_price)}</span>
 
-							<span>Curr: ${formatPrice(coin.currentPrice)}</span>
+							<span>Curr: ${formatPrice(coin.current_price)}</span>
 
-							{coin.sellPrice ? <span>Sell: ${formatPrice(coin.sellPrice)}</span> : null}
+							{coin.desired_sell_price ? <span>Sell: ${formatPrice(coin.desired_sell_price)}</span> : null}
 						</div>
 
 						<div
 							className={cn(
 								'flex items-center gap-2 rounded-full font-medium px-2 py-1 h-8 ',
 								viewMode === 'grid' ? '' : 'max-[460px]:hidden',
-								coin.currentPrice > coin.averagePrice
+								coin.current_price > coin.average_price
 									? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
 									: 'bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item',
 							)}
@@ -143,7 +143,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 					viewMode === 'grid' ? 'flex-col items-start' : 'flex-row items-center justify-between gap-8',
 				)}
 			>
-				<p className="text-lg font-semibold">Quantity: {formatPrice(coin.totalQuantity)}</p>
+				<p className="text-lg font-semibold">Quantity: {formatPrice(coin.total_quantity)}</p>
 
 				<p className="text-lg font-semibold">Total value: ${formatPrice(totalValue, false)}</p>
 			</CardContent>

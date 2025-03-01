@@ -34,11 +34,7 @@ export type CoinListData = {
 	sparkline_in_7d: {
 		price: number[]
 	}
-	price_change_percentage_1h_in_currency: number
-	price_change_percentage_24h_in_currency: number
 	price_change_percentage_7d_in_currency: number
-	price_change_percentage_30d_in_currency: number
-	price_change_percentage_1y_in_currency: number
 }
 
 export type CoinsListData = CoinListData[]
@@ -84,18 +80,22 @@ export interface UserCoinData {
 	coinId: string
 	name: string
 	symbol: string
-	currentPrice: number
-	totalQuantity: number
-	totalCost: number
-	averagePrice: number
-	sellPrice?: number
+	current_price: number
+	total_quantity: number
+	total_cost: number
+	average_price: number
+	desired_sell_price?: number
 	image: string
-	pricePercentage_1h: number
-	pricePercentage_24h: number
-	pricePercentage_7d: number
-	pricePercentage_30d: number
-	pricePercentage_1y: number
+	sparkline_in_7d: {
+		price: number[]
+	}
+	price_change_percentage_7d_in_currency?: number
 	transactions: Transaction[]
+}
+
+export interface UserChartDataPoint {
+	timestamp: Date
+	value: number
 }
 
 export type TrendingItem = {

@@ -29,10 +29,10 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 
 	const [isSaving, setIsSaving] = useState<boolean>(false)
 	const [isAdding, setIsAdding] = useState<boolean>(false)
-	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
+	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
 
-	const totalValue = coin.currentPrice * coin.totalQuantity
+	const totalValue = coin.current_price * coin.total_quantity
 
 	const handleNumberInput = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value.replace(/,/g, '.')
@@ -124,7 +124,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 							<h3 className="px-4 text-lg font-semibold max-[400px]:text-sm">Transaction History</h3>
 
 							<div className="flex flex-col px-4 max-[600px]:text-sm">
-								<p className="">Total invested: ${formatPrice(coin.totalCost, false)}</p>
+								<p className="">Total invested: ${formatPrice(coin.total_cost, false)}</p>
 
 								<p className="">Total value: ${formatPrice(totalValue, false)}</p>
 							</div>

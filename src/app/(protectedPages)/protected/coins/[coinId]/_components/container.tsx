@@ -35,7 +35,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const [isSaving, setIsSaving] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
-	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.sellPrice || ''))
+	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
 
 	useEffect(() => {
@@ -57,7 +57,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 		fetchData()
 	}, [coin.coinId, days])
 
-	const totalValue = coin.currentPrice * coin.totalQuantity
+	const totalValue = coin.current_price * coin.total_quantity
 
 	const chartConfig = {
 		prices: {
@@ -186,9 +186,9 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				</Button>
 
 				<div className="flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1">
-					<p>Quantity: {formatPrice(coin.totalQuantity, false)}</p>
+					<p>Quantity: {formatPrice(coin.total_quantity, false)}</p>
 
-					<p>Total invested: ${formatPrice(coin.totalCost, false)}</p>
+					<p>Total invested: ${formatPrice(coin.total_cost, false)}</p>
 
 					<p>Total value: ${formatPrice(totalValue, false)}</p>
 				</div>

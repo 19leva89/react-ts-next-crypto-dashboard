@@ -1,76 +1,30 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
+import { MONTH_OPTIONS } from '@/constants/chart'
 import { formatPrice } from '@/constants/format-price'
-import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
-import { UserCoinData } from '@/app/api/types'
+import { UserChartDataPoint, UserCoinData } from '@/app/api/types'
 import { Button, ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui'
 
 interface Props {
 	coinData: UserCoinData[]
+	chartData: UserChartDataPoint[]
 	totalInvestedValue: number
 	totalValue: number
 	plannedProfit: number
 }
 
-interface MarketChartDataPoint {
-	timestamp: number
-	value: number
-}
-
-function getPeriodKey(days: number): keyof UserCoinData {
-	switch (days) {
-		case 1:
-			return 'pricePercentage_24h'
-		case 7:
-			return 'pricePercentage_7d'
-		case 30:
-			return 'pricePercentage_30d'
-		case 365:
-			return 'pricePercentage_1y'
-		default:
-			return 'pricePercentage_24h'
-	}
-}
-
-export const ChartsContainer = ({ coinData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
-	const [days, setDays] = useState<number>(1)
+export const ChartsContainer = ({
+	coinData,
+	chartData,
+	totalInvestedValue,
+	totalValue,
+	plannedProfit,
+}: Props) => {
+	const [days, setDays] = useState<number>(7)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
-	const [data, setData] = useState<MarketChartDataPoint[]>()
-
-	const calculatedData = useMemo(() => {
-		if (!coinData.length || days <= 0) return []
-
-		const periodKey = getPeriodKey(days)
-		const now = Date.now()
-		const oneDayMs = 86400000
-
-		let startValue = 0
-		coinData.forEach((coin) => {
-			const pct = coin[periodKey] as number | undefined
-			if (pct === undefined || pct === null) return
-
-			const startPrice = coin.currentPrice / (1 + pct / 100)
-			startValue += startPrice * coin.totalQuantity
-		})
-
-		if (startValue <= 0) return []
-
-		const dataPoints: MarketChartDataPoint[] = []
-		const totalChange = totalValue / startValue - 1
-		const daysMs = days * oneDayMs
-
-		for (let i = 0; i <= days; i++) {
-			const timestamp = now - daysMs + i * oneDayMs
-			const progress = i / days
-			const value = startValue * (1 + totalChange * progress)
-			dataPoints.push({ timestamp, value })
-		}
-
-		return dataPoints
-	}, [coinData, days, totalValue])
 
 	const chartConfig = {
 		prices: {
@@ -80,7 +34,7 @@ export const ChartsContainer = ({ coinData, totalInvestedValue, totalValue, plan
 	} satisfies ChartConfig
 
 	const formattedData =
-		calculatedData?.map(({ timestamp, value }) => {
+		chartData?.map(({ timestamp, value }) => {
 			const date = new Date(timestamp)
 			let label = ''
 
@@ -136,22 +90,13 @@ export const ChartsContainer = ({ coinData, totalInvestedValue, totalValue, plan
 			{/* Chart */}
 			<div>
 				<div className="flex items-center justify-center gap-2 m-4 mb-2">
-					{DAY_OPTIONS.map(({ label, value }) => (
-						<Button
-							key={value}
-							variant="outline"
-							onClick={() => setDays(value)}
-							className={`px-2 py-1 h-6 rounded-xl ${days === value ? 'bg-blue-500 hover:bg-blue-500' : ''}`}
-						>
-							{/* Full text for screens > 640px */}
-							<span className="hidden sm:inline">{label}</span>
+					<Button variant="outline" className="px-2 py-1 h-6 rounded-xl bg-blue-500 hover:bg-blue-500">
+						{/* Full text for screens > 640px */}
+						<span className="hidden sm:inline">1 week</span>
 
-							{/* Shortened text for screens < 640px */}
-							<span className="inline sm:hidden">
-								{label === '1 day' ? '1d' : label === '1 week' ? '1w' : label === '1 month' ? '1m' : '1y'}
-							</span>
-						</Button>
-					))}
+						{/* Shortened text for screens < 640px */}
+						<span className="inline sm:hidden">1w</span>
+					</Button>
 				</div>
 
 				<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
