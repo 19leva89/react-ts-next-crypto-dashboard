@@ -1027,6 +1027,7 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 					high_24h: { usd: cachedData.high_24h || 0 },
 					low_24h: { usd: cachedData.low_24h || 0 },
 					circulating_supply: cachedData.circulating_supply || 0,
+					sparkline_7d: { price: cachedData.sparkline_in_7d || [] },
 				},
 				last_updated: cachedData.updatedAt.toISOString(),
 			} as CoinData

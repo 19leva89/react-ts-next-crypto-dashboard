@@ -7,10 +7,12 @@ import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
 import {
 	Button,
+	Card,
+	CardContent,
+	CardHeader,
 	ChartConfig,
 	ChartContainer,
 	ChartTooltip,
-	ChartTooltipContent,
 	Input,
 	Label,
 } from '@/components/ui'
@@ -179,7 +181,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	}
 
 	return (
-		<div className="flex flex-col gap-4 mx-72 max-[1700px]:mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0">
+		<div className="flex flex-col gap-6 mx-72 max-[1700px]:mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0">
 			<div className="flex flex-row items-center justify-between gap-3 pr-4 max-[600px]:items-start max-[700px]:text-sm">
 				<Button variant="ghost" size="icon" onClick={() => router.back()}>
 					<ArrowLeft />
@@ -194,7 +196,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				</div>
 			</div>
 
-			<div className="flex items-center justify-start gap-4 px-4">
+			<div className="flex items-center justify-start gap-4 pl-4">
 				<Label htmlFor="sell-price" className="w-[30%]">
 					Sell price
 				</Label>
@@ -212,8 +214,8 @@ export const CoinIdContainer = ({ coin }: Props) => {
 			</div>
 
 			{/* Chart */}
-			<div>
-				<div className="flex items-center justify-center gap-2 m-4 mb-2">
+			<Card className="flex flex-col rounded-xl">
+				<CardHeader className="flex-row items-center justify-center gap-2 space-y-0 pb-4">
 					{DAY_OPTIONS.map(({ label, value }) => (
 						<Button
 							key={value}
@@ -230,81 +232,84 @@ export const CoinIdContainer = ({ coin }: Props) => {
 							</span>
 						</Button>
 					))}
-				</div>
+				</CardHeader>
 
-				<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
-					<LineChart
-						accessibilityLayer
-						data={formattedData}
-						margin={{
-							left: 12,
-							right: 12,
-						}}
-					>
-						{/* Grid */}
-						<CartesianGrid vertical={true} strokeDasharray="4 4" />
-
-						{/* Axis X */}
-						<XAxis
-							dataKey="Label"
-							tickLine={false}
-							axisLine={false}
-							tick={true}
-							tickMargin={10}
-							tickFormatter={(value) => value}
-						/>
-
-						{/* Axis Y */}
-						<YAxis
-							dataKey="TotalValue"
-							domain={[minValue * 0.98, maxValue * 1.02]}
-							axisLine={false}
-							tickLine={false}
-							tick={true}
-							tickMargin={4}
-							tickFormatter={(value) => {
-								if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`
-								if (value >= 1000) return `${(value / 1000).toFixed(1)}K`
-								if (value >= 1) return value.toFixed(2)
-
-								return value.toFixed(5)
+				<CardContent className="pb-4">
+					<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
+						<LineChart
+							accessibilityLayer
+							data={formattedData}
+							margin={{
+								left: 12,
+								right: 12,
 							}}
-						/>
+						>
+							{/* Grid */}
+							<CartesianGrid vertical={true} strokeDasharray="4 4" />
 
-						{/* Popup tooltip */}
-						<ChartTooltip
-							cursor={true}
-							content={
-								<ChartTooltipContent
-									formatter={(value, name) => {
-										const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
+							{/* Axis X */}
+							<XAxis
+								dataKey="Label"
+								tickLine={false}
+								axisLine={false}
+								tick={true}
+								tickMargin={10}
+								tickFormatter={(value) => value}
+							/>
 
-										const formattedValue =
-											!isNaN(numericValue) && numericValue >= 1
-												? numericValue.toFixed(2)
-												: numericValue.toFixed(5)
+							{/* Axis Y */}
+							<YAxis
+								dataKey="TotalValue"
+								domain={[minValue * 0.98, maxValue * 1.02]}
+								axisLine={false}
+								tickLine={false}
+								tick={true}
+								tickMargin={4}
+								tickFormatter={(value) => {
+									if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`
+									if (value >= 1000) return `${(value / 1000).toFixed(1)}K`
+									if (value >= 1) return value.toFixed(2)
 
-										if (name === 'TotalValue') return ['Total value: ', formattedValue]
-										return [name, formattedValue]
-									}}
-								/>
-							}
-						/>
+									return value.toFixed(5)
+								}}
+							/>
 
-						{/* Line on chart */}
-						<Line
-							dataKey="TotalValue"
-							type="natural"
-							stroke="var(--color-prices)"
-							strokeWidth={2}
-							dot={false}
-						/>
-					</LineChart>
-				</ChartContainer>
-			</div>
+							{/* Popup tooltip */}
+							<ChartTooltip
+								cursor={true}
+								content={({ active, payload }) => {
+									if (!active || !payload || payload.length === 0) return null
+
+									const priceValue = payload[0].payload.Price
+									const totalValue = payload[0].payload.TotalValue
+
+									return (
+										<div className="rounded-lg border bg-background p-4 shadow-sm">
+											<div className="flex flex-col gap-1">
+												<span className="text-xs">Price: ${formatPrice(priceValue)}</span>
+
+												<span className="text-xs">Total value: ${formatPrice(totalValue)}</span>
+											</div>
+										</div>
+									)
+								}}
+							/>
+
+							{/* Line on chart */}
+							<Line
+								dataKey="TotalValue"
+								type="natural"
+								stroke="var(--color-prices)"
+								strokeWidth={2}
+								dot={false}
+							/>
+						</LineChart>
+					</ChartContainer>
+				</CardContent>
+			</Card>
 
 			{/* Section for displaying transactions and sales */}
-			<div>
+			<div className="mt-6">
 				<div className="flex items-center justify-between mb-1">
 					<h3 className="px-4 text-lg font-semibold max-[400px]:text-sm">Transaction History</h3>
 				</div>

@@ -32,7 +32,7 @@ export const getCgCoinsListIDMap = (): string => {
 
 // getCoinData
 export const getCgCoinsDataRoute = (coinId: string): string => {
-	return `${GECKO_ROUTE_V3}/coins/${coinId}?localization=false&tickers=false&community_data=false&developer_data=false`
+	return `${GECKO_ROUTE_V3}/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=true`
 }
 
 // getCoinsListByCate

@@ -65,6 +65,9 @@ export type CoinData = {
 			usd: number
 		}
 		circulating_supply: number
+		sparkline_7d: {
+			price: number[]
+		}
 	}
 }
 
