@@ -3,26 +3,24 @@
 import { useState } from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
+import {
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	ChartConfig,
+	ChartContainer,
+	ChartTooltip,
+	ChartTooltipContent,
+} from '@/components/ui'
 import { MONTH_OPTIONS } from '@/constants/chart'
-import { formatPrice } from '@/constants/format-price'
-import { UserChartDataPoint, UserCoinData } from '@/app/api/types'
-import { Button, ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui'
+import { UserChartDataPoint } from '@/app/api/types'
 
 interface Props {
-	coinData: UserCoinData[]
 	chartData: UserChartDataPoint[]
-	totalInvestedValue: number
-	totalValue: number
-	plannedProfit: number
 }
 
-export const ChartsContainer = ({
-	coinData,
-	chartData,
-	totalInvestedValue,
-	totalValue,
-	plannedProfit,
-}: Props) => {
+export const LineChartContainer = ({ chartData }: Props) => {
 	const [days, setDays] = useState<number>(7)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -78,27 +76,14 @@ export const ChartsContainer = ({
 	const maxValue = Math.max(...formattedData.map((h) => h.TotalValue))
 
 	return (
-		<div className="flex flex-col gap-4 mx-72 max-[1700px]:mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0">
-			<div className="flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1">
-				<p>Total invested: ${formatPrice(totalInvestedValue, false)}</p>
+		<Card className="flex flex-col w-2/3 max-[1200px]:w-full">
+			<CardHeader className="items-center gap-2 pb-4">
+				<Button variant="outline" className="px-2 py-1 h-6 rounded-xl bg-blue-500 hover:bg-blue-500">
+					<span>1 week</span>
+				</Button>
+			</CardHeader>
 
-				<p>Total value: ${formatPrice(totalValue, false)}</p>
-
-				<p>Planned profit: ${formatPrice(plannedProfit, false)}</p>
-			</div>
-
-			{/* Chart */}
-			<div>
-				<div className="flex items-center justify-center gap-2 m-4 mb-2">
-					<Button variant="outline" className="px-2 py-1 h-6 rounded-xl bg-blue-500 hover:bg-blue-500">
-						{/* Full text for screens > 640px */}
-						<span className="hidden sm:inline">1 week</span>
-
-						{/* Shortened text for screens < 640px */}
-						<span className="inline sm:hidden">1w</span>
-					</Button>
-				</div>
-
+			<CardContent className="pb-4">
 				<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
 					<LineChart
 						accessibilityLayer
@@ -152,6 +137,7 @@ export const ChartsContainer = ({
 												: numericValue.toFixed(5)
 
 										if (name === 'TotalValue') return ['Total value: ', formattedValue]
+
 										return [name, formattedValue]
 									}}
 								/>
@@ -168,7 +154,7 @@ export const ChartsContainer = ({
 						/>
 					</LineChart>
 				</ChartContainer>
-			</div>
-		</div>
+			</CardContent>
+		</Card>
 	)
 }

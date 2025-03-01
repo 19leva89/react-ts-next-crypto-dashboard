@@ -1,7 +1,9 @@
 import { constructMetadata } from '@/lib'
 import { getUserCoinsList } from '@/app/api/actions'
-import { ChartsContainer } from './_components/container'
+import { formatPrice } from '@/constants/format-price'
 import { UserChartDataPoint, UserCoinData } from '@/app/api/types'
+import { PieChartContainer } from './_components/pie-chart-container'
+import { LineChartContainer } from './_components/line-chart-container'
 
 export const metadata = constructMetadata({ title: 'Charts' })
 
@@ -76,17 +78,63 @@ const ChartsPage = async () => {
 		return total + coin.desired_sell_price * coin.total_quantity
 	}, 0)
 
-	// Calculate the chart data
-	const chartData = processSparklineData(coinData)
+	// Calculate the line chart data
+	const lineChartData = processSparklineData(coinData)
+
+	// Calculate the pie chart data
+	const portfolioData = coinData
+		.map((coin) => {
+			const coinValue = coin.current_price * coin.total_quantity
+
+			return {
+				name: coin.name,
+				value: coinValue,
+				symbol: coin.symbol,
+				percentage: totalPortfolioValue > 0 ? (coinValue / totalPortfolioValue) * 100 : 0,
+			}
+		})
+		.filter((item) => item.value > 0) // Filter out coins with zero value
+		.sort((a, b) => b.value - a.value)
+
+	// Split into top 10 and others
+	const top10 = portfolioData.slice(0, 10)
+	const others = portfolioData.slice(10)
+	const othersTotal = others.reduce((sum, item) => sum + item.value, 0)
+
+	const pieChartData = [
+		...top10,
+		...(othersTotal > 0
+			? [
+					{
+						name: 'Other',
+						value: othersTotal,
+						symbol: 'Other',
+						percentage: (othersTotal / totalPortfolioValue) * 100,
+					},
+				]
+			: []),
+	].map((item, index) => ({
+		...item,
+		fill: index < 10 ? `hsl(var(--chart-${index + 1}))` : 'hsl(var(--color-other))',
+	}))
 
 	return (
-		<ChartsContainer
-			coinData={coinData}
-			chartData={chartData}
-			totalInvestedValue={totalInvestedValue}
-			totalValue={totalPortfolioValue}
-			plannedProfit={plannedProfit}
-		/>
+		<div className="flex flex-col gap-4 mx-72 max-[1700px]:mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0">
+			<div className="flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1">
+				<p>Total invested: ${formatPrice(totalInvestedValue, false)}</p>
+
+				<p>Total value: ${formatPrice(totalPortfolioValue, false)}</p>
+
+				<p>Planned profit: ${formatPrice(plannedProfit, false)}</p>
+			</div>
+
+			{/* Charts */}
+			<div className="flex flex-row gap-4 max-[1200px]:flex-col max-[1200px]:items-center">
+				<LineChartContainer chartData={lineChartData} />
+
+				<PieChartContainer chartData={pieChartData} />
+			</div>
+		</div>
 	)
 }
 
