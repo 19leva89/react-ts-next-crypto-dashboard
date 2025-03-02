@@ -15,6 +15,7 @@ import {
 } from '@/components/ui'
 import { MONTH_OPTIONS } from '@/constants/chart'
 import { UserChartDataPoint } from '@/app/api/types'
+import { formatPrice } from '@/constants/format-price'
 
 interface Props {
 	chartData: UserChartDataPoint[]
@@ -77,13 +78,13 @@ export const LineChartContainer = ({ chartData }: Props) => {
 
 	return (
 		<Card className="flex flex-col rounded-xl w-2/3 max-[1200px]:w-full">
-			<CardHeader className="items-center gap-2 pb-4">
+			<CardHeader className="items-center gap-2 space-y-0 pb-4 max-[600px]:px-1 max-[600px]:py-3">
 				<Button variant="outline" className="px-2 py-1 h-6 rounded-xl bg-blue-500 hover:bg-blue-500">
 					<span>1 week</span>
 				</Button>
 			</CardHeader>
 
-			<CardContent className="pb-4">
+			<CardContent className="pb-4 max-[600px]:px-1 max-[600px]:py-3">
 				<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
 					<LineChart
 						accessibilityLayer
@@ -131,14 +132,9 @@ export const LineChartContainer = ({ chartData }: Props) => {
 									formatter={(value, name) => {
 										const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
 
-										const formattedValue =
-											!isNaN(numericValue) && numericValue >= 1
-												? numericValue.toFixed(2)
-												: numericValue.toFixed(5)
+										if (name === 'TotalValue') return ['Total value: $', formatPrice(numericValue)]
 
-										if (name === 'TotalValue') return ['Total value: ', formattedValue]
-
-										return [name, formattedValue]
+										return [name, numericValue]
 									}}
 								/>
 							}

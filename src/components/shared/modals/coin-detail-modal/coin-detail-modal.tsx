@@ -197,7 +197,20 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									/>
 
 									{/* Popup tooltip */}
-									<ChartTooltip cursor={true} content={<ChartTooltipContent />} />
+									<ChartTooltip
+										cursor={true}
+										content={
+											<ChartTooltipContent
+												formatter={(value, name) => {
+													const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
+
+													if (name === 'Price') return ['Price: $', formatPrice(numericValue)]
+
+													return [name, numericValue]
+												}}
+											/>
+										}
+									/>
 
 									{/* Line on chart */}
 									<Line

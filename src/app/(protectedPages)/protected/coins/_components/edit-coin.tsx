@@ -29,8 +29,8 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 
 	const [isSaving, setIsSaving] = useState<boolean>(false)
 	const [isAdding, setIsAdding] = useState<boolean>(false)
-	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
+	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 
 	const totalValue = coin.current_price * coin.total_quantity
 
@@ -62,6 +62,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 				},
 				'Transaction created successfully',
 				'Failed to create transaction',
+				false,
 			)
 		} finally {
 			setIsAdding(false)
@@ -85,7 +86,10 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 				},
 				'Coin updated successfully',
 				'Failed to update coin',
+				true,
 			)
+
+			onClose()
 		} finally {
 			setIsSaving(false)
 		}
@@ -131,7 +135,6 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 						</div>
 
 						<TableContainer
-							key={Date.now()}
 							editTransactions={editTransactions}
 							onChange={setEditTransactions}
 							className="h-[50vh]"

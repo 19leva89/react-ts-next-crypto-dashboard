@@ -26,6 +26,7 @@ export const DeleteCoin = ({ coin, isOpen, onClose }: Props) => {
 			async () => await deleteCoinFromUser(coin.coinId),
 			'Coin removed successfully',
 			'Failed to remove coin',
+			true,
 		)
 	}
 

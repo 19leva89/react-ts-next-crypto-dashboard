@@ -98,6 +98,7 @@ export const AddCoin = () => {
 				async () => addCoinToUser(selectedCoin, Number(editQuantity), Number(editPrice)),
 				'Coin added successfully',
 				'Failed to add coin. Please try again',
+				true,
 			)
 
 			setIsDialogOpen(false)

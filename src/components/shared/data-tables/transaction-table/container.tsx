@@ -42,6 +42,7 @@ export const TableContainer = ({ editTransactions, onChange, className }: Props)
 			},
 			'Transaction has been removed',
 			'Failed to remove transaction. Please try again',
+			true,
 		)
 	}
 

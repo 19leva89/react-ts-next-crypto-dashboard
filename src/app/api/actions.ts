@@ -475,9 +475,6 @@ export const createTransactionForUser = async (
 			return newTransaction
 		})
 
-		revalidatePath('/protected/coins')
-		revalidatePath(`/protected/coins/${coinId}`)
-
 		return result
 	} catch (error) {
 		handleError(error, 'CREATE_TRANSACTION')
@@ -1158,13 +1155,23 @@ export const getUserCoinData = async (coinId: string): Promise<UserCoinData> => 
 			coinId: userCoin.coin.id,
 			name: userCoin.coinsListIDMap.name,
 			symbol: userCoin.coinsListIDMap.symbol,
-			current_price: userCoin.coin.current_price as number,
+			current_price: userCoin.coin.current_price ?? 0,
 			total_quantity: userCoin.total_quantity,
 			total_cost: userCoin.total_cost,
 			average_price: userCoin.average_price,
-			desired_sell_price: userCoin.desired_sell_price as number,
-			image: userCoin.coin.image as string,
-			sparkline_in_7d: { price: (userCoin.coin.sparkline_in_7d as { price: number[] }).price },
+			desired_sell_price: userCoin.desired_sell_price ?? 0,
+			image: userCoin.coin.image ?? '/svg/coin-not-found.svg',
+			sparkline_in_7d: {
+				price:
+					typeof userCoin.coin.sparkline_in_7d === 'string'
+						? (JSON.parse(userCoin.coin.sparkline_in_7d)?.price ?? [])
+						: typeof userCoin.coin.sparkline_in_7d === 'object' &&
+							  userCoin.coin.sparkline_in_7d !== null &&
+							  'price' in userCoin.coin.sparkline_in_7d &&
+							  Array.isArray(userCoin.coin.sparkline_in_7d.price)
+							? userCoin.coin.sparkline_in_7d.price
+							: [],
+			},
 			price_change_percentage_7d_in_currency: userCoin.coin.price_change_percentage_7d_in_currency as number,
 			transactions: userCoin.transactions.map((transaction) => ({
 				id: transaction.id,

@@ -45,11 +45,11 @@ export const PieChartContainer = ({ chartData }: Props) => {
 
 	return (
 		<Card className="flex flex-col rounded-xl w-1/3 max-[1200px]:w-1/2 max-[700px]:w-3/4 max-[450px]:w-full">
-			<CardHeader className="items-center pb-4">
+			<CardHeader className="items-center pb-4 max-[600px]:px-1 max-[600px]:py-3">
 				<CardTitle>Coins distribution</CardTitle>
 			</CardHeader>
 
-			<CardContent className="flex-1 pb-4">
+			<CardContent className="pb-4 max-[600px]:px-1 max-[600px]:py-3">
 				<ChartContainer
 					config={chartConfig}
 					className="mx-auto aspect-square max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
@@ -60,10 +60,11 @@ export const PieChartContainer = ({ chartData }: Props) => {
 							content={
 								<ChartTooltipContent
 									formatter={(value, name) => {
-										if (name === 'TotalValue') {
-											return [' $', formatPrice(Number(value))]
-										}
-										return [name, ` $${formatPrice(Number(value))}`]
+										const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
+
+										const formattedValue = `: $${formatPrice(numericValue)}`
+
+										return [name, formattedValue]
 									}}
 									hideLabel
 								/>
@@ -77,7 +78,7 @@ export const PieChartContainer = ({ chartData }: Props) => {
 
 			<CardFooter className="flex-col gap-2 text-sm">
 				<div className="grid grid-cols-2 gap-2 w-full">
-					{chartData.map((item, index) => (
+					{chartData.map((item) => (
 						<div key={item.name} className="flex items-center gap-2 truncate">
 							<div className="h-3 w-3 rounded-full shrink-0" style={{ backgroundColor: item.fill }} />
 

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Plus } from 'lucide-react'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -151,6 +152,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				},
 				'Transaction created successfully',
 				'Failed to create transaction',
+				true,
 			)
 		} finally {
 			setIsAdding(false)
@@ -174,6 +176,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				},
 				'Coin updated successfully',
 				'Failed to update coin',
+				true,
 			)
 		} finally {
 			setIsSaving(false)
@@ -215,26 +218,40 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 			{/* Chart */}
 			<Card className="flex flex-col rounded-xl">
-				<CardHeader className="flex-row items-center justify-center gap-2 space-y-0 pb-4">
-					{DAY_OPTIONS.map(({ label, value }) => (
-						<Button
-							key={value}
-							variant="outline"
-							onClick={() => setDays(value)}
-							className={`px-2 py-1 h-6 rounded-xl ${days === value ? 'bg-blue-500 hover:bg-blue-500' : ''}`}
-						>
-							{/* Full text for screens > 640px */}
-							<span className="hidden sm:inline">{label}</span>
+				<CardHeader className="flex-row items-center justify-between gap-2 space-y-0 pb-4 max-[600px]:p-3">
+					<div className="flex flex-row items-center justify-center gap-2">
+						<Image
+							src={coin.image || '/svg/coin-not-found.svg'}
+							alt={coin.name || 'Coin image'}
+							width={24}
+							height={24}
+							className="rounded-full"
+						/>
 
-							{/* Shortened text for screens < 640px */}
-							<span className="inline sm:hidden">
-								{label === '1 day' ? '1d' : label === '1 week' ? '1w' : label === '1 month' ? '1m' : '1y'}
-							</span>
-						</Button>
-					))}
+						<span className="truncate">{coin.name}</span>
+					</div>
+
+					<div className="flex flex-row items-center justify-center gap-2">
+						{DAY_OPTIONS.map(({ label, value }) => (
+							<Button
+								key={value}
+								variant="outline"
+								onClick={() => setDays(value)}
+								className={`px-2 py-1 h-6 rounded-xl ${days === value ? 'bg-blue-500 hover:bg-blue-500' : ''}`}
+							>
+								{/* Full text for screens > 640px */}
+								<span className="hidden sm:inline">{label}</span>
+
+								{/* Shortened text for screens < 640px */}
+								<span className="inline sm:hidden">
+									{label === '1 day' ? '1d' : label === '1 week' ? '1w' : label === '1 month' ? '1m' : '1y'}
+								</span>
+							</Button>
+						))}
+					</div>
 				</CardHeader>
 
-				<CardContent className="pb-4">
+				<CardContent className="pb-4 max-[600px]:px-1 max-[600px]:py-3">
 					<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
 						<LineChart
 							accessibilityLayer
@@ -280,12 +297,15 @@ export const CoinIdContainer = ({ coin }: Props) => {
 								content={({ active, payload }) => {
 									if (!active || !payload || payload.length === 0) return null
 
+									const timeValue = payload[0].payload.Label
 									const priceValue = payload[0].payload.Price
 									const totalValue = payload[0].payload.TotalValue
 
 									return (
-										<div className="rounded-lg border bg-background p-4 shadow-sm">
+										<div className="rounded-lg border bg-background p-4 shadow-sm max-[600px]:p-2">
 											<div className="flex flex-col gap-1">
+												<span className="text-xs">{timeValue}</span>
+
 												<span className="text-xs">Price: ${formatPrice(priceValue)}</span>
 
 												<span className="text-xs">Total value: ${formatPrice(totalValue)}</span>

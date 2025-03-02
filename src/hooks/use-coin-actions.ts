@@ -7,13 +7,20 @@ export const useCoinActions = () => {
 
 	const { toast } = useToast()
 
-	const handleAction = async (action: () => Promise<void>, successMessage: string, errorMessage: string) => {
+	const handleAction = async (
+		action: () => Promise<void>,
+		successMessage: string,
+		errorMessage: string,
+		shouldRefresh: boolean,
+	) => {
 		try {
 			await action()
 
-			toast({ title: '✅ Success', description: successMessage })
+			if (shouldRefresh) {
+				router.refresh()
+			}
 
-			router.refresh()
+			toast({ title: '✅ Success', description: successMessage })
 
 			return true
 		} catch (error) {

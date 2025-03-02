@@ -149,20 +149,10 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 			</CardContent>
 
 			{/* Edit Dialog */}
-			<EditCoin
-				key={`edit-${coin.coinId}`}
-				coin={coin}
-				isOpen={isDialogOpen}
-				onClose={() => setIsDialogOpen(false)}
-			/>
+			<EditCoin coin={coin} isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
 
 			{/* Delete Dialog */}
-			<DeleteCoin
-				key={`delete-${coin.coinId}`}
-				coin={coin}
-				isOpen={isDeleteDialogOpen}
-				onClose={() => setIsDeleteDialogOpen(false)}
-			/>
+			<DeleteCoin coin={coin} isOpen={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)} />
 		</Card>
 	)
 }
