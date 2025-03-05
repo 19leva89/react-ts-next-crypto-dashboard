@@ -689,7 +689,7 @@ export const getCoinsList = async (): Promise<CoinsListData> => {
 	return transformCoinData(cachedCoins)
 }
 
-// cron 5min
+// cron 10min
 export const updateCoinsList = async (): Promise<any> => {
 	try {
 		// Getting a list of outdated coins

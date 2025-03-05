@@ -52,6 +52,7 @@ html {
 		--chart-8: 45, 100%, 50%; /* Yellow */
 		--chart-9: 30, 60%, 30%; /* Brown */
 		--chart-10: 210, 20%, 25%; /* Gray */
+		--chart-11: 180, 60%, 55%; /* Sea Green */
 		--color-other: 0, 0%, 45%; /* Gray */
 		--color-profit: 142, 76%, 36%;
 		--color-loss: 346, 84%, 61%;
@@ -95,6 +96,7 @@ html {
 		--chart-8: 45, 100%, 50%; /* Yellow */
 		--chart-9: 30, 60%, 30%; /* Brown */
 		--chart-10: 210, 20%, 25%; /* Gray */
+		--chart-11: 180, 60%, 55%; /* Sea Green */
 		--color-other: 0, 0%, 45%; /* Gray */
 		--color-profit: 142, 76%, 36%;
 		--color-loss: 346, 84%, 61%;

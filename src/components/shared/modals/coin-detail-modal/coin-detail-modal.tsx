@@ -73,7 +73,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 			let label = ''
 
 			switch (true) {
-				case days === 1:
+				case days <= 7:
 					// Show time, day and month for "1 day" (e.g., 15:45, 15 Mar)
 					const hours = date.getHours().toString().padStart(2, '0')
 					const minutes = date.getMinutes().toString().padStart(2, '0')

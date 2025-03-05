@@ -96,13 +96,13 @@ const ChartsPage = async () => {
 		.filter((item) => item.value > 0) // Filter out coins with zero value
 		.sort((a, b) => b.value - a.value)
 
-	// Split into top 10 and others
-	const top10 = portfolioData.slice(0, 10)
-	const others = portfolioData.slice(10)
+	// Split into top 11 and others
+	const top11 = portfolioData.slice(0, 11)
+	const others = portfolioData.slice(11)
 	const othersTotal = others.reduce((sum, item) => sum + item.value, 0)
 
 	const pieChartData = [
-		...top10,
+		...top11,
 		...(othersTotal > 0
 			? [
 					{
@@ -115,7 +115,7 @@ const ChartsPage = async () => {
 			: []),
 	].map((item, index) => ({
 		...item,
-		fill: index < 10 ? `hsl(var(--chart-${index + 1}))` : 'hsl(var(--color-other))',
+		fill: index < 11 ? `hsl(var(--chart-${index + 1}))` : 'hsl(var(--color-other))',
 	}))
 
 	return (
