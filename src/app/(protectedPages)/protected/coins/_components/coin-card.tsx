@@ -38,9 +38,9 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 	return (
 		<Card
 			className={cn(
-				'flex flex-col gap-1',
+				'flex flex-col gap-1 py-1',
 				viewMode === 'grid'
-					? 'flex-grow flex-shrink-0 sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)] min-w-[18rem] max-w-[21rem] min-h-[10rem]'
+					? 'grow shrink-0 sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)] min-w-[18rem] max-w-[21rem] min-h-[10rem]'
 					: 'w-full gap-0',
 			)}
 		>
@@ -108,7 +108,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="icon" className="!mt-0 group shrink-0">
+						<Button variant="ghost" size="icon" className="mt-0! group shrink-0">
 							<EllipsisVertical className="h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
 						</Button>
 					</DropdownMenuTrigger>
@@ -116,7 +116,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 					<DropdownMenuContent side="right" align="start" sideOffset={0} className="rounded-xl">
 						<DropdownMenuItem
 							onSelect={() => setIsDialogOpen(true)}
-							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
 								<Pencil className="h-4 w-4" />
@@ -126,7 +126,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 						<DropdownMenuItem
 							onSelect={() => setIsDeleteDialogOpen(true)}
-							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
 								<Trash className="h-4 w-4" />

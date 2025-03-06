@@ -18,7 +18,7 @@ export const getColumns = (
 			return (
 				<Button
 					variant="ghost"
-					className="px-0"
+					className="px-0 has-[>svg]:px-0"
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Quantity
@@ -45,7 +45,7 @@ export const getColumns = (
 			return (
 				<Button
 					variant="ghost"
-					className="px-0"
+					className="px-0 has-[>svg]:px-0"
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Price
@@ -72,7 +72,7 @@ export const getColumns = (
 			return (
 				<Button
 					variant="ghost"
-					className="px-0"
+					className="px-0 has-[>svg]:px-0"
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Date
@@ -92,7 +92,7 @@ export const getColumns = (
 					<PopoverTrigger asChild>
 						<Button
 							variant="outline"
-							className="w-full justify-start text-left font-normal rounded-xl max-[900px]:p-2 max-[600px]:px-1 max-[900px]:text-sm max-[600px]:text-xs"
+							className="w-full justify-start text-left font-normal rounded-xl max-[900px]:p-2 max-[600px]:px-2 max-[600px]:has-[>svg]:px-2 max-[900px]:text-sm max-[600px]:text-xs"
 						>
 							<CalendarIcon className="mr-2 h-4 w-4 max-[900px]:mr-1 max-[600px]:mr-0" />
 

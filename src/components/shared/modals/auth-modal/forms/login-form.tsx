@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { toast } from 'sonner'
 import { useSession } from 'next-auth/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -12,7 +13,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui'
-import { useToast } from '@/hooks'
 import { FormInput } from '@/components/shared/form'
 import { TFormLoginValues, formLoginSchema } from './schemas'
 import { loginUser, loginUserWithCreds } from '@/app/api/actions'
@@ -22,7 +22,6 @@ interface Props {
 }
 
 export const LoginForm = ({ onClose }: Props) => {
-	const { toast } = useToast()
 	const { update } = useSession()
 
 	const form = useForm<TFormLoginValues>({
@@ -40,11 +39,7 @@ export const LoginForm = ({ onClose }: Props) => {
 				password: data.password,
 			})
 
-			toast({
-				title: '✅ Success',
-				description: 'You have successfully logged in',
-				variant: 'default',
-			})
+			toast.success('You have successfully logged in')
 
 			onClose?.()
 
@@ -52,11 +47,7 @@ export const LoginForm = ({ onClose }: Props) => {
 		} catch (error) {
 			console.error('Error logging in:', error)
 
-			toast({
-				title: '🚨 Error',
-				description: error instanceof Error ? error.message : 'Error while logging in',
-				variant: 'destructive',
-			})
+			toast.error(error instanceof Error ? error.message : 'Error while logging in')
 		}
 	}
 
@@ -69,7 +60,7 @@ export const LoginForm = ({ onClose }: Props) => {
 	return (
 		<FormProvider {...form}>
 			<form className="flex flex-col gap-5 h-full min-h-[450px]" onSubmit={form.handleSubmit(onSubmit)}>
-				<Card className="flex flex-col justify-between items-stretch flex-grow dark:bg-card">
+				<Card className="flex flex-col justify-between items-stretch grow dark:bg-card">
 					<div>
 						<CardHeader>
 							<CardTitle>Login to your account</CardTitle>

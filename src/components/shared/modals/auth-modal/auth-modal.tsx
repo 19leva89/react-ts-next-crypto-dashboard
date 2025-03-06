@@ -30,14 +30,14 @@ export const AuthModal = ({ open, onClose }: Props) => {
 					<TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-dark">
 						<TabsTrigger
 							value="login"
-							className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-primary"
+							className="cursor-pointer data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-primary"
 						>
 							Login
 						</TabsTrigger>
 
 						<TabsTrigger
 							value="register"
-							className="data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-primary"
+							className="cursor-pointer data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-primary"
 						>
 							Register
 						</TabsTrigger>

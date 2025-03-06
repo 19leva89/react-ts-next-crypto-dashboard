@@ -127,7 +127,7 @@ export function DataTable<TData, TValue>({
 								>
 									<DropdownMenuItem className="rounded-xl">
 										<button
-											className="p-2 w-full text-start rounded-xl"
+											className="px-2 py-1 w-full text-start cursor-pointer rounded-xl"
 											onClick={() => {
 												onCategoryClick('')
 											}}
@@ -149,7 +149,7 @@ export function DataTable<TData, TValue>({
 												style={style}
 											>
 												<button
-													className="p-2 w-full text-start rounded-xl"
+													className="p-2 w-full text-start cursor-pointer rounded-xl"
 													onClick={() =>
 														onCategoryClick(categories[index].category_id, categories[index].name)
 													}
@@ -210,7 +210,7 @@ export function DataTable<TData, TValue>({
 												'max-[1200px]:py-2 max-[1200px]:px-3 max-[600px]:py-1 max-[600px]:px-2 max-[400px]:py-0 max-[400px]:px-1',
 												i === 0 && 'sticky left-[0rem] bg-gray-100 dark:bg-slate-800',
 												i === 1 &&
-													'sticky left-[3.5rem] max-[600px]:left-[3rem] max-[400px]:left-[2.5rem] min-w-36 bg-gray-100 dark:bg-slate-800',
+													'sticky left-[5rem] max-[600px]:left-[4.5rem] max-[400px]:left-[4rem] min-w-36 bg-gray-100 dark:bg-slate-800',
 											)}
 										>
 											{header.isPlaceholder
@@ -238,7 +238,7 @@ export function DataTable<TData, TValue>({
 												'max-[1200px]:py-2 max-[1200px]:px-3 max-[600px]:py-1 max-[600px]:px-2 max-[400px]:py-0 max-[400px]:px-1 group-hover:bg-gray-50 dark:group-hover:bg-gray-800',
 												i === 0 && 'sticky left-[0rem] bg-background dark:bg-background',
 												i === 1 &&
-													'sticky left-[3.5rem] max-[600px]:left-[3rem] max-[400px]:left-[2.5rem] min-w-36 bg-background dark:bg-background',
+													'sticky left-[5rem] max-[600px]:left-[4.5rem] max-[400px]:left-[4rem] min-w-36 bg-background dark:bg-background',
 											)}
 										>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}

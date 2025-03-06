@@ -1,3 +1,4 @@
+import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -10,7 +11,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui'
-import { useToast } from '@/hooks'
 import { registerUser } from '@/app/api/actions'
 import { FormInput } from '@/components/shared/form'
 import { TFormRegisterValues, formRegisterSchema } from './schemas'
@@ -20,8 +20,6 @@ interface Props {
 }
 
 export const RegisterForm = ({ onClose }: Props) => {
-	const { toast } = useToast()
-
 	const form = useForm<TFormRegisterValues>({
 		resolver: zodResolver(formRegisterSchema),
 		defaultValues: {
@@ -40,28 +38,20 @@ export const RegisterForm = ({ onClose }: Props) => {
 				password: data.password,
 			})
 
-			toast({
-				title: '✅ Success',
-				description: 'Registration successful 📝. Confirm your email',
-				variant: 'default',
-			})
+			toast.success('Registration successful 📝. Confirm your email')
 
 			onClose?.()
 		} catch (error) {
 			console.error('Error registering:', error)
 
-			toast({
-				title: '🚨 Error',
-				description: error instanceof Error ? error.message : 'Error while registering',
-				variant: 'destructive',
-			})
+			toast.error(error instanceof Error ? error.message : 'Error while registering')
 		}
 	}
 
 	return (
 		<FormProvider {...form}>
 			<form className="flex flex-col gap-5 h-full min-h-[450px]" onSubmit={form.handleSubmit(onSubmit)}>
-				<Card className="flex flex-col justify-between items-stretch flex-grow">
+				<Card className="flex flex-col justify-between items-stretch grow">
 					<div>
 						<CardHeader>
 							<CardTitle>Account registration</CardTitle>

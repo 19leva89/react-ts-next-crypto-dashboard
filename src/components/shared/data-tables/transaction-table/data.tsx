@@ -70,7 +70,7 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 				{table.getHeaderGroups().map((headerGroup) => (
 					<TableRow key={headerGroup.id}>
 						{headerGroup.headers.map((header) => (
-							<TableHead key={header.id} className="pl-7 max-[900px]:pl-5 max-[900px]:pr-2">
+							<TableHead key={header.id} className="pl-7 max-[900px]:pl-5 max-[600px]:pl-3 max-[900px]:pr-2">
 								{flexRender(header.column.columnDef.header, header.getContext())}
 							</TableHead>
 						))}

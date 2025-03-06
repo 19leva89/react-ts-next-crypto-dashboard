@@ -47,7 +47,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 		const fetchData = async () => {
 			try {
-				const marketChart = await getCoinsMarketChart(coin.coinId, days)
+				const marketChart = (await getCoinsMarketChart(coin.coinId, days)) as MarketChartData
 
 				setCoinMarketChartData(marketChart)
 			} catch (error) {
@@ -217,8 +217,8 @@ export const CoinIdContainer = ({ coin }: Props) => {
 			</div>
 
 			{/* Chart */}
-			<Card className="flex flex-col rounded-xl">
-				<CardHeader className="flex-row items-center justify-between gap-2 space-y-0 pb-4 max-[600px]:p-3">
+			<Card className="flex flex-col py-1 rounded-xl">
+				<CardHeader className="flex-row items-center justify-between gap-2 space-y-0 p-4 max-[600px]:p-3">
 					<div className="flex flex-row items-center justify-center gap-2">
 						<Image
 							src={coin.image || '/svg/coin-not-found.svg'}
@@ -302,7 +302,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 									const totalValue = payload[0].payload.TotalValue
 
 									return (
-										<div className="rounded-lg border bg-background p-4 shadow-sm max-[600px]:p-2">
+										<div className="rounded-lg border bg-background p-4 shadow-xs max-[600px]:p-2">
 											<div className="flex flex-col gap-1">
 												<span className="text-xs">{timeValue}</span>
 

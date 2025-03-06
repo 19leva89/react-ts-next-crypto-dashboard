@@ -1,15 +1,138 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-html {
-	scroll-behavior: smooth;
+@plugin 'tailwindcss-animate';
+@plugin '@tailwindcss/typography';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --container-8xl: 1408px;
+
+  --color-dark: rgba(23, 25, 35, 1);
+  --color-red-dark-item: rgba(203, 1, 1, 1);
+  --color-red-dark-container: rgba(203, 1, 1, 0.15);
+  --color-green-dark-item: rgba(1, 177, 48, 1);
+  --color-green-dark-container: rgba(1, 177, 48, 0.15);
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+  --color-chart-6: hsl(var(--chart-6));
+  --color-chart-7: hsl(var(--chart-7));
+  --color-chart-8: hsl(var(--chart-8));
+  --color-chart-9: hsl(var(--chart-9));
+  --color-chart-10: hsl(var(--chart-10));
+  --color-chart-11: hsl(var(--chart-11));
+
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+
+  --width-r1\/2: 48%;
+  --width-r1\/4: 24%;
+  --width-r1\/3: 32%;
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
 }
 
-@media screen and (prefers-reduced-motion: reduce) {
-	html {
-		scroll-behavior: auto;
-	}
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+  @media (width >= --theme(--breakpoint-sm)) {
+    max-width: none;
+  }
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@layer utilities {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media screen and (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
 }
 
 @layer base {
@@ -103,32 +226,28 @@ html {
 	}
 }
 
-* {
-	font-family: var(--font-nunito), sans-serif;
-}
-
-.scrollbar::-webkit-scrollbar {
-	width: 4px;
-}
-
-.scrollbar::-webkit-scrollbar-track {
-	border-radius: 6px;
-	background: #fff;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-	background: #dbdadd;
-	border-radius: 6px;
-}
-
-.scrollbar::-webkit-scrollbar-thumb:hover {
-	background: #dbdadd;
-}
-
 @layer utilities {
-	.text-balance {
-		text-wrap: balance;
-	}
+  * {
+    font-family: var(--font-nunito), sans-serif;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #dbdadd;
+    border-radius: 6px;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #dbdadd;
+  }
 }
 
 @layer base {
@@ -141,13 +260,13 @@ html {
 }
 
 #nprogress .bar {
-	@apply bg-primary !important;
+	@apply bg-primary!;
 }
 
 #nprogress .peg {
-	@apply shadow-md shadow-primary !important;
+	@apply shadow-md! shadow-primary!;
 }
 
 #nprogress .spinner-icon {
-	@apply border-t-primary border-l-primary !important;
+	@apply border-t-primary! border-l-primary!;
 }

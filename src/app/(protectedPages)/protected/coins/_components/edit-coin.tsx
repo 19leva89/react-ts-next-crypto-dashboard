@@ -97,7 +97,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="rounded-xl max-w-2xl max-[450px]:px-1">
+			<DialogContent className="rounded-xl sm:max-w-2xl max-[450px]:px-1">
 				<DialogHeader className="px-4">
 					<DialogTitle>Edit quantity, price or date</DialogTitle>
 

@@ -115,7 +115,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 					<SheetTitle>
 						<div className="flex justify-between items-center">
 							{isLoading ? (
-								<Skeleton className="h-7 w-3/4 max-[500px]:h-5" />
+								<Skeleton className="h-6 w-3/4 max-[500px]:h-5" />
 							) : (
 								<Link
 									href={`https://coingecko.com/en/coins/${coinData?.id}`}
@@ -152,7 +152,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 					<SheetDescription className="hidden" />
 				</SheetHeader>
 
-				<div className="flex justify-center">
+				<div className="flex justify-center px-4">
 					{isLoading ? (
 						<Skeleton className="h-72 w-full" />
 					) : (
@@ -226,7 +226,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 					)}
 				</div>
 
-				<div className="mt-10">
+				<div className="mt-10 px-4">
 					{isLoading ? (
 						<Skeleton className="h-72 w-full" />
 					) : (
@@ -303,7 +303,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 								<span className="font-medium max-[500px]:text-sm">Description</span>
 
 								<p
-									className="mt-3 text-gray-600 dark:text-gray-300 prose prose-sm prose-a:text-blue-700 prose-a:hover:underline dark:prose-a:text-blue-700 dark:prose-a:hover:underline duration-200"
+									className="mt-3 text-gray-600 dark:text-gray-300 prose prose-sm prose-a:text-blue-700 hover:prose-a:underline dark:prose-a:text-blue-700 dark:hover:prose-a:underline duration-200"
 									dangerouslySetInnerHTML={{ __html: coinData?.description.en as string }}
 								/>
 							</div>

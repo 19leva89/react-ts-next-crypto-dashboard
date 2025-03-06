@@ -31,7 +31,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 			)
 		},
 		cell: ({ row }) => (
-			<div className="text-base max-[1200px]:text-sm">{row.getValue('market_cap_rank')}</div>
+			<div className="py-2 px-3 text-base max-[1200px]:text-sm">{row.getValue('market_cap_rank')}</div>
 		),
 		enableHiding: false,
 	},
@@ -59,7 +59,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 			const coin = row.original
 
 			return (
-				<button className="flex gap-2 items-center text-base max-[1200px]:text-sm">
+				<div className="flex gap-2 items-center py-2 px-3 text-base max-[1200px]:text-sm">
 					{coin.image && coin.name ? (
 						<Image
 							src={coin.image || '/svg/coin-not-found.svg'}
@@ -72,7 +72,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 						'-'
 					)}
 					<span className="max-w-[6rem] truncate">{coin.name}</span>
-				</button>
+				</div>
 			)
 		},
 		enableHiding: false,
@@ -102,7 +102,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 
 			const formatted = formatPrice(amount, true)
 
-			return <div className="text-base max-[1200px]:text-sm">${formatted}</div>
+			return <div className="py-2 px-3 text-base max-[1200px]:text-sm">${formatted}</div>
 		},
 	},
 
@@ -129,7 +129,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 			const coin = row.original
 
 			return (
-				<div className="text-base max-[1200px]:text-sm">
+				<div className="py-2 px-3 text-base max-[1200px]:text-sm">
 					{coin.price_change_percentage_24h ? (
 						<div
 							className={cn(
@@ -176,7 +176,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 
 			const formatted = formatPrice(amount, true)
 
-			return <div className="text-base max-[1200px]:text-sm">${formatted}</div>
+			return <div className="py-2 px-3 text-base max-[1200px]:text-sm">${formatted}</div>
 		},
 	},
 
@@ -204,7 +204,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 
 			const formatted = formatPrice(amount, true)
 
-			return <div className="text-base max-[1200px]:text-sm">${formatted}</div>
+			return <div className="py-2 px-3 text-base max-[1200px]:text-sm">${formatted}</div>
 		},
 	},
 

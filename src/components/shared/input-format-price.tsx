@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 
 import { Input } from '@/components/ui'
 
@@ -32,7 +32,7 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 		setDisplayValue(numericValue.toString())
 	}
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		let newValue = e.target.value
 
 		// Allow minus only at the beginning
@@ -50,7 +50,7 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 			onChange={handleChange}
 			onBlur={handleBlur}
 			onFocus={handleFocus}
-			className="rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+			className="rounded-xl max-[600px]:px-2 max-[900px]:text-sm max-[600px]:text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 		/>
 	)
 }

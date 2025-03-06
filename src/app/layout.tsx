@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 					</ThemeProvider>
 				</AppProvider>
 
-				<Toaster />
+				<Toaster position="bottom-right" expand={false} richColors />
 			</body>
 		</html>
 	)

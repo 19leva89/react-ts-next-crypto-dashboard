@@ -28,7 +28,7 @@ export const Navbar = () => {
 	useEffect(() => setMounted(true), [])
 
 	return (
-		<nav className="z-[50] sticky bg-white dark:bg-dark top-0 flex justify-between items-center border-b dark:border-gray-700 py-3 px-6 max-[640px]:px-4 max-[460px]:text-sm">
+		<nav className="z-50 sticky bg-white dark:bg-dark top-0 flex justify-between items-center border-b dark:border-gray-700 py-3 px-6 max-[640px]:px-4 max-[460px]:text-sm">
 			<div className="flex items-center gap-14 max-[430px]:gap-4">
 				<SidebarTrigger />
 
@@ -73,8 +73,10 @@ export const Navbar = () => {
 						className="flex flex-col gap-2 w-[92px] min-w-[5rem] rounded-xl shadow-lg bg-white dark:bg-dark"
 					>
 						{['CAD', 'EUR', 'XCD'].map((currency, index) => (
-							<DropdownMenuItem key={index} className="rounded-xl">
-								<button className="w-full text-center duration-500">{currency}</button>
+							<DropdownMenuItem key={index} className="rounded-xl p-0">
+								<Button variant="ghost" size="sm" className="w-full">
+									{currency}
+								</Button>
 							</DropdownMenuItem>
 						))}
 					</DropdownMenuContent>

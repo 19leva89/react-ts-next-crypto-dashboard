@@ -77,8 +77,8 @@ export const LineChartContainer = ({ chartData }: Props) => {
 	const maxValue = Math.max(...formattedData.map((h) => h.TotalValue))
 
 	return (
-		<Card className="flex flex-col rounded-xl w-2/3 max-[1200px]:w-full">
-			<CardHeader className="items-center gap-2 space-y-0 pb-4 max-[600px]:px-1 max-[600px]:py-3">
+		<Card className="flex flex-col py-1 rounded-xl w-2/3 max-[1200px]:w-full">
+			<CardHeader className="items-center gap-2 space-y-0 p-4 max-[600px]:px-1 max-[600px]:py-3">
 				<Button variant="outline" className="px-2 py-1 h-6 rounded-xl bg-blue-500 hover:bg-blue-500">
 					<span>1 week</span>
 				</Button>

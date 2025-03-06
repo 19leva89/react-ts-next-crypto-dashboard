@@ -1,5 +1,6 @@
 'use client'
 
+import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signOut, useSession } from 'next-auth/react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -7,7 +8,6 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { User } from '@prisma/client'
 import { Button } from '@/components/ui'
 
-import { useToast } from '@/hooks'
 import { FormInput } from '@/components/shared/form'
 import { Container, Title } from '@/components/shared'
 import { deleteUser, updateUserInfo } from '@/app/api/actions'
@@ -18,7 +18,6 @@ interface Props {
 }
 
 export const ProfileForm = ({ data }: Props) => {
-	const { toast } = useToast()
 	const { update } = useSession()
 
 	const form = useForm({
@@ -39,21 +38,13 @@ export const ProfileForm = ({ data }: Props) => {
 				...(formData.password ? { password: formData.password } : {}),
 			})
 
-			toast({
-				title: '✅ Success',
-				description: 'Data updated 📝',
-				variant: 'default',
-			})
+			toast.success('Data updated 📝')
 
 			await update()
 		} catch (error) {
 			console.error('Error updating user info:', error)
 
-			toast({
-				title: '🚨 Error',
-				description: error instanceof Error ? error.message : 'Error while updating data',
-				variant: 'destructive',
-			})
+			toast.error(error instanceof Error ? error.message : 'Error while updating data')
 		}
 	}
 
@@ -61,21 +52,13 @@ export const ProfileForm = ({ data }: Props) => {
 		try {
 			await deleteUser()
 
-			toast({
-				title: '✅ Success',
-				description: 'Your account has been deleted',
-				variant: 'default',
-			})
+			toast.success('Your account has been deleted')
 
 			signOut()
 		} catch (error) {
 			console.error('Error deleting account:', error)
 
-			toast({
-				title: '🚨 Error',
-				description: error instanceof Error ? error.message : 'Error while deleting account',
-				variant: 'destructive',
-			})
+			toast.error(error instanceof Error ? error.message : 'Error while deleting account')
 		}
 	}
 

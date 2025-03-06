@@ -119,7 +119,7 @@ export const SidebarApp = () => {
 	})
 
 	return (
-		<Sidebar side="left" variant="sidebar" collapsible="icon" className="z-[100]">
+		<Sidebar side="left" variant="sidebar" collapsible="icon" className="z-100">
 			<SidebarHeader>
 				<div className="flex px-4 pt-1">
 					<Link href={sideBarData[0].url}>
@@ -141,7 +141,7 @@ export const SidebarApp = () => {
 									<SidebarMenuItem key={item.title}>
 										<SidebarMenuButton className="text-lg" asChild isActive={isActive}>
 											<Link href={item.url} className="flex items-center gap-4 h-[48px]">
-												<item.icon className="!w-5 !h-5" />
+												<item.icon className="w-5! h-5!" />
 
 												<span>{item.title}</span>
 											</Link>
@@ -154,7 +154,7 @@ export const SidebarApp = () => {
 				</SidebarGroup>
 			</SidebarContent>
 
-			<SidebarFooter>
+			<SidebarFooter className="mx-2 p-0">
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<DropdownMenu>
@@ -162,7 +162,7 @@ export const SidebarApp = () => {
 								<SidebarMenuButton
 									variant="outline"
 									size="lg"
-									className="gap-3 justify-between mb-4 rounded-xl group"
+									className="gap-3 justify-between mb-4 rounded-xl cursor-pointer group"
 								>
 									<div className="grow flex items-center justify-between gap-2">
 										{status === 'loading' ? (
@@ -177,7 +177,7 @@ export const SidebarApp = () => {
 											</Avatar>
 										)}
 
-										<div className="flex flex-col gap-1 text-xs text-center">
+										<div className="flex flex-col gap-1 text-xs">
 											{status === 'loading' ? (
 												<>
 													<Skeleton className="w-32 h-4" />
@@ -201,7 +201,7 @@ export const SidebarApp = () => {
 
 							<DropdownMenuContent
 								align="start"
-								className="z-[100] flex flex-col gap-1 w-[--radix-popper-anchor-width] rounded-xl shadow-lg bg-white dark:bg-dark"
+								className="z-100 flex flex-col gap-1 w-(--radix-popper-anchor-width) rounded-xl shadow-lg bg-white dark:bg-dark"
 							>
 								{!session?.user ? (
 									<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>

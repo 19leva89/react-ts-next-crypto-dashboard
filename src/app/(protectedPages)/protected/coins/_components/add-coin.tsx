@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { toast } from 'sonner'
 import { Plus } from 'lucide-react'
 import { FixedSizeList as List } from 'react-window'
 import { ChangeEvent, CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
@@ -22,12 +23,11 @@ import {
 	SelectTrigger,
 	Skeleton,
 } from '@/components/ui'
-import { useCoinActions, useToast } from '@/hooks'
+import { useCoinActions } from '@/hooks'
 import { CoinsListIDMapData } from '@/app/api/types'
 import { addCoinToUser, getCoinsListIDMap } from '@/app/api/actions'
 
 export const AddCoin = () => {
-	const { toast } = useToast()
 	const { handleAction } = useCoinActions()
 
 	const [editPrice, setEditPrice] = useState<string>('')
@@ -86,11 +86,8 @@ export const AddCoin = () => {
 		try {
 			// Check that the cryptocurrency is selected and the amount is entered
 			if (!selectedCoin || !editQuantity || !editPrice) {
-				toast({
-					title: '🚨 Error',
-					description: 'Please select a coin, enter a quantity and buy price',
-					variant: 'destructive',
-				})
+				toast.error('Please select a coin, enter a quantity and buy price')
+
 				return
 			}
 
@@ -174,9 +171,9 @@ export const AddCoin = () => {
 								</Label>
 
 								<Select value={selectedCoin} onValueChange={(value) => setSelectedCoin(value)}>
-									<SelectTrigger className="col-span-3" autoFocus={false}>
+									<SelectTrigger className="col-span-3 w-full" autoFocus={false}>
 										{selectedCoinData ? (
-											<div className="flex items-center gap-2">
+											<div className="flex items-center gap-2 truncate">
 												<Image
 													src={selectedCoinData.image || '/svg/coin-not-found.svg'}
 													alt={selectedCoinData.name}
@@ -212,7 +209,7 @@ export const AddCoin = () => {
 										) : (
 											<List
 												height={200}
-												width={325}
+												width={320}
 												itemSize={40}
 												itemCount={filteredCoins.length}
 												overscanCount={15}
