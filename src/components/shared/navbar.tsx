@@ -28,7 +28,7 @@ export const Navbar = () => {
 	useEffect(() => setMounted(true), [])
 
 	return (
-		<nav className="z-50 sticky bg-white dark:bg-dark top-0 flex justify-between items-center border-b dark:border-gray-700 py-3 px-6 max-[640px]:px-4 max-[460px]:text-sm">
+		<header className="z-40 sticky inset-x-0 top-0 isolate bg-background flex shrink-0 items-center justify-between gap-2 border-b dark:border-gray-700 py-3 px-6 max-[640px]:px-4 max-[460px]:text-sm">
 			<div className="flex items-center gap-14 max-[430px]:gap-4">
 				<SidebarTrigger />
 
@@ -95,6 +95,6 @@ export const Navbar = () => {
 					</Button>
 				)}
 			</div>
-		</nav>
+		</header>
 	)
 }

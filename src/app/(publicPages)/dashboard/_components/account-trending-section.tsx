@@ -9,12 +9,15 @@ import { TrendingData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
 import { Button, ScrollArea, ScrollBar, Skeleton } from '@/components/ui'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
+import { useSidebar } from '@/components/ui/sidebar'
 
 interface Props {
 	trendingData: TrendingData
 }
 
 export const AccountTrendingSection = ({ trendingData }: Props) => {
+	const { open } = useSidebar()
+
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
@@ -48,7 +51,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 	}
 
 	return (
-		<div className="flex flex-col gap-5 w-full mb-10">
+		<div className="flex flex-col gap-5 mb-10">
 			<div className="flex justify-between items-center">
 				<h3 className="font-medium text-lg">Trending</h3>
 
@@ -75,7 +78,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 				</Button>
 			</div>
 
-			<ScrollArea className="w-full whitespace-nowrap pb-3">
+			<ScrollArea className="flex-nowrap pb-3">
 				{isLoading ? (
 					<div className="flex flex-nowrap gap-2 text-sm">
 						{[...Array(5)].map((_, index) => (

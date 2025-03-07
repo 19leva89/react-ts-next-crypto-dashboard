@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 import { PropsWithChildren } from 'react'
 
-import { SidebarProvider } from '@/components/ui'
+import { SidebarInset, SidebarProvider } from '@/components/ui'
 import { SidebarApp, Footer, Navbar } from '@/components/shared'
 
 export default async function DashboardLayout({ children }: PropsWithChildren) {
@@ -12,7 +12,7 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
 		<SidebarProvider defaultOpen={defaultOpen}>
 			<SidebarApp />
 
-			<main className="flex flex-col justify-between gap-4 min-h-screen mb-10 w-full">
+			<SidebarInset className="justify-between gap-10">
 				<div className="flex flex-col gap-8">
 					<Navbar />
 
@@ -20,7 +20,7 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
 				</div>
 
 				<Footer />
-			</main>
+			</SidebarInset>
 		</SidebarProvider>
 	)
 }

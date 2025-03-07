@@ -16,9 +16,9 @@ import {
 	User,
 	Wallet,
 } from 'lucide-react'
-import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
+import { ComponentProps, useState } from 'react'
 
 import {
 	Avatar,
@@ -102,7 +102,7 @@ const sideBarData = [
 	},
 ]
 
-export const SidebarApp = () => {
+export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 	const currentPath = usePathname()
 
 	const { data: session, status } = useSession()
@@ -119,7 +119,7 @@ export const SidebarApp = () => {
 	})
 
 	return (
-		<Sidebar side="left" variant="sidebar" collapsible="icon" className="z-100">
+		<Sidebar side="left" variant="sidebar" collapsible="icon" className="z-50" {...props}>
 			<SidebarHeader>
 				<div className="flex px-4 pt-1">
 					<Link href={sideBarData[0].url}>
