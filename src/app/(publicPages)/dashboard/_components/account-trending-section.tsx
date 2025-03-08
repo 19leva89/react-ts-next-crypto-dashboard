@@ -9,15 +9,12 @@ import { TrendingData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
 import { Button, ScrollArea, ScrollBar, Skeleton } from '@/components/ui'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
-import { useSidebar } from '@/components/ui/sidebar'
 
 interface Props {
 	trendingData: TrendingData
 }
 
 export const AccountTrendingSection = ({ trendingData }: Props) => {
-	const { open } = useSidebar()
-
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')

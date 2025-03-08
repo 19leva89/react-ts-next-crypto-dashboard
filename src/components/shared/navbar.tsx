@@ -32,8 +32,8 @@ export const Navbar = () => {
 			<div className="flex items-center gap-14 max-[430px]:gap-4">
 				<SidebarTrigger />
 
-				<div className="flex lg:block items-center gap-2 min-[460px]:gap-6 max-[700px]:hidden">
-					<div className="flex-col gap-1 flex">
+				<div className="flex lg:block items-center gap-2 min-[460px]:gap-6 max-[950px]:hidden">
+					<div className="flex-col flex">
 						<h1 className="font-medium capitalize">{pathName.split('/').at(-1) || 'Dashboard'}</h1>
 
 						{status === 'loading' ? (

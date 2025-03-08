@@ -71,6 +71,7 @@ export {
 	SidebarMenuItem,
 	SidebarProvider,
 	SidebarTrigger,
+	useSidebar,
 } from './sidebar'
 export { Skeleton } from './skeleton'
 export {

@@ -12,7 +12,7 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
 		<SidebarProvider defaultOpen={defaultOpen}>
 			<SidebarApp />
 
-			<SidebarInset className="justify-between gap-10">
+			<SidebarInset className="justify-between gap-10 overflow-hidden">
 				<div className="flex flex-col gap-8">
 					<Navbar />
 

@@ -17,13 +17,13 @@ const DashboardPage = async () => {
 	const trendingData = await getTrendingData()
 
 	return (
-		<>
+		<div className="mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0">
 			<AccountTrendingSection trendingData={trendingData} />
 
-			{/* <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
+			<Suspense fallback={<Skeleton className="h-96 w-full rounded-xl" />}>
 				<DataTableContainer categories={categories} initialCoins={coinsList} />
-			</Suspense> */}
-		</>
+			</Suspense>
+		</div>
 	)
 }
 

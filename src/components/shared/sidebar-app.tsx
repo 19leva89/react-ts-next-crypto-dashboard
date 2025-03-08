@@ -38,7 +38,9 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 	Skeleton,
+	useSidebar,
 } from '@/components/ui'
+import { cn } from '@/lib'
 import { signOut } from 'next-auth/react'
 import { Logo } from '@/components/shared'
 import { AuthModal } from '@/components/shared/modals/auth-modal'
@@ -105,6 +107,7 @@ const sideBarData = [
 export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 	const currentPath = usePathname()
 
+	const { open } = useSidebar()
 	const { data: session, status } = useSession()
 
 	const [openAuthModal, setOpenAuthModal] = useState<boolean>(false)
@@ -162,7 +165,10 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 								<SidebarMenuButton
 									variant="outline"
 									size="lg"
-									className="gap-3 justify-between mb-4 rounded-xl cursor-pointer group"
+									className={cn(
+										'gap-3 justify-between mb-4 cursor-pointer group',
+										open ? 'rounded-xl' : 'rounded-full',
+									)}
 								>
 									<div className="grow flex items-center justify-between gap-2">
 										{status === 'loading' ? (
