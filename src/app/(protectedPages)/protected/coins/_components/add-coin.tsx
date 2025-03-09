@@ -39,6 +39,10 @@ export const AddCoin = () => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [coinsListIDMapData, setCoinsListIDMapData] = useState<CoinsListIDMapData>([])
 
+	// New state variables for managing Select open state and search focus
+	const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
+	const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false)
+
 	useEffect(() => {
 		if (!isDialogOpen) return
 
@@ -166,12 +170,20 @@ export const AddCoin = () => {
 
 						<div className="grid gap-4 py-4">
 							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="coin" className="text-right" autoFocus={false}>
+								<Label htmlFor="coin" className="text-right">
 									Coin
 								</Label>
 
-								<Select value={selectedCoin} onValueChange={(value) => setSelectedCoin(value)}>
-									<SelectTrigger className="col-span-3 w-full" autoFocus={false}>
+								<Select
+									value={selectedCoin}
+									onValueChange={(value) => setSelectedCoin(value)}
+									open={isSelectOpen}
+									onOpenChange={(open) => {
+										if (!open && isSearchFocused) return
+										setIsSelectOpen(open)
+									}}
+								>
+									<SelectTrigger className="col-span-3 w-full">
 										{selectedCoinData ? (
 											<div className="flex items-center gap-2 truncate">
 												<Image
@@ -189,18 +201,20 @@ export const AddCoin = () => {
 										)}
 									</SelectTrigger>
 
-									<SelectContent autoFocus={false}>
+									<SelectContent>
 										{/* Input for search filter */}
 										<div className="p-2">
 											<Input
 												type="text"
 												placeholder="Search coin..."
 												value={searchQuery}
-												autoFocus={false}
 												onChange={(e) => {
 													setSearchQuery(e.target.value)
 													setSelectedCoin('')
 												}}
+												onFocus={() => setIsSearchFocused(true)}
+												onBlur={() => setIsSearchFocused(false)}
+												autoFocus={false}
 											/>
 										</div>
 

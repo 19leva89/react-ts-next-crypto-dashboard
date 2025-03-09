@@ -11,7 +11,7 @@ export const formatPrice = (price: number, useGrouping?: boolean, locale?: strin
 		currencyDisplay: 'symbol',
 		useGrouping: useGrouping ?? false,
 		minimumFractionDigits: isLargeNumber ? 2 : 1,
-		maximumFractionDigits: isLargeNumber ? 2 : 10,
+		maximumFractionDigits: isLargeNumber ? 2 : 9,
 		notation: 'standard',
 	})
 }
