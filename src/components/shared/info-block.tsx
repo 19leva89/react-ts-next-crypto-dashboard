@@ -25,18 +25,26 @@ export const InfoBlock = ({ title, text, imageUrl, className }: Props) => {
 
 				<div className="flex gap-5 mt-11">
 					<Link href="/">
-						<Button variant="default" size="lg" className="gap-2 rounded-xl">
-							<ArrowLeft />
+						<Button
+							variant="default"
+							size="lg"
+							className="text-white rounded-xl transition-colors ease-in-out duration-300"
+						>
+							<ArrowLeft size={16} />
 							Back
 						</Button>
 					</Link>
 
-					<a href="">
-						<Button variant="outline" size="lg" className="gap-2 rounded-xl">
-							<RefreshCcw />
+					<Link href="">
+						<Button
+							variant="outline"
+							size="lg"
+							className="rounded-xl transition-colors ease-in-out duration-300"
+						>
+							<RefreshCcw size={16} />
 							Refresh
 						</Button>
-					</a>
+					</Link>
 				</div>
 			</div>
 

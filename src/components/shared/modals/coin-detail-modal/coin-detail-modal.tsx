@@ -19,6 +19,7 @@ import {
 	SheetTitle,
 	Skeleton,
 } from '@/components/ui'
+import { cn } from '@/lib'
 import { formatPrice } from '@/constants/format-price'
 import { CoinData, MarketChartData } from '@/app/api/types'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
@@ -135,7 +136,9 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									key={value}
 									variant="outline"
 									onClick={() => setDays(value)}
-									className={`px-2 py-1 h-6 rounded-xl ${days === value ? 'bg-blue-500 hover:bg-blue-500' : ''}`}
+									className={cn('px-2 py-1 h-6 rounded-xl transition-colors ease-in-out duration-300', {
+										'bg-blue-500 hover:bg-blue-500': days === value,
+									})}
 								>
 									{/* Full text for screens > 640px */}
 									<span className="hidden sm:inline">{label}</span>
@@ -317,7 +320,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 							type="submit"
 							variant="outline"
 							size="lg"
-							className="w-full mt-8 p-2 rounded-xl text-blue-500 bg-blue-50 hover:bg-green-600/80 dark:bg-slate-900 dark:hover:bg-green-700"
+							className="w-full mt-8 p-2 rounded-xl text-blue-500 bg-blue-50 hover:bg-green-600/80 dark:bg-slate-900 dark:hover:bg-green-700 transition-colors ease-in-out duration-300"
 						>
 							<div className="flex items-center gap-2">
 								<Star size={20} />

@@ -149,7 +149,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 						onClick={handleAddTransaction}
 						disabled={isAdding || isSaving}
 						loading={isAdding}
-						className="rounded-xl"
+						className="rounded-xl transition-colors ease-in-out duration-300"
 					>
 						<Plus className="h-4 w-4" />
 						<span>Transaction</span>
@@ -161,7 +161,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 						onClick={() => handleUpdate(editSellPrice)}
 						disabled={isSaving || isAdding}
 						loading={isSaving}
-						className="rounded-xl text-white"
+						className="rounded-xl text-white transition-colors ease-in-out duration-300"
 					>
 						<span>Save changes</span>
 					</Button>

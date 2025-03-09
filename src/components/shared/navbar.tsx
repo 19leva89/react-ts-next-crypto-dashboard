@@ -46,7 +46,11 @@ export const Navbar = () => {
 					</div>
 				</div>
 
-				<Button className="flex items-center gap-2 px-5 py-2 rounded-xl text-white">
+				<Button
+					variant="default"
+					size="lg"
+					className="rounded-xl text-white transition-colors ease-in-out duration-300"
+				>
 					<Wallet size={18} />
 
 					<span>Connect wallet</span>
@@ -56,7 +60,11 @@ export const Navbar = () => {
 			<div className="flex gap-3 text-gray-500 dark:text-white max-[460px]:gap-1">
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="outline" size="lg" className="gap-3 rounded-xl text-sm py-2 px-4 group">
+						<Button
+							variant="outline"
+							size="lg"
+							className="gap-3 rounded-xl text-sm px-4 transition-colors ease-in-out duration-300 group"
+						>
 							<span>USD</span>
 
 							<div className="flex-col hidden min-[460px]:flex">
@@ -70,11 +78,11 @@ export const Navbar = () => {
 
 					<DropdownMenuContent
 						align="start"
-						className="flex flex-col gap-2 w-[92px] min-w-[5rem] rounded-xl shadow-lg bg-white dark:bg-dark"
+						className="flex flex-col gap-2 w-[92px] min-w-[5rem] rounded-xl shadow-lg bg-white dark:bg-gray-900"
 					>
 						{['CAD', 'EUR', 'XCD'].map((currency, index) => (
 							<DropdownMenuItem key={index} className="rounded-xl p-0">
-								<Button variant="ghost" size="sm" className="w-full">
+								<Button variant="ghost" size="sm" className="w-full rounded-xl">
 									{currency}
 								</Button>
 							</DropdownMenuItem>
@@ -87,7 +95,7 @@ export const Navbar = () => {
 						variant="outline"
 						size="lg"
 						onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-						className="flex items-center px-2 w-11 rounded-xl group"
+						className="flex items-center px-2 w-11 rounded-xl transition-colors ease-in-out duration-300 group"
 					>
 						<div className="transition-transform duration-300 group-hover:rotate-90">
 							{resolvedTheme === 'light' ? <Moon size={24} /> : <Sun size={24} />}

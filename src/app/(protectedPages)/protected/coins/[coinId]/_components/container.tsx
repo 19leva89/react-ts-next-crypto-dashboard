@@ -17,6 +17,7 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
+import { cn } from '@/lib'
 import { useCoinActions } from '@/hooks'
 import { formatPrice } from '@/constants/format-price'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
@@ -186,7 +187,12 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	return (
 		<div className="flex flex-col gap-6 mx-72 max-[1700px]:mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0">
 			<div className="flex flex-row items-center justify-between gap-3 pr-4 max-[600px]:items-start max-[700px]:text-sm">
-				<Button variant="ghost" size="icon" onClick={() => router.back()}>
+				<Button
+					variant="ghost"
+					size="icon"
+					onClick={() => router.back()}
+					className="transition-colors ease-in-out duration-300"
+				>
 					<ArrowLeft />
 				</Button>
 
@@ -237,7 +243,9 @@ export const CoinIdContainer = ({ coin }: Props) => {
 								key={value}
 								variant="outline"
 								onClick={() => setDays(value)}
-								className={`px-2 py-1 h-6 rounded-xl ${days === value ? 'bg-blue-500 hover:bg-blue-500' : ''}`}
+								className={cn('px-2 py-1 h-6 rounded-xl transition-colors ease-in-out duration-300', {
+									'bg-blue-500 hover:bg-blue-500': days === value,
+								})}
 							>
 								{/* Full text for screens > 640px */}
 								<span className="hidden sm:inline">{label}</span>
@@ -348,7 +356,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 						onClick={handleAddTransaction}
 						disabled={isAdding || isSaving}
 						loading={isAdding}
-						className="rounded-xl"
+						className="rounded-xl transition-colors ease-in-out duration-300"
 					>
 						<Plus className="h-4 w-4" />
 						<span>Transaction</span>
@@ -360,7 +368,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 						onClick={() => handleUpdate(editSellPrice)}
 						disabled={isSaving || isAdding}
 						loading={isSaving}
-						className="rounded-xl text-white"
+						className="rounded-xl text-white transition-colors ease-in-out duration-300"
 					>
 						<span>Save changes</span>
 					</Button>

@@ -135,8 +135,8 @@ export const columns: ColumnDef<CoinListData>[] = [
 							className={cn(
 								'rounded-full font-medium px-2 py-1 inline-block',
 								coin.price_change_percentage_24h > 0
-									? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
-									: 'bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item',
+									? 'bg-green-100 text-green-600 dark:bg-green-900/30'
+									: 'bg-red-100 text-red-600 dark:bg-red-900/30',
 							)}
 						>
 							<span>

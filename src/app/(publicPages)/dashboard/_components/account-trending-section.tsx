@@ -55,7 +55,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 				<Button
 					variant="ghost"
 					size="sm"
-					className="gap-1 group"
+					className="gap-1 transition-colors ease-in-out duration-300 group"
 					onClick={() => {
 						onShowMoreBtnClick(dataIndex.end >= trendingData.coins.length)
 					}}
@@ -81,7 +81,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 						{[...Array(5)].map((_, index) => (
 							<div
 								key={index}
-								className="border dark:border-gray-700 p-3 rounded-xl w-full min-w-[15rem] max-w-[17rem]"
+								className="border dark:border-gray-700 p-3 rounded-xl w-full min-w-[15rem] max-w-[18rem]"
 							>
 								<div className="flex items-center justify-between">
 									<div className="flex items-center gap-1">
@@ -109,7 +109,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 							<div
 								key={index}
 								onClick={() => handleCoinClick(data.item.id)}
-								className="border dark:border-gray-700 p-3 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 duration-500 w-full min-w-[15rem] max-w-[17rem]"
+								className="border dark:border-gray-700 p-3 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 duration-500 w-full min-w-[15rem] max-w-[18rem]"
 							>
 								<div className="flex items-center justify-between">
 									<div className="flex items-center gap-1">
@@ -136,8 +136,8 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 										className={cn(
 											'flex items-center gap-2 rounded-full font-medium px-2 py-1',
 											data.item.data.price_change_percentage_24h.usd > 0
-												? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
-												: 'bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item',
+												? 'bg-green-100 text-green-600 dark:bg-green-900/30'
+												: 'bg-red-100 text-red-600 dark:bg-red-900/30',
 										)}
 									>
 										<span>
@@ -146,9 +146,9 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 										</span>
 
 										{data.item.data.price_change_percentage_24h.usd > 0 ? (
-											<TrendingUp size={16} className="text-green-500" />
+											<TrendingUp size={16} className="text-green-600" />
 										) : (
-											<TrendingDown size={16} className="text-red-500" />
+											<TrendingDown size={16} className="text-red-600" />
 										)}
 									</div>
 								</div>

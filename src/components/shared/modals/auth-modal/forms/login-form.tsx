@@ -81,7 +81,7 @@ export const LoginForm = ({ onClose }: Props) => {
 							size="lg"
 							type="submit"
 							loading={form.formState.isSubmitting}
-							className="text-base text-white w-full rounded-xl"
+							className="text-base text-white w-full rounded-xl transition-colors ease-in-out duration-300"
 						>
 							Login
 						</Button>
@@ -92,9 +92,15 @@ export const LoginForm = ({ onClose }: Props) => {
 								size="lg"
 								type="button"
 								onClick={() => handleLogin('github')}
-								className="gap-2 p-2 flex-1 rounded-xl"
+								className="gap-2 p-2 flex-1 rounded-xl transition-colors ease-in-out duration-300"
 							>
-								<Image width={24} height={24} alt="GitHub" src="/svg/github-icon.svg" />
+								<Image
+									width={24}
+									height={24}
+									alt="GitHub"
+									src="/svg/github-icon.svg"
+									className="dark:invert dark:brightness-200"
+								/>
 								GitHub
 							</Button>
 
@@ -103,7 +109,7 @@ export const LoginForm = ({ onClose }: Props) => {
 								size="lg"
 								type="button"
 								onClick={() => handleLogin('google')}
-								className="gap-2 p-2 flex-1 rounded-xl"
+								className="gap-2 p-2 flex-1 rounded-xl transition-colors ease-in-out duration-300"
 							>
 								<Image width={24} height={24} alt="Google" src="/svg/google-icon.svg" />
 								Google

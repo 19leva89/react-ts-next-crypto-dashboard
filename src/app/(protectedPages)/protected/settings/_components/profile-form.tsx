@@ -84,7 +84,7 @@ export const ProfileForm = ({ data }: Props) => {
 						size="lg"
 						type="submit"
 						disabled={form.formState.isSubmitting}
-						className="text-base text-white mt-10 rounded-xl"
+						className="text-base text-white mt-10 rounded-xl transition-colors ease-in-out duration-300"
 					>
 						Save
 					</Button>
@@ -95,7 +95,7 @@ export const ProfileForm = ({ data }: Props) => {
 						type="button"
 						onClick={handleDeleteAccount}
 						disabled={form.formState.isSubmitting}
-						className="text-base rounded-xl"
+						className="text-base rounded-xl transition-colors ease-in-out duration-300"
 					>
 						Delete account
 					</Button>

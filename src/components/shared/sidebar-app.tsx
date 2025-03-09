@@ -143,8 +143,8 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 								return (
 									<SidebarMenuItem key={item.title}>
 										<SidebarMenuButton className="text-lg" asChild isActive={isActive}>
-											<Link href={item.url} className="flex items-center gap-4 h-[48px]">
-												<item.icon className="w-5! h-5!" />
+											<Link href={item.url} className="flex items-center gap-4 h-12">
+												<item.icon className={open ? 'size-5!' : 'size-4'} />
 
 												<span>{item.title}</span>
 											</Link>
@@ -207,7 +207,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 
 							<DropdownMenuContent
 								align="start"
-								className="z-100 flex flex-col gap-1 w-(--radix-popper-anchor-width) rounded-xl shadow-lg bg-white dark:bg-dark"
+								className="z-100 flex flex-col gap-1 w-(--radix-popper-anchor-width) rounded-xl shadow-lg bg-white dark:bg-gray-900"
 							>
 								{!session?.user ? (
 									<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
@@ -215,7 +215,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 											onClick={() => {
 												setOpenAuthModal(true)
 											}}
-											className="flex items-center gap-2 p-3 rounded-xl w-full duration-300"
+											className="flex items-center gap-2 p-3 rounded-xl w-full"
 										>
 											<User size={16} />
 											Login
@@ -226,7 +226,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 										<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
 											<Link
 												href={'/protected/settings'}
-												className="flex items-center gap-2 p-3 rounded-xl w-full duration-300"
+												className="flex items-center gap-2 p-3 rounded-xl w-full"
 											>
 												<Settings size={16} />
 												Settings
@@ -236,7 +236,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 										<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
 											<button
 												onClick={() => signOut()}
-												className="flex items-center gap-2 p-3 rounded-xl w-full duration-300"
+												className="flex items-center gap-2 p-3 rounded-xl w-full"
 											>
 												<LogOut size={16} />
 												Logout

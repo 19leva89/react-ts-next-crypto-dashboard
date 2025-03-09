@@ -85,11 +85,11 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 						<div
 							className={cn(
-								'flex items-center gap-2 rounded-full font-medium px-2 py-1 h-8 ',
+								'flex items-center gap-2 rounded-full font-medium px-2 py-1 h-8',
 								viewMode === 'grid' ? '' : 'max-[460px]:hidden',
 								coin.current_price > coin.average_price
-									? 'bg-green-100 text-green-600 dark:bg-green-dark-container dark:text-green-dark-item'
-									: 'bg-red-100 text-red-600 dark:bg-red-dark-container dark:text-red-dark-item',
+									? 'bg-green-100 text-green-600 dark:bg-green-900/30'
+									: 'bg-red-100 text-red-600 dark:bg-red-900/30',
 							)}
 						>
 							<span>
@@ -98,9 +98,9 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							</span>
 
 							{changePercentagePrice > 0 ? (
-								<TrendingUp size={16} className="text-green-500" />
+								<TrendingUp size={16} className="text-green-600" />
 							) : (
-								<TrendingDown size={16} className="text-red-500" />
+								<TrendingDown size={16} className="text-red-600" />
 							)}
 						</div>
 					</CardDescription>
@@ -109,7 +109,10 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="ghost" size="icon" className="mt-0! group shrink-0">
-							<EllipsisVertical className="h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
+							<EllipsisVertical
+								size={16}
+								className="transition-transform duration-300 group-hover:rotate-180"
+							/>
 						</Button>
 					</DropdownMenuTrigger>
 
@@ -119,7 +122,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
-								<Pencil className="h-4 w-4" />
+								<Pencil size={16} />
 								<span>Edit</span>
 							</Button>
 						</DropdownMenuItem>
@@ -129,7 +132,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
-								<Trash className="h-4 w-4" />
+								<Trash size={16} />
 								<span>Delete</span>
 							</Button>
 						</DropdownMenuItem>

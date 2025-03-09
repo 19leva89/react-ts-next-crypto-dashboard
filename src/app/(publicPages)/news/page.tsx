@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowUp, Heart, MessageSquareText } from 'lucide-react'
+import { ArrowDown, Heart, MessageSquareText } from 'lucide-react'
 
 import { cryptoNews } from './data'
+import { Button } from '@/components/ui'
 import { constructMetadata } from '@/lib'
 
 export const metadata = constructMetadata({ title: 'News' })
@@ -71,11 +72,15 @@ const NewsPage = () => {
 			</div>
 
 			<div className="flex justify-center">
-				<button className="font-medium rounded-full flex items-center gap-2 p-3 border dark:border-gray-700 bg-slate-50 dark:bg-gray-800">
+				<Button
+					variant="outline"
+					size="lg"
+					className="rounded-xl transition-colors ease-in-out duration-300 group"
+				>
 					<span>Load more</span>
 
-					<ArrowUp size={20} className="rotate-180" />
-				</button>
+					<ArrowDown size={20} className="transition-transform duration-300 group-hover:rotate-180" />
+				</Button>
 			</div>
 		</>
 	)

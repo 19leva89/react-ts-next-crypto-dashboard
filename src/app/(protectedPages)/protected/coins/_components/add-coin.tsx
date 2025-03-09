@@ -155,7 +155,11 @@ export const AddCoin = () => {
 			<div className="flex justify-end">
 				<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 					<DialogTrigger asChild>
-						<Button variant="default" size="sm" className="rounded-xl text-white">
+						<Button
+							variant="default"
+							size="default"
+							className="rounded-xl text-white transition-colors ease-in-out duration-300"
+						>
 							<Plus className="mr-2 h-4 w-4" />
 							Transaction
 						</Button>
@@ -277,7 +281,7 @@ export const AddCoin = () => {
 								onClick={handleAddCoin}
 								disabled={isLoading || isAdding}
 								loading={isAdding}
-								className="rounded-xl text-white"
+								className="rounded-xl text-white transition-colors ease-in-out duration-300"
 							>
 								Submit
 							</Button>

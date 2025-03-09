@@ -112,7 +112,9 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 								variant="ghost"
 								size="icon"
 								onClick={() => setViewMode('grid')}
-								className={viewMode === 'grid' ? 'bg-accent' : ''}
+								className={cn('transition-colors ease-in-out duration-300', {
+									'bg-accent': viewMode === 'grid',
+								})}
 							>
 								<LayoutGrid className="h-4 w-4" />
 							</Button>
@@ -121,7 +123,9 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 								variant="ghost"
 								size="icon"
 								onClick={() => setViewMode('list')}
-								className={viewMode === 'list' ? 'bg-accent' : ''}
+								className={cn('transition-colors ease-in-out duration-300', {
+									'bg-accent': viewMode === 'list',
+								})}
 							>
 								<List className="h-4 w-4" />
 							</Button>

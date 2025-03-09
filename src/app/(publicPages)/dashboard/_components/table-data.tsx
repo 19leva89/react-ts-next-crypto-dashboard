@@ -109,7 +109,7 @@ export function DataTable<TData, TValue>({
 									variant="outline"
 									size="lg"
 									disabled={!categories.length}
-									className="w-full h-10 py-2 px-4 justify-between rounded-xl group"
+									className="w-full h-10 py-2 px-4 justify-between rounded-xl transition-colors ease-in-out duration-300 group"
 								>
 									<span className="truncate">{currentCategory || 'Categories'}</span>
 
@@ -123,7 +123,7 @@ export function DataTable<TData, TValue>({
 							{categories.length ? (
 								<DropdownMenuContent
 									align="start"
-									className="w-full max-h-64 mt-1 py-1 overflow-y-hidden rounded-xl shadow-xl bg-white dark:bg-dark"
+									className="w-full max-h-64 mt-1 py-1 overflow-y-hidden rounded-xl shadow-xl bg-white dark:bg-gray-900"
 								>
 									<DropdownMenuItem className="rounded-xl">
 										<button
@@ -169,8 +169,12 @@ export function DataTable<TData, TValue>({
 					{/* Visibility columns */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="outline" className="ml-auto rounded-xl">
-								Columns <ChevronDown />
+							<Button
+								variant="outline"
+								className="ml-auto rounded-xl transition-colors ease-in-out duration-300 group"
+							>
+								<span>Columns</span>
+								<ChevronDown size={16} className="transition-transform duration-300 group-hover:rotate-180" />
 							</Button>
 						</DropdownMenuTrigger>
 
@@ -289,7 +293,7 @@ export function DataTable<TData, TValue>({
 					<div className="flex items-center gap-2">
 						<Button
 							variant="outline"
-							className="hidden h-8 w-8 p-0 lg:flex"
+							className="hidden h-8 w-8 p-0 lg:flex transition-colors ease-in-out duration-300"
 							onClick={() => table.setPageIndex(0)}
 							disabled={!table.getCanPreviousPage()}
 						>
@@ -300,7 +304,7 @@ export function DataTable<TData, TValue>({
 
 						<Button
 							variant="outline"
-							className="h-8 w-8 p-0"
+							className="h-8 w-8 p-0 transition-colors ease-in-out duration-300"
 							onClick={() => table.previousPage()}
 							disabled={!table.getCanPreviousPage()}
 						>
@@ -311,7 +315,7 @@ export function DataTable<TData, TValue>({
 
 						<Button
 							variant="outline"
-							className="h-8 w-8 p-0"
+							className="h-8 w-8 p-0 transition-colors ease-in-out duration-300"
 							onClick={() => table.nextPage()}
 							disabled={!table.getCanNextPage()}
 						>
@@ -322,7 +326,7 @@ export function DataTable<TData, TValue>({
 
 						<Button
 							variant="outline"
-							className="hidden h-8 w-8 p-0 lg:flex"
+							className="hidden h-8 w-8 p-0 lg:flex transition-colors ease-in-out duration-300"
 							onClick={() => table.setPageIndex(table.getPageCount() - 1)}
 							disabled={!table.getCanNextPage()}
 						>

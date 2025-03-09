@@ -13,11 +13,11 @@ export const ClearButton = ({ onClick, className }: Props) => {
 			onClick={onClick}
 			type="button"
 			className={cn(
-				'absolute right-4 top-1/2 -translate-y-1/2 opacity-30 hover:opacity-100 cursor-pointer',
+				'absolute right-4 top-1/2 -translate-y-1/2 opacity-30 hover:opacity-100 cursor-pointer transition-opacity ease-in-out duration-300',
 				className,
 			)}
 		>
-			<Delete className="h-5 w-5" />
+			<Delete size={20} />
 		</button>
 	)
 }

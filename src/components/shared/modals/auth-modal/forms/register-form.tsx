@@ -76,7 +76,7 @@ export const RegisterForm = ({ onClose }: Props) => {
 							size="lg"
 							type="submit"
 							loading={form.formState.isSubmitting}
-							className="text-base text-white w-full rounded-xl"
+							className="text-base text-white w-full rounded-xl transition-colors ease-in-out duration-300"
 						>
 							Register
 						</Button>
