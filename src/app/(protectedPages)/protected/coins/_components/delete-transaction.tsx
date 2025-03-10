@@ -40,7 +40,7 @@ export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 
-				<AlertDialogFooter className="gap-2">
+				<AlertDialogFooter className="gap-3">
 					<AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
 
 					<AlertDialogAction onClick={() => onDelete(transactionId)} className="rounded-xl">

@@ -58,6 +58,9 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							width={24}
 							height={24}
 							className="rounded-full"
+							onError={(e) => {
+								e.currentTarget.src = '/svg/coin-not-found.svg'
+							}}
 						/>
 
 						<Link
@@ -123,6 +126,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 						>
 							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
 								<Pencil size={16} />
+
 								<span>Edit</span>
 							</Button>
 						</DropdownMenuItem>
@@ -133,6 +137,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 						>
 							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
 								<Trash size={16} />
+
 								<span>Delete</span>
 							</Button>
 						</DropdownMenuItem>

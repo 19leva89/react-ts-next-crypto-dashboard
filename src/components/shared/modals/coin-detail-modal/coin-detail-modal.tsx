@@ -247,6 +247,9 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 											width={32}
 											height={32}
 											className="size-8 rounded-full max-[500px]:size-6"
+											onError={(e) => {
+												e.currentTarget.src = '/svg/coin-not-found.svg'
+											}}
 										/>
 
 										<span className="font-medium">

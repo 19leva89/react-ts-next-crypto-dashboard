@@ -41,7 +41,7 @@ export const DeleteCoin = ({ coin, isOpen, onClose }: Props) => {
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 
-				<AlertDialogFooter className="gap-2">
+				<AlertDialogFooter className="gap-3">
 					<AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
 
 					<AlertDialogAction onClick={handleDelete} className="rounded-xl">

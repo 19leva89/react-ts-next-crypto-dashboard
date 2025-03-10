@@ -11,8 +11,8 @@ import {
 	useState,
 } from 'react'
 import { Slot } from '@radix-ui/react-slot'
-import { PanelLeftIcon } from 'lucide-react'
 import { VariantProps, cva } from 'class-variance-authority'
+import { PanelLeftOpenIcon, PanelLeftCloseIcon } from 'lucide-react'
 
 import {
 	Button,
@@ -256,7 +256,7 @@ function Sidebar({
 }
 
 function SidebarTrigger({ className, onClick, ...props }: ComponentProps<typeof Button>) {
-	const { toggleSidebar } = useSidebar()
+	const { open, toggleSidebar } = useSidebar()
 
 	return (
 		<Button
@@ -271,7 +271,8 @@ function SidebarTrigger({ className, onClick, ...props }: ComponentProps<typeof 
 			}}
 			{...props}
 		>
-			<PanelLeftIcon />
+			{open ? <PanelLeftCloseIcon /> : <PanelLeftOpenIcon />}
+
 			<span className="sr-only">Toggle Sidebar</span>
 		</Button>
 	)

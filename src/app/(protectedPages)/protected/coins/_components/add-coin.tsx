@@ -131,7 +131,7 @@ export const AddCoin = () => {
 							width={20}
 							height={20}
 							onError={(e) => {
-								;(e.currentTarget as HTMLImageElement).src = '/svg/coin-not-found.svg'
+								e.currentTarget.src = '/svg/coin-not-found.svg'
 							}}
 						/>
 
@@ -195,6 +195,9 @@ export const AddCoin = () => {
 													alt={selectedCoinData.name}
 													width={20}
 													height={20}
+													onError={(e) => {
+														e.currentTarget.src = '/svg/coin-not-found.svg'
+													}}
 												/>
 												<span>
 													{selectedCoinData.name} ({selectedCoinData.symbol.toUpperCase()})

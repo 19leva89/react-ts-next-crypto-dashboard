@@ -119,6 +119,9 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 											width={32}
 											height={32}
 											className="size-8 rounded-full"
+											onError={(e) => {
+												e.currentTarget.src = '/svg/coin-not-found.svg'
+											}}
 										/>
 
 										<div className="flex flex-col">

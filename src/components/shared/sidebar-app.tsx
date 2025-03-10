@@ -124,7 +124,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 	return (
 		<Sidebar side="left" variant="sidebar" collapsible="icon" className="z-50" {...props}>
 			<SidebarHeader>
-				<div className="flex px-4 pt-1">
+				<div className="flex items-center justify-center px-4 pt-1">
 					<Link href={sideBarData[0].url}>
 						<Logo />
 					</Link>

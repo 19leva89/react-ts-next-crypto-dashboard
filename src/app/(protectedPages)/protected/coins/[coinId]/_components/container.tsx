@@ -232,6 +232,9 @@ export const CoinIdContainer = ({ coin }: Props) => {
 							width={24}
 							height={24}
 							className="rounded-full"
+							onError={(e) => {
+								e.currentTarget.src = '/svg/coin-not-found.svg'
+							}}
 						/>
 
 						<span className="truncate">{coin.name}</span>

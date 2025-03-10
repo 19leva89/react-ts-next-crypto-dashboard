@@ -67,6 +67,9 @@ export const columns: ColumnDef<CoinListData>[] = [
 							width={32}
 							height={32}
 							className="size-8 rounded-full max-[1200px]:size-6"
+							onError={(e) => {
+								e.currentTarget.src = '/svg/coin-not-found.svg'
+							}}
 						/>
 					) : (
 						'-'
