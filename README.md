@@ -36,12 +36,14 @@ Styling and UI Frameworks:
 
 Utilities and Libraries:
 - Date-fns (date/time manipulation)
+- Knip (code analyzer and declutter)
 - PostCSS (transforms CSS code to AST)
 
 
 To run the client and server via concurrently:
 npm run all
 npm run lint (loading ESLint checker)
+npm run knip
 
 npx prisma generate
 npx prisma db push

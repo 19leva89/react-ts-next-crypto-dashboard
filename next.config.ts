@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
 				hostname: 'avatars.githubusercontent.com',
 			},
 		],
+		unoptimized: true,
+	},
+	experimental: {
+		nodeMiddleware: true, // Enable Node.js middleware
 	},
 	reactStrictMode: false,
 }
