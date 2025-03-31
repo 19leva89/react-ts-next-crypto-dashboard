@@ -1,10 +1,9 @@
 'use client'
 
-import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
-import { ChevronsUpDown, Moon, Sun, Wallet } from 'lucide-react'
+import { ChevronsUpDown, Wallet } from 'lucide-react'
 
 import {
 	Button,
@@ -15,12 +14,12 @@ import {
 	SidebarTrigger,
 	Skeleton,
 } from '@/components/ui'
+import { ModeToggle } from '@/components/shared'
 
 export const Navbar = () => {
 	const pathName = usePathname()
 
 	const { data: session, status } = useSession()
-	const { theme, resolvedTheme, setTheme } = useTheme()
 
 	const [mounted, setMounted] = useState<boolean>(false)
 
@@ -90,18 +89,7 @@ export const Navbar = () => {
 					</DropdownMenuContent>
 				</DropdownMenu>
 
-				{mounted && (
-					<Button
-						variant="outline"
-						size="lg"
-						onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-						className="flex items-center px-2 w-11 rounded-xl transition-colors ease-in-out duration-300 group"
-					>
-						<div className="transition-transform duration-300 group-hover:rotate-90">
-							{resolvedTheme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
-						</div>
-					</Button>
-				)}
+				{mounted && <ModeToggle />}
 			</div>
 		</header>
 	)
