@@ -1,4 +1,4 @@
-import { Trash } from 'lucide-react'
+import { TrashIcon } from 'lucide-react'
 
 import {
 	AlertDialog,
@@ -27,7 +27,7 @@ export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
 					size="icon"
 					className="hover:bg-red-100 dark:hover:bg-red-900 transition-colors ease-in-out duration-300"
 				>
-					<Trash className="h-4 w-4 text-red-600 dark:text-red-400" />
+					<TrashIcon className="size-4 text-red-600 dark:text-red-400" />
 				</Button>
 			</AlertDialogTrigger>
 

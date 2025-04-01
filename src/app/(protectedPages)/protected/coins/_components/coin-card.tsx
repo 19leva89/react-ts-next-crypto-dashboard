@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { EllipsisVertical, Pencil, Trash, TrendingDown, TrendingUp } from 'lucide-react'
+import { EllipsisVerticalIcon, PencilIcon, TrashIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 
 import {
 	Button,
@@ -101,9 +101,9 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							</span>
 
 							{changePercentagePrice > 0 ? (
-								<TrendingUp size={16} className="text-green-600" />
+								<TrendingUpIcon size={16} className="text-green-600" />
 							) : (
-								<TrendingDown size={16} className="text-red-600" />
+								<TrendingDownIcon size={16} className="text-red-600" />
 							)}
 						</div>
 					</CardDescription>
@@ -112,10 +112,9 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="ghost" size="icon" className="mt-0! group shrink-0">
-							<EllipsisVertical
-								size={16}
-								className="transition-transform duration-300 group-hover:rotate-180"
-							/>
+							<div className="relative size-5 transition-transform duration-300 group-hover:rotate-180">
+								<EllipsisVerticalIcon size={16} className="absolute inset-0 m-auto" />
+							</div>
 						</Button>
 					</DropdownMenuTrigger>
 
@@ -125,7 +124,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
-								<Pencil size={16} />
+								<PencilIcon size={16} />
 
 								<span>Edit</span>
 							</Button>
@@ -136,7 +135,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
-								<Trash size={16} />
+								<TrashIcon size={16} />
 
 								<span>Delete</span>
 							</Button>

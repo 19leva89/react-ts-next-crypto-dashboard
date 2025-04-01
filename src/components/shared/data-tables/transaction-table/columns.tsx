@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowDown, ArrowUp, CalendarIcon } from 'lucide-react'
+import { ArrowDownIcon, ArrowUpIcon, CalendarIcon } from 'lucide-react'
 
 import { Transaction } from '@/app/api/types'
 import { InputFormatPrice } from '@/components/shared'
@@ -23,9 +23,9 @@ export const getColumns = (
 				>
 					Quantity
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUp className="h-4 w-4" />
+						<ArrowUpIcon className="size-4" />
 					) : (
-						<ArrowDown className="h-4 w-4" />
+						<ArrowDownIcon className="size-4" />
 					)}
 				</Button>
 			)
@@ -50,9 +50,9 @@ export const getColumns = (
 				>
 					Price
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUp className="h-4 w-4" />
+						<ArrowUpIcon className="size-4" />
 					) : (
-						<ArrowDown className="h-4 w-4" />
+						<ArrowDownIcon className="size-4" />
 					)}
 				</Button>
 			)
@@ -77,9 +77,9 @@ export const getColumns = (
 				>
 					Date
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUp className="h-4 w-4" />
+						<ArrowUpIcon className="size-4" />
 					) : (
-						<ArrowDown className="h-4 w-4" />
+						<ArrowDownIcon className="size-4" />
 					)}
 				</Button>
 			)
@@ -94,7 +94,7 @@ export const getColumns = (
 							variant="outline"
 							className="w-full justify-start text-left font-normal rounded-xl max-[900px]:p-2 max-[600px]:px-2 max-[600px]:has-[>svg]:px-2 max-[900px]:text-sm max-[600px]:text-xs"
 						>
-							<CalendarIcon className="mr-2 h-4 w-4 max-[900px]:mr-1 max-[600px]:mr-0" />
+							<CalendarIcon className="mr-2 size-4 max-[900px]:mr-1 max-[600px]:mr-0" />
 
 							{dateValue ? format(dateValue, 'dd-MM-yyyy') : <span>Pick a date</span>}
 						</Button>

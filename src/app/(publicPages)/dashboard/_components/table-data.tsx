@@ -1,6 +1,14 @@
 'use client'
 
 import {
+	ChevronDownIcon,
+	ChevronLeftIcon,
+	ChevronRightIcon,
+	ChevronsLeftIcon,
+	ChevronsRightIcon,
+	SearchIcon,
+} from 'lucide-react'
+import {
 	ColumnDef,
 	ColumnFiltersState,
 	SortingState,
@@ -14,7 +22,6 @@ import {
 } from '@tanstack/react-table'
 import { useState } from 'react'
 import { FixedSizeList as List } from 'react-window'
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search } from 'lucide-react'
 
 import {
 	Button,
@@ -89,7 +96,10 @@ export function DataTable<TData, TValue>({
 			<div className="flex items-center justify-between gap-8 py-4 max-[820px]:flex-wrap-reverse max-[820px]:justify-end max-[820px]:gap-2">
 				{/* Search */}
 				<div className="relative w-full">
-					<Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+					<SearchIcon
+						size={18}
+						className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+					/>
 
 					<Input
 						placeholder="Filter coins..."
@@ -113,10 +123,9 @@ export function DataTable<TData, TValue>({
 								>
 									<span className="truncate">{currentCategory || 'Categories'}</span>
 
-									<ChevronDown
-										size={16}
-										className="transition-transform duration-300 group-hover:rotate-180"
-									/>
+									<div className="relative size-5 transition-transform duration-300 group-hover:rotate-180">
+										<ChevronDownIcon size={16} className="absolute inset-0 m-auto" />
+									</div>
 								</Button>
 							</DropdownMenuTrigger>
 
@@ -174,7 +183,10 @@ export function DataTable<TData, TValue>({
 								className="ml-auto rounded-xl transition-colors ease-in-out duration-300 group"
 							>
 								<span>Columns</span>
-								<ChevronDown size={16} className="transition-transform duration-300 group-hover:rotate-180" />
+
+								<div className="relative size-5 transition-transform duration-300 group-hover:rotate-180">
+									<ChevronDownIcon size={16} className="absolute inset-0 m-auto" />
+								</div>
 							</Button>
 						</DropdownMenuTrigger>
 
@@ -299,7 +311,7 @@ export function DataTable<TData, TValue>({
 						>
 							<span className="sr-only">Go to first page</span>
 
-							<ChevronsLeft />
+							<ChevronsLeftIcon />
 						</Button>
 
 						<Button
@@ -310,7 +322,7 @@ export function DataTable<TData, TValue>({
 						>
 							<span className="sr-only">Go to previous page</span>
 
-							<ChevronLeft />
+							<ChevronLeftIcon />
 						</Button>
 
 						<Button
@@ -321,7 +333,7 @@ export function DataTable<TData, TValue>({
 						>
 							<span className="sr-only">Go to next page</span>
 
-							<ChevronRight />
+							<ChevronRightIcon />
 						</Button>
 
 						<Button
@@ -332,7 +344,7 @@ export function DataTable<TData, TValue>({
 						>
 							<span className="sr-only">Go to last page</span>
 
-							<ChevronsRight />
+							<ChevronsRightIcon />
 						</Button>
 					</div>
 				</div>

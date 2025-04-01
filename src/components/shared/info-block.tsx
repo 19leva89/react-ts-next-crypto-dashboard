@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, RefreshCcw } from 'lucide-react'
+import { ArrowLeftIcon, RefreshCcwIcon } from 'lucide-react'
 
 import { cn } from '@/lib'
 import { Button } from '@/components/ui'
@@ -30,7 +30,7 @@ export const InfoBlock = ({ title, text, imageUrl, className }: Props) => {
 							size="lg"
 							className="text-white rounded-xl transition-colors ease-in-out duration-300"
 						>
-							<ArrowLeft size={16} />
+							<ArrowLeftIcon size={16} />
 							Back
 						</Button>
 					</Link>
@@ -41,7 +41,7 @@ export const InfoBlock = ({ title, text, imageUrl, className }: Props) => {
 							size="lg"
 							className="rounded-xl transition-colors ease-in-out duration-300"
 						>
-							<RefreshCcw size={16} />
+							<RefreshCcwIcon size={16} />
 							Refresh
 						</Button>
 					</Link>

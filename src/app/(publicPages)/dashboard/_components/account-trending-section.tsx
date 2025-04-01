@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import { ChevronDown, TrendingDown, TrendingUp } from 'lucide-react'
+import { ChevronDownIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 
 import { cn } from '@/lib'
 import { TrendingData } from '@/app/api/types'
@@ -66,10 +66,9 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 						<>
 							<span>View more</span>
 
-							<ChevronDown
-								size={16}
-								className="-rotate-90 transition-transform duration-300 group-hover:rotate-0"
-							/>
+							<div className="relative size-5 -rotate-90 transition-transform duration-300 group-hover:rotate-0">
+								<ChevronDownIcon size={16} className="absolute inset-0 m-auto" />
+							</div>
 						</>
 					)}
 				</Button>
@@ -149,9 +148,9 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 										</span>
 
 										{data.item.data.price_change_percentage_24h.usd > 0 ? (
-											<TrendingUp size={16} className="text-green-600" />
+											<TrendingUpIcon size={16} className="text-green-600" />
 										) : (
-											<TrendingDown size={16} className="text-red-600" />
+											<TrendingDownIcon size={16} className="text-red-600" />
 										)}
 									</div>
 								</div>

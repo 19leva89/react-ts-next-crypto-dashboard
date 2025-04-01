@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
-import { ChevronsUpDown, Wallet } from 'lucide-react'
+import { ChevronsUpDownIcon, WalletIcon } from 'lucide-react'
 
 import {
 	Button,
@@ -50,7 +50,7 @@ export const Navbar = () => {
 					size="lg"
 					className="rounded-xl text-white transition-colors ease-in-out duration-300"
 				>
-					<Wallet size={18} />
+					<WalletIcon size={18} />
 
 					<span>Connect wallet</span>
 				</Button>
@@ -62,15 +62,12 @@ export const Navbar = () => {
 						<Button
 							variant="outline"
 							size="lg"
-							className="gap-3 rounded-xl text-sm px-4 transition-colors ease-in-out duration-300 group"
+							className="flex gap-3 rounded-xl text-sm px-4 transition-colors ease-in-out duration-300 group"
 						>
-							<span>USD</span>
+							<span className="relative text-sm top-[1px]">USD</span>
 
-							<div className="flex-col hidden min-[460px]:flex">
-								<ChevronsUpDown
-									size={20}
-									className="transition-transform duration-300 group-hover:rotate-180"
-								/>
+							<div className="relative size-6 transition-transform duration-300 group-hover:rotate-180 max-[460px]:hidden">
+								<ChevronsUpDownIcon size={18} className="absolute size-4.5! inset-0 m-auto" />
 							</div>
 						</Button>
 					</DropdownMenuTrigger>

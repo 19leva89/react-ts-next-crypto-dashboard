@@ -1,4 +1,4 @@
-import { Delete } from 'lucide-react'
+import { DeleteIcon } from 'lucide-react'
 
 import { cn } from '@/lib'
 
@@ -17,7 +17,7 @@ export const ClearButton = ({ onClick, className }: Props) => {
 				className,
 			)}
 		>
-			<Delete size={20} />
+			<DeleteIcon size={20} />
 		</button>
 	)
 }

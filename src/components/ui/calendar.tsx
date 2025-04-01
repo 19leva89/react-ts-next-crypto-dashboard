@@ -11,7 +11,7 @@ import {
 	useState,
 } from 'react'
 import { differenceInCalendarDays } from 'date-fns'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { DayPicker, labelNext, labelPrevious, useDayPicker, type DayPickerProps } from 'react-day-picker'
 
 import { cn } from '@/lib'
@@ -170,8 +170,8 @@ function Calendar({
 			}}
 			components={{
 				Chevron: ({ orientation }) => {
-					const Icon = orientation === 'left' ? ChevronLeft : ChevronRight
-					return <Icon className="h-4 w-4" />
+					const Icon = orientation === 'left' ? ChevronLeftIcon : ChevronRightIcon
+					return <Icon className="size-4" />
 				},
 				Nav: ({ className }) => (
 					<Nav
@@ -297,7 +297,7 @@ function Nav({
 				}
 				onClick={handlePreviousClick}
 			>
-				<ChevronLeft className="h-4 w-4" />
+				<ChevronLeftIcon className="size-4" />
 			</Button>
 
 			<Button
@@ -313,7 +313,7 @@ function Nav({
 				}
 				onClick={handleNextClick}
 			>
-				<ChevronRight className="h-4 w-4" />
+				<ChevronRightIcon className="size-4" />
 			</Button>
 		</nav>
 	)

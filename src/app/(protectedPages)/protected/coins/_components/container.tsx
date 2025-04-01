@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { LayoutGrid, List } from 'lucide-react'
+import { LayoutGridIcon, ListIcon } from 'lucide-react'
 import useLocalStorageState from 'use-local-storage-state'
 
 import {
@@ -116,7 +116,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 									'bg-accent': viewMode === 'grid',
 								})}
 							>
-								<LayoutGrid className="h-4 w-4" />
+								<LayoutGridIcon className="size-4" />
 							</Button>
 
 							<Button
@@ -127,7 +127,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 									'bg-accent': viewMode === 'list',
 								})}
 							>
-								<List className="h-4 w-4" />
+								<ListIcon className="size-4" />
 							</Button>
 						</div>
 

@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowDown, ArrowUp } from 'lucide-react'
+import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 import { Line, LineChart, YAxis } from 'recharts'
 
 import { cn } from '@/lib'
@@ -23,9 +23,9 @@ export const columns: ColumnDef<CoinListData>[] = [
 				>
 					#
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUp className="h-4 w-4" />
+						<ArrowUpIcon className="size-4" />
 					) : (
-						<ArrowDown className="h-4 w-4" />
+						<ArrowDownIcon className="size-4" />
 					)}
 				</Button>
 			)
@@ -48,9 +48,9 @@ export const columns: ColumnDef<CoinListData>[] = [
 				>
 					Name
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUp className="h-4 w-4" />
+						<ArrowUpIcon className="size-4" />
 					) : (
-						<ArrowDown className="h-4 w-4" />
+						<ArrowDownIcon className="size-4" />
 					)}
 				</Button>
 			)
@@ -93,9 +93,9 @@ export const columns: ColumnDef<CoinListData>[] = [
 				>
 					Price
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUp className="h-4 w-4" />
+						<ArrowUpIcon className="size-4" />
 					) : (
-						<ArrowDown className="h-4 w-4" />
+						<ArrowDownIcon className="size-4" />
 					)}
 				</Button>
 			)
@@ -121,9 +121,9 @@ export const columns: ColumnDef<CoinListData>[] = [
 				>
 					24h
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUp className="h-4 w-4" />
+						<ArrowUpIcon className="size-4" />
 					) : (
-						<ArrowDown className="h-4 w-4" />
+						<ArrowDownIcon className="size-4" />
 					)}
 				</Button>
 			)
@@ -167,9 +167,9 @@ export const columns: ColumnDef<CoinListData>[] = [
 				>
 					24h Volume
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUp className="h-4 w-4" />
+						<ArrowUpIcon className="size-4" />
 					) : (
-						<ArrowDown className="h-4 w-4" />
+						<ArrowDownIcon className="size-4" />
 					)}
 				</Button>
 			)
@@ -195,9 +195,9 @@ export const columns: ColumnDef<CoinListData>[] = [
 				>
 					Market Cap
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUp className="h-4 w-4" />
+						<ArrowUpIcon className="size-4" />
 					) : (
-						<ArrowDown className="h-4 w-4" />
+						<ArrowDownIcon className="size-4" />
 					)}
 				</Button>
 			)

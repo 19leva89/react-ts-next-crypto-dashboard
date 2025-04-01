@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowDown, Heart, MessageSquareText } from 'lucide-react'
+import { ArrowDownIcon, HeartIcon, MessageSquareTextIcon } from 'lucide-react'
 
 import { cryptoNews } from './data'
 import { Button } from '@/components/ui'
@@ -56,13 +56,13 @@ const NewsPage = () => {
 
 						<div className="flex items-center gap-3">
 							<div className="flex items-center gap-1">
-								<Heart size={20} />
+								<HeartIcon size={20} />
 
 								<span>{news.reaction}</span>
 							</div>
 
 							<div className="flex items-center gap-1">
-								<MessageSquareText size={20} />
+								<MessageSquareTextIcon size={20} />
 
 								<span>{news.commentCount}</span>
 							</div>
@@ -79,7 +79,9 @@ const NewsPage = () => {
 				>
 					<span>Load more</span>
 
-					<ArrowDown size={20} className="transition-transform duration-300 group-hover:rotate-180" />
+					<div className="relative size-5 transition-transform duration-300 group-hover:rotate-180">
+						<ArrowDownIcon size={16} className="absolute inset-0 m-auto" />
+					</div>
 				</Button>
 			</div>
 		</>

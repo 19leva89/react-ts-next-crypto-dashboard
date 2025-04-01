@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react'
+import { Loader2Icon } from 'lucide-react'
 import { Slot } from '@radix-ui/react-slot'
 import { Children, ComponentProps, isValidElement } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
@@ -56,7 +56,7 @@ function Button({
 			// If two parts are passed (icon + text), replace the first one with Loader2
 			content = (
 				<>
-					<Loader2 className="w-5 h-5 animate-spin" />
+					<Loader2Icon className="w-5 h-5 animate-spin" />
 					{childArray[1]}
 				</>
 			)
@@ -64,7 +64,7 @@ function Button({
 			// If there is no icon, just add Loader2 to the left
 			content = (
 				<>
-					<Loader2 className="w-5 h-5 animate-spin" />
+					<Loader2Icon className="w-5 h-5 animate-spin" />
 					{children}
 				</>
 			)

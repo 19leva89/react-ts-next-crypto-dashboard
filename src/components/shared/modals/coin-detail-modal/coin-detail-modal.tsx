@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star } from 'lucide-react'
+import { StarIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
@@ -326,7 +326,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 							className="w-full mt-8 p-2 rounded-xl text-blue-500 bg-blue-50 hover:bg-green-600/80 dark:bg-slate-900 dark:hover:bg-green-700 transition-colors ease-in-out duration-300"
 						>
 							<div className="flex items-center gap-2">
-								<Star size={20} />
+								<StarIcon size={20} />
 
 								<span>Add to favorites</span>
 							</div>

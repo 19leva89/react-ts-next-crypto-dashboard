@@ -61,7 +61,7 @@ export const LoginForm = ({ onClose }: Props) => {
 		<FormProvider {...form}>
 			<form className="flex flex-col gap-5 h-full min-h-[450px]" onSubmit={form.handleSubmit(onSubmit)}>
 				<Card className="flex flex-col justify-between items-stretch grow dark:bg-card">
-					<div>
+					<div className="flex flex-col gap-5">
 						<CardHeader>
 							<CardTitle>Login to your account</CardTitle>
 

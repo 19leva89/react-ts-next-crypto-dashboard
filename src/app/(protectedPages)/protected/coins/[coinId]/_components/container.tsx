@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Plus } from 'lucide-react'
+import { ArrowLeftIcon, PlusIcon } from 'lucide-react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
@@ -24,6 +24,7 @@ import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 import { MarketChartData, Transaction, UserCoinData } from '@/app/api/types'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 import { createTransactionForUser, getCoinsMarketChart, updateUserCoin } from '@/app/api/actions'
+import Link from 'next/link'
 
 interface Props {
 	coin: UserCoinData
@@ -193,7 +194,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					onClick={() => router.back()}
 					className="transition-colors ease-in-out duration-300"
 				>
-					<ArrowLeft />
+					<ArrowLeftIcon />
 				</Button>
 
 				<div className="flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1">
@@ -237,7 +238,15 @@ export const CoinIdContainer = ({ coin }: Props) => {
 							}}
 						/>
 
-						<span className="truncate">{coin.name}</span>
+						<Link
+							href={`https://coingecko.com/en/coins/${coin.coinId}`}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<span className="truncate cursor-pointer hover:text-[#397fee] dark:hover:text-[#75a6f4]">
+								{coin.name}
+							</span>
+						</Link>
 					</div>
 
 					<div className="flex flex-row items-center justify-center gap-2">
@@ -361,7 +370,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 						loading={isAdding}
 						className="rounded-xl transition-colors ease-in-out duration-300"
 					>
-						<Plus className="h-4 w-4" />
+						<PlusIcon className="size-4" />
 						<span>Transaction</span>
 					</Button>
 

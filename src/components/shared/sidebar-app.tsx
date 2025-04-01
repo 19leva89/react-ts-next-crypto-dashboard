@@ -2,19 +2,19 @@
 
 import Link from 'next/link'
 import {
-	Bell,
-	ChartNoAxesCombined,
-	ChevronDown,
-	CreditCard,
-	FileText,
-	HandCoins,
-	HelpCircle,
-	Home,
-	LogOut,
-	Newspaper,
-	Settings,
-	User,
-	Wallet,
+	BellIcon,
+	ChartNoAxesCombinedIcon,
+	ChevronDownIcon,
+	CreditCardIcon,
+	FileTextIcon,
+	HandCoinsIcon,
+	HelpCircleIcon,
+	HomeIcon,
+	LogOutIcon,
+	NewspaperIcon,
+	SettingsIcon,
+	UserIcon,
+	WalletIcon,
 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
@@ -50,56 +50,56 @@ const sideBarData = [
 	{
 		title: 'Dashboard',
 		url: '/dashboard',
-		icon: Home,
+		icon: HomeIcon,
 		protected: false,
 	},
 	{
 		title: 'News',
 		url: '/news',
-		icon: Newspaper,
+		icon: NewspaperIcon,
 		protected: false,
 	},
 	{
 		title: 'Coins',
 		url: '/protected/coins',
-		icon: HandCoins,
+		icon: HandCoinsIcon,
 		protected: true,
 	},
 	{
 		title: 'Charts',
 		url: '/protected/charts',
-		icon: ChartNoAxesCombined,
+		icon: ChartNoAxesCombinedIcon,
 		protected: true,
 	},
 	{
 		title: 'Cards',
 		url: '/protected/cards',
-		icon: CreditCard,
+		icon: CreditCardIcon,
 		protected: true,
 	},
 	{
 		title: 'Reports',
 		url: '/protected/reports',
-		icon: FileText,
+		icon: FileTextIcon,
 		protected: true,
 	},
 	{
 		title: 'Notifications',
 		url: '/protected/notifications',
-		icon: Bell,
+		icon: BellIcon,
 		protected: true,
 	},
 	{
 		title: 'Billing',
 		url: '/protected/billing',
-		icon: Wallet,
+		icon: WalletIcon,
 		protected: true,
 	},
 
 	{
 		title: 'Help center',
 		url: '/help',
-		icon: HelpCircle,
+		icon: HelpCircleIcon,
 		protected: false,
 	},
 ]
@@ -197,10 +197,9 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 											)}
 										</div>
 
-										<ChevronDown
-											size={16}
-											className="transition-transform duration-300 group-hover:rotate-180"
-										/>
+										<div className="relative size-5 transition-transform duration-300 group-hover:rotate-180">
+											<ChevronDownIcon size={16} className="absolute inset-0 m-auto" />
+										</div>
 									</div>
 								</SidebarMenuButton>
 							</DropdownMenuTrigger>
@@ -217,7 +216,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 											}}
 											className="flex items-center gap-2 p-3 rounded-xl w-full"
 										>
-											<User size={16} />
+											<UserIcon size={16} />
 											Login
 										</button>
 									</DropdownMenuItem>
@@ -228,7 +227,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 												href={'/protected/settings'}
 												className="flex items-center gap-2 p-3 rounded-xl w-full"
 											>
-												<Settings size={16} />
+												<SettingsIcon size={16} />
 												Settings
 											</Link>
 										</DropdownMenuItem>
@@ -238,7 +237,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 												onClick={() => signOut()}
 												className="flex items-center gap-2 p-3 rounded-xl w-full"
 											>
-												<LogOut size={16} />
+												<LogOutIcon size={16} />
 												Logout
 											</button>
 										</DropdownMenuItem>

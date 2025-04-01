@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { toast } from 'sonner'
-import { Plus } from 'lucide-react'
+import { PlusIcon } from 'lucide-react'
 import { FixedSizeList as List } from 'react-window'
 import { ChangeEvent, CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -160,7 +160,7 @@ export const AddCoin = () => {
 							size="default"
 							className="rounded-xl text-white transition-colors ease-in-out duration-300"
 						>
-							<Plus className="mr-2 h-4 w-4" />
+							<PlusIcon className="mr-2 size-4" />
 							Transaction
 						</Button>
 					</DialogTrigger>

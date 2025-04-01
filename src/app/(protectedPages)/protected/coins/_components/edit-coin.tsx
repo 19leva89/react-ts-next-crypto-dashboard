@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react'
+import { PlusIcon } from 'lucide-react'
 import { ChangeEvent, useState } from 'react'
 
 import {
@@ -151,7 +151,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 						loading={isAdding}
 						className="rounded-xl transition-colors ease-in-out duration-300"
 					>
-						<Plus className="h-4 w-4" />
+						<PlusIcon className="size-4" />
 						<span>Transaction</span>
 					</Button>
 

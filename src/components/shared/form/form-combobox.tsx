@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, ChevronsUpDown } from 'lucide-react'
+import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
 
 import {
 	Button,
@@ -85,7 +85,7 @@ export function FormCombobox({
 					>
 						{selectedItem ? selectedItem.name : placeholder}
 
-						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+						<ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
 					</Button>
 				</PopoverTrigger>
 
@@ -102,7 +102,9 @@ export function FormCombobox({
 						<CommandGroup>
 							{mapTable.map((item) => (
 								<CommandItem key={item.id} value={item.name} onSelect={() => handleSelect(item.id)}>
-									<Check className={cn('mr-2 h-4 w-4', value === item.name ? 'opacity-100' : 'opacity-0')} />
+									<CheckIcon
+										className={cn('mr-2 size-4', value === item.name ? 'opacity-100' : 'opacity-0')}
+									/>
 									{item.name}
 								</CommandItem>
 							))}
