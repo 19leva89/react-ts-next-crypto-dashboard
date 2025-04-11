@@ -1,13 +1,12 @@
 'use client'
 
 import { toast } from 'sonner'
+import { User } from '@prisma/client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signOut, useSession } from 'next-auth/react'
 import { FormProvider, useForm } from 'react-hook-form'
 
-import { User } from '@prisma/client'
 import { Button } from '@/components/ui'
-
 import { FormInput } from '@/components/shared/form'
 import { Container, Title } from '@/components/shared'
 import { deleteUser, updateUserInfo } from '@/app/api/actions'

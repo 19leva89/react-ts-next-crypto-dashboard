@@ -119,7 +119,7 @@ const ChartsPage = async () => {
 	}))
 
 	return (
-		<div className="flex flex-col gap-4 mx-72 max-[1700px]:mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0">
+		<div className="flex flex-col gap-4 mx-0 xl:mx-10 2xl:mx-20 3xl:mx-30">
 			<div className="flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1">
 				<p>Total invested: ${formatPrice(totalInvestedValue, false)}</p>
 

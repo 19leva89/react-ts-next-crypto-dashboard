@@ -18,9 +18,6 @@ const nextConfig: NextConfig = {
 		],
 		unoptimized: true,
 	},
-	experimental: {
-		nodeMiddleware: true, // Enable Node.js middleware
-	},
 	reactStrictMode: false,
 }
 
