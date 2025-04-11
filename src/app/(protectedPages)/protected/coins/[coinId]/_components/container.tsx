@@ -191,7 +191,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				<Button
 					variant="ghost"
 					size="icon"
-					onClick={() => router.back()}
+					onClick={() => router.push('/protected/coins')}
 					className="transition-colors ease-in-out duration-300"
 				>
 					<ArrowLeftIcon />
