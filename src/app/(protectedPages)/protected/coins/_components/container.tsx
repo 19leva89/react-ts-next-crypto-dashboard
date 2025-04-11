@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { LayoutGridIcon, ListIcon } from 'lucide-react'
 import useLocalStorageState from 'use-local-storage-state'
+import { LayoutGridIcon, ListIcon, SearchIcon } from 'lucide-react'
 
 import {
 	Button,
+	Input,
 	Select,
 	SelectContent,
 	SelectItem,
@@ -28,6 +29,7 @@ interface Props {
 
 export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
 	const [isMounted, setIsMounted] = useState<boolean>(false)
+	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [viewMode, setViewMode] = useLocalStorageState<'list' | 'grid'>('viewMode', {
 		defaultValue: 'grid',
 	})
@@ -59,6 +61,12 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 				return 0
 		}
 	})
+
+	const filteredCoinData = sortedCoinData.filter(
+		(coin) =>
+			coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()),
+	)
 
 	useEffect(() => {
 		setIsMounted(true)
@@ -165,6 +173,18 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 				</div>
 			</div>
 
+			{/* Search */}
+			<div className="relative w-full px-6 pt-6">
+				<SearchIcon size={18} className="absolute left-9 top-2/3 transform -translate-y-1/2 text-gray-400" />
+
+				<Input
+					placeholder="Filter coins..."
+					value={searchQuery}
+					onChange={(e) => setSearchQuery(e.target.value)}
+					className="pl-10 rounded-xl max-[600px]:pl-10"
+				/>
+			</div>
+
 			<div
 				className={cn(
 					'flex items-start justify-start w-full p-6',
@@ -175,9 +195,14 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 					<h2 className="flex justify-center w-full">No coins added. Add your first coin!</h2>
 				)}
 
-				{sortedCoinData.map((coin) => (
-					<CoinCard key={`${coin.coinId}-${coin.transactions.length}`} coin={coin} viewMode={viewMode} />
-				))}
+				{coinData.length > 0 && filteredCoinData.length === 0 && (
+					<h2 className="flex justify-center w-full">No coins found. Try another search!</h2>
+				)}
+
+				{filteredCoinData.length > 0 &&
+					filteredCoinData.map((coin) => (
+						<CoinCard key={`${coin.coinId}-${coin.transactions.length}`} coin={coin} viewMode={viewMode} />
+					))}
 			</div>
 		</div>
 	)
