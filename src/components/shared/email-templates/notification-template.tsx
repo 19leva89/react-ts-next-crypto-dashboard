@@ -1,3 +1,5 @@
+import { absoluteUrl } from '@/lib'
+
 interface Props {
 	coins: {
 		name: string
@@ -33,7 +35,15 @@ export const NotificationTemplate = ({ coins }: Props) => {
 				))}
 			</ul>
 
-			<p>Check your portfolio - it may be time to take profits 💰</p>
+			<hr style={{ margin: '24px 0' }} />
+
+			<p style={{ fontSize: '14px', color: '#666' }}>
+				Check your{' '}
+				<a href={absoluteUrl('/')} target="_blank" rel="noopener noreferrer">
+					portfolio
+				</a>{' '}
+				- it may be time to take profits 💰
+			</p>
 		</div>
 	)
 }
