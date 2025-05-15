@@ -224,7 +224,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 									<>
 										<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
 											<Link
-												href={'/protected/settings'}
+												href="/protected/settings"
 												className="flex items-center gap-2 p-3 rounded-xl w-full"
 											>
 												<SettingsIcon size={16} />

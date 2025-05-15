@@ -28,7 +28,7 @@ import { auth, signIn } from '@/auth'
 import { makeReq } from './make-request'
 import { sendEmail } from '@/lib/send-email'
 import { saltAndHashPassword } from '@/lib/salt'
-import { VerificationUserTemplate } from '@/components/shared/email-templates'
+import { NotificationTemplate, VerificationUserTemplate } from '@/components/shared/email-templates'
 import { COINS_UPDATE_INTERVAL, DAYS_MAPPING, MARKET_CHART_UPDATE_INTERVAL, ValidDays } from './constants'
 
 const handleError = (error: unknown, context: string) => {
@@ -529,6 +529,70 @@ export const deleteTransactionFromUser = async (coinTransactionId: string) => {
 		return deletedTransaction
 	} catch (error) {
 		handleError(error, 'DELETE_USER_PURCHASE')
+	}
+}
+
+export const notifyUsersOnPriceTarget = async () => {
+	const userCoins = await prisma.userCoin.findMany({
+		where: {
+			desired_sell_price: {
+				not: null,
+			},
+			coin: {
+				current_price: {
+					not: null,
+				},
+			},
+		},
+		include: {
+			coinsListIDMap: true,
+			coin: true,
+			user: true,
+		},
+	})
+
+	// Grouping by user
+	const userMap: Record<
+		string,
+		{
+			email: string
+			coins: { name: string; currentPrice: number; desiredPrice: number }[]
+		}
+	> = {}
+
+	for (const userCoin of userCoins) {
+		const { user, coin, desired_sell_price, coinsListIDMap } = userCoin
+
+		if (!user.email || desired_sell_price == null || coin.current_price == null) continue
+		if (coin.current_price < desired_sell_price) continue
+
+		if (!userMap[user.id]) {
+			userMap[user.id] = {
+				email: user.email,
+				coins: [],
+			}
+		}
+
+		userMap[user.id].coins.push({
+			name: coinsListIDMap?.name ?? coin.id,
+			currentPrice: coin.current_price,
+			desiredPrice: desired_sell_price,
+		})
+	}
+
+	// Sending emails to users
+	for (const userId in userMap) {
+		const { email, coins } = userMap[userId]
+
+		try {
+			await sendEmail(
+				email,
+				`🚀 ${coins.length > 1 ? 'A few coins' : coins[0].name} achieved your target`,
+				NotificationTemplate({ coins }),
+			)
+		} catch (error) {
+			handleError(error, 'NOTIFY_USER_ON_PRICE_TARGET')
+		}
 	}
 }
 

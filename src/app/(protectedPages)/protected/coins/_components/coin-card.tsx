@@ -40,7 +40,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 			className={cn(
 				'flex flex-col gap-1 py-1',
 				viewMode === 'grid'
-					? 'grow shrink-0 sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)] min-w-[19rem] max-w-[21rem] min-h-[10rem]'
+					? 'grow shrink-0 sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)] min-w-[19rem] min-h-[10rem]'
 					: 'w-full gap-0',
 			)}
 		>

@@ -1,9 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { ArrowLeftIcon, PlusIcon } from 'lucide-react'
 import { ChangeEvent, useEffect, useState } from 'react'
+import { ArrowLeftIcon, Loader2Icon, PlusIcon } from 'lucide-react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
 import {
@@ -24,7 +25,6 @@ import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 import { MarketChartData, Transaction, UserCoinData } from '@/app/api/types'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 import { createTransactionForUser, getCoinsMarketChart, updateUserCoin } from '@/app/api/actions'
-import Link from 'next/link'
 
 interface Props {
 	coin: UserCoinData
@@ -39,6 +39,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const [isAdding, setIsAdding] = useState<boolean>(false)
 	const [isSaving, setIsSaving] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [isNavigatingBack, setIsNavigatingBack] = useState<boolean>(false)
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
@@ -191,10 +192,14 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				<Button
 					variant="ghost"
 					size="icon"
-					onClick={() => router.push('/protected/coins')}
+					disabled={isLoading || isSaving || isAdding}
+					onClick={() => {
+						setIsNavigatingBack(true)
+						router.push('/protected/coins')
+					}}
 					className="transition-colors ease-in-out duration-300"
 				>
-					<ArrowLeftIcon />
+					{isNavigatingBack ? <Loader2Icon className="size-5 animate-spin" /> : <ArrowLeftIcon />}
 				</Button>
 
 				<div className="flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1">

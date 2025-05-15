@@ -13,6 +13,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 	Skeleton,
+	useSidebar,
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { AddCoin } from './add-coin'
@@ -28,6 +29,8 @@ interface Props {
 }
 
 export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
+	const { open } = useSidebar()
+
 	const [isMounted, setIsMounted] = useState<boolean>(false)
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [viewMode, setViewMode] = useLocalStorageState<'list' | 'grid'>('viewMode', {
@@ -187,8 +190,15 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 
 			<div
 				className={cn(
-					'flex items-start justify-start w-full p-6',
-					viewMode === 'grid' ? 'flex-row flex-wrap gap-4' : 'flex-col gap-2',
+					'w-full p-6',
+					viewMode === 'grid'
+						? cn(
+								'grid auto-rows-[1fr] gap-4',
+								open
+									? 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
+									: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4',
+							)
+						: 'flex flex-col gap-2',
 				)}
 			>
 				{coinData.length === 0 && (
