@@ -40,7 +40,7 @@ export const NotificationTemplate = ({ coins }: Props) => {
 			<p style={{ fontSize: '14px', color: '#666' }}>
 				Check your{' '}
 				<a href={absoluteUrl('/')} target="_blank" rel="noopener noreferrer">
-					portfolio
+					crypto portfolio
 				</a>{' '}
 				- it may be time to take profits 💰
 			</p>
