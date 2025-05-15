@@ -20,8 +20,8 @@ export const NotificationTemplate = ({ coins }: Props) => {
 						<img
 							src={coin.image}
 							alt={coin.name}
-							width="20"
-							height="20"
+							width="18"
+							height="18"
 							style={{ marginRight: '8px', borderRadius: '50%' }}
 						/>
 
