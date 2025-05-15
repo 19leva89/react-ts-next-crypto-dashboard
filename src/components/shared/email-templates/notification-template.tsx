@@ -1,6 +1,7 @@
 interface Props {
 	coins: {
 		name: string
+		image: string
 		currentPrice: number
 		desiredPrice: number
 	}[]
@@ -13,11 +14,21 @@ export const NotificationTemplate = ({ coins }: Props) => {
 
 			<p>The following coins have reached or exceeded your desired price:</p>
 
-			<ul>
+			<ul style={{ paddingLeft: 0, listStyleType: 'none' }}>
 				{coins.map((coin, index) => (
-					<li key={index}>
-						<strong>{coin.name}</strong>: ${coin.currentPrice.toFixed(2)} (Target: $
-						{coin.desiredPrice.toFixed(2)})
+					<li key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+						<img
+							src={coin.image}
+							alt={coin.name}
+							width="20"
+							height="20"
+							style={{ marginRight: '8px', borderRadius: '50%' }}
+						/>
+
+						<span>
+							<strong>{coin.name}</strong>: ${coin.currentPrice.toFixed(2)} (Target: $
+							{coin.desiredPrice.toFixed(2)})
+						</span>
 					</li>
 				))}
 			</ul>

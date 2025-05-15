@@ -556,7 +556,7 @@ export const notifyUsersOnPriceTarget = async () => {
 		string,
 		{
 			email: string
-			coins: { name: string; currentPrice: number; desiredPrice: number }[]
+			coins: { name: string; image: string; currentPrice: number; desiredPrice: number }[]
 		}
 	> = {}
 
@@ -575,6 +575,7 @@ export const notifyUsersOnPriceTarget = async () => {
 
 		userMap[user.id].coins.push({
 			name: coinsListIDMap?.name ?? coin.id,
+			image: coin.image ?? '/svg/coin-not-found.svg',
 			currentPrice: coin.current_price,
 			desiredPrice: desired_sell_price,
 		})
@@ -587,7 +588,7 @@ export const notifyUsersOnPriceTarget = async () => {
 		try {
 			await sendEmail(
 				email,
-				`🚀 ${coins.length > 1 ? 'A few coins' : coins[0].name} achieved your target`,
+				`🚀 ${coins.length > 1 ? 'A few coins' : coins[0].name} reached your target`,
 				NotificationTemplate({ coins }),
 			)
 		} catch (error) {
