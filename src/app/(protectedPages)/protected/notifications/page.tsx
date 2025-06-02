@@ -6,7 +6,7 @@ export const metadata = constructMetadata({ title: 'Notifications' })
 export const dynamic = 'force-dynamic'
 
 const NotificationsPage = () => {
-	return <h1 className="text-center">Notifications</h1>
+	return <h1 className='text-center'>Notifications</h1>
 }
 
 export default NotificationsPage

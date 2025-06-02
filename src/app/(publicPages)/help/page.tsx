@@ -6,7 +6,7 @@ export const metadata = constructMetadata({ title: 'Help center' })
 export const dynamic = 'force-dynamic'
 
 const HelpCenterPage = () => {
-	return <h1 className="text-center">Help center</h1>
+	return <h1 className='text-center'>Help center</h1>
 }
 
 export default HelpCenterPage

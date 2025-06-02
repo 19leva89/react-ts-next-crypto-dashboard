@@ -63,38 +63,38 @@ export const ProfileForm = ({ data }: Props) => {
 
 	return (
 		<Container>
-			<Title text="Personal information" size="md" className="font-bold" />
+			<Title text='Personal information' size='md' className='font-bold' />
 
 			<FormProvider {...form}>
 				<form
-					className="flex flex-col gap-5 w-96 mt-10 max-[400px]:w-full"
+					className='mt-10 flex w-96 flex-col gap-5 max-[400px]:w-full'
 					onSubmit={form.handleSubmit(onSubmit)}
 				>
-					<FormInput name="email" label="Email" type="email" required />
+					<FormInput name='email' label='Email' type='email' required />
 
-					<FormInput name="name" label="Full name" type="text" required />
+					<FormInput name='name' label='Full name' type='text' required />
 
-					<FormInput name="password" label="New password" type="password" />
+					<FormInput name='password' label='New password' type='password' />
 
-					<FormInput name="confirmPassword" label="Repeat password" type="password" />
+					<FormInput name='confirmPassword' label='Repeat password' type='password' />
 
 					<Button
-						variant="default"
-						size="lg"
-						type="submit"
+						variant='default'
+						size='lg'
+						type='submit'
 						disabled={form.formState.isSubmitting}
-						className="text-base text-white mt-10 rounded-xl transition-colors ease-in-out duration-300"
+						className='mt-10 rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 					>
 						Save
 					</Button>
 
 					<Button
-						variant="destructive"
-						size="lg"
-						type="button"
+						variant='destructive'
+						size='lg'
+						type='button'
 						onClick={handleDeleteAccount}
 						disabled={form.formState.isSubmitting}
-						className="text-base rounded-xl transition-colors ease-in-out duration-300"
+						className='rounded-xl text-base transition-colors duration-300 ease-in-out'
 					>
 						Delete account
 					</Button>

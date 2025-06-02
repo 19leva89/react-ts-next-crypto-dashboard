@@ -41,8 +41,8 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [isNavigatingBack, setIsNavigatingBack] = useState<boolean>(false)
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
-	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
+	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 
 	useEffect(() => {
 		setIsLoading(true)
@@ -187,22 +187,22 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	}
 
 	return (
-		<div className="flex flex-col gap-6 mx-72 max-[1700px]:mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0">
-			<div className="flex flex-row items-center justify-between gap-3 pr-4 max-[600px]:items-start max-[700px]:text-sm">
+		<div className='mx-72 flex flex-col gap-6 max-[1700px]:mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0'>
+			<div className='flex flex-row items-center justify-between gap-3 pr-4 max-[700px]:text-sm max-[600px]:items-start'>
 				<Button
-					variant="ghost"
-					size="icon"
+					variant='ghost'
+					size='icon'
 					disabled={isLoading || isSaving || isAdding}
 					onClick={() => {
 						setIsNavigatingBack(true)
 						router.push('/protected/coins')
 					}}
-					className="transition-colors ease-in-out duration-300"
+					className='transition-colors duration-300 ease-in-out'
 				>
-					{isNavigatingBack ? <Loader2Icon className="size-5 animate-spin" /> : <ArrowLeftIcon />}
+					{isNavigatingBack ? <Loader2Icon className='size-5 animate-spin' /> : <ArrowLeftIcon />}
 				</Button>
 
-				<div className="flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1">
+				<div className='flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1'>
 					<p>Quantity: {formatPrice(coin.total_quantity, false)}</p>
 
 					<p>Total invested: ${formatPrice(coin.total_cost, false)}</p>
@@ -211,33 +211,33 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				</div>
 			</div>
 
-			<div className="flex items-center justify-start gap-4 pl-4">
-				<Label htmlFor="sell-price" className="w-[30%]">
+			<div className='flex items-center justify-start gap-4 pl-4'>
+				<Label htmlFor='sell-price' className='w-[30%]'>
 					Sell price
 				</Label>
 
 				<Input
-					id="sell-price"
-					type="number"
+					id='sell-price'
+					type='number'
 					min={0}
 					step={0.01}
 					value={editSellPrice}
 					autoFocus={false}
 					onChange={handleSellPriceChange}
-					className="w-[80%] rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+					className='w-[80%] [appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
 				/>
 			</div>
 
 			{/* Chart */}
-			<Card className="flex flex-col py-1 rounded-xl">
-				<CardHeader className="flex-row items-center justify-between gap-2 space-y-0 p-4 max-[600px]:p-3">
-					<div className="flex flex-row items-center justify-center gap-2">
+			<Card className='flex flex-col rounded-xl py-1'>
+				<CardHeader className='flex-row items-center justify-between gap-2 space-y-0 p-4 max-[600px]:p-3'>
+					<div className='flex flex-row items-center justify-center gap-2'>
 						<Image
 							src={coin.image || '/svg/coin-not-found.svg'}
 							alt={coin.name || 'Coin image'}
 							width={24}
 							height={24}
-							className="rounded-full"
+							className='rounded-full'
 							onError={(e) => {
 								e.currentTarget.src = '/svg/coin-not-found.svg'
 							}}
@@ -245,30 +245,30 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 						<Link
 							href={`https://coingecko.com/en/coins/${coin.coinId}`}
-							target="_blank"
-							rel="noopener noreferrer"
+							target='_blank'
+							rel='noopener noreferrer'
 						>
-							<span className="truncate cursor-pointer hover:text-[#397fee] dark:hover:text-[#75a6f4]">
+							<span className='cursor-pointer truncate hover:text-[#397fee] dark:hover:text-[#75a6f4]'>
 								{coin.name}
 							</span>
 						</Link>
 					</div>
 
-					<div className="flex flex-row items-center justify-center gap-2">
+					<div className='flex flex-row items-center justify-center gap-2'>
 						{DAY_OPTIONS.map(({ label, value }) => (
 							<Button
 								key={value}
-								variant="outline"
+								variant='outline'
 								onClick={() => setDays(value)}
-								className={cn('px-2 py-1 h-6 rounded-xl transition-colors ease-in-out duration-300', {
+								className={cn('h-6 rounded-xl px-2 py-1 transition-colors duration-300 ease-in-out', {
 									'bg-blue-500 hover:bg-blue-500': days === value,
 								})}
 							>
 								{/* Full text for screens > 640px */}
-								<span className="hidden sm:inline">{label}</span>
+								<span className='hidden sm:inline'>{label}</span>
 
 								{/* Shortened text for screens < 640px */}
-								<span className="inline sm:hidden">
+								<span className='inline sm:hidden'>
 									{label === '1 day' ? '1d' : label === '1 week' ? '1w' : label === '1 month' ? '1m' : '1y'}
 								</span>
 							</Button>
@@ -276,7 +276,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					</div>
 				</CardHeader>
 
-				<CardContent className="pb-4 max-[600px]:px-1 max-[600px]:py-3">
+				<CardContent className='pb-4 max-[600px]:px-1 max-[600px]:py-3'>
 					<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
 						<LineChart
 							accessibilityLayer
@@ -287,11 +287,11 @@ export const CoinIdContainer = ({ coin }: Props) => {
 							}}
 						>
 							{/* Grid */}
-							<CartesianGrid vertical={true} strokeDasharray="4 4" />
+							<CartesianGrid vertical={true} strokeDasharray='4 4' />
 
 							{/* Axis X */}
 							<XAxis
-								dataKey="Label"
+								dataKey='Label'
 								tickLine={false}
 								axisLine={false}
 								tick={true}
@@ -301,7 +301,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 							{/* Axis Y */}
 							<YAxis
-								dataKey="TotalValue"
+								dataKey='TotalValue'
 								domain={[minValue * 0.98, maxValue * 1.02]}
 								axisLine={false}
 								tickLine={false}
@@ -327,13 +327,13 @@ export const CoinIdContainer = ({ coin }: Props) => {
 									const totalValue = payload[0].payload.TotalValue
 
 									return (
-										<div className="rounded-lg border bg-background p-4 shadow-xs max-[600px]:p-2">
-											<div className="flex flex-col gap-1">
-												<span className="text-xs">{timeValue}</span>
+										<div className='rounded-lg border bg-background p-4 shadow-xs max-[600px]:p-2'>
+											<div className='flex flex-col gap-1'>
+												<span className='text-xs'>{timeValue}</span>
 
-												<span className="text-xs">Price: ${formatPrice(priceValue)}</span>
+												<span className='text-xs'>Price: ${formatPrice(priceValue)}</span>
 
-												<span className="text-xs">Total value: ${formatPrice(totalValue)}</span>
+												<span className='text-xs'>Total value: ${formatPrice(totalValue)}</span>
 											</div>
 										</div>
 									)
@@ -342,9 +342,9 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 							{/* Line on chart */}
 							<Line
-								dataKey="TotalValue"
-								type="natural"
-								stroke="var(--color-prices)"
+								dataKey='TotalValue'
+								type='natural'
+								stroke='var(--color-prices)'
 								strokeWidth={2}
 								dot={false}
 							/>
@@ -354,38 +354,38 @@ export const CoinIdContainer = ({ coin }: Props) => {
 			</Card>
 
 			{/* Section for displaying transactions and sales */}
-			<div className="mt-6">
-				<div className="flex items-center justify-between mb-1">
-					<h3 className="px-4 text-lg font-semibold max-[400px]:text-sm">Transaction History</h3>
+			<div className='mt-6'>
+				<div className='mb-1 flex items-center justify-between'>
+					<h3 className='px-4 text-lg font-semibold max-[400px]:text-sm'>Transaction History</h3>
 				</div>
 
 				<TableContainer
 					key={Date.now()}
 					editTransactions={editTransactions}
 					onChange={setEditTransactions}
-					className="h-auto"
+					className='h-auto'
 				/>
 
-				<div className="flex flex-row items-center justify-end gap-3 px-4 mt-4">
+				<div className='mt-4 flex flex-row items-center justify-end gap-3 px-4'>
 					<Button
-						variant="outline"
-						size="default"
+						variant='outline'
+						size='default'
 						onClick={handleAddTransaction}
 						disabled={isAdding || isSaving}
 						loading={isAdding}
-						className="rounded-xl transition-colors ease-in-out duration-300"
+						className='rounded-xl transition-colors duration-300 ease-in-out'
 					>
-						<PlusIcon className="size-4" />
+						<PlusIcon className='size-4' />
 						<span>Transaction</span>
 					</Button>
 
 					<Button
-						variant="default"
-						size="default"
+						variant='default'
+						size='default'
 						onClick={() => handleUpdate(editSellPrice)}
 						disabled={isSaving || isAdding}
 						loading={isSaving}
-						className="rounded-xl text-white transition-colors ease-in-out duration-300"
+						className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 					>
 						<span>Save changes</span>
 					</Button>

@@ -23,15 +23,15 @@ export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
 				<Button
-					variant="ghost"
-					size="icon"
-					className="hover:bg-red-100 dark:hover:bg-red-900 transition-colors ease-in-out duration-300"
+					variant='ghost'
+					size='icon'
+					className='transition-colors duration-300 ease-in-out hover:bg-red-100 dark:hover:bg-red-900'
 				>
-					<TrashIcon className="size-4 text-red-600 dark:text-red-400" />
+					<TrashIcon className='size-4 text-red-600 dark:text-red-400' />
 				</Button>
 			</AlertDialogTrigger>
 
-			<AlertDialogContent className="px-8 rounded-xl">
+			<AlertDialogContent className='rounded-xl px-8'>
 				<AlertDialogHeader>
 					<AlertDialogTitle>Delete Transaction?</AlertDialogTitle>
 
@@ -40,10 +40,10 @@ export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 
-				<AlertDialogFooter className="gap-3">
-					<AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+				<AlertDialogFooter className='gap-3'>
+					<AlertDialogCancel className='rounded-xl'>Cancel</AlertDialogCancel>
 
-					<AlertDialogAction onClick={() => onDelete(transactionId)} className="rounded-xl">
+					<AlertDialogAction onClick={() => onDelete(transactionId)} className='rounded-xl'>
 						Delete
 					</AlertDialogAction>
 				</AlertDialogFooter>

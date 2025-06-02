@@ -32,7 +32,7 @@ export const DeleteCoin = ({ coin, isOpen, onClose }: Props) => {
 
 	return (
 		<AlertDialog open={isOpen} onOpenChange={onClose}>
-			<AlertDialogContent className="px-8 rounded-xl">
+			<AlertDialogContent className='rounded-xl px-8'>
 				<AlertDialogHeader>
 					<AlertDialogTitle>Delete {coin.name}?</AlertDialogTitle>
 
@@ -41,10 +41,10 @@ export const DeleteCoin = ({ coin, isOpen, onClose }: Props) => {
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 
-				<AlertDialogFooter className="gap-3">
-					<AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+				<AlertDialogFooter className='gap-3'>
+					<AlertDialogCancel className='rounded-xl'>Cancel</AlertDialogCancel>
 
-					<AlertDialogAction onClick={handleDelete} className="rounded-xl">
+					<AlertDialogAction onClick={handleDelete} className='rounded-xl'>
 						Delete
 					</AlertDialogAction>
 				</AlertDialogFooter>

@@ -3,22 +3,22 @@ import { ComponentProps } from 'react'
 import { cn } from '@/lib'
 
 function Table({ className, ...props }: ComponentProps<'table'>) {
-	return <table data-slot="table" className={cn('w-full caption-bottom text-sm', className)} {...props} />
+	return <table data-slot='table' className={cn('w-full caption-bottom text-sm', className)} {...props} />
 }
 
 function TableHeader({ className, ...props }: ComponentProps<'thead'>) {
-	return <thead data-slot="table-header" className={cn('[&_tr]:border-b', className)} {...props} />
+	return <thead data-slot='table-header' className={cn('[&_tr]:border-b', className)} {...props} />
 }
 
 function TableBody({ className, ...props }: ComponentProps<'tbody'>) {
-	return <tbody data-slot="table-body" className={cn('[&_tr:last-child]:border-0', className)} {...props} />
+	return <tbody data-slot='table-body' className={cn('[&_tr:last-child]:border-0', className)} {...props} />
 }
 
 function TableFooter({ className, ...props }: ComponentProps<'tfoot'>) {
 	return (
 		<tfoot
-			data-slot="table-footer"
-			className={cn('bg-muted/50 border-t font-medium [&>tr]:last:border-b-0', className)}
+			data-slot='table-footer'
+			className={cn('border-t bg-muted/50 font-medium [&>tr]:last:border-b-0', className)}
 			{...props}
 		/>
 	)
@@ -27,8 +27,8 @@ function TableFooter({ className, ...props }: ComponentProps<'tfoot'>) {
 function TableRow({ className, ...props }: ComponentProps<'tr'>) {
 	return (
 		<tr
-			data-slot="table-row"
-			className={cn('hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors', className)}
+			data-slot='table-row'
+			className={cn('border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted', className)}
 			{...props}
 		/>
 	)
@@ -37,9 +37,9 @@ function TableRow({ className, ...props }: ComponentProps<'tr'>) {
 function TableHead({ className, ...props }: ComponentProps<'th'>) {
 	return (
 		<th
-			data-slot="table-head"
+			data-slot='table-head'
 			className={cn(
-				'text-muted-foreground h-12 px-4 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+				'h-12 px-4 text-left align-middle font-medium whitespace-nowrap text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
 				className,
 			)}
 			{...props}
@@ -50,7 +50,7 @@ function TableHead({ className, ...props }: ComponentProps<'th'>) {
 function TableCell({ className, ...props }: ComponentProps<'td'>) {
 	return (
 		<td
-			data-slot="table-cell"
+			data-slot='table-cell'
 			className={cn(
 				'p-4 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
 				className,
@@ -63,8 +63,8 @@ function TableCell({ className, ...props }: ComponentProps<'td'>) {
 function TableCaption({ className, ...props }: ComponentProps<'caption'>) {
 	return (
 		<caption
-			data-slot="table-caption"
-			className={cn('text-muted-foreground mt-4 text-sm', className)}
+			data-slot='table-caption'
+			className={cn('mt-4 text-sm text-muted-foreground', className)}
 			{...props}
 		/>
 	)

@@ -11,9 +11,9 @@ export const ClearButton = ({ onClick, className }: Props) => {
 	return (
 		<button
 			onClick={onClick}
-			type="button"
+			type='button'
 			className={cn(
-				'absolute right-4 top-1/2 -translate-y-1/2 opacity-30 hover:opacity-100 cursor-pointer transition-opacity ease-in-out duration-300',
+				'absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer opacity-30 transition-opacity duration-300 ease-in-out hover:opacity-100',
 				className,
 			)}
 		>

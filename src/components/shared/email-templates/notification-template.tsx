@@ -22,8 +22,8 @@ export const NotificationTemplate = ({ coins }: Props) => {
 						<img
 							src={coin.image}
 							alt={coin.name}
-							width="18"
-							height="18"
+							width='18'
+							height='18'
 							style={{ marginRight: '8px', borderRadius: '50%' }}
 						/>
 
@@ -39,7 +39,7 @@ export const NotificationTemplate = ({ coins }: Props) => {
 
 			<p style={{ fontSize: '14px', color: '#666' }}>
 				Check your{' '}
-				<a href={absoluteUrl('/')} target="_blank" rel="noopener noreferrer">
+				<a href={absoluteUrl('/')} target='_blank' rel='noopener noreferrer'>
 					crypto portfolio
 				</a>{' '}
 				- it may be time to take profits 💰

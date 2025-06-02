@@ -50,33 +50,33 @@ export const RegisterForm = ({ onClose }: Props) => {
 
 	return (
 		<FormProvider {...form}>
-			<form className="flex flex-col gap-5 h-full min-h-[450px]" onSubmit={form.handleSubmit(onSubmit)}>
-				<Card className="flex flex-col justify-between items-stretch grow">
-					<div className="flex flex-col gap-5">
+			<form className='flex h-full min-h-[450px] flex-col gap-5' onSubmit={form.handleSubmit(onSubmit)}>
+				<Card className='flex grow flex-col items-stretch justify-between'>
+					<div className='flex flex-col gap-5'>
 						<CardHeader>
 							<CardTitle>Account registration</CardTitle>
 
 							<CardDescription>Enter your information to register an account</CardDescription>
 						</CardHeader>
 
-						<CardContent className="flex flex-col gap-5">
-							<FormInput name="email" type="email" placeholder="Email" required />
+						<CardContent className='flex flex-col gap-5'>
+							<FormInput name='email' type='email' placeholder='Email' required />
 
-							<FormInput name="name" type="text" placeholder="Full name" required />
+							<FormInput name='name' type='text' placeholder='Full name' required />
 
-							<FormInput name="password" type="password" placeholder="Password" required />
+							<FormInput name='password' type='password' placeholder='Password' required />
 
-							<FormInput name="confirmPassword" type="password" placeholder="Repeat password" required />
+							<FormInput name='confirmPassword' type='password' placeholder='Repeat password' required />
 						</CardContent>
 					</div>
 
-					<CardFooter className="flex flex-col gap-4">
+					<CardFooter className='flex flex-col gap-4'>
 						<Button
-							variant="default"
-							size="lg"
-							type="submit"
+							variant='default'
+							size='lg'
+							type='submit'
 							loading={form.formState.isSubmitting}
-							className="text-base text-white w-full rounded-xl transition-colors ease-in-out duration-300"
+							className='w-full rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 						>
 							Register
 						</Button>

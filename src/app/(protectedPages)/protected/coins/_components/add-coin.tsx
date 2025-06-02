@@ -122,9 +122,9 @@ export const AddCoin = () => {
 					key={coin.id}
 					value={coin.id}
 					style={style}
-					className="rounded-lg truncate cursor-pointer"
+					className='cursor-pointer truncate rounded-lg'
 				>
-					<div className="flex items-center gap-2 h-5">
+					<div className='flex h-5 items-center gap-2'>
 						<Image
 							src={coin.image || '/svg/coin-not-found.svg'}
 							alt={coin.name || 'Coin image'}
@@ -135,7 +135,7 @@ export const AddCoin = () => {
 							}}
 						/>
 
-						<span className="truncate">
+						<span className='truncate'>
 							{coin.name} ({coin.symbol.toUpperCase()})
 						</span>
 					</div>
@@ -151,30 +151,30 @@ export const AddCoin = () => {
 	)
 
 	return (
-		<div className="flex flex-col gap-4 mx-6">
-			<div className="flex justify-end">
+		<div className='mx-6 flex flex-col gap-4'>
+			<div className='flex justify-end'>
 				<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 					<DialogTrigger asChild>
 						<Button
-							variant="default"
-							size="default"
-							className="rounded-xl text-white transition-colors ease-in-out duration-300"
+							variant='default'
+							size='default'
+							className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 						>
-							<PlusIcon className="mr-2 size-4" />
+							<PlusIcon className='mr-2 size-4' />
 							Transaction
 						</Button>
 					</DialogTrigger>
 
-					<DialogContent className="px-8 rounded-xl">
+					<DialogContent className='rounded-xl px-8'>
 						<DialogHeader>
 							<DialogTitle>Add Transaction</DialogTitle>
 
 							<DialogDescription>Select a coin, enter the quantity and price</DialogDescription>
 						</DialogHeader>
 
-						<div className="grid gap-4 py-4">
-							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="coin" className="text-right">
+						<div className='grid gap-4 py-4'>
+							<div className='grid grid-cols-4 items-center gap-4'>
+								<Label htmlFor='coin' className='text-right'>
 									Coin
 								</Label>
 
@@ -187,9 +187,9 @@ export const AddCoin = () => {
 										setIsSelectOpen(open)
 									}}
 								>
-									<SelectTrigger className="col-span-3 w-full">
+									<SelectTrigger className='col-span-3 w-full'>
 										{selectedCoinData ? (
-											<div className="flex items-center gap-2 truncate">
+											<div className='flex items-center gap-2 truncate'>
 												<Image
 													src={selectedCoinData.image || '/svg/coin-not-found.svg'}
 													alt={selectedCoinData.name}
@@ -210,10 +210,10 @@ export const AddCoin = () => {
 
 									<SelectContent>
 										{/* Input for search filter */}
-										<div className="p-2">
+										<div className='p-2'>
 											<Input
-												type="text"
-												placeholder="Search coin..."
+												type='text'
+												placeholder='Search coin...'
 												value={searchQuery}
 												onChange={(e) => {
 													setSearchQuery(e.target.value)
@@ -226,7 +226,7 @@ export const AddCoin = () => {
 										</div>
 
 										{isLoading ? (
-											<Skeleton className="h-52 w-full" />
+											<Skeleton className='h-52 w-full' />
 										) : (
 											<List
 												height={200}
@@ -242,49 +242,49 @@ export const AddCoin = () => {
 								</Select>
 							</div>
 
-							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="quantity" className="text-right">
+							<div className='grid grid-cols-4 items-center gap-4'>
+								<Label htmlFor='quantity' className='text-right'>
 									Quantity
 								</Label>
 
 								<Input
-									id="quantity"
-									type="number"
-									placeholder="Enter quantity"
+									id='quantity'
+									type='number'
+									placeholder='Enter quantity'
 									min={0}
 									step={0.01}
 									value={editQuantity}
 									onChange={handleQuantityChange}
-									className="col-span-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+									className='col-span-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
 								/>
 							</div>
 
-							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="price" className="text-right">
+							<div className='grid grid-cols-4 items-center gap-4'>
+								<Label htmlFor='price' className='text-right'>
 									Price
 								</Label>
 
 								<Input
-									id="price"
-									type="number"
-									placeholder="Enter price"
+									id='price'
+									type='number'
+									placeholder='Enter price'
 									min={0}
 									step={0.01}
 									value={editPrice}
 									onChange={handlePriceChange}
-									className="col-span-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+									className='col-span-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
 								/>
 							</div>
 						</div>
 
 						<DialogFooter>
 							<Button
-								variant="default"
-								size="default"
+								variant='default'
+								size='default'
 								onClick={handleAddCoin}
 								disabled={isLoading || isAdding}
 								loading={isAdding}
-								className="rounded-xl text-white transition-colors ease-in-out duration-300"
+								className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 							>
 								Submit
 							</Button>

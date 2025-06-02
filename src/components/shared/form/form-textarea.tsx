@@ -30,17 +30,17 @@ export const FormTextarea = ({ className, name, label, required, ...props }: Pro
 
 	return (
 		<div className={className}>
-			<p className="font-medium mb-2">
+			<p className='mb-2 font-medium'>
 				{label} {required && <RequiredSymbol />}
 			</p>
 
-			<div className="relative">
-				<Textarea className="h-11 text-md" {...register(name)} {...props} />
+			<div className='relative'>
+				<Textarea className='text-md h-11' {...register(name)} {...props} />
 
 				{value && <ClearButton onClick={onClickClear} />}
 			</div>
 
-			{errorText && <ErrorText text={errorText} className="mt-2 ml-4" />}
+			{errorText && <ErrorText text={errorText} className='mt-2 ml-4' />}
 		</div>
 	)
 }

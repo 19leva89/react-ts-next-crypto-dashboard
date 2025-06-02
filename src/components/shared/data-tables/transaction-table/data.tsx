@@ -65,12 +65,12 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 	const averagePrice = totals.totalQuantity > 0 ? totals.totalCost / totals.totalQuantity : 0
 
 	return (
-		<Table className="border-x w-full">
-			<TableHeader className="sticky top-0 bg-secondary">
+		<Table className='w-full border-x'>
+			<TableHeader className='sticky top-0 bg-secondary'>
 				{table.getHeaderGroups().map((headerGroup) => (
 					<TableRow key={headerGroup.id}>
 						{headerGroup.headers.map((header) => (
-							<TableHead key={header.id} className="pl-7 max-[900px]:pl-5 max-[600px]:pl-3 max-[900px]:pr-2">
+							<TableHead key={header.id} className='pl-7 max-[900px]:pr-2 max-[900px]:pl-5 max-[600px]:pl-3'>
 								{flexRender(header.column.columnDef.header, header.getContext())}
 							</TableHead>
 						))}
@@ -83,7 +83,7 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 					table.getRowModel().rows.map((row) => (
 						<TableRow key={row.id}>
 							{row.getVisibleCells().map((cell) => (
-								<TableCell key={cell.id} className="max-[900px]:p-2 max-[600px]:px-1 max-[450px]:pr-0">
+								<TableCell key={cell.id} className='max-[900px]:p-2 max-[600px]:px-1 max-[450px]:pr-0'>
 									{flexRender(cell.column.columnDef.cell, cell.getContext())}
 								</TableCell>
 							))}
@@ -91,26 +91,26 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 					))
 				) : (
 					<TableRow>
-						<TableCell colSpan={columns.length} className="h-24 text-center">
+						<TableCell colSpan={columns.length} className='h-24 text-center'>
 							No transactions found
 						</TableCell>
 					</TableRow>
 				)}
 			</TableBody>
 
-			<TableFooter className="sticky bottom-0 bg-secondary">
-				<TableRow className="max-[900px]:text-sm max-[600px]:text-xs">
-					<TableCell className="pl-7 max-[900px]:pl-5 max-[900px]:pr-2 max-[600px]:pl-2 max-[600px]:pr-0">
+			<TableFooter className='sticky bottom-0 bg-secondary'>
+				<TableRow className='max-[900px]:text-sm max-[600px]:text-xs'>
+					<TableCell className='pl-7 max-[900px]:pr-2 max-[900px]:pl-5 max-[600px]:pr-0 max-[600px]:pl-2'>
 						{formatPrice(totals.totalQuantity)}
 					</TableCell>
 
-					<TableCell className="pl-7 max-[900px]:pl-5 max-[900px]:pr-2 max-[600px]:pl-2 max-[600px]:pr-0">
+					<TableCell className='pl-7 max-[900px]:pr-2 max-[900px]:pl-5 max-[600px]:pr-0 max-[600px]:pl-2'>
 						{formatPrice(averagePrice)}
 					</TableCell>
 
-					<TableCell className="pl-7 max-[900px]:pl-5 max-[900px]:pr-2 max-[600px]:pl-2 max-[600px]:pr-0" />
+					<TableCell className='pl-7 max-[900px]:pr-2 max-[900px]:pl-5 max-[600px]:pr-0 max-[600px]:pl-2' />
 
-					<TableCell className="pl-7 max-[900px]:pl-5 max-[900px]:pr-2 max-[600px]:pl-2 max-[600px]:pr-0" />
+					<TableCell className='pl-7 max-[900px]:pr-2 max-[900px]:pl-5 max-[600px]:pr-0 max-[600px]:pl-2' />
 				</TableRow>
 			</TableFooter>
 		</Table>

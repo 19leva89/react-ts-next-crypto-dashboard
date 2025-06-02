@@ -84,7 +84,7 @@ function Calendar({
 		}, [yearRange]),
 	)
 
-	const { onNextClick, onPrevClick, startMonth, endMonth } = props
+	const { onPrevClick, startMonth, endMonth } = props
 
 	const columnsDisplayed = navView === 'years' ? 1 : numberOfMonths
 
@@ -171,7 +171,7 @@ function Calendar({
 			components={{
 				Chevron: ({ orientation }) => {
 					const Icon = orientation === 'left' ? ChevronLeftIcon : ChevronRightIcon
-					return <Icon className="size-4" />
+					return <Icon className='size-4' />
 				},
 				Nav: ({ className }) => (
 					<Nav
@@ -285,9 +285,9 @@ function Nav({
 	return (
 		<nav className={cn('flex items-center', className)}>
 			<Button
-				variant="outline"
-				className="absolute left-0 h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100"
-				type="button"
+				variant='outline'
+				className='absolute left-0 h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100'
+				type='button'
 				tabIndex={isPreviousDisabled ? undefined : -1}
 				disabled={isPreviousDisabled}
 				aria-label={
@@ -297,13 +297,13 @@ function Nav({
 				}
 				onClick={handlePreviousClick}
 			>
-				<ChevronLeftIcon className="size-4" />
+				<ChevronLeftIcon className='size-4' />
 			</Button>
 
 			<Button
-				variant="outline"
-				className="absolute right-0 h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100"
-				type="button"
+				variant='outline'
+				className='absolute right-0 h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100'
+				type='button'
 				tabIndex={isNextDisabled ? undefined : -1}
 				disabled={isNextDisabled}
 				aria-label={
@@ -313,7 +313,7 @@ function Nav({
 				}
 				onClick={handleNextClick}
 			>
-				<ChevronRightIcon className="size-4" />
+				<ChevronRightIcon className='size-4' />
 			</Button>
 		</nav>
 	)
@@ -335,9 +335,9 @@ function CaptionLabel({
 	if (!showYearSwitcher) return <span {...props}>{children}</span>
 	return (
 		<Button
-			className="h-7 w-full truncate text-sm font-medium"
-			variant="ghost"
-			size="sm"
+			className='h-7 w-full truncate text-sm font-medium'
+			variant='ghost'
+			size='sm'
 			onClick={() => setNavView((prev) => (prev === 'days' ? 'years' : 'days'))}
 		>
 			{navView === 'days' ? children : displayYears.from + ' - ' + displayYears.to}
@@ -417,7 +417,7 @@ function YearGrid({
 							displayYears.from + i === new Date().getFullYear() &&
 								'bg-accent font-medium text-accent-foreground',
 						)}
-						variant="ghost"
+						variant='ghost'
 						onClick={() => {
 							setNavView('days')
 							goToMonth(new Date(displayYears.from + i, (selected as Date | undefined)?.getMonth() ?? 0))
