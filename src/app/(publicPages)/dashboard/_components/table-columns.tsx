@@ -251,7 +251,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 			const lineColor = priceChange > 0 ? '#22c55ed6' : priceChange < 0 ? '#dc2626d6' : '#22c55ed6'
 
 			return (
-				<div className='mx-0 w-[100px]'>
+				<div className='mx-0 w-25'>
 					<ChartContainer config={chartConfig}>
 						<LineChart accessibilityLayer data={formattedData}>
 							<YAxis domain={[minPrice, maxPrice]} hide />

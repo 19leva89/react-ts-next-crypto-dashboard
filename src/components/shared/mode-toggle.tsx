@@ -23,7 +23,7 @@ export const ModeToggle = () => {
 			onClick={toggleTheme}
 			className='group flex w-11 items-center rounded-xl px-2 transition-colors duration-300 ease-in-out'
 		>
-			<div className='relative h-6 w-6 transition-transform duration-300 ease-in-out group-hover:rotate-90'>
+			<div className='relative size-6 transition-transform duration-300 ease-in-out group-hover:rotate-90'>
 				<SunIcon
 					size={20}
 					className='absolute inset-0 m-auto size-5! opacity-0 transition-opacity duration-300 [html.dark_&]:opacity-100'

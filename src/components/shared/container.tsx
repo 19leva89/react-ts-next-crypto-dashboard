@@ -8,5 +8,5 @@ interface Props {
 }
 
 export const Container = ({ className, children }: Props) => {
-	return <div className={cn('mx-auto max-w-[1280px]', className)}>{children}</div>
+	return <div className={cn('mx-auto max-w-320', className)}>{children}</div>
 }

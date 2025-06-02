@@ -172,7 +172,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 								>
 									<div className='flex grow items-center justify-between gap-2'>
 										{status === 'loading' ? (
-											<Skeleton className='h-10 w-10 rounded-full' />
+											<Skeleton className='size-10 rounded-full' />
 										) : (
 											<Avatar>
 												<AvatarImage

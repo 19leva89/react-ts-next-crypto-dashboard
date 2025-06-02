@@ -37,14 +37,14 @@ const NewsPage = () => {
 								</div>
 							</div>
 
-							<div className='h-[200px] w-full rounded-xl bg-gray-100 dark:bg-black'>
+							<div className='h-50 w-full rounded-xl bg-gray-100 dark:bg-black'>
 								{news.cover && (
 									<Image
 										alt={news.title}
 										src={news.cover}
 										width={212}
 										height={200}
-										className='h-full w-full rounded-xl'
+										className='size-full rounded-xl'
 									/>
 								)}
 							</div>

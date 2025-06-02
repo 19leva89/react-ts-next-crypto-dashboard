@@ -80,7 +80,7 @@ export function FormCombobox({
 						role='combobox'
 						aria-expanded={open}
 						onClick={() => setOpen(true)}
-						className={cn('border-[##e5e7eb] text-[#78716c] hover:bg-transparent', className)}
+						className={cn('border-[#e5e7eb] text-[#78716c] hover:bg-transparent', className)}
 						{...register(name)}
 					>
 						{selectedItem ? selectedItem.name : placeholder}
@@ -92,7 +92,7 @@ export function FormCombobox({
 				{errorText && <ErrorText text={errorText} className='mt-2 ml-4' />}
 			</div>
 
-			<PopoverContent className='w-[200px] p-0'>
+			<PopoverContent className='w-50 p-0'>
 				<Command>
 					<CommandInput placeholder={selectPlaceholder} name={name} />
 

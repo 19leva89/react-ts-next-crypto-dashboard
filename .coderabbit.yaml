@@ -12,11 +12,10 @@ reviews:
   auto_review:
     enabled: true
     drafts: false
-  strictness: medium # Review severity level (low, medium, high)
-  ignore: # Ignore changes to these paths
-    - docs/**
-    - public/**
-    - "**/*.md"
+  path_filters:  # Exclude these paths
+    - "!docs/**"
+    - "!public/**"
+    - "!**/*.md"
 
 chat:
   auto_reply: true

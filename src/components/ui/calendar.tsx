@@ -100,7 +100,7 @@ function Calendar({
 	const _captionLabelClassName = cn('truncate text-sm font-medium', props.captionLabelClassName)
 	const buttonNavClassName = buttonVariants({
 		variant: 'outline',
-		className: 'absolute h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+		className: 'absolute size-7 bg-transparent p-0 opacity-50 hover:opacity-100',
 	})
 	const _buttonNextClassName = cn(buttonNavClassName, 'right-0', props.buttonNextClassName)
 	const _buttonPreviousClassName = cn(buttonNavClassName, 'left-0', props.buttonPreviousClassName)
@@ -286,7 +286,7 @@ function Nav({
 		<nav className={cn('flex items-center', className)}>
 			<Button
 				variant='outline'
-				className='absolute left-0 h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100'
+				className='absolute left-0 size-7 bg-transparent p-0 opacity-80 hover:opacity-100'
 				type='button'
 				tabIndex={isPreviousDisabled ? undefined : -1}
 				disabled={isPreviousDisabled}
@@ -302,7 +302,7 @@ function Nav({
 
 			<Button
 				variant='outline'
-				className='absolute right-0 h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100'
+				className='absolute right-0 size-7 bg-transparent p-0 opacity-80 hover:opacity-100'
 				type='button'
 				tabIndex={isNextDisabled ? undefined : -1}
 				disabled={isNextDisabled}

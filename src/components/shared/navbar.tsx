@@ -74,7 +74,7 @@ export const Navbar = () => {
 
 					<DropdownMenuContent
 						align='start'
-						className='flex w-[92px] min-w-[5rem] flex-col gap-2 rounded-xl bg-white shadow-lg dark:bg-gray-900'
+						className='flex w-23 min-w-[5rem] flex-col gap-2 rounded-xl bg-white shadow-lg dark:bg-gray-900'
 					>
 						{['CAD', 'EUR', 'XCD'].map((currency, index) => (
 							<DropdownMenuItem key={index} className='rounded-xl p-0'>
