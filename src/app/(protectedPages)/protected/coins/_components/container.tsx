@@ -158,7 +158,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 									)
 								}
 							>
-								<SelectTrigger className='w-[180px]'>
+								<SelectTrigger className='w-45'>
 									<SelectValue placeholder='Sort' />
 								</SelectTrigger>
 

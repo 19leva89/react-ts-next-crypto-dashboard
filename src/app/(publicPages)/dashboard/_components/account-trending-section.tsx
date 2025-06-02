@@ -84,7 +84,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 							>
 								<div className='flex items-center justify-between'>
 									<div className='flex items-center gap-1'>
-										<Skeleton className='h-8 w-8 rounded-full' />
+										<Skeleton className='size-8 rounded-full' />
 
 										<div className='flex flex-col gap-1'>
 											<Skeleton className='h-[18px] w-16' />
