@@ -37,7 +37,14 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 		defaultValue: 'grid',
 	})
 	const [sortOption, setSortOption] = useState<
-		'total-asc' | 'total-desc' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc'
+		| 'total-asc'
+		| 'total-desc'
+		| 'profit-asc'
+		| 'profit-desc'
+		| 'name-asc'
+		| 'name-desc'
+		| 'price-asc'
+		| 'price-desc'
 	>('total-desc')
 
 	const sortedCoinData = [...coinData].sort((a, b) => {
@@ -48,17 +55,29 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 			case 'total-desc':
 				return b.current_price * b.total_quantity - a.current_price * a.total_quantity
 
-			case 'price-asc':
-				return a.current_price - b.current_price
+			case 'profit-asc':
+				return (
+					((a.current_price - a.average_price) / a.average_price) * 100 -
+					((b.current_price - b.average_price) / b.average_price) * 100
+				)
 
-			case 'price-desc':
-				return b.current_price - a.current_price
+			case 'profit-desc':
+				return (
+					((b.current_price - b.average_price) / b.average_price) * 100 -
+					((a.current_price - a.average_price) / a.average_price) * 100
+				)
 
 			case 'name-asc':
 				return a.name.localeCompare(b.name)
 
 			case 'name-desc':
 				return b.name.localeCompare(a.name)
+
+			case 'price-asc':
+				return a.current_price - b.current_price
+
+			case 'price-desc':
+				return b.current_price - a.current_price
 
 			default:
 				return 0
@@ -151,10 +170,12 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 										value as
 											| 'total-asc'
 											| 'total-desc'
-											| 'price-asc'
-											| 'price-desc'
+											| 'profit-asc'
+											| 'profit-desc'
 											| 'name-asc'
-											| 'name-desc',
+											| 'name-desc'
+											| 'price-asc'
+											| 'price-desc',
 									)
 								}
 							>
@@ -165,10 +186,12 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 								<SelectContent>
 									<SelectItem value='total-asc'>Total: Low - Hi</SelectItem>
 									<SelectItem value='total-desc'>Total: Hi - Low</SelectItem>
-									<SelectItem value='price-asc'>Price: Low - Hi</SelectItem>
-									<SelectItem value='price-desc'>Price: Hi - Low</SelectItem>
+									<SelectItem value='profit-asc'>Profit: Low - Hi</SelectItem>
+									<SelectItem value='profit-desc'>Profit: Hi - Low</SelectItem>
 									<SelectItem value='name-asc'>Name: A - Z</SelectItem>
 									<SelectItem value='name-desc'>Name: Z - A</SelectItem>
+									<SelectItem value='price-asc'>Price: Low - Hi</SelectItem>
+									<SelectItem value='price-desc'>Price: Hi - Low</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>
