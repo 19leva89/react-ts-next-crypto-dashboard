@@ -111,40 +111,40 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 	return (
 		<Sheet open={showDetailModal} onOpenChange={closeModal}>
-			<SheetContent className="sm:max-w-xl overflow-y-auto" aria-describedby={undefined}>
+			<SheetContent className='overflow-y-auto sm:max-w-xl' aria-describedby={undefined}>
 				<SheetHeader>
 					<SheetTitle>
-						<div className="flex justify-between items-center">
+						<div className='flex items-center justify-between'>
 							{isLoading ? (
-								<Skeleton className="h-6 w-3/4 max-[500px]:h-5" />
+								<Skeleton className='h-6 w-3/4 max-[500px]:h-5' />
 							) : (
 								<Link
 									href={`https://coingecko.com/en/coins/${coinData?.id}`}
-									target="_blank"
-									rel="noopener noreferrer"
+									target='_blank'
+									rel='noopener noreferrer'
 								>
-									<h4 className="cursor-pointer font-semibold text-md hover:text-[#397fee] dark:hover:text-[#75a6f4] max-[500px]:text-sm">
+									<h4 className='text-md cursor-pointer font-semibold hover:text-[#397fee] max-[500px]:text-sm dark:hover:text-[#75a6f4]'>
 										{coinData?.name}
 									</h4>
 								</Link>
 							)}
 						</div>
 
-						<div className="flex items-center justify-center gap-2 m-4 mb-2">
+						<div className='m-4 mb-2 flex items-center justify-center gap-2'>
 							{DAY_OPTIONS.map(({ label, value }) => (
 								<Button
 									key={value}
-									variant="outline"
+									variant='outline'
 									onClick={() => setDays(value)}
-									className={cn('px-2 py-1 h-6 rounded-xl transition-colors ease-in-out duration-300', {
+									className={cn('h-6 rounded-xl px-2 py-1 transition-colors duration-300 ease-in-out', {
 										'bg-blue-500 hover:bg-blue-500': days === value,
 									})}
 								>
 									{/* Full text for screens > 640px */}
-									<span className="hidden sm:inline">{label}</span>
+									<span className='hidden sm:inline'>{label}</span>
 
 									{/* Shortened text for screens < 640px */}
-									<span className="inline sm:hidden">
+									<span className='inline sm:hidden'>
 										{label === '1 day' ? '1d' : label === '1 week' ? '1w' : label === '1 month' ? '1m' : '1y'}
 									</span>
 								</Button>
@@ -152,14 +152,14 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 						</div>
 					</SheetTitle>
 
-					<SheetDescription className="hidden" />
+					<SheetDescription className='hidden' />
 				</SheetHeader>
 
-				<div className="flex justify-center px-4">
+				<div className='flex justify-center px-4'>
 					{isLoading ? (
-						<Skeleton className="h-72 w-full" />
+						<Skeleton className='h-72 w-full' />
 					) : (
-						<div className="w-full">
+						<div className='w-full'>
 							<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
 								<LineChart
 									accessibilityLayer
@@ -170,11 +170,11 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									}}
 								>
 									{/* Grid */}
-									<CartesianGrid vertical={true} strokeDasharray="4 4" />
+									<CartesianGrid vertical={true} strokeDasharray='4 4' />
 
 									{/* Axis X */}
 									<XAxis
-										dataKey="Label"
+										dataKey='Label'
 										tickLine={false}
 										axisLine={false}
 										tick={true}
@@ -184,7 +184,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 									{/* Axis Y */}
 									<YAxis
-										dataKey="Price"
+										dataKey='Price'
 										domain={[minPrice * 0.98, maxPrice * 1.02]}
 										axisLine={false}
 										tickLine={false}
@@ -217,9 +217,9 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 									{/* Line on chart */}
 									<Line
-										dataKey="Price"
-										type="natural"
-										stroke="var(--color-prices)"
+										dataKey='Price'
+										type='natural'
+										stroke='var(--color-prices)'
 										strokeWidth={2}
 										dot={false}
 									/>
@@ -229,33 +229,33 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 					)}
 				</div>
 
-				<div className="mt-10 px-4">
+				<div className='mt-10 px-4'>
 					{isLoading ? (
-						<Skeleton className="h-72 w-full" />
+						<Skeleton className='h-72 w-full' />
 					) : (
 						<>
-							<div className="flex justify-between items-center font-medium max-[500px]:text-sm">
+							<div className='flex items-center justify-between font-medium max-[500px]:text-sm'>
 								<Link
 									href={`https://coingecko.com/en/coins/${coinData?.id}`}
-									target="_blank"
-									rel="noopener noreferrer"
+									target='_blank'
+									rel='noopener noreferrer'
 								>
-									<div className="items-center flex gap-2 cursor-pointer hover:text-[#397fee] dark:hover:text-[#75a6f4]">
+									<div className='flex cursor-pointer items-center gap-2 hover:text-[#397fee] dark:hover:text-[#75a6f4]'>
 										<Image
 											src={coinData?.image.thumb || '/svg/coin-not-found.svg'}
 											alt={coinData?.name || 'Coin image'}
 											width={32}
 											height={32}
-											className="size-8 rounded-full max-[500px]:size-6"
+											className='size-8 rounded-full max-[500px]:size-6'
 											onError={(e) => {
 												e.currentTarget.src = '/svg/coin-not-found.svg'
 											}}
 										/>
 
-										<span className="font-medium">
+										<span className='font-medium'>
 											<span>{coinData?.name} </span>
 
-											<span className="uppercase">({coinData?.symbol}/usd)</span>
+											<span className='uppercase'>({coinData?.symbol}/usd)</span>
 										</span>
 									</div>
 								</Link>
@@ -263,53 +263,53 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 								<div>${formatPrice(coinData?.market_data.current_price.usd as number)}</div>
 							</div>
 
-							<div className="mt-8 flex flex-col gap-2 text-md max-[500px]:text-sm">
-								<div className="flex flex-wrap justify-between gap-2 capitalize">
+							<div className='text-md mt-8 flex flex-col gap-2 max-[500px]:text-sm'>
+								<div className='flex flex-wrap justify-between gap-2 capitalize'>
 									<span>Crypto market rank</span>
 
-									<span className="bg-slate-100 dark:bg-gray-600 px-2 rounded-full text-sm flex items-center">
+									<span className='flex items-center rounded-full bg-slate-100 px-2 text-sm dark:bg-gray-600'>
 										Rank #{coinData?.market_cap_rank}
 									</span>
 								</div>
 
-								<div className="flex flex-wrap justify-between gap-2">
+								<div className='flex flex-wrap justify-between gap-2'>
 									<span>Market cap</span>
 
-									<span className="text-gray-600 dark:text-gray-300">
+									<span className='text-gray-600 dark:text-gray-300'>
 										${formatPrice(coinData?.market_data.market_cap.usd as number, true)}
 									</span>
 								</div>
 
-								<div className="flex flex-wrap justify-between gap-2">
+								<div className='flex flex-wrap justify-between gap-2'>
 									<span>Circulating supply</span>
 
-									<span className="text-gray-600 dark:text-gray-300">
+									<span className='text-gray-600 dark:text-gray-300'>
 										${formatPrice(coinData?.market_data.circulating_supply as number, true)}
 									</span>
 								</div>
 
-								<div className="flex flex-wrap justify-between gap-2">
-									<span className="capitalize">24 hour high</span>
+								<div className='flex flex-wrap justify-between gap-2'>
+									<span className='capitalize'>24 hour high</span>
 
-									<span className="text-gray-600 dark:text-gray-300">
+									<span className='text-gray-600 dark:text-gray-300'>
 										${formatPrice(coinData?.market_data.high_24h.usd as number, true)}
 									</span>
 								</div>
 
-								<div className="flex flex-wrap justify-between gap-2">
-									<span className="capitalize">24 hour low</span>
+								<div className='flex flex-wrap justify-between gap-2'>
+									<span className='capitalize'>24 hour low</span>
 
-									<span className="text-gray-600 dark:text-gray-300">
+									<span className='text-gray-600 dark:text-gray-300'>
 										${formatPrice(coinData?.market_data.low_24h.usd as number, true)}
 									</span>
 								</div>
 							</div>
 
-							<div className="mt-8">
-								<span className="font-medium max-[500px]:text-sm">Description</span>
+							<div className='mt-8'>
+								<span className='font-medium max-[500px]:text-sm'>Description</span>
 
 								<p
-									className="mt-3 text-gray-600 dark:text-gray-300 prose prose-sm prose-a:text-blue-700 hover:prose-a:underline dark:prose-a:text-blue-700 dark:hover:prose-a:underline duration-200"
+									className='prose prose-sm mt-3 text-gray-600 duration-200 dark:text-gray-300 prose-a:text-blue-700 hover:prose-a:underline dark:prose-a:text-blue-700 dark:hover:prose-a:underline'
 									dangerouslySetInnerHTML={{ __html: coinData?.description.en as string }}
 								/>
 							</div>
@@ -320,12 +320,12 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 				<SheetFooter>
 					<SheetClose asChild>
 						<Button
-							type="submit"
-							variant="outline"
-							size="lg"
-							className="w-full mt-8 p-2 rounded-xl text-blue-500 bg-blue-50 hover:bg-green-600/80 dark:bg-slate-900 dark:hover:bg-green-700 transition-colors ease-in-out duration-300"
+							type='submit'
+							variant='outline'
+							size='lg'
+							className='mt-8 w-full rounded-xl bg-blue-50 p-2 text-blue-500 transition-colors duration-300 ease-in-out hover:bg-green-600/80 dark:bg-slate-900 dark:hover:bg-green-700'
 						>
-							<div className="flex items-center gap-2">
+							<div className='flex items-center gap-2'>
 								<StarIcon size={20} />
 
 								<span>Add to favorites</span>

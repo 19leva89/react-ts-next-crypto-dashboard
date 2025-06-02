@@ -15,31 +15,31 @@ interface Props {
 
 export const InfoBlock = ({ title, text, imageUrl, className }: Props) => {
 	return (
-		<div className={cn(className, 'flex flex-wrap items-center justify-center gap-12 m-4')}>
-			<div className="flex flex-col">
-				<div className="w-full">
-					<Title size="lg" text={title} className="font-extrabold" />
+		<div className={cn(className, 'm-4 flex flex-wrap items-center justify-center gap-12')}>
+			<div className='flex flex-col'>
+				<div className='w-full'>
+					<Title size='lg' text={title} className='font-extrabold' />
 
-					<p className="text-gray-400 text-lg">{text}</p>
+					<p className='text-lg text-gray-400'>{text}</p>
 				</div>
 
-				<div className="flex gap-5 mt-11">
-					<Link href="/">
+				<div className='mt-11 flex gap-5'>
+					<Link href='/'>
 						<Button
-							variant="default"
-							size="lg"
-							className="text-white rounded-xl transition-colors ease-in-out duration-300"
+							variant='default'
+							size='lg'
+							className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 						>
 							<ArrowLeftIcon size={16} />
 							Back
 						</Button>
 					</Link>
 
-					<Link href="">
+					<Link href=''>
 						<Button
-							variant="outline"
-							size="lg"
-							className="rounded-xl transition-colors ease-in-out duration-300"
+							variant='outline'
+							size='lg'
+							className='rounded-xl transition-colors duration-300 ease-in-out'
 						>
 							<RefreshCcwIcon size={16} />
 							Refresh

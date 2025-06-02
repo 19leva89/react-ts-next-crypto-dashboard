@@ -93,50 +93,50 @@ export function DataTable<TData, TValue>({
 
 	return (
 		<>
-			<div className="flex items-center justify-between gap-8 py-4 max-[820px]:flex-wrap-reverse max-[820px]:justify-end max-[820px]:gap-2">
+			<div className='flex items-center justify-between gap-8 py-4 max-[820px]:flex-wrap-reverse max-[820px]:justify-end max-[820px]:gap-2'>
 				{/* Search */}
-				<div className="relative w-full">
+				<div className='relative w-full'>
 					<SearchIcon
 						size={18}
-						className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+						className='absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400'
 					/>
 
 					<Input
-						placeholder="Filter coins..."
+						placeholder='Filter coins...'
 						value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
 						onChange={(e) => handleFilterChange(e.target.value)}
-						className="pl-10 rounded-xl max-[600px]:pl-10"
+						className='rounded-xl pl-10 max-[600px]:pl-10'
 					/>
 				</div>
 
-				<div className="flex items-center gap-2">
+				<div className='flex items-center gap-2'>
 					{/* Filter by category */}
-					<div className="w-full sm:w-64">
+					<div className='w-full sm:w-64'>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button
-									id="category-btn"
-									variant="outline"
-									size="lg"
+									id='category-btn'
+									variant='outline'
+									size='lg'
 									disabled={!categories.length}
-									className="w-full h-10 py-2 px-4 justify-between rounded-xl transition-colors ease-in-out duration-300 group"
+									className='group h-10 w-full justify-between rounded-xl px-4 py-2 transition-colors duration-300 ease-in-out'
 								>
-									<span className="truncate">{currentCategory || 'Categories'}</span>
+									<span className='truncate'>{currentCategory || 'Categories'}</span>
 
-									<div className="relative size-5 transition-transform duration-300 group-hover:rotate-180">
-										<ChevronDownIcon size={16} className="absolute inset-0 m-auto" />
+									<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
+										<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
 									</div>
 								</Button>
 							</DropdownMenuTrigger>
 
 							{categories.length ? (
 								<DropdownMenuContent
-									align="start"
-									className="w-full max-h-64 mt-1 py-1 overflow-y-hidden rounded-xl shadow-xl bg-white dark:bg-gray-900"
+									align='start'
+									className='mt-1 max-h-64 w-full overflow-y-hidden rounded-xl bg-white py-1 shadow-xl dark:bg-gray-900'
 								>
-									<DropdownMenuItem className="rounded-xl">
+									<DropdownMenuItem className='rounded-xl'>
 										<button
-											className="px-2 py-1 w-full text-start cursor-pointer rounded-xl"
+											className='w-full cursor-pointer rounded-xl px-2 py-1 text-start'
 											onClick={() => {
 												onCategoryClick('')
 											}}
@@ -154,11 +154,11 @@ export function DataTable<TData, TValue>({
 										{({ index, style }) => (
 											<DropdownMenuItem
 												key={categories[index].category_id}
-												className="rounded-xl"
+												className='rounded-xl'
 												style={style}
 											>
 												<button
-													className="p-2 w-full text-start cursor-pointer rounded-xl"
+													className='w-full cursor-pointer rounded-xl p-2 text-start'
 													onClick={() =>
 														onCategoryClick(categories[index].category_id, categories[index].name)
 													}
@@ -170,7 +170,7 @@ export function DataTable<TData, TValue>({
 									</List>
 								</DropdownMenuContent>
 							) : (
-								<p className="text-sm text-gray-500 px-4 py-2">No categories available</p>
+								<p className='px-4 py-2 text-sm text-gray-500'>No categories available</p>
 							)}
 						</DropdownMenu>
 					</div>
@@ -179,18 +179,18 @@ export function DataTable<TData, TValue>({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
-								variant="outline"
-								className="ml-auto rounded-xl transition-colors ease-in-out duration-300 group"
+								variant='outline'
+								className='group ml-auto rounded-xl transition-colors duration-300 ease-in-out'
 							>
 								<span>Columns</span>
 
-								<div className="relative size-5 transition-transform duration-300 group-hover:rotate-180">
-									<ChevronDownIcon size={16} className="absolute inset-0 m-auto" />
+								<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
+									<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
 								</div>
 							</Button>
 						</DropdownMenuTrigger>
 
-						<DropdownMenuContent align="end">
+						<DropdownMenuContent align='end'>
 							{table
 								.getAllColumns()
 								.filter((column) => column.getCanHide())
@@ -200,7 +200,7 @@ export function DataTable<TData, TValue>({
 									return (
 										<DropdownMenuCheckboxItem
 											key={column.id}
-											className="capitalize"
+											className='capitalize'
 											checked={column.getIsVisible()}
 											onCheckedChange={(value) => column.toggleVisibility(!!value)}
 										>
@@ -213,9 +213,9 @@ export function DataTable<TData, TValue>({
 				</div>
 			</div>
 
-			<div className="relative overflow-auto rounded-xl border">
+			<div className='relative overflow-auto rounded-xl border'>
 				<Table>
-					<TableHeader className="text-left bg-gray-100 dark:bg-slate-800 text-sm border-b dark:border-gray-700">
+					<TableHeader className='border-b bg-gray-100 text-left text-sm dark:border-gray-700 dark:bg-slate-800'>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header, i) => {
@@ -223,10 +223,10 @@ export function DataTable<TData, TValue>({
 										<TableHead
 											key={header.id}
 											className={cn(
-												'max-[1200px]:py-2 max-[1200px]:px-3 max-[600px]:py-1 max-[600px]:px-2 max-[400px]:py-0 max-[400px]:px-1',
+												'max-[1200px]:px-3 max-[1200px]:py-2 max-[600px]:px-2 max-[600px]:py-1 max-[400px]:px-1 max-[400px]:py-0',
 												i === 0 && 'sticky left-[0rem] bg-gray-100 dark:bg-slate-800',
 												i === 1 &&
-													'sticky left-[5rem] max-[600px]:left-[4.5rem] max-[400px]:left-[4rem] min-w-36 bg-gray-100 dark:bg-slate-800',
+													'sticky left-[5rem] min-w-36 bg-gray-100 max-[600px]:left-[4.5rem] max-[400px]:left-[4rem] dark:bg-slate-800',
 											)}
 										>
 											{header.isPlaceholder
@@ -245,16 +245,16 @@ export function DataTable<TData, TValue>({
 								<TableRow
 									key={row.id}
 									onClick={() => onCoinsClick((row.original as CoinListData).id)}
-									className="cursor-pointer group"
+									className='group cursor-pointer'
 								>
 									{row.getVisibleCells().map((cell, i) => (
 										<TableCell
 											key={cell.id}
 											className={cn(
-												'max-[1200px]:py-2 max-[1200px]:px-3 max-[600px]:py-1 max-[600px]:px-2 max-[400px]:py-0 max-[400px]:px-1 group-hover:bg-gray-50 dark:group-hover:bg-gray-800',
+												'group-hover:bg-gray-50 max-[1200px]:px-3 max-[1200px]:py-2 max-[600px]:px-2 max-[600px]:py-1 max-[400px]:px-1 max-[400px]:py-0 dark:group-hover:bg-gray-800',
 												i === 0 && 'sticky left-[0rem] bg-background dark:bg-background',
 												i === 1 &&
-													'sticky left-[5rem] max-[600px]:left-[4.5rem] max-[400px]:left-[4rem] min-w-36 bg-background dark:bg-background',
+													'sticky left-[5rem] min-w-36 bg-background max-[600px]:left-[4.5rem] max-[400px]:left-[4rem] dark:bg-background',
 											)}
 										>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -264,7 +264,7 @@ export function DataTable<TData, TValue>({
 							))
 						) : (
 							<TableRow>
-								<TableCell colSpan={columns.length} className="h-24 text-center">
+								<TableCell colSpan={columns.length} className='h-24 text-center'>
 									No results
 								</TableCell>
 							</TableRow>
@@ -273,10 +273,10 @@ export function DataTable<TData, TValue>({
 				</Table>
 			</div>
 
-			<div className="flex items-center justify-end px-2 pt-4">
-				<div className="flex items-center gap-2">
-					<div className="flex items-center gap-2 max-[420px]:hidden">
-						<p className="text-sm font-medium">Rows per page</p>
+			<div className='flex items-center justify-end px-2 pt-4'>
+				<div className='flex items-center gap-2'>
+					<div className='flex items-center gap-2 max-[420px]:hidden'>
+						<p className='text-sm font-medium'>Rows per page</p>
 
 						<Select
 							value={`${table.getState().pagination.pageSize}`}
@@ -284,11 +284,11 @@ export function DataTable<TData, TValue>({
 								table.setPageSize(Number(value))
 							}}
 						>
-							<SelectTrigger className="h-8 w-[70px]">
+							<SelectTrigger className='h-8 w-[70px]'>
 								<SelectValue placeholder={table.getState().pagination.pageSize} />
 							</SelectTrigger>
 
-							<SelectContent side="top">
+							<SelectContent side='top'>
 								{[10, 20, 30, 40, 50].map((pageSize) => (
 									<SelectItem key={pageSize} value={`${pageSize}`}>
 										{pageSize}
@@ -298,51 +298,51 @@ export function DataTable<TData, TValue>({
 						</Select>
 					</div>
 
-					<div className="flex w-[100px] items-center justify-center text-sm font-medium">
+					<div className='flex w-[100px] items-center justify-center text-sm font-medium'>
 						Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
 					</div>
 
-					<div className="flex items-center gap-2">
+					<div className='flex items-center gap-2'>
 						<Button
-							variant="outline"
-							className="hidden h-8 w-8 p-0 lg:flex transition-colors ease-in-out duration-300"
+							variant='outline'
+							className='hidden h-8 w-8 p-0 transition-colors duration-300 ease-in-out lg:flex'
 							onClick={() => table.setPageIndex(0)}
 							disabled={!table.getCanPreviousPage()}
 						>
-							<span className="sr-only">Go to first page</span>
+							<span className='sr-only'>Go to first page</span>
 
 							<ChevronsLeftIcon />
 						</Button>
 
 						<Button
-							variant="outline"
-							className="h-8 w-8 p-0 transition-colors ease-in-out duration-300"
+							variant='outline'
+							className='h-8 w-8 p-0 transition-colors duration-300 ease-in-out'
 							onClick={() => table.previousPage()}
 							disabled={!table.getCanPreviousPage()}
 						>
-							<span className="sr-only">Go to previous page</span>
+							<span className='sr-only'>Go to previous page</span>
 
 							<ChevronLeftIcon />
 						</Button>
 
 						<Button
-							variant="outline"
-							className="h-8 w-8 p-0 transition-colors ease-in-out duration-300"
+							variant='outline'
+							className='h-8 w-8 p-0 transition-colors duration-300 ease-in-out'
 							onClick={() => table.nextPage()}
 							disabled={!table.getCanNextPage()}
 						>
-							<span className="sr-only">Go to next page</span>
+							<span className='sr-only'>Go to next page</span>
 
 							<ChevronRightIcon />
 						</Button>
 
 						<Button
-							variant="outline"
-							className="hidden h-8 w-8 p-0 lg:flex transition-colors ease-in-out duration-300"
+							variant='outline'
+							className='hidden h-8 w-8 p-0 transition-colors duration-300 ease-in-out lg:flex'
 							onClick={() => table.setPageIndex(table.getPageCount() - 1)}
 							disabled={!table.getCanNextPage()}
 						>
-							<span className="sr-only">Go to last page</span>
+							<span className='sr-only'>Go to last page</span>
 
 							<ChevronsRightIcon />
 						</Button>

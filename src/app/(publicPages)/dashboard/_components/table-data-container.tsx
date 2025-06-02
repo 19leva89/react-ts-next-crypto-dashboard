@@ -58,7 +58,7 @@ export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 	return (
 		<>
 			{fetchingCoins ? (
-				<Skeleton className="h-96 rounded-xl" />
+				<Skeleton className='h-96 rounded-xl' />
 			) : (
 				<DataTable
 					columns={columns}

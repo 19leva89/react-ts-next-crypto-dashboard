@@ -18,23 +18,23 @@ export const ModeToggle = () => {
 
 	return (
 		<Button
-			variant="outline"
-			size="lg"
+			variant='outline'
+			size='lg'
 			onClick={toggleTheme}
-			className="flex items-center px-2 w-11 rounded-xl transition-colors ease-in-out duration-300 group"
+			className='group flex w-11 items-center rounded-xl px-2 transition-colors duration-300 ease-in-out'
 		>
-			<div className="relative w-6 h-6 transition-transform duration-300 ease-in-out group-hover:rotate-90">
+			<div className='relative h-6 w-6 transition-transform duration-300 ease-in-out group-hover:rotate-90'>
 				<SunIcon
 					size={20}
-					className="absolute size-5! inset-0 m-auto opacity-0 transition-opacity duration-300 [html.dark_&]:opacity-100"
+					className='absolute inset-0 m-auto size-5! opacity-0 transition-opacity duration-300 [html.dark_&]:opacity-100'
 				/>
 
 				<MoonIcon
 					size={20}
-					className="absolute size-5! inset-0 m-auto opacity-0 transition-opacity duration-300 [html.light_&]:opacity-100"
+					className='absolute inset-0 m-auto size-5! opacity-0 transition-opacity duration-300 [html.light_&]:opacity-100'
 				/>
 
-				<span className="sr-only">Toggle theme</span>
+				<span className='sr-only'>Toggle theme</span>
 			</div>
 		</Button>
 	)

@@ -77,73 +77,73 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 
 	if (!isMounted) {
 		return (
-			<div className="flex flex-col w-full">
-				<div className="flex items-center justify-between">
-					<Skeleton className="h-14 w-full" />
+			<div className='flex w-full flex-col'>
+				<div className='flex items-center justify-between'>
+					<Skeleton className='h-14 w-full' />
 				</div>
 
-				<div className="flex flex-col gap-2 items-start justify-start w-full p-6">
-					<Skeleton className="h-24 w-full" />
-					<Skeleton className="h-24 w-full" />
-					<Skeleton className="h-24 w-full" />
+				<div className='flex w-full flex-col items-start justify-start gap-2 p-6'>
+					<Skeleton className='h-24 w-full' />
+					<Skeleton className='h-24 w-full' />
+					<Skeleton className='h-24 w-full' />
 				</div>
 			</div>
 		)
 	}
 
 	return (
-		<div className="flex flex-col w-full">
-			<div className="flex items-center justify-between gap-1 max-[900px]:flex-wrap">
-				<div className="flex items-start gap-1 max-[1000px]:flex-col">
-					<div className="p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6">
-						<h2 className="text-xl font-bold max-[460px]:text-lg">
+		<div className='flex w-full flex-col'>
+			<div className='flex items-center justify-between gap-1 max-[900px]:flex-wrap'>
+				<div className='flex items-start gap-1 max-[1000px]:flex-col'>
+					<div className='p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6'>
+						<h2 className='text-xl font-bold max-[460px]:text-lg'>
 							Total invested: ${formatPrice(totalInvestedValue, true)}
 						</h2>
 					</div>
 
-					<div className="p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6">
-						<h2 className="text-xl font-bold max-[460px]:text-lg">
+					<div className='p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6'>
+						<h2 className='text-xl font-bold max-[460px]:text-lg'>
 							Total coin: ${formatPrice(totalValue, true)}
 						</h2>
 					</div>
 
-					<div className="p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6">
-						<h2 className="text-xl font-bold max-[460px]:text-lg">
+					<div className='p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6'>
+						<h2 className='text-xl font-bold max-[460px]:text-lg'>
 							Planned profit: ${formatPrice(plannedProfit, true)}
 						</h2>
 					</div>
 				</div>
 
-				<div className="flex items-center gap-2 max-[870px]:flex-row-reverse max-[550px]:flex-wrap max-[550px]:flex-col max-[550px]:items-start">
+				<div className='flex items-center gap-2 max-[870px]:flex-row-reverse max-[550px]:flex-col max-[550px]:flex-wrap max-[550px]:items-start'>
 					<AddCoin />
 
-					<div className="flex items-center max-[870px]:flex-row-reverse">
-						<div className="flex items-center gap-2">
+					<div className='flex items-center max-[870px]:flex-row-reverse'>
+						<div className='flex items-center gap-2'>
 							<Button
-								variant="ghost"
-								size="icon"
+								variant='ghost'
+								size='icon'
 								onClick={() => setViewMode('grid')}
-								className={cn('transition-colors ease-in-out duration-300', {
+								className={cn('transition-colors duration-300 ease-in-out', {
 									'bg-accent': viewMode === 'grid',
 								})}
 							>
-								<LayoutGridIcon className="size-4" />
+								<LayoutGridIcon className='size-4' />
 							</Button>
 
 							<Button
-								variant="ghost"
-								size="icon"
+								variant='ghost'
+								size='icon'
 								onClick={() => setViewMode('list')}
-								className={cn('transition-colors ease-in-out duration-300', {
+								className={cn('transition-colors duration-300 ease-in-out', {
 									'bg-accent': viewMode === 'list',
 								})}
 							>
-								<ListIcon className="size-4" />
+								<ListIcon className='size-4' />
 							</Button>
 						</div>
 
 						{/* Sort coin */}
-						<div className="mx-6">
+						<div className='mx-6'>
 							<Select
 								value={sortOption}
 								onValueChange={(value) =>
@@ -158,17 +158,17 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 									)
 								}
 							>
-								<SelectTrigger className="w-[180px]">
-									<SelectValue placeholder="Sort" />
+								<SelectTrigger className='w-[180px]'>
+									<SelectValue placeholder='Sort' />
 								</SelectTrigger>
 
 								<SelectContent>
-									<SelectItem value="total-asc">Total: Low - Hi</SelectItem>
-									<SelectItem value="total-desc">Total: Hi - Low</SelectItem>
-									<SelectItem value="price-asc">Price: Low - Hi</SelectItem>
-									<SelectItem value="price-desc">Price: Hi - Low</SelectItem>
-									<SelectItem value="name-asc">Name: A - Z</SelectItem>
-									<SelectItem value="name-desc">Name: Z - A</SelectItem>
+									<SelectItem value='total-asc'>Total: Low - Hi</SelectItem>
+									<SelectItem value='total-desc'>Total: Hi - Low</SelectItem>
+									<SelectItem value='price-asc'>Price: Low - Hi</SelectItem>
+									<SelectItem value='price-desc'>Price: Hi - Low</SelectItem>
+									<SelectItem value='name-asc'>Name: A - Z</SelectItem>
+									<SelectItem value='name-desc'>Name: Z - A</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>
@@ -177,14 +177,14 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 			</div>
 
 			{/* Search */}
-			<div className="relative w-full px-6 pt-6">
-				<SearchIcon size={18} className="absolute left-9 top-2/3 transform -translate-y-1/2 text-gray-400" />
+			<div className='relative w-full px-6 pt-6'>
+				<SearchIcon size={18} className='absolute top-2/3 left-9 -translate-y-1/2 transform text-gray-400' />
 
 				<Input
-					placeholder="Filter coins..."
+					placeholder='Filter coins...'
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
-					className="pl-10 rounded-xl max-[600px]:pl-10"
+					className='rounded-xl pl-10 max-[600px]:pl-10'
 				/>
 			</div>
 
@@ -202,11 +202,11 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 				)}
 			>
 				{coinData.length === 0 && (
-					<h2 className="flex justify-center w-full">No coins added. Add your first coin!</h2>
+					<h2 className='flex w-full justify-center'>No coins added. Add your first coin!</h2>
 				)}
 
 				{coinData.length > 0 && filteredCoinData.length === 0 && (
-					<h2 className="flex justify-center w-full">No coins found. Try another search!</h2>
+					<h2 className='flex w-full justify-center'>No coins found. Try another search!</h2>
 				)}
 
 				{filteredCoinData.length > 0 &&

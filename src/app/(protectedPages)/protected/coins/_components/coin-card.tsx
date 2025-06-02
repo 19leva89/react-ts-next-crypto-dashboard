@@ -40,24 +40,24 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 			className={cn(
 				'flex flex-col gap-1 py-1',
 				viewMode === 'grid'
-					? 'grow shrink-0 sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)] min-w-[19rem] min-h-[10rem]'
+					? 'min-h-[10rem] min-w-[19rem] shrink-0 grow sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)]'
 					: 'w-full gap-0',
 			)}
 		>
-			<CardHeader className="flex flex-row items-start justify-between px-3 py-1 pb-0">
+			<CardHeader className='flex flex-row items-start justify-between px-3 py-1 pb-0'>
 				<div
 					className={cn(
 						'flex gap-1',
 						viewMode === 'grid' ? 'flex-col' : 'flex-row items-center gap-4 max-[550px]:flex-wrap',
 					)}
 				>
-					<CardTitle className="flex items-center gap-2">
+					<CardTitle className='flex items-center gap-2'>
 						<Image
 							src={coin.image || '/svg/coin-not-found.svg'}
 							alt={coin.name || 'Coin image'}
 							width={24}
 							height={24}
-							className="rounded-full"
+							className='rounded-full'
 							onError={(e) => {
 								e.currentTarget.src = '/svg/coin-not-found.svg'
 							}}
@@ -65,17 +65,17 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 						<Link
 							href={`/protected/coins/${coin.coinId}`}
-							className="cursor-pointer truncate max-w-[8rem] hover:text-[#397fee] dark:hover:text-[#75a6f4]"
+							className='max-w-[8rem] cursor-pointer truncate hover:text-[#397fee] dark:hover:text-[#75a6f4]'
 						>
 							{coin.name}
 						</Link>
 
-						<span className="text-sm text-muted-foreground max-[600px]:hidden">
+						<span className='text-sm text-muted-foreground max-[600px]:hidden'>
 							({coin.symbol.toUpperCase()})
 						</span>
 					</CardTitle>
 
-					<CardDescription className="flex gap-2 items-center">
+					<CardDescription className='flex items-center gap-2'>
 						<div
 							className={cn('flex', viewMode === 'grid' ? 'flex-col' : 'flex-row gap-4 max-[1000px]:hidden')}
 						>
@@ -88,7 +88,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 						<div
 							className={cn(
-								'flex items-center gap-2 rounded-full font-medium px-2 py-1 h-8',
+								'flex h-8 items-center gap-2 rounded-full px-2 py-1 font-medium',
 								viewMode === 'grid' ? '' : 'max-[460px]:hidden',
 								coin.current_price > coin.average_price
 									? 'bg-green-100 text-green-600 dark:bg-green-900/30'
@@ -101,9 +101,9 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							</span>
 
 							{changePercentagePrice > 0 ? (
-								<TrendingUpIcon size={16} className="text-green-600" />
+								<TrendingUpIcon size={16} className='text-green-600' />
 							) : (
-								<TrendingDownIcon size={16} className="text-red-600" />
+								<TrendingDownIcon size={16} className='text-red-600' />
 							)}
 						</div>
 					</CardDescription>
@@ -111,19 +111,19 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="icon" className="mt-0! group shrink-0">
-							<div className="relative size-5 transition-transform duration-300 group-hover:rotate-180">
-								<EllipsisVerticalIcon size={16} className="absolute inset-0 m-auto" />
+						<Button variant='ghost' size='icon' className='group mt-0! shrink-0'>
+							<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
+								<EllipsisVerticalIcon size={16} className='absolute inset-0 m-auto' />
 							</div>
 						</Button>
 					</DropdownMenuTrigger>
 
-					<DropdownMenuContent side="right" align="start" sideOffset={0} className="rounded-xl">
+					<DropdownMenuContent side='right' align='start' sideOffset={0} className='rounded-xl'>
 						<DropdownMenuItem
 							onSelect={() => setIsDialogOpen(true)}
-							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							className='cursor-pointer rounded-xl p-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden'
 						>
-							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
+							<Button variant='ghost' size='icon' className='mx-2 flex items-center justify-start gap-3'>
 								<PencilIcon size={16} />
 
 								<span>Edit</span>
@@ -132,9 +132,9 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 						<DropdownMenuItem
 							onSelect={() => setIsDeleteDialogOpen(true)}
-							className="p-0 rounded-xl cursor-pointer hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							className='cursor-pointer rounded-xl p-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden'
 						>
-							<Button variant="ghost" size="icon" className="flex items-center justify-start gap-3 mx-2">
+							<Button variant='ghost' size='icon' className='mx-2 flex items-center justify-start gap-3'>
 								<TrashIcon size={16} />
 
 								<span>Delete</span>
@@ -150,9 +150,9 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 					viewMode === 'grid' ? 'flex-col items-start' : 'flex-row items-center justify-between gap-8',
 				)}
 			>
-				<p className="text-lg font-semibold">Quantity: {formatPrice(coin.total_quantity)}</p>
+				<p className='text-lg font-semibold'>Quantity: {formatPrice(coin.total_quantity)}</p>
 
-				<p className="text-lg font-semibold">Total value: ${formatPrice(totalValue, false)}</p>
+				<p className='text-lg font-semibold'>Total value: ${formatPrice(totalValue, false)}</p>
 			</CardContent>
 
 			{/* Edit Dialog */}

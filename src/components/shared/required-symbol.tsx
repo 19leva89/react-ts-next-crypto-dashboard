@@ -1,3 +1,3 @@
 export const RequiredSymbol = () => {
-	return <span className="text-red-500">*</span>
+	return <span className='text-red-500'>*</span>
 }

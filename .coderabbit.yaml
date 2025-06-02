@@ -1,0 +1,26 @@
+language: "en-US"
+early_access: false # Enable early access features
+enable_free_tier: true # Enable free tier features for users not on a paid plan
+
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+  strictness: medium # Review severity level (low, medium, high)
+  ignore: # Ignore changes to these paths
+    - docs/**
+    - public/**
+    - "**/*.md"
+
+chat:
+  auto_reply: true
+
+# Privacy settings (optional)
+privacy:
+  shareCode: false

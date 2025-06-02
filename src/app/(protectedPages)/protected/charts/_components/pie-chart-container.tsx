@@ -44,15 +44,15 @@ export const PieChartContainer = ({ chartData }: Props) => {
 	} satisfies ChartConfig
 
 	return (
-		<Card className="flex flex-col gap-0 py-1 rounded-xl w-1/3 max-[1200px]:w-1/2 max-[700px]:w-3/4 max-[450px]:w-full">
-			<CardHeader className="items-center p-4 max-[600px]:px-1 max-[600px]:py-3">
+		<Card className='flex w-1/3 flex-col gap-0 rounded-xl py-1 max-[1200px]:w-1/2 max-[700px]:w-3/4 max-[450px]:w-full'>
+			<CardHeader className='items-center p-4 max-[600px]:px-1 max-[600px]:py-3'>
 				<CardTitle>Coins distribution</CardTitle>
 			</CardHeader>
 
-			<CardContent className="pb-4 max-[600px]:px-1 max-[600px]:py-3">
+			<CardContent className='pb-4 max-[600px]:px-1 max-[600px]:py-3'>
 				<ChartContainer
 					config={chartConfig}
-					className="mx-auto aspect-square max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+					className='mx-auto aspect-square max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground'
 				>
 					<PieChart>
 						<ChartTooltip
@@ -71,20 +71,20 @@ export const PieChartContainer = ({ chartData }: Props) => {
 							}
 						/>
 
-						<Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={40} />
+						<Pie data={chartData} dataKey='value' nameKey='name' cx='50%' cy='50%' innerRadius={40} />
 					</PieChart>
 				</ChartContainer>
 			</CardContent>
 
-			<CardFooter className="flex-col gap-2 text-sm pb-4 max-[600px]:py-3">
-				<div className="grid grid-cols-2 gap-2 w-fit mx-auto">
+			<CardFooter className='flex-col gap-2 pb-4 text-sm max-[600px]:py-3'>
+				<div className='mx-auto grid w-fit grid-cols-2 gap-2'>
 					{chartData.map((item) => (
-						<div key={item.name} className="flex items-center gap-2 truncate">
-							<div className="h-3 w-3 rounded-full shrink-0" style={{ backgroundColor: item.fill }} />
+						<div key={item.name} className='flex items-center gap-2 truncate'>
+							<div className='h-3 w-3 shrink-0 rounded-full' style={{ backgroundColor: item.fill }} />
 
-							<span className="truncate uppercase">{item.symbol || item.name}</span>
+							<span className='truncate uppercase'>{item.symbol || item.name}</span>
 
-							<span className="shrink-0">({item.percentage.toFixed(1)}%)</span>
+							<span className='shrink-0'>({item.percentage.toFixed(1)}%)</span>
 						</div>
 					))}
 				</div>

@@ -39,14 +39,14 @@ export const FormInput = ({ className, name, label, type, placeholder, required,
 	return (
 		<div className={className}>
 			{label && (
-				<p className="font-medium mb-2">
+				<p className='mb-2 font-medium'>
 					{label} {required && <RequiredSymbol />}
 				</p>
 			)}
 
-			<div className="relative">
+			<div className='relative'>
 				<Input
-					className="h-11 text-md pr-20 rounded-xl"
+					className='text-md h-11 rounded-xl pr-20'
 					type={type === 'password' && !isPasswordVisible ? 'password' : 'text'}
 					placeholder={placeholder}
 					{...register(name)}
@@ -55,18 +55,18 @@ export const FormInput = ({ className, name, label, type, placeholder, required,
 
 				{type === 'password' && (
 					<button
-						type="button"
+						type='button'
 						onClick={togglePasswordVisibility}
-						className="absolute right-4 top-1/2 transform -translate-y-1/2 opacity-30 hover:opacity-100 cursor-pointer transition-opacity ease-in-out duration-300"
+						className='absolute top-1/2 right-4 -translate-y-1/2 transform cursor-pointer opacity-30 transition-opacity duration-300 ease-in-out hover:opacity-100'
 					>
-						{isPasswordVisible ? <EyeOffIcon className="size-5" /> : <EyeIcon className="size-5" />}
+						{isPasswordVisible ? <EyeOffIcon className='size-5' /> : <EyeIcon className='size-5' />}
 					</button>
 				)}
 
 				{value && type !== 'password' && <ClearButton onClick={onClickClear} />}
 			</div>
 
-			{errorText && <ErrorText text={errorText} className="mt-2 ml-4" />}
+			{errorText && <ErrorText text={errorText} className='mt-2 ml-4' />}
 		</div>
 	)
 }

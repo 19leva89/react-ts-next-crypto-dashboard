@@ -48,14 +48,14 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 	}
 
 	return (
-		<div className="flex flex-col gap-5 mb-10">
-			<div className="flex justify-between items-center">
-				<h3 className="font-medium text-lg">Trending</h3>
+		<div className='mb-10 flex flex-col gap-5'>
+			<div className='flex items-center justify-between'>
+				<h3 className='text-lg font-medium'>Trending</h3>
 
 				<Button
-					variant="ghost"
-					size="sm"
-					className="gap-1 transition-colors ease-in-out duration-300 group"
+					variant='ghost'
+					size='sm'
+					className='group gap-1 transition-colors duration-300 ease-in-out'
 					onClick={() => {
 						onShowMoreBtnClick(dataIndex.end >= trendingData.coins.length)
 					}}
@@ -66,69 +66,69 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 						<>
 							<span>View more</span>
 
-							<div className="relative size-5 -rotate-90 transition-transform duration-300 group-hover:rotate-0">
-								<ChevronDownIcon size={16} className="absolute inset-0 m-auto" />
+							<div className='relative size-5 -rotate-90 transition-transform duration-300 group-hover:rotate-0'>
+								<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
 							</div>
 						</>
 					)}
 				</Button>
 			</div>
 
-			<ScrollArea className="flex-nowrap pb-3">
+			<ScrollArea className='flex-nowrap pb-3'>
 				{isLoading ? (
-					<div className="flex flex-nowrap gap-2 text-sm">
+					<div className='flex flex-nowrap gap-2 text-sm'>
 						{[...Array(5)].map((_, index) => (
 							<div
 								key={index}
-								className="border dark:border-gray-700 p-3 rounded-xl w-full min-w-[15rem] max-w-[18rem]"
+								className='w-full max-w-[18rem] min-w-[15rem] rounded-xl border p-3 dark:border-gray-700'
 							>
-								<div className="flex items-center justify-between">
-									<div className="flex items-center gap-1">
-										<Skeleton className="h-8 w-8 rounded-full" />
+								<div className='flex items-center justify-between'>
+									<div className='flex items-center gap-1'>
+										<Skeleton className='h-8 w-8 rounded-full' />
 
-										<div className="flex flex-col gap-1">
-											<Skeleton className="h-[18px] w-16" />
-											<Skeleton className="h-[14px] w-12" />
+										<div className='flex flex-col gap-1'>
+											<Skeleton className='h-[18px] w-16' />
+											<Skeleton className='h-[14px] w-12' />
 										</div>
 									</div>
 
-									<Skeleton className="h-7 w-20 rounded-full" />
+									<Skeleton className='h-7 w-20 rounded-full' />
 								</div>
 
-								<div className="mt-3 flex flex-col gap-1">
-									<Skeleton className="h-[14px] w-16" />
-									<Skeleton className="h-[14px] w-24" />
+								<div className='mt-3 flex flex-col gap-1'>
+									<Skeleton className='h-[14px] w-16' />
+									<Skeleton className='h-[14px] w-24' />
 								</div>
 							</div>
 						))}
 					</div>
 				) : (
-					<div className="flex flex-nowrap gap-2 text-sm">
+					<div className='flex flex-nowrap gap-2 text-sm'>
 						{trendingData.coins.slice(dataIndex.start, dataIndex.end).map((data, index) => (
 							<div
 								key={index}
 								onClick={() => handleCoinClick(data.item.id)}
-								className="border dark:border-gray-700 p-3 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 duration-500 w-full min-w-[15rem] max-w-[18rem]"
+								className='w-full max-w-[18rem] min-w-[15rem] cursor-pointer rounded-xl border p-3 duration-500 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-slate-800'
 							>
-								<div className="flex items-center justify-between">
-									<div className="flex items-center gap-1">
+								<div className='flex items-center justify-between'>
+									<div className='flex items-center gap-1'>
 										<Image
 											src={data.item.thumb || '/svg/coin-not-found.svg'}
 											alt={data.item.name || 'Coin image'}
 											width={32}
 											height={32}
-											className="size-8 rounded-full"
+											className='size-8 rounded-full'
 											onError={(e) => {
 												e.currentTarget.src = '/svg/coin-not-found.svg'
 											}}
 										/>
 
-										<div className="flex flex-col">
-											<span className="w-20 text-gray-600 dark:text-white font-semibold truncate">
+										<div className='flex flex-col'>
+											<span className='w-20 truncate font-semibold text-gray-600 dark:text-white'>
 												{data.item.name}
 											</span>
 
-											<span className="text-gray-400 dark:text-slate-400 font-semibold text-xs">
+											<span className='text-xs font-semibold text-gray-400 dark:text-slate-400'>
 												{data.item.symbol}
 											</span>
 										</div>
@@ -136,7 +136,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 
 									<div
 										className={cn(
-											'flex items-center gap-2 rounded-full font-medium px-2 py-1',
+											'flex items-center gap-2 rounded-full px-2 py-1 font-medium',
 											data.item.data.price_change_percentage_24h.usd > 0
 												? 'bg-green-100 text-green-600 dark:bg-green-900/30'
 												: 'bg-red-100 text-red-600 dark:bg-red-900/30',
@@ -148,19 +148,19 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 										</span>
 
 										{data.item.data.price_change_percentage_24h.usd > 0 ? (
-											<TrendingUpIcon size={16} className="text-green-600" />
+											<TrendingUpIcon size={16} className='text-green-600' />
 										) : (
-											<TrendingDownIcon size={16} className="text-red-600" />
+											<TrendingDownIcon size={16} className='text-red-600' />
 										)}
 									</div>
 								</div>
 
-								<div className="mt-3 flex flex-col ">
-									<span className="text-gray-600 dark:text-slate-400 text-xs">
+								<div className='mt-3 flex flex-col '>
+									<span className='text-xs text-gray-600 dark:text-slate-400'>
 										₿{formatPrice(Number(data.item.data.market_cap_btc), true)}
 									</span>
 
-									<span className="text-gray-600 dark:text-slate-400 text-xs">
+									<span className='text-xs text-gray-600 dark:text-slate-400'>
 										${formatPrice(Number(data.item.data.market_cap.replace(/[$,]/g, '')), true)}
 									</span>
 								</div>
@@ -169,7 +169,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 					</div>
 				)}
 
-				<ScrollBar orientation="horizontal" />
+				<ScrollBar orientation='horizontal' />
 			</ScrollArea>
 
 			<CoinDetailModal coinId={selectedCoinId} showDetailModal={isModalOpen} closeModal={toggleDetailModal} />

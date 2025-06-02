@@ -17,15 +17,15 @@ export const getColumns = (
 		header: ({ column }) => {
 			return (
 				<Button
-					variant="ghost"
-					className="px-0 has-[>svg]:px-0"
+					variant='ghost'
+					className='px-0 has-[>svg]:px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Quantity
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className="size-4" />
+						<ArrowUpIcon className='size-4' />
 					) : (
-						<ArrowDownIcon className="size-4" />
+						<ArrowDownIcon className='size-4' />
 					)}
 				</Button>
 			)
@@ -44,15 +44,15 @@ export const getColumns = (
 		header: ({ column }) => {
 			return (
 				<Button
-					variant="ghost"
-					className="px-0 has-[>svg]:px-0"
+					variant='ghost'
+					className='px-0 has-[>svg]:px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Price
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className="size-4" />
+						<ArrowUpIcon className='size-4' />
 					) : (
-						<ArrowDownIcon className="size-4" />
+						<ArrowDownIcon className='size-4' />
 					)}
 				</Button>
 			)
@@ -71,15 +71,15 @@ export const getColumns = (
 		header: ({ column }) => {
 			return (
 				<Button
-					variant="ghost"
-					className="px-0 has-[>svg]:px-0"
+					variant='ghost'
+					className='px-0 has-[>svg]:px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Date
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className="size-4" />
+						<ArrowUpIcon className='size-4' />
 					) : (
-						<ArrowDownIcon className="size-4" />
+						<ArrowDownIcon className='size-4' />
 					)}
 				</Button>
 			)
@@ -91,18 +91,18 @@ export const getColumns = (
 				<Popover>
 					<PopoverTrigger asChild>
 						<Button
-							variant="outline"
-							className="w-full justify-start text-left font-normal rounded-xl max-[900px]:p-2 max-[600px]:px-2 max-[600px]:has-[>svg]:px-2 max-[900px]:text-sm max-[600px]:text-xs"
+							variant='outline'
+							className='w-full justify-start rounded-xl text-left font-normal max-[900px]:p-2 max-[900px]:text-sm max-[600px]:px-2 max-[600px]:text-xs max-[600px]:has-[>svg]:px-2'
 						>
-							<CalendarIcon className="mr-2 size-4 max-[900px]:mr-1 max-[600px]:mr-0" />
+							<CalendarIcon className='mr-2 size-4 max-[900px]:mr-1 max-[600px]:mr-0' />
 
 							{dateValue ? format(dateValue, 'dd-MM-yyyy') : <span>Pick a date</span>}
 						</Button>
 					</PopoverTrigger>
 
-					<PopoverContent className="w-auto p-0" autoFocus={true}>
+					<PopoverContent className='w-auto p-0' autoFocus={true}>
 						<Calendar
-							mode="single"
+							mode='single'
 							selected={dateValue}
 							onSelect={(selectedDate) => {
 								if (selectedDate) {

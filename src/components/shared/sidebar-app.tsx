@@ -122,9 +122,9 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 	})
 
 	return (
-		<Sidebar side="left" variant="sidebar" collapsible="icon" className="z-50" {...props}>
+		<Sidebar side='left' variant='sidebar' collapsible='icon' className='z-50' {...props}>
 			<SidebarHeader>
-				<div className="flex items-center justify-center px-4 pt-1">
+				<div className='flex items-center justify-center px-4 pt-1'>
 					<Link href={sideBarData[0].url}>
 						<Logo />
 					</Link>
@@ -133,7 +133,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel className="text-base">Menu</SidebarGroupLabel>
+					<SidebarGroupLabel className='text-base'>Menu</SidebarGroupLabel>
 
 					<SidebarGroupContent>
 						<SidebarMenu>
@@ -142,8 +142,8 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 
 								return (
 									<SidebarMenuItem key={item.title}>
-										<SidebarMenuButton className="text-lg" asChild isActive={isActive}>
-											<Link href={item.url} className="flex items-center gap-4 h-12">
+										<SidebarMenuButton className='text-lg' asChild isActive={isActive}>
+											<Link href={item.url} className='flex h-12 items-center gap-4'>
 												<item.icon className={open ? 'size-5!' : 'size-4'} />
 
 												<span>{item.title}</span>
@@ -157,64 +157,64 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 				</SidebarGroup>
 			</SidebarContent>
 
-			<SidebarFooter className="mx-2 p-0">
+			<SidebarFooter className='mx-2 p-0'>
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<SidebarMenuButton
-									variant="outline"
-									size="lg"
+									variant='outline'
+									size='lg'
 									className={cn(
-										'gap-3 justify-between mb-4 cursor-pointer group',
+										'group mb-4 cursor-pointer justify-between gap-3',
 										open ? 'rounded-xl' : 'rounded-full',
 									)}
 								>
-									<div className="grow flex items-center justify-between gap-2">
+									<div className='flex grow items-center justify-between gap-2'>
 										{status === 'loading' ? (
-											<Skeleton className="w-10 h-10 rounded-full" />
+											<Skeleton className='h-10 w-10 rounded-full' />
 										) : (
 											<Avatar>
 												<AvatarImage
 													src={session?.user.image || '/svg/profile-image.svg'}
 													alt={session?.user.name || 'User'}
-													className="object-contain"
+													className='object-contain'
 												/>
 											</Avatar>
 										)}
 
-										<div className="flex flex-col gap-1 text-xs">
+										<div className='flex flex-col gap-1 text-xs'>
 											{status === 'loading' ? (
 												<>
-													<Skeleton className="w-32 h-4" />
-													<Skeleton className="w-32 h-4" />
+													<Skeleton className='h-4 w-32' />
+													<Skeleton className='h-4 w-32' />
 												</>
 											) : (
 												<>
-													<span className="font-medium">{session?.user.name || 'Guest'}</span>
-													<span className="text-gray-500">{session?.user.email || 'Please login'}</span>
+													<span className='font-medium'>{session?.user.name || 'Guest'}</span>
+													<span className='text-gray-500'>{session?.user.email || 'Please login'}</span>
 												</>
 											)}
 										</div>
 
-										<div className="relative size-5 transition-transform duration-300 group-hover:rotate-180">
-											<ChevronDownIcon size={16} className="absolute inset-0 m-auto" />
+										<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
+											<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
 										</div>
 									</div>
 								</SidebarMenuButton>
 							</DropdownMenuTrigger>
 
 							<DropdownMenuContent
-								align="start"
-								className="z-100 flex flex-col gap-1 w-(--radix-popper-anchor-width) rounded-xl shadow-lg bg-white dark:bg-gray-900"
+								align='start'
+								className='z-100 flex w-(--radix-popper-anchor-width) flex-col gap-1 rounded-xl bg-white shadow-lg dark:bg-gray-900'
 							>
 								{!session?.user ? (
-									<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
+									<DropdownMenuItem className='h-10 w-full cursor-pointer' asChild>
 										<button
 											onClick={() => {
 												setOpenAuthModal(true)
 											}}
-											className="flex items-center gap-2 p-3 rounded-xl w-full"
+											className='flex w-full items-center gap-2 rounded-xl p-3'
 										>
 											<UserIcon size={16} />
 											Login
@@ -222,20 +222,20 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 									</DropdownMenuItem>
 								) : (
 									<>
-										<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
+										<DropdownMenuItem className='h-10 w-full cursor-pointer' asChild>
 											<Link
-												href="/protected/settings"
-												className="flex items-center gap-2 p-3 rounded-xl w-full"
+												href='/protected/settings'
+												className='flex w-full items-center gap-2 rounded-xl p-3'
 											>
 												<SettingsIcon size={16} />
 												Settings
 											</Link>
 										</DropdownMenuItem>
 
-										<DropdownMenuItem className="w-full h-10 cursor-pointer" asChild>
+										<DropdownMenuItem className='h-10 w-full cursor-pointer' asChild>
 											<button
 												onClick={() => signOut()}
-												className="flex items-center gap-2 p-3 rounded-xl w-full"
+												className='flex w-full items-center gap-2 rounded-xl p-3'
 											>
 												<LogOutIcon size={16} />
 												Logout

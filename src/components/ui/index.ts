@@ -9,7 +9,7 @@ export {
 	AlertDialogAction,
 	AlertDialogCancel,
 } from './alert-dialog'
-export { Avatar, AvatarFallback, AvatarImage } from './avatar'
+export { Avatar, AvatarImage } from './avatar'
 export { Button, buttonVariants } from './button'
 export { Calendar } from './calendar'
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card'
@@ -34,15 +34,6 @@ export {
 } from './dropdown-menu'
 export { Input } from './input'
 export { Label } from './label'
-export {
-	Pagination,
-	PaginationContent,
-	PaginationEllipsis,
-	PaginationItem,
-	PaginationLink,
-	PaginationNext,
-	PaginationPrevious,
-} from './pagination'
 export { Popover, PopoverTrigger, PopoverContent } from './popover'
 export { ScrollArea, ScrollBar } from './scroll-area'
 export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
@@ -55,7 +46,6 @@ export {
 	SheetFooter,
 	SheetHeader,
 	SheetTitle,
-	SheetTrigger,
 } from './sheet'
 export {
 	Sidebar,
@@ -82,7 +72,6 @@ export {
 	TableHead,
 	TableRow,
 	TableCell,
-	TableCaption,
 } from './table'
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs'
 export { Textarea } from './textarea'

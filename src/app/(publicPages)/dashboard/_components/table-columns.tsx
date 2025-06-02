@@ -17,21 +17,21 @@ export const columns: ColumnDef<CoinListData>[] = [
 		header: ({ column }) => {
 			return (
 				<Button
-					variant="ghost"
-					className="px-0"
+					variant='ghost'
+					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					#
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className="size-4" />
+						<ArrowUpIcon className='size-4' />
 					) : (
-						<ArrowDownIcon className="size-4" />
+						<ArrowDownIcon className='size-4' />
 					)}
 				</Button>
 			)
 		},
 		cell: ({ row }) => (
-			<div className="py-2 px-3 text-base max-[1200px]:text-sm">{row.getValue('market_cap_rank')}</div>
+			<div className='px-3 py-2 text-base max-[1200px]:text-sm'>{row.getValue('market_cap_rank')}</div>
 		),
 		enableHiding: false,
 	},
@@ -42,15 +42,15 @@ export const columns: ColumnDef<CoinListData>[] = [
 		header: ({ column }) => {
 			return (
 				<Button
-					variant="ghost"
-					className="px-0"
+					variant='ghost'
+					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Name
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className="size-4" />
+						<ArrowUpIcon className='size-4' />
 					) : (
-						<ArrowDownIcon className="size-4" />
+						<ArrowDownIcon className='size-4' />
 					)}
 				</Button>
 			)
@@ -59,14 +59,14 @@ export const columns: ColumnDef<CoinListData>[] = [
 			const coin = row.original
 
 			return (
-				<div className="flex gap-2 items-center py-2 px-3 text-base max-[1200px]:text-sm">
+				<div className='flex items-center gap-2 px-3 py-2 text-base max-[1200px]:text-sm'>
 					{coin.image && coin.name ? (
 						<Image
 							src={coin.image || '/svg/coin-not-found.svg'}
 							alt={coin.name || 'Coin image'}
 							width={32}
 							height={32}
-							className="size-8 rounded-full max-[1200px]:size-6"
+							className='size-8 rounded-full max-[1200px]:size-6'
 							onError={(e) => {
 								e.currentTarget.src = '/svg/coin-not-found.svg'
 							}}
@@ -74,7 +74,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 					) : (
 						'-'
 					)}
-					<span className="max-w-[6rem] truncate">{coin.name}</span>
+					<span className='max-w-[6rem] truncate'>{coin.name}</span>
 				</div>
 			)
 		},
@@ -87,15 +87,15 @@ export const columns: ColumnDef<CoinListData>[] = [
 		header: ({ column }) => {
 			return (
 				<Button
-					variant="ghost"
-					className="px-0"
+					variant='ghost'
+					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Price
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className="size-4" />
+						<ArrowUpIcon className='size-4' />
 					) : (
-						<ArrowDownIcon className="size-4" />
+						<ArrowDownIcon className='size-4' />
 					)}
 				</Button>
 			)
@@ -105,7 +105,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 
 			const formatted = formatPrice(amount, true)
 
-			return <div className="py-2 px-3 text-base max-[1200px]:text-sm">${formatted}</div>
+			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>${formatted}</div>
 		},
 	},
 
@@ -115,15 +115,15 @@ export const columns: ColumnDef<CoinListData>[] = [
 		header: ({ column }) => {
 			return (
 				<Button
-					variant="ghost"
-					className="px-0"
+					variant='ghost'
+					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					24h
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className="size-4" />
+						<ArrowUpIcon className='size-4' />
 					) : (
-						<ArrowDownIcon className="size-4" />
+						<ArrowDownIcon className='size-4' />
 					)}
 				</Button>
 			)
@@ -132,11 +132,11 @@ export const columns: ColumnDef<CoinListData>[] = [
 			const coin = row.original
 
 			return (
-				<div className="py-2 px-3 text-base max-[1200px]:text-sm">
+				<div className='px-3 py-2 text-base max-[1200px]:text-sm'>
 					{coin.price_change_percentage_24h ? (
 						<div
 							className={cn(
-								'rounded-full font-medium px-2 py-1 inline-block',
+								'inline-block rounded-full px-2 py-1 font-medium',
 								coin.price_change_percentage_24h > 0
 									? 'bg-green-100 text-green-600 dark:bg-green-900/30'
 									: 'bg-red-100 text-red-600 dark:bg-red-900/30',
@@ -161,15 +161,15 @@ export const columns: ColumnDef<CoinListData>[] = [
 		header: ({ column }) => {
 			return (
 				<Button
-					variant="ghost"
-					className="px-0"
+					variant='ghost'
+					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					24h Volume
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className="size-4" />
+						<ArrowUpIcon className='size-4' />
 					) : (
-						<ArrowDownIcon className="size-4" />
+						<ArrowDownIcon className='size-4' />
 					)}
 				</Button>
 			)
@@ -179,7 +179,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 
 			const formatted = formatPrice(amount, true)
 
-			return <div className="py-2 px-3 text-base max-[1200px]:text-sm">${formatted}</div>
+			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>${formatted}</div>
 		},
 	},
 
@@ -189,15 +189,15 @@ export const columns: ColumnDef<CoinListData>[] = [
 		header: ({ column }) => {
 			return (
 				<Button
-					variant="ghost"
-					className="px-0"
+					variant='ghost'
+					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 				>
 					Market Cap
 					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className="size-4" />
+						<ArrowUpIcon className='size-4' />
 					) : (
-						<ArrowDownIcon className="size-4" />
+						<ArrowDownIcon className='size-4' />
 					)}
 				</Button>
 			)
@@ -207,7 +207,7 @@ export const columns: ColumnDef<CoinListData>[] = [
 
 			const formatted = formatPrice(amount, true)
 
-			return <div className="py-2 px-3 text-base max-[1200px]:text-sm">${formatted}</div>
+			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>${formatted}</div>
 		},
 	},
 
@@ -251,12 +251,12 @@ export const columns: ColumnDef<CoinListData>[] = [
 			const lineColor = priceChange > 0 ? '#22c55ed6' : priceChange < 0 ? '#dc2626d6' : '#22c55ed6'
 
 			return (
-				<div className="w-[100px] mx-0">
+				<div className='mx-0 w-[100px]'>
 					<ChartContainer config={chartConfig}>
 						<LineChart accessibilityLayer data={formattedData}>
 							<YAxis domain={[minPrice, maxPrice]} hide />
 
-							<Line dataKey="Price" type="natural" stroke={lineColor} strokeWidth={2} dot={false} />
+							<Line dataKey='Price' type='natural' stroke={lineColor} strokeWidth={2} dot={false} />
 						</LineChart>
 					</ChartContainer>
 				</div>

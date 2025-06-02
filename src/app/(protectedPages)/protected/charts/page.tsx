@@ -119,8 +119,8 @@ const ChartsPage = async () => {
 	}))
 
 	return (
-		<div className="flex flex-col gap-4 mx-0 xl:mx-10 2xl:mx-20 3xl:mx-30">
-			<div className="flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1">
+		<div className='3xl:mx-30 mx-0 flex flex-col gap-4 xl:mx-10 2xl:mx-20'>
+			<div className='flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1'>
 				<p>Total invested: ${formatPrice(totalInvestedValue, false)}</p>
 
 				<p>Total value: ${formatPrice(totalPortfolioValue, false)}</p>
@@ -129,7 +129,7 @@ const ChartsPage = async () => {
 			</div>
 
 			{/* Charts */}
-			<div className="flex flex-row gap-4 max-[1200px]:flex-col max-[1200px]:items-center">
+			<div className='flex flex-row gap-4 max-[1200px]:flex-col max-[1200px]:items-center'>
 				<LineChartContainer chartData={lineChartData} />
 
 				<PieChartContainer chartData={pieChartData} />

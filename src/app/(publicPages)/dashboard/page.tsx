@@ -17,10 +17,10 @@ const DashboardPage = async () => {
 	const trendingData = await getTrendingData()
 
 	return (
-		<div className="sm:mx-0 md:mx-2 lg:mx-4 xl:mx-6 2xl:mx-8">
+		<div className='sm:mx-0 md:mx-2 lg:mx-4 xl:mx-6 2xl:mx-8'>
 			<AccountTrendingSection trendingData={trendingData} />
 
-			<Suspense fallback={<Skeleton className="h-96 w-full rounded-xl" />}>
+			<Suspense fallback={<Skeleton className='h-96 w-full rounded-xl' />}>
 				<DataTableContainer categories={categories} initialCoins={coinsList} />
 			</Suspense>
 		</div>

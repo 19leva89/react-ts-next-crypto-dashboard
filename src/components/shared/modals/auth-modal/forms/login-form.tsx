@@ -59,59 +59,59 @@ export const LoginForm = ({ onClose }: Props) => {
 
 	return (
 		<FormProvider {...form}>
-			<form className="flex flex-col gap-5 h-full min-h-[450px]" onSubmit={form.handleSubmit(onSubmit)}>
-				<Card className="flex flex-col justify-between items-stretch grow dark:bg-card">
-					<div className="flex flex-col gap-5">
+			<form className='flex h-full min-h-[450px] flex-col gap-5' onSubmit={form.handleSubmit(onSubmit)}>
+				<Card className='flex grow flex-col items-stretch justify-between dark:bg-card'>
+					<div className='flex flex-col gap-5'>
 						<CardHeader>
 							<CardTitle>Login to your account</CardTitle>
 
 							<CardDescription>Enter your email to log in to your account</CardDescription>
 						</CardHeader>
 
-						<CardContent className="flex flex-col gap-5">
-							<FormInput name="email" type="email" placeholder="Email" required />
+						<CardContent className='flex flex-col gap-5'>
+							<FormInput name='email' type='email' placeholder='Email' required />
 
-							<FormInput name="password" type="password" placeholder="Password" required />
+							<FormInput name='password' type='password' placeholder='Password' required />
 						</CardContent>
 					</div>
 
-					<CardFooter className="flex flex-col gap-4">
+					<CardFooter className='flex flex-col gap-4'>
 						<Button
-							variant="default"
-							size="lg"
-							type="submit"
+							variant='default'
+							size='lg'
+							type='submit'
 							loading={form.formState.isSubmitting}
-							className="text-base text-white w-full rounded-xl transition-colors ease-in-out duration-300"
+							className='w-full rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 						>
 							Login
 						</Button>
 
-						<div className="flex gap-2 w-full">
+						<div className='flex w-full gap-2'>
 							<Button
-								variant="outline"
-								size="lg"
-								type="button"
+								variant='outline'
+								size='lg'
+								type='button'
 								onClick={() => handleLogin('github')}
-								className="gap-2 p-2 flex-1 rounded-xl transition-colors ease-in-out duration-300"
+								className='flex-1 gap-2 rounded-xl p-2 transition-colors duration-300 ease-in-out'
 							>
 								<Image
 									width={24}
 									height={24}
-									alt="GitHub"
-									src="/svg/github-icon.svg"
-									className="dark:invert dark:brightness-200"
+									alt='GitHub'
+									src='/svg/github-icon.svg'
+									className='dark:brightness-200 dark:invert'
 								/>
 								GitHub
 							</Button>
 
 							<Button
-								variant="outline"
-								size="lg"
-								type="button"
+								variant='outline'
+								size='lg'
+								type='button'
 								onClick={() => handleLogin('google')}
-								className="gap-2 p-2 flex-1 rounded-xl transition-colors ease-in-out duration-300"
+								className='flex-1 gap-2 rounded-xl p-2 transition-colors duration-300 ease-in-out'
 							>
-								<Image width={24} height={24} alt="Google" src="/svg/google-icon.svg" />
+								<Image width={24} height={24} alt='Google' src='/svg/google-icon.svg' />
 								Google
 							</Button>
 						</div>
