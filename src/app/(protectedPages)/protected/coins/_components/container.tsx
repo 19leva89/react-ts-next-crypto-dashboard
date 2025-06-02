@@ -56,16 +56,18 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 				return b.current_price * b.total_quantity - a.current_price * a.total_quantity
 
 			case 'profit-asc':
-				return (
-					((a.current_price - a.average_price) / a.average_price) * 100 -
-					((b.current_price - b.average_price) / b.average_price) * 100
-				)
+				const profitAscA =
+					a.average_price === 0 ? 0 : ((a.current_price - a.average_price) / a.average_price) * 100
+				const profitAscB =
+					b.average_price === 0 ? 0 : ((b.current_price - b.average_price) / b.average_price) * 100
+				return profitAscA - profitAscB
 
 			case 'profit-desc':
-				return (
-					((b.current_price - b.average_price) / b.average_price) * 100 -
-					((a.current_price - a.average_price) / a.average_price) * 100
-				)
+				const profitDescA =
+					a.average_price === 0 ? 0 : ((a.current_price - a.average_price) / a.average_price) * 100
+				const profitDescB =
+					b.average_price === 0 ? 0 : ((b.current_price - b.average_price) / b.average_price) * 100
+				return profitDescA - profitDescB
 
 			case 'name-asc':
 				return a.name.localeCompare(b.name)
