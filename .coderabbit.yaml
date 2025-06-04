@@ -19,7 +19,3 @@ reviews:
 
 chat:
   auto_reply: true
-
-# Privacy settings (optional)
-privacy:
-  shareCode: false

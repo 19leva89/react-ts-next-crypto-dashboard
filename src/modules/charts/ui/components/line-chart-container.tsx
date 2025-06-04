@@ -13,11 +13,10 @@ import {
 	ChartTooltipContent,
 } from '@/components/ui'
 import { MONTH_OPTIONS } from '@/constants/chart'
-import { UserChartDataPoint } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
 
 interface Props {
-	chartData: UserChartDataPoint[]
+	chartData: { timestamp: string; value: number }[]
 }
 
 export const LineChartContainer = ({ chartData }: Props) => {
