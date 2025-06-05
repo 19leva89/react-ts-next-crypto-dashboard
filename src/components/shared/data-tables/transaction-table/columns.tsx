@@ -4,7 +4,7 @@ import { ArrowDownIcon, ArrowUpIcon, CalendarIcon } from 'lucide-react'
 
 import { Transaction } from '@/app/api/types'
 import { InputFormatPrice } from '@/components/shared'
-import { DeleteTransaction } from '../../../../app/(protectedPages)/protected/coins/_components/delete-transaction'
+import { DeleteTransaction } from '@/modules/coins/ui/components/delete-transaction'
 import { Button, Calendar, Popover, PopoverContent, PopoverTrigger } from '@/components/ui'
 
 export const getColumns = (

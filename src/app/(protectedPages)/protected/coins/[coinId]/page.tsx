@@ -1,9 +1,12 @@
-import { constructMetadata } from '@/lib'
-import { getUserCoinData } from '@/app/api/actions'
-import { CoinIdContainer } from './_components/container'
+import { Suspense } from 'react'
+import { redirect } from 'next/navigation'
+import { ErrorBoundary } from 'react-error-boundary'
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 
-// The page must be rendered on the server side
-export const dynamic = 'force-dynamic'
+import { auth } from '@/auth'
+import { constructMetadata } from '@/lib'
+import { getQueryClient, trpc } from '@/trpc/server'
+import { CoinIdView, CoinIdViewError, CoinIdViewLoading } from '@/modules/coins/ui/views/coin-id-view'
 
 interface Props {
 	params: Promise<{ coinId: string }>
@@ -22,19 +25,31 @@ export async function generateMetadata({ params }: Props) {
 }
 
 const CoinIdPage = async ({ params }: Props) => {
+	const session = await auth()
+
 	const { coinId } = await params
+
+	if (!session) {
+		redirect('/not-auth')
+	}
 
 	if (!coinId) {
 		return <div>Invalid coin ID</div>
 	}
 
-	const userCoin = await getUserCoinData(coinId)
+	const queryClient = getQueryClient()
 
-	if (!userCoin || Array.isArray(userCoin)) {
-		return <div>Coin not found</div>
-	}
+	await queryClient.prefetchQuery(trpc.coins.getUserCoin.queryOptions(coinId))
 
-	return <CoinIdContainer coin={userCoin} />
+	return (
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<Suspense fallback={<CoinIdViewLoading />}>
+				<ErrorBoundary fallback={<CoinIdViewError />}>
+					<CoinIdView coinId={coinId} />
+				</ErrorBoundary>
+			</Suspense>
+		</HydrationBoundary>
+	)
 }
 
 export default CoinIdPage

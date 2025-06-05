@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { ArrowLeftIcon, Loader2Icon, PlusIcon } from 'lucide-react'
+import { ArrowLeftIcon, LoaderIcon, PlusIcon } from 'lucide-react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
 import {
@@ -199,7 +199,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					}}
 					className='transition-colors duration-300 ease-in-out'
 				>
-					{isNavigatingBack ? <Loader2Icon className='size-5 animate-spin' /> : <ArrowLeftIcon />}
+					{isNavigatingBack ? <LoaderIcon className='size-5 animate-spin text-primary' /> : <ArrowLeftIcon />}
 				</Button>
 
 				<div className='flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1'>

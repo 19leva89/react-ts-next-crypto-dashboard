@@ -14,7 +14,7 @@ const ChartsPage = async () => {
 	const session = await auth()
 
 	if (!session) {
-		redirect('/sign-in')
+		redirect('/not-auth')
 	}
 
 	const queryClient = getQueryClient()
