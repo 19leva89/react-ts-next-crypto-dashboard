@@ -5,11 +5,12 @@ export const metadata = constructMetadata({ title: 'Access denied' })
 
 const UnauthorizedPage = () => {
 	return (
-		<div className="flex items-center justify-center min-h-screen w-full">
+		<div className='flex min-h-screen w-full items-center justify-center'>
 			<InfoBlock
-				title="Access denied"
-				text="This page can only be viewed by authorized users"
-				imageUrl="/img/lock.png"
+				type='auth'
+				title='Access denied'
+				text='This page can only be viewed by authorized users'
+				imageUrl='/img/lock.png'
 			/>
 		</div>
 	)
