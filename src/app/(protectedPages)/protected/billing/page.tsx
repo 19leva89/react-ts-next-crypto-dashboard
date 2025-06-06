@@ -1,12 +1,22 @@
+import { Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
+// import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
+
 import { constructMetadata } from '@/lib'
+import { BillingView, BillingViewError, BillingViewLoading } from '@/modules/billing/ui/views/billing-view'
 
 export const metadata = constructMetadata({ title: 'Billing' })
 
-// The page must be rendered on the server side
-export const dynamic = 'force-dynamic'
-
 const BillingPage = () => {
-	return <h1 className='text-center'>Billing</h1>
+	return (
+		// <HydrationBoundary state={dehydrate(queryClient)}>
+		<Suspense fallback={<BillingViewLoading />}>
+			<ErrorBoundary fallback={<BillingViewError />}>
+				<BillingView />
+			</ErrorBoundary>
+		</Suspense>
+		// </HydrationBoundary>
+	)
 }
 
 export default BillingPage

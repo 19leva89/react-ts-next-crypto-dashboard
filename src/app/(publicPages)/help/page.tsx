@@ -1,12 +1,22 @@
+import { Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
+// import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
+
 import { constructMetadata } from '@/lib'
+import { HelpView, HelpViewError, HelpViewLoading } from '@/modules/help/ui/views/help-view'
 
 export const metadata = constructMetadata({ title: 'Help center' })
 
-// The page must be rendered on the server side
-export const dynamic = 'force-dynamic'
-
-const HelpCenterPage = () => {
-	return <h1 className='text-center'>Help center</h1>
+const HelpPage = () => {
+	return (
+		// <HydrationBoundary state={dehydrate(queryClient)}>
+		<Suspense fallback={<HelpViewLoading />}>
+			<ErrorBoundary fallback={<HelpViewError />}>
+				<HelpView />
+			</ErrorBoundary>
+		</Suspense>
+		// </HydrationBoundary>
+	)
 }
 
-export default HelpCenterPage
+export default HelpPage
