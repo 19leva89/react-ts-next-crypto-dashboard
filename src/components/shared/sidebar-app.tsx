@@ -61,37 +61,37 @@ const sideBarData = [
 	},
 	{
 		title: 'Coins',
-		url: '/protected/coins',
+		url: '/coins',
 		icon: HandCoinsIcon,
 		protected: true,
 	},
 	{
 		title: 'Charts',
-		url: '/protected/charts',
+		url: '/charts',
 		icon: ChartNoAxesCombinedIcon,
 		protected: true,
 	},
 	{
 		title: 'Cards',
-		url: '/protected/cards',
+		url: '/cards',
 		icon: CreditCardIcon,
 		protected: true,
 	},
 	{
 		title: 'Reports',
-		url: '/protected/reports',
+		url: '/reports',
 		icon: FileTextIcon,
 		protected: true,
 	},
 	{
 		title: 'Notifications',
-		url: '/protected/notifications',
+		url: '/notifications',
 		icon: BellIcon,
 		protected: true,
 	},
 	{
 		title: 'Billing',
-		url: '/protected/billing',
+		url: '/billing',
 		icon: WalletIcon,
 		protected: true,
 	},
@@ -223,10 +223,7 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 								) : (
 									<>
 										<DropdownMenuItem className='h-10 w-full cursor-pointer' asChild>
-											<Link
-												href='/protected/settings'
-												className='flex w-full items-center gap-2 rounded-xl p-3'
-											>
+											<Link href='/settings' className='flex w-full items-center gap-2 rounded-xl p-3'>
 												<SettingsIcon size={16} />
 												Settings
 											</Link>
