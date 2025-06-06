@@ -341,7 +341,7 @@ export function TRPCReactProvider(props: PropsWithChildren) {
 ## Version Compatibility
 
 This guide is for tRPC v11, which requires:
-- TypeScript >= 5.8.3
+- TypeScript >= 5.7.2
 - Strict TypeScript mode (`"strict": true` in tsconfig.json)
 
 ## Further Resources

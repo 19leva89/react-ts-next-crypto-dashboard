@@ -7,7 +7,8 @@ import { getUserCoinData, getUserCoinsList } from '@/app/api/actions'
 export const coinsRouter = createTRPCRouter({
 	getUserCoin: protectedProcedure.input(z.string()).query(async ({ input: coinId }) => {
 		const userCoin = await getUserCoinData(coinId)
-		if (!userCoin || Array.isArray(userCoin)) {
+
+		if (!userCoin || !('coinId' in userCoin)) {
 			throw new TRPCError({
 				code: 'NOT_FOUND',
 				message: 'Coin not found',

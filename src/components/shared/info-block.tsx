@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ArrowLeftIcon, RefreshCcwIcon, UserIcon } from 'lucide-react'
 
 import { cn } from '@/lib'
@@ -19,6 +19,8 @@ interface Props {
 }
 
 export const InfoBlock = ({ title, text, imageUrl, type, className }: Props) => {
+	const router = useRouter()
+
 	const [openAuthModal, setOpenAuthModal] = useState<boolean>(false)
 
 	return (
@@ -32,16 +34,15 @@ export const InfoBlock = ({ title, text, imageUrl, type, className }: Props) => 
 					</div>
 
 					<div className='mt-11 flex gap-5'>
-						<Link href='/'>
-							<Button
-								variant='default'
-								size='lg'
-								className='rounded-xl text-white transition-colors duration-300 ease-in-out'
-							>
-								<ArrowLeftIcon size={16} />
-								Back
-							</Button>
-						</Link>
+						<Button
+							variant='default'
+							size='lg'
+							onClick={() => router.push('/')}
+							className='rounded-xl text-white transition-colors duration-300 ease-in-out'
+						>
+							<ArrowLeftIcon size={16} />
+							Back
+						</Button>
 
 						{type === 'auth' ? (
 							<Button
@@ -56,16 +57,15 @@ export const InfoBlock = ({ title, text, imageUrl, type, className }: Props) => 
 								Sign In
 							</Button>
 						) : (
-							<Link href=''>
-								<Button
-									variant='outline'
-									size='lg'
-									className='rounded-xl transition-colors duration-300 ease-in-out'
-								>
-									<RefreshCcwIcon size={16} />
-									Refresh
-								</Button>
-							</Link>
+							<Button
+								variant='outline'
+								size='lg'
+								onClick={() => router.refresh()}
+								className='rounded-xl transition-colors duration-300 ease-in-out'
+							>
+								<RefreshCcwIcon size={16} />
+								Refresh
+							</Button>
 						)}
 					</div>
 				</div>
