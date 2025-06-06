@@ -1,10 +1,8 @@
 'use client'
 
-import { Suspense } from 'react'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
 import { useTRPC } from '@/trpc/client'
-import { Skeleton } from '@/components/ui'
 import { ErrorState, LoadingState } from '@/components/shared'
 import { DataTableContainer } from '@/modules/dashboard/ui/components/table-data-container'
 import { AccountTrendingSection } from '@/modules/dashboard/ui/components/account-trending-section'
@@ -20,9 +18,7 @@ export const DashboardView = () => {
 		<div className='sm:mx-0 md:mx-2 lg:mx-4 xl:mx-6 2xl:mx-8'>
 			<AccountTrendingSection trendingData={trendingData} />
 
-			<Suspense fallback={<Skeleton className='h-96 w-full rounded-xl' />}>
-				<DataTableContainer categories={categories} initialCoins={initialCoins} />
-			</Suspense>
+			<DataTableContainer categories={categories} initialCoins={initialCoins} />
 		</div>
 	)
 }

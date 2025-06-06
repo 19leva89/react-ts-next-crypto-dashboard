@@ -15,11 +15,9 @@ export const metadata = constructMetadata({ title: 'Dashboard' })
 const DashboardPage = async () => {
 	const queryClient = getQueryClient()
 
-	await Promise.all([
-		queryClient.prefetchQuery(trpc.dashboard.getCategories.queryOptions()),
-		queryClient.prefetchQuery(trpc.dashboard.getCoinsList.queryOptions()),
-		queryClient.prefetchQuery(trpc.dashboard.getTrending.queryOptions()),
-	])
+	void queryClient.prefetchQuery(trpc.dashboard.getTrending.queryOptions())
+	void queryClient.prefetchQuery(trpc.dashboard.getCategories.queryOptions())
+	void queryClient.prefetchQuery(trpc.dashboard.getCoinsList.queryOptions())
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
