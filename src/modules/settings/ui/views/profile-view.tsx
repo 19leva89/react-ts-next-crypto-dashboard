@@ -1,39 +1,39 @@
 'use client'
 
 import { toast } from 'sonner'
-import { User } from '@prisma/client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signOut, useSession } from 'next-auth/react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
+import { useTRPC } from '@/trpc/client'
 import { Button } from '@/components/ui'
 import { FormInput } from '@/components/shared/form'
-import { Container, Title } from '@/components/shared'
 import { deleteUser, updateUserInfo } from '@/app/api/actions'
-import { updateUserInfoSchema, UserFormValues } from '@/constants/update-user-info-schema'
+import { Container, ErrorState, LoadingState, Title } from '@/components/shared'
+import { UpdateProfileValues, UserProfile, updateProfileSchema } from '@/modules/settings/schema'
 
-interface Props {
-	data: User
-}
+export const ProfileView = () => {
+	const trpc = useTRPC()
 
-export const ProfileForm = ({ data }: Props) => {
 	const { update } = useSession()
+	const { data: profile } = useSuspenseQuery(trpc.settings.getProfile.queryOptions()) as { data: UserProfile }
 
-	const form = useForm({
-		resolver: zodResolver(updateUserInfoSchema),
+	const form = useForm<UpdateProfileValues>({
+		resolver: zodResolver(updateProfileSchema),
 		defaultValues: {
-			email: data.email,
-			name: data.name || '',
+			email: profile.email,
+			name: profile.name || '',
 			password: '',
 			confirmPassword: '',
 		},
 	})
 
-	const onSubmit = async (formData: UserFormValues) => {
+	const onSubmit = async (formData: UpdateProfileValues) => {
 		try {
 			await updateUserInfo({
-				email: formData.email,
-				name: formData.name,
+				email: formData.email || '',
+				name: formData.name || '',
 				...(formData.password ? { password: formData.password } : {}),
 			})
 
@@ -102,4 +102,12 @@ export const ProfileForm = ({ data }: Props) => {
 			</FormProvider>
 		</Container>
 	)
+}
+
+export const ProfileViewLoading = () => {
+	return <LoadingState title='Loading profile' description='This may take a few seconds' />
+}
+
+export const ProfileViewError = () => {
+	return <ErrorState title='Failed to load profile' description='Please try again later' />
 }
