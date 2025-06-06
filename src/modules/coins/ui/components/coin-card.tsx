@@ -64,7 +64,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 						/>
 
 						<Link
-							href={`/protected/coins/${coin.coinId}`}
+							href={`/coins/${coin.coinId}`}
 							className='max-w-[8rem] cursor-pointer truncate hover:text-[#397fee] dark:hover:text-[#75a6f4]'
 						>
 							{coin.name}

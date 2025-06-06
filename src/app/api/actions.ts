@@ -355,7 +355,7 @@ export const addCoinToUser = async (coinId: string, quantity: number, price: num
 			await recalculateAveragePrice(session.user.id, coinId, transactionPrisma)
 		})
 
-		revalidatePath('/protected/coins')
+		revalidatePath('/coins')
 	} catch (error) {
 		handleError(error, 'ADD_COIN_TO_USER')
 	}
@@ -413,8 +413,8 @@ export const updateUserCoin = async (
 			}
 		})
 
-		revalidatePath('/protected/coins')
-		revalidatePath(`/protected/coins/${coinId}`)
+		revalidatePath('/coins')
+		revalidatePath(`/coins/${coinId}`)
 	} catch (error) {
 		handleError(error, 'UPDATE_USER_COIN')
 	}
@@ -440,8 +440,8 @@ export const deleteCoinFromUser = async (coinId: string) => {
 			},
 		})
 
-		revalidatePath('/protected/coins')
-		revalidatePath(`/protected/coins/${coinId}`)
+		revalidatePath('/coins')
+		revalidatePath(`/coins/${coinId}`)
 	} catch (error) {
 		handleError(error, 'DELETE_USER_COIN')
 	}
@@ -523,8 +523,8 @@ export const deleteTransactionFromUser = async (coinTransactionId: string) => {
 			})
 		})
 
-		revalidatePath('/protected/coins')
-		revalidatePath(`/protected/coins/${deletedTransaction.coinId}`)
+		revalidatePath('/coins')
+		revalidatePath(`/coins/${deletedTransaction.coinId}`)
 
 		return deletedTransaction
 	} catch (error) {
@@ -1264,6 +1264,7 @@ export const getUserCoinData = async (coinId: string): Promise<UserCoinData> => 
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const updateUserCoinData = async (coinId: string) => {}
 
 export const getCoinsListByCate = async (cate: string): Promise<CoinsListData> => {
