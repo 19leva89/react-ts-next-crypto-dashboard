@@ -1,29 +1,34 @@
 import { Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 
 import { constructMetadata } from '@/lib'
-import { Skeleton } from '@/components/ui'
-import { DataTableContainer } from './_components/table-data-container'
-import { AccountTrendingSection } from './_components/account-trending-section'
-import { getCategories, getCoinsList, getTrendingData } from '@/app/api/actions'
+import { getQueryClient, trpc } from '@/trpc/server'
+import {
+	DashboardView,
+	DashboardViewError,
+	DashboardViewLoading,
+} from '@/modules/dashboard/ui/views/dashboard-view'
 
 export const metadata = constructMetadata({ title: 'Dashboard' })
 
-// The page must be rendered on the server side
-export const dynamic = 'force-dynamic'
-
 const DashboardPage = async () => {
-	const categories = await getCategories()
-	const coinsList = await getCoinsList()
-	const trendingData = await getTrendingData()
+	const queryClient = getQueryClient()
+
+	await Promise.all([
+		queryClient.prefetchQuery(trpc.dashboard.getCategories.queryOptions()),
+		queryClient.prefetchQuery(trpc.dashboard.getCoinsList.queryOptions()),
+		queryClient.prefetchQuery(trpc.dashboard.getTrending.queryOptions()),
+	])
 
 	return (
-		<div className='sm:mx-0 md:mx-2 lg:mx-4 xl:mx-6 2xl:mx-8'>
-			<AccountTrendingSection trendingData={trendingData} />
-
-			<Suspense fallback={<Skeleton className='h-96 w-full rounded-xl' />}>
-				<DataTableContainer categories={categories} initialCoins={coinsList} />
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<Suspense fallback={<DashboardViewLoading />}>
+				<ErrorBoundary fallback={<DashboardViewError />}>
+					<DashboardView />
+				</ErrorBoundary>
 			</Suspense>
-		</div>
+		</HydrationBoundary>
 	)
 }
 

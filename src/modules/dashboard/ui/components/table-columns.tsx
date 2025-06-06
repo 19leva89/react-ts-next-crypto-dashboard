@@ -2,8 +2,8 @@
 
 import Image from 'next/image'
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 import { Line, LineChart, YAxis } from 'recharts'
+import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 
 import { cn } from '@/lib'
 import { CoinListData } from '@/app/api/types'

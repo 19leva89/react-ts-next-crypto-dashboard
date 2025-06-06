@@ -44,9 +44,7 @@ export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 	}
 
 	// Handle coin detail modal
-	const toggleDetailModal = () => {
-		setIsModalOpen(!isModalOpen)
-	}
+	const toggleDetailModal = () => setIsModalOpen(!isModalOpen)
 
 	const handleCoinClick = (coinId: string) => {
 		if (coinId) {
