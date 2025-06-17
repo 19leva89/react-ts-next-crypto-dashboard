@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { toast } from 'sonner'
 import { PlusIcon } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
 import { FixedSizeList as List } from 'react-window'
 import { ChangeEvent, CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -23,12 +24,23 @@ import {
 	SelectTrigger,
 	Skeleton,
 } from '@/components/ui'
-import { useCoinActions } from '@/hooks'
+import { useTRPC } from '@/trpc/client'
 import { CoinsListIDMapData } from '@/app/api/types'
-import { addCoinToUser, getCoinsListIDMap } from '@/app/api/actions'
+import { getCoinsListIDMap } from '@/app/api/actions'
 
 export const AddCoin = () => {
-	const { handleAction } = useCoinActions()
+	const trpc = useTRPC()
+
+	const addCoinMutation = useMutation(
+		trpc.coins.addCoinToUser.mutationOptions({
+			onSuccess: () => {
+				toast.success('Coin added successfully')
+			},
+			onError: () => {
+				toast.error('Failed to add coin. Please try again')
+			},
+		}),
+	)
 
 	const [editPrice, setEditPrice] = useState<string>('')
 	const [isAdding, setIsAdding] = useState<boolean>(false)
@@ -95,12 +107,11 @@ export const AddCoin = () => {
 				return
 			}
 
-			await handleAction(
-				async () => addCoinToUser(selectedCoin, Number(editQuantity), Number(editPrice)),
-				'Coin added successfully',
-				'Failed to add coin. Please try again',
-				true,
-			)
+			await addCoinMutation.mutateAsync({
+				coinId: selectedCoin,
+				quantity: Number(editQuantity),
+				price: Number(editPrice),
+			})
 
 			setIsDialogOpen(false)
 		} finally {

@@ -1,3 +1,6 @@
+import { toast } from 'sonner'
+import { useMutation } from '@tanstack/react-query'
+
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -8,9 +11,8 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui'
-import { useCoinActions } from '@/hooks'
+import { useTRPC } from '@/trpc/client'
 import { UserCoinData } from '@/app/api/types'
-import { deleteCoinFromUser } from '@/app/api/actions'
 
 interface Props {
 	coin: UserCoinData
@@ -19,15 +21,22 @@ interface Props {
 }
 
 export const DeleteCoin = ({ coin, isOpen, onClose }: Props) => {
-	const { handleAction } = useCoinActions()
+	const trpc = useTRPC()
+
+	const deleteCoinMutation = useMutation(
+		trpc.coins.deleteCoinFromUser.mutationOptions({
+			onSuccess: () => {
+				toast.success('Coin removed successfully')
+				onClose()
+			},
+			onError: () => {
+				toast.error('Failed to remove coin')
+			},
+		}),
+	)
 
 	const handleDelete = async () => {
-		await handleAction(
-			async () => await deleteCoinFromUser(coin.coinId),
-			'Coin removed successfully',
-			'Failed to remove coin',
-			true,
-		)
+		await deleteCoinMutation.mutateAsync(coin.coinId)
 	}
 
 	return (

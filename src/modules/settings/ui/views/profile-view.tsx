@@ -4,12 +4,11 @@ import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signOut, useSession } from 'next-auth/react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useSuspenseQuery, useMutation } from '@tanstack/react-query'
 
 import { useTRPC } from '@/trpc/client'
 import { Button } from '@/components/ui'
 import { FormInput } from '@/components/shared/form'
-import { deleteUser, updateUserInfo } from '@/app/api/actions'
 import { Container, ErrorState, LoadingState, Title } from '@/components/shared'
 import { UpdateProfileValues, UserProfile, updateProfileSchema } from '@/modules/settings/schema'
 
@@ -18,6 +17,9 @@ export const ProfileView = () => {
 
 	const { update } = useSession()
 	const { data: profile } = useSuspenseQuery(trpc.settings.getProfile.queryOptions()) as { data: UserProfile }
+
+	const deleteUserMutation = useMutation(trpc.settings.deleteUser.mutationOptions())
+	const updateUserMutation = useMutation(trpc.settings.updateUserInfo.mutationOptions())
 
 	const form = useForm<UpdateProfileValues>({
 		resolver: zodResolver(updateProfileSchema),
@@ -31,7 +33,7 @@ export const ProfileView = () => {
 
 	const onSubmit = async (formData: UpdateProfileValues) => {
 		try {
-			await updateUserInfo({
+			await updateUserMutation.mutateAsync({
 				email: formData.email || '',
 				name: formData.name || '',
 				...(formData.password ? { password: formData.password } : {}),
@@ -49,7 +51,7 @@ export const ProfileView = () => {
 
 	const handleDeleteAccount = async () => {
 		try {
-			await deleteUser()
+			await deleteUserMutation.mutateAsync()
 
 			toast.success('Your account has been deleted')
 
@@ -82,7 +84,7 @@ export const ProfileView = () => {
 						variant='default'
 						size='lg'
 						type='submit'
-						disabled={form.formState.isSubmitting}
+						disabled={form.formState.isSubmitting || updateUserMutation.isPending}
 						className='mt-10 rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 					>
 						Save
@@ -93,7 +95,7 @@ export const ProfileView = () => {
 						size='lg'
 						type='button'
 						onClick={handleDeleteAccount}
-						disabled={form.formState.isSubmitting}
+						disabled={form.formState.isSubmitting || deleteUserMutation.isPending}
 						className='rounded-xl text-base transition-colors duration-300 ease-in-out'
 					>
 						Delete account

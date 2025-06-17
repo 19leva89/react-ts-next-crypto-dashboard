@@ -20,7 +20,6 @@ import {
 	PrismaTransactionClient,
 	TrendingCoin,
 	CoinData,
-	Transaction,
 	MarketChartDataPoint,
 	Airdrop,
 } from './types'
@@ -46,7 +45,11 @@ const handleError = (error: unknown, context: string) => {
 }
 
 // General function for recalculating aggregated data
-const recalculateAveragePrice = async (userId: string, coinId: string, prisma: PrismaTransactionClient) => {
+export const recalculateAveragePrice = async (
+	userId: string,
+	coinId: string,
+	prisma: PrismaTransactionClient,
+) => {
 	const transactions = await prisma.userCoinTransaction.findMany({
 		where: { userCoin: { userId, coinId } },
 		orderBy: { date: 'asc' },
@@ -194,344 +197,6 @@ export const loginUserWithCreds = async (body: Prisma.UserCreateInput) => {
 	revalidatePath('/')
 }
 
-export const updateUserInfo = async (body: Prisma.UserUpdateInput) => {
-	try {
-		const session = await auth()
-
-		if (!session?.user) throw new Error('User not found')
-
-		const existingUser = await prisma.user.findFirst({
-			where: { id: session?.user.id },
-			include: { accounts: true },
-		})
-
-		if (!existingUser) throw new Error('User not found')
-
-		// Checking if the user has OAuth accounts
-		const hasOAuthAccounts = existingUser.accounts.length > 0
-
-		// If the user logged in via OAuth, prohibit changing the email and password
-		if (hasOAuthAccounts) {
-			if (body.email && body.email !== existingUser.email)
-				throw new Error('Email cannot be changed for OAuth users')
-
-			if (body.password) throw new Error('Password cannot be changed for OAuth users')
-		}
-
-		// Validation for email uniqueness
-		if (body.email && body.email !== existingUser.email && !hasOAuthAccounts) {
-			const emailExists = await prisma.user.findUnique({
-				where: {
-					email: body.email as string,
-				},
-			})
-
-			if (emailExists) throw new Error('Email is already in use')
-		}
-
-		const updatedData: Prisma.UserUpdateInput = {
-			name: body.name,
-		}
-
-		// If the user is not OAuth, allow email and password updates
-		if (!hasOAuthAccounts) {
-			updatedData.email = body.email ? body.email : existingUser.email
-			updatedData.password = body.password
-				? await saltAndHashPassword(body.password as string)
-				: existingUser.password
-		}
-
-		const updatedUser = await prisma.user.update({
-			where: {
-				id: session?.user.id,
-			},
-			data: updatedData,
-		})
-
-		return updatedUser
-	} catch (error) {
-		handleError(error, 'UPDATE_USER')
-	}
-}
-
-export const deleteUser = async (userId?: string) => {
-	try {
-		const session = await auth()
-
-		// Checking if the user is authorized
-		if (!session?.user) throw new Error('User not authenticated')
-
-		// If userId is not passed, delete the current user
-		const targetUserId = userId || session.user.id
-
-		// Check that the user only deletes himself (or the administrator can delete others)
-		if (session.user.role !== 'ADMIN' && targetUserId !== session.user.id) {
-			throw new Error('You do not have permission to delete this user')
-		}
-
-		// Delete the user and all associated data (cascade delete)
-		const deletedUser = await prisma.user.delete({
-			where: {
-				id: targetUserId,
-			},
-			include: {
-				accounts: true,
-				sessions: true,
-				verificationCode: true,
-			},
-		})
-
-		return deletedUser
-	} catch (error) {
-		handleError(error, 'DELETE_USER')
-	}
-}
-
-export const addCoinToUser = async (coinId: string, quantity: number, price: number) => {
-	try {
-		const session = await auth()
-		const userId = session?.user?.id
-
-		// Validation
-		if (!userId) throw new Error('User not authenticated')
-		if (!coinId) throw new Error('CoinId is required')
-
-		if (typeof quantity !== 'number' || isNaN(quantity) || quantity === 0) {
-			throw new Error('Invalid quantity. Use positive for buy, negative for sell')
-		}
-
-		if (typeof price !== 'number' || isNaN(price) || price < 0) {
-			throw new Error('Invalid price. Price must be greater than 0')
-		}
-
-		// Check if user exists
-		const user = await prisma.user.findUnique({
-			where: { id: session.user.id },
-		})
-
-		if (!user) throw new Error('User not found')
-
-		// Getting coin data from fetchCoinData
-		const coinData = await getCoinData(coinId)
-
-		// If coinData is empty (error getting data), throw an error
-		if (!coinData) throw new Error(`Failed to fetch data for coin ${coinId}`)
-
-		await prisma.$transaction(async (transactionPrisma) => {
-			// 1. Receive or create UserCoin
-			const userCoin = await prisma.userCoin.upsert({
-				where: {
-					userId_coinId: {
-						userId: session.user.id,
-						coinId,
-					},
-				},
-				update: {},
-				create: {
-					id: coinId,
-					user: { connect: { id: session.user.id } },
-					coin: { connect: { id: coinId } },
-					coinsListIDMap: { connect: { id: coinId } },
-				},
-				include: { transactions: true },
-			})
-
-			// 2. Checking balance for sales
-			if (quantity < 0 && Math.abs(quantity) > (userCoin.total_quantity || 0)) {
-				throw new Error('Not enough coins to sell')
-			}
-
-			// 3. Create a transaction record
-			await prisma.userCoinTransaction.create({
-				data: {
-					quantity,
-					price,
-					date: new Date(),
-					userCoinId: userCoin.id,
-				},
-			})
-
-			// 4. Recalculating aggregated data
-			await recalculateAveragePrice(session.user.id, coinId, transactionPrisma)
-		})
-
-		revalidatePath('/coins')
-	} catch (error) {
-		handleError(error, 'ADD_COIN_TO_USER')
-	}
-}
-
-export const updateUserCoin = async (
-	coinId: string,
-	desiredSellPrice?: number,
-	transactions?: { id: string; quantity: number; price: number; date: Date }[],
-) => {
-	try {
-		const session = await auth()
-		const userId = session?.user?.id
-
-		if (!userId) throw new Error('User not authenticated')
-		if (!coinId) throw new Error('Coin ID is required')
-
-		await prisma.$transaction(async (transactionPrisma) => {
-			// Validation for transactions
-			if (transactions?.some((t) => t.quantity < 0)) {
-				const totalOwned = transactions.filter((t) => t.quantity > 0).reduce((sum, t) => sum + t.quantity, 0)
-
-				const totalSelling = Math.abs(
-					transactions.filter((t) => t.quantity < 0).reduce((sum, t) => sum + t.quantity, 0),
-				)
-
-				if (totalSelling > totalOwned) {
-					throw new Error('Not enough coins to sell')
-				}
-			}
-
-			// Update transactions
-			if (transactions?.length) {
-				await Promise.all(
-					transactions.map((t) =>
-						transactionPrisma.userCoinTransaction.update({
-							where: { id: t.id },
-							data: { ...t },
-						}),
-					),
-				)
-			}
-
-			// Update sale price
-			if (typeof desiredSellPrice !== 'undefined') {
-				await transactionPrisma.userCoin.update({
-					where: { userId_coinId: { userId, coinId } },
-					data: { desired_sell_price: desiredSellPrice },
-				})
-			}
-
-			// Recalculation of the average price
-			if (transactions?.length) {
-				await recalculateAveragePrice(userId, coinId, transactionPrisma)
-			}
-		})
-
-		revalidatePath('/coins')
-		revalidatePath(`/coins/${coinId}`)
-	} catch (error) {
-		handleError(error, 'UPDATE_USER_COIN')
-	}
-}
-
-export const deleteCoinFromUser = async (coinId: string) => {
-	try {
-		const session = await auth()
-
-		// Checking if the user is authorized
-		if (!session?.user) throw new Error('User not authenticated')
-
-		// Checking access rights
-		if (session.user.id !== session.user.id && session.user.role !== 'ADMIN') {
-			throw new Error('You do not have permission to perform this action')
-		}
-
-		if (!coinId) throw new Error('CoinId is required')
-
-		await prisma.userCoin.delete({
-			where: {
-				userId_coinId: { userId: session.user.id, coinId },
-			},
-		})
-
-		revalidatePath('/coins')
-		revalidatePath(`/coins/${coinId}`)
-	} catch (error) {
-		handleError(error, 'DELETE_USER_COIN')
-	}
-}
-
-export const createTransactionForUser = async (
-	coinId: string,
-	transactionData: Omit<Transaction, 'id' | 'userCoinId'>,
-) => {
-	try {
-		const session = await auth()
-		const userId = session?.user?.id
-
-		if (!userId) throw new Error('User not authenticated')
-		if (!coinId) throw new Error('Coin ID is required')
-
-		const result = await prisma.$transaction(async (prisma) => {
-			// Creating a new transaction
-			const newTransaction = await prisma.userCoinTransaction.create({
-				data: {
-					...transactionData,
-					userCoin: {
-						connect: { userId_coinId: { userId, coinId } },
-					},
-				},
-			})
-
-			// Recalculation of the average price
-			await recalculateAveragePrice(userId, coinId, prisma)
-
-			return newTransaction
-		})
-
-		return result
-	} catch (error) {
-		handleError(error, 'CREATE_TRANSACTION')
-	}
-}
-
-export const deleteTransactionFromUser = async (coinTransactionId: string) => {
-	try {
-		const session = await auth()
-
-		// Checking if the user is authorized
-		if (!session?.user) throw new Error('User not authenticated')
-		if (!coinTransactionId) throw new Error('CoinTransactionId is required')
-
-		// 1. Get the coinId inside the transaction and return its result
-		const deletedTransaction = await prisma.$transaction(async (prisma) => {
-			// 1. Find and validate transaction
-			const transaction = await prisma.userCoinTransaction.findUniqueOrThrow({
-				where: { id: coinTransactionId },
-				include: { userCoin: true },
-			})
-
-			// 2. Delete transaction
-			await prisma.userCoinTransaction.delete({
-				where: { id: coinTransactionId },
-			})
-
-			// 3. Atomic update of UserCoin
-			const updatedUserCoin = await prisma.userCoin.update({
-				where: { id: transaction.userCoinId },
-				data: {
-					total_quantity: { decrement: transaction.quantity },
-					total_cost: { decrement: transaction.quantity * transaction.price },
-				},
-			})
-
-			// 4. Calculate new average price
-			const newAveragePrice =
-				updatedUserCoin.total_quantity > 0 ? updatedUserCoin.total_cost / updatedUserCoin.total_quantity : 0
-
-			// 5. Update average price
-			return await prisma.userCoin.update({
-				where: { id: transaction.userCoinId },
-				data: { average_price: newAveragePrice },
-				include: { transactions: true },
-			})
-		})
-
-		revalidatePath('/coins')
-		revalidatePath(`/coins/${deletedTransaction.coinId}`)
-
-		return deletedTransaction
-	} catch (error) {
-		handleError(error, 'DELETE_USER_PURCHASE')
-	}
-}
-
 export const notifyUsersOnPriceTarget = async () => {
 	const userCoins = await prisma.userCoin.findMany({
 		where: {
@@ -597,43 +262,6 @@ export const notifyUsersOnPriceTarget = async () => {
 	}
 }
 
-export const getTrendingData = async (): Promise<TrendingData> => {
-	try {
-		const data = await prisma.trendingCoin.findMany({
-			select: {
-				id: true,
-				name: true,
-				symbol: true,
-				market_cap_rank: true,
-				thumb: true,
-				slug: true,
-				price_btc: true,
-				data: true,
-			},
-		})
-
-		console.log(data.length ? '✅ Using cached TrendingData from DB' : '⚠️ No TrendingData in DB')
-
-		if (data.length === 0) {
-			await updateTrendingData()
-		}
-
-		return {
-			coins: data.map((coin) => ({
-				item: {
-					...coin,
-					market_cap_rank: coin.market_cap_rank ?? 0,
-					data: typeof coin.data === 'string' ? JSON.parse(coin.data) : coin.data,
-				},
-			})),
-		}
-	} catch (error) {
-		handleError(error, 'GET_TRENDING_DATA')
-
-		return { coins: [] }
-	}
-}
-
 // cron 24h
 export const updateTrendingData = async (): Promise<TrendingData> => {
 	try {
@@ -680,25 +308,6 @@ export const updateTrendingData = async (): Promise<TrendingData> => {
 	}
 }
 
-export const getCategories = async (): Promise<CategoriesData> => {
-	try {
-		const data = await prisma.category.findMany({
-			select: {
-				category_id: true,
-				name: true,
-			},
-		})
-
-		console.log(data.length ? '✅ Using cached Categories from DB' : '⚠️ No Categories in DB')
-
-		return data
-	} catch (error) {
-		handleError(error, 'GET_CATEGORIES')
-
-		return []
-	}
-}
-
 // cron 24h
 export const updateCategories = async (): Promise<CategoriesData> => {
 	try {
@@ -733,25 +342,6 @@ export const updateCategories = async (): Promise<CategoriesData> => {
 		handleError(error, 'UPDATE_CATEGORIES')
 		return []
 	}
-}
-
-export const getCoinsList = async (): Promise<CoinsListData> => {
-	// Return old data immediately
-	const cachedCoins = await prisma.coin.findMany({
-		include: {
-			coinsListIDMap: true,
-		},
-	})
-
-	const transformCoinData = (coins: any[]): CoinsListData => {
-		return coins.map((coin) => ({
-			...coin,
-			symbol: coin.coinsListIDMap.symbol,
-			name: coin.coinsListIDMap.name,
-		}))
-	}
-
-	return transformCoinData(cachedCoins)
 }
 
 // cron 10min

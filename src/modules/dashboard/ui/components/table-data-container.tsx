@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
+import { useTRPC } from '@/trpc/client'
 import { DataTable } from './table-data'
 import { columns } from './table-columns'
 import { Skeleton } from '@/components/ui'
+import { getCoinsListByCate } from '@/app/api/actions'
 import { CategoriesData, CoinListData } from '@/app/api/types'
-import { getCoinsList, getCoinsListByCate } from '@/app/api/actions'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 
 interface Props {
@@ -15,6 +17,10 @@ interface Props {
 }
 
 export const DataTableContainer = ({ categories, initialCoins }: Props) => {
+	const trpc = useTRPC()
+
+	const { data: allCoins } = useQuery(trpc.dashboard.getCoinsList.queryOptions())
+
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
 	const [fetchingCoins, setFetchingCoins] = useState<boolean>(false)
@@ -35,11 +41,9 @@ export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 			if (resp) setCoinsList(resp)
 		} else {
 			setCurrentCategory('All')
-
-			const resp = await getCoinsList()
 			setFetchingCoins(false)
 
-			if (resp) setCoinsList(resp)
+			if (allCoins) setCoinsList(allCoins)
 		}
 	}
 
