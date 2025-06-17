@@ -25,6 +25,7 @@ Image Handling and Optimization:
 
 Middleware and Server Utilities:
 - Concurrently (all projects are running in tandem)
+- tRPC (end-to-end type safe APIs)
 
 Pagination:
 - React window (working with infinite scroll)

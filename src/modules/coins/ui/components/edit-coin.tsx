@@ -1,5 +1,7 @@
+import { toast } from 'sonner'
 import { PlusIcon } from 'lucide-react'
 import { ChangeEvent, useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 
 import {
 	Button,
@@ -12,10 +14,9 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
-import { useCoinActions } from '@/hooks'
+import { useTRPC } from '@/trpc/client'
 import { formatPrice } from '@/constants/format-price'
 import { Transaction, UserCoinData } from '@/app/api/types'
-import { createTransactionForUser, updateUserCoin } from '@/app/api/actions'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 
 interface Props {
@@ -25,14 +26,43 @@ interface Props {
 }
 
 export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
-	const { handleAction } = useCoinActions()
+	const trpc = useTRPC()
+	const totalValue = coin.current_price * coin.total_quantity
 
 	const [isSaving, setIsSaving] = useState<boolean>(false)
 	const [isAdding, setIsAdding] = useState<boolean>(false)
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 
-	const totalValue = coin.current_price * coin.total_quantity
+	const createTransactionMutation = useMutation(
+		trpc.coins.addTransactionForUser.mutationOptions({
+			onSuccess: (newTransaction) => {
+				const transaction = {
+					...newTransaction,
+					date: new Date(newTransaction.date),
+				} as Transaction
+				setEditTransactions((prev) => [...prev, transaction])
+				toast.success('Transaction created successfully')
+			},
+			onError: (error) => {
+				console.error('Create transaction error:', error)
+				toast.error('Failed to create transaction')
+			},
+		}),
+	)
+
+	const updateCoinMutation = useMutation(
+		trpc.coins.updateUserCoin.mutationOptions({
+			onSuccess: () => {
+				toast.success('Coin updated successfully')
+				onClose()
+			},
+			onError: (error) => {
+				console.error('Update error:', error)
+				toast.error('Failed to update coin')
+			},
+		}),
+	)
 
 	const handleNumberInput = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value.replace(/,/g, '.')
@@ -48,22 +78,12 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 		setIsAdding(true)
 
 		try {
-			await handleAction(
-				async () => {
-					const newTransaction = await createTransactionForUser(coin.coinId, {
-						quantity: 0,
-						price: 0,
-						date: new Date(),
-					})
-
-					if (newTransaction) {
-						setEditTransactions((prev) => [...prev, newTransaction])
-					}
-				},
-				'Transaction created successfully',
-				'Failed to create transaction',
-				false,
-			)
+			await createTransactionMutation.mutateAsync({
+				coinId: coin.coinId,
+				quantity: 0,
+				price: 0,
+				date: new Date().toISOString(),
+			})
 		} finally {
 			setIsAdding(false)
 		}
@@ -73,23 +93,18 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 		setIsSaving(true)
 
 		try {
-			await handleAction(
-				async () => {
-					const updatedTransactions = editTransactions.map((transaction) => ({
-						...transaction,
-						quantity: transaction.quantity,
-						price: transaction.price,
-						date: new Date(transaction.date),
-					}))
+			const updatedTransactions = editTransactions.map((transaction) => ({
+				...transaction,
+				quantity: Number(transaction.quantity),
+				price: Number(transaction.price),
+				date: new Date(transaction.date).toISOString(),
+			}))
 
-					await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
-				},
-				'Coin updated successfully',
-				'Failed to update coin',
-				true,
-			)
-
-			onClose()
+			await updateCoinMutation.mutateAsync({
+				coinId: coin.coinId,
+				desiredSellPrice: sellPrice ? Number(sellPrice) : undefined,
+				transactions: updatedTransactions,
+			})
 		} finally {
 			setIsSaving(false)
 		}
@@ -113,10 +128,10 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 						<Input
 							id='sell-price'
 							type='number'
+							placeholder='Enter desired sell price'
 							min={0}
 							step={0.01}
 							value={editSellPrice}
-							autoFocus={false}
 							onChange={handleSellPriceChange}
 							className='w-[80%] [appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
 						/>

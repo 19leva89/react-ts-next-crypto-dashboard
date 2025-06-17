@@ -2,7 +2,9 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { ArrowLeftIcon, LoaderIcon, PlusIcon } from 'lucide-react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
@@ -19,21 +21,20 @@ import {
 	Label,
 } from '@/components/ui'
 import { cn } from '@/lib'
-import { useCoinActions } from '@/hooks'
+import { useTRPC } from '@/trpc/client'
 import { formatPrice } from '@/constants/format-price'
+import { getCoinsMarketChart } from '@/app/api/actions'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 import { MarketChartData, Transaction, UserCoinData } from '@/app/api/types'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
-import { createTransactionForUser, getCoinsMarketChart, updateUserCoin } from '@/app/api/actions'
 
 interface Props {
 	coin: UserCoinData
 }
 
 export const CoinIdContainer = ({ coin }: Props) => {
+	const trpc = useTRPC()
 	const router = useRouter()
-
-	const { handleAction } = useCoinActions()
 
 	const [days, setDays] = useState<number>(1)
 	const [isAdding, setIsAdding] = useState<boolean>(false)
@@ -43,6 +44,35 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
+
+	const createTransactionMutation = useMutation(
+		trpc.coins.addTransactionForUser.mutationOptions({
+			onSuccess: (newTransaction) => {
+				const transaction = {
+					...newTransaction,
+					date: new Date(newTransaction.date),
+				} as Transaction
+				setEditTransactions((prev) => [...prev, transaction])
+				toast.success('Transaction created successfully')
+			},
+			onError: (error) => {
+				console.error('Create transaction error:', error)
+				toast.error('Failed to create transaction')
+			},
+		}),
+	)
+
+	const updateCoinMutation = useMutation(
+		trpc.coins.updateUserCoin.mutationOptions({
+			onSuccess: () => {
+				toast.success('Coin updated successfully')
+			},
+			onError: (error) => {
+				console.error('Update error:', error)
+				toast.error('Failed to update coin')
+			},
+		}),
+	)
 
 	useEffect(() => {
 		setIsLoading(true)
@@ -141,22 +171,12 @@ export const CoinIdContainer = ({ coin }: Props) => {
 		setIsAdding(true)
 
 		try {
-			await handleAction(
-				async () => {
-					const newTransaction = await createTransactionForUser(coin.coinId, {
-						quantity: 0,
-						price: 0,
-						date: new Date(),
-					})
-
-					if (newTransaction) {
-						setEditTransactions((prev) => [...prev, newTransaction])
-					}
-				},
-				'Transaction created successfully',
-				'Failed to create transaction',
-				true,
-			)
+			await createTransactionMutation.mutateAsync({
+				coinId: coin.coinId,
+				quantity: 0,
+				price: 0,
+				date: new Date().toISOString(),
+			})
 		} finally {
 			setIsAdding(false)
 		}
@@ -166,21 +186,18 @@ export const CoinIdContainer = ({ coin }: Props) => {
 		setIsSaving(true)
 
 		try {
-			await handleAction(
-				async () => {
-					const updatedTransactions = editTransactions.map((transaction) => ({
-						...transaction,
-						quantity: transaction.quantity,
-						price: transaction.price,
-						date: new Date(transaction.date),
-					}))
+			const updatedTransactions = editTransactions.map((transaction) => ({
+				...transaction,
+				quantity: Number(transaction.quantity),
+				price: Number(transaction.price),
+				date: new Date(transaction.date).toISOString(),
+			}))
 
-					await updateUserCoin(coin.coinId, Number(sellPrice), updatedTransactions)
-				},
-				'Coin updated successfully',
-				'Failed to update coin',
-				true,
-			)
+			await updateCoinMutation.mutateAsync({
+				coinId: coin.coinId,
+				desiredSellPrice: sellPrice ? Number(sellPrice) : undefined,
+				transactions: updatedTransactions,
+			})
 		} finally {
 			setIsSaving(false)
 		}
