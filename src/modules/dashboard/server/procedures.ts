@@ -1,13 +1,20 @@
 import { z } from 'zod'
 import { pick } from 'lodash'
 
+import {
+	coinsListDataSchema,
+	categoriesDataSchema,
+	trendingDataSchema,
+	type CoinsListData,
+	type CategoriesData,
+	type TrendingData,
+} from '@/modules/dashboard/schema'
 import { prisma } from '@/lib/prisma'
 import { makeReq } from '@/app/api/make-request'
 import { baseProcedure, createTRPCRouter } from '@/trpc/init'
-import { TrendingData, CategoriesData, CoinsListData } from '@/app/api/types'
 
 export const dashboardRouter = createTRPCRouter({
-	getCoinsList: baseProcedure.query(async (): Promise<CoinsListData> => {
+	getCoinsList: baseProcedure.output(coinsListDataSchema).query(async (): Promise<CoinsListData> => {
 		const cachedCoins = await prisma.coin.findMany({
 			include: {
 				coinsListIDMap: true,
@@ -38,6 +45,7 @@ export const dashboardRouter = createTRPCRouter({
 
 	getCoinsListByCate: baseProcedure
 		.input(z.string())
+		.output(coinsListDataSchema)
 		.query(async ({ input: cate }): Promise<CoinsListData> => {
 			const cachedData = await prisma.coin.findMany({
 				where: { categoryId: cate },
@@ -136,7 +144,7 @@ export const dashboardRouter = createTRPCRouter({
 			}))
 		}),
 
-	getCategories: baseProcedure.query(async (): Promise<CategoriesData> => {
+	getCategories: baseProcedure.output(categoriesDataSchema).query(async (): Promise<CategoriesData> => {
 		const data = await prisma.category.findMany({
 			select: {
 				category_id: true,
@@ -149,7 +157,7 @@ export const dashboardRouter = createTRPCRouter({
 		return data
 	}),
 
-	getTrending: baseProcedure.query(async (): Promise<TrendingData> => {
+	getTrending: baseProcedure.output(trendingDataSchema).query(async (): Promise<TrendingData> => {
 		const data = await prisma.trendingCoin.findMany({
 			select: {
 				id: true,

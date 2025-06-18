@@ -1,5 +1,9 @@
+import {
+	portfolioChartResponseSchema,
+	UserChartDataPoint,
+	type PortfolioChartResponse,
+} from '@/modules/charts/schema'
 import { getUserCoinsList } from '@/app/api/actions'
-import { UserChartDataPoint } from '@/app/api/types'
 import { UserCoinData } from '@/modules/coins/schema'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 
@@ -25,85 +29,88 @@ const processSparklineData = (coins: UserCoinData[]): UserChartDataPoint[] => {
 }
 
 export const chartsRouter = createTRPCRouter({
-	getPortfolioData: protectedProcedure.query(async () => {
-		const userCoins = await getUserCoinsList()
+	getPortfolioData: protectedProcedure
+		.output(portfolioChartResponseSchema)
+		.query(async (): Promise<PortfolioChartResponse> => {
+			const userCoins = await getUserCoinsList()
 
-		const coinData = userCoins.map((userCoin) => ({
-			coinId: userCoin.coin.id,
-			name: userCoin.coinsListIDMap.name,
-			symbol: userCoin.coinsListIDMap.symbol,
-			current_price: userCoin.coin.current_price as number,
-			image: userCoin.coin.image as string,
-			sparkline_in_7d: userCoin.coin.sparkline_in_7d as { price: number[] },
-			price_change_percentage_7d_in_currency: userCoin.coin.price_change_percentage_7d_in_currency as number,
-			total_quantity: userCoin.total_quantity,
-			total_cost: userCoin.total_cost,
-			average_price: userCoin.average_price,
-			desired_sell_price: userCoin.desired_sell_price as number,
-			transactions: userCoin.transactions.map((transaction) => ({
-				id: transaction.id,
-				quantity: transaction.quantity,
-				price: transaction.price,
-				date: transaction.date.toISOString(),
-				userCoinId: transaction.userCoinId,
-			})),
-		}))
+			const coinData = userCoins.map((userCoin) => ({
+				coinId: userCoin.coin.id,
+				name: userCoin.coinsListIDMap.name,
+				symbol: userCoin.coinsListIDMap.symbol,
+				current_price: userCoin.coin.current_price as number,
+				image: userCoin.coin.image as string,
+				sparkline_in_7d: userCoin.coin.sparkline_in_7d as { price: number[] },
+				price_change_percentage_7d_in_currency: userCoin.coin
+					.price_change_percentage_7d_in_currency as number,
+				total_quantity: userCoin.total_quantity,
+				total_cost: userCoin.total_cost,
+				average_price: userCoin.average_price,
+				desired_sell_price: userCoin.desired_sell_price as number,
+				transactions: userCoin.transactions.map((transaction) => ({
+					id: transaction.id,
+					quantity: transaction.quantity,
+					price: transaction.price,
+					date: transaction.date.toISOString(),
+					userCoinId: transaction.userCoinId,
+				})),
+			}))
 
-		const totalInvestedValue = coinData.reduce((total, coin) => total + coin.total_cost, 0)
-		const totalPortfolioValue = coinData.reduce(
-			(total, coin) => total + coin.current_price * coin.total_quantity,
-			0,
-		)
-		const plannedProfit = coinData.reduce(
-			(total, coin) => total + coin.desired_sell_price * coin.total_quantity,
-			0,
-		)
+			const totalInvestedValue = coinData.reduce((total, coin) => total + coin.total_cost, 0)
+			const totalPortfolioValue = coinData.reduce(
+				(total, coin) => total + coin.current_price * coin.total_quantity,
+				0,
+			)
+			const plannedProfit = coinData.reduce(
+				(total, coin) => total + coin.desired_sell_price * coin.total_quantity,
+				0,
+			)
 
-		const lineChartData = processSparklineData(coinData).map((point) => ({
-			...point,
-			timestamp: point.timestamp.toISOString(),
-		}))
+			const lineChartData = processSparklineData(coinData).map((point) => ({
+				...point,
+				timestamp: point.timestamp.toISOString(),
+			}))
 
-		const portfolioData = coinData
-			.map((coin) => {
-				const coinValue = coin.current_price * coin.total_quantity
-				return {
-					name: coin.name,
-					value: coinValue,
-					symbol: coin.symbol,
-					percentage: totalPortfolioValue > 0 ? (coinValue / totalPortfolioValue) * 100 : 0,
-				}
-			})
-			.filter((item) => item.value > 0)
-			.sort((a, b) => b.value - a.value)
+			const portfolioData = coinData
+				.map((coin) => {
+					const coinValue = coin.current_price * coin.total_quantity
+					return {
+						name: coin.name,
+						value: coinValue,
+						symbol: coin.symbol,
+						percentage: totalPortfolioValue > 0 ? (coinValue / totalPortfolioValue) * 100 : 0,
+					}
+				})
+				.filter((item) => item.value > 0)
+				.sort((a, b) => b.value - a.value)
 
-		const top11 = portfolioData.slice(0, 11)
-		const others = portfolioData.slice(11)
-		const othersTotal = others.reduce((sum, item) => sum + item.value, 0)
+			const top11 = portfolioData.slice(0, 11)
+			const others = portfolioData.slice(11)
+			const othersTotal = others.reduce((sum, item) => sum + item.value, 0)
 
-		const pieChartData = [
-			...top11,
-			...(othersTotal > 0
-				? [
-						{
-							name: 'Other',
-							value: othersTotal,
-							symbol: 'Other',
-							percentage: (othersTotal / totalPortfolioValue) * 100,
-						},
-					]
-				: []),
-		].map((item, index) => ({
-			...item,
-			fill: index < 11 ? `hsl(var(--chart-${index + 1}))` : 'hsl(var(--color-other))',
-		}))
+			const pieChartData = [
+				...top11,
+				...(othersTotal > 0
+					? [
+							{
+								name: 'Other',
+								value: othersTotal,
+								symbol: 'Other',
+								percentage: (othersTotal / totalPortfolioValue) * 100,
+							},
+						]
+					: []),
+			].map((item, index) => ({
+				...item,
+				fill: index < 11 ? `hsl(var(--chart-${index + 1}))` : 'hsl(var(--color-other))',
+			}))
 
-		return {
-			totalInvestedValue,
-			totalPortfolioValue,
-			plannedProfit,
-			lineChartData,
-			pieChartData,
-		}
-	}),
+			return {
+				totalInvestedValue,
+				totalPortfolioValue,
+				plannedProfit,
+				lineChartData,
+				pieChartData,
+			}
+		}),
 })

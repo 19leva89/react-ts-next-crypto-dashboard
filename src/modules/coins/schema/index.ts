@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const TransactionSchema = z.object({
+export const transactionSchema = z.object({
 	id: z.string(),
 	quantity: z.number(),
 	price: z.number(),
@@ -8,7 +8,7 @@ export const TransactionSchema = z.object({
 	userCoinId: z.string(),
 })
 
-export const UserCoinDataSchema = z.object({
+export const userCoinDataSchema = z.object({
 	coinId: z.string(),
 	name: z.string(),
 	symbol: z.string(),
@@ -22,13 +22,13 @@ export const UserCoinDataSchema = z.object({
 		price: z.array(z.number()),
 	}),
 	price_change_percentage_7d_in_currency: z.number().optional(),
-	transactions: z.array(TransactionSchema),
+	transactions: z.array(transactionSchema),
 })
 
-export const MarketChartDataSchema = z.object({
+export const marketChartDataSchema = z.object({
 	prices: z.array(z.tuple([z.number(), z.number()])),
 })
 
-export type Transaction = z.infer<typeof TransactionSchema>
-export type UserCoinData = z.infer<typeof UserCoinDataSchema>
-export type MarketChartData = z.infer<typeof MarketChartDataSchema>
+export type Transaction = z.infer<typeof transactionSchema>
+export type UserCoinData = z.infer<typeof userCoinDataSchema>
+export type MarketChartData = z.infer<typeof marketChartDataSchema>

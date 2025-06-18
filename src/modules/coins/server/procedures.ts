@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server'
 
 import { prisma } from '@/lib/prisma'
 import { makeReq } from '@/app/api/make-request'
-import { UserCoinDataSchema } from '@/modules/coins/schema'
+import { userCoinDataSchema } from '@/modules/coins/schema'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 import { getUserCoinsList, recalculateAveragePrice, getCoinData } from '@/app/api/actions'
 
@@ -133,7 +133,7 @@ export const coinsRouter = createTRPCRouter({
 
 	getUserCoin: protectedProcedure
 		.input(z.string())
-		.output(UserCoinDataSchema)
+		.output(userCoinDataSchema)
 		.query(async ({ input: coinId, ctx }) => {
 			const userCoin = await prisma.userCoin.findUnique({
 				where: { userId_coinId: { userId: ctx.auth.user.id, coinId } },
