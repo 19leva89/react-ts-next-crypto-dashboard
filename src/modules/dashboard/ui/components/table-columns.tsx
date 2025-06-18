@@ -10,6 +10,11 @@ import { formatPrice } from '@/constants/format-price'
 import { CoinsListData } from '@/modules/dashboard/schema'
 import { Button, ChartConfig, ChartContainer } from '@/components/ui'
 
+interface ChartDataPoint {
+	Hour: number
+	Price: number
+}
+
 export const columns: ColumnDef<CoinsListData[0]>[] = [
 	// #
 	{
@@ -235,16 +240,16 @@ export const columns: ColumnDef<CoinsListData[0]>[] = [
 			} satisfies ChartConfig
 
 			const formattedData = coin.sparkline_in_7d.price
-				.map((price, index) => ({
+				.map((price: number, index: number) => ({
 					Hour: index,
-					Price: Number(price),
+					Price: price,
 				}))
-				.filter((item) => !isNaN(item.Price)) // <-- Filter invalid numbers
+				.filter((item: ChartDataPoint) => !isNaN(item.Price)) // <-- Filter invalid numbers
 
 			// Handle empty data after filtering
 			if (formattedData.length === 0) return null
 
-			const prices = formattedData.map((h) => h.Price)
+			const prices = formattedData.map((h: ChartDataPoint) => h.Price)
 			const minPrice = Math.min(...prices)
 			const maxPrice = Math.max(...prices)
 

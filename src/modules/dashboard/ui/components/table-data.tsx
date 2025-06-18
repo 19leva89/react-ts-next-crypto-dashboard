@@ -44,14 +44,13 @@ import {
 	TableRow,
 } from '@/components/ui'
 import { cn } from '@/lib'
-import { CoinsListData } from '@/modules/dashboard/schema'
 
 interface Props<TData, TValue> {
 	data: TData[]
 	columns: ColumnDef<TData, TValue>[]
 	categories: { category_id: string; name: string }[]
 	currentCategory: string
-	onCoinsClick: (coinId: string) => void
+	onRowClick: (rowData: TData) => void
 	onCategoryClick: (category: string, name?: string) => void
 }
 
@@ -60,7 +59,7 @@ export function DataTable<TData, TValue>({
 	data,
 	categories,
 	currentCategory,
-	onCoinsClick,
+	onRowClick,
 	onCategoryClick,
 }: Props<TData, TValue>) {
 	const [rowSelection, setRowSelection] = useState({})
@@ -244,7 +243,7 @@ export function DataTable<TData, TValue>({
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
-									onClick={() => onCoinsClick((row.original as CoinsListData[0]).id)}
+									onClick={() => onRowClick(row.original)}
 									className='group cursor-pointer'
 								>
 									{row.getVisibleCells().map((cell, i) => (

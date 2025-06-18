@@ -21,26 +21,13 @@ export const dashboardRouter = createTRPCRouter({
 			},
 		})
 
-		return cachedCoins.map((coin) => ({
+		const coinsWithDefaults = cachedCoins.map((coin) => ({
 			...coin,
 			symbol: coin.coinsListIDMap.symbol,
 			name: coin.coinsListIDMap.name,
-			description: coin.description ?? '',
-			image: coin.image ?? '',
-			current_price: coin.current_price ?? 0,
-			market_cap: coin.market_cap ?? 0,
-			market_cap_rank: coin.market_cap_rank ?? 0,
-			total_volume: coin.total_volume ?? 0,
-			high_24h: coin.high_24h ?? 0,
-			low_24h: coin.low_24h ?? 0,
-			price_change_percentage_24h: coin.price_change_percentage_24h ?? 0,
-			price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency ?? 0,
-			circulating_supply: coin.circulating_supply ?? 0,
-			sparkline_in_7d:
-				typeof coin.sparkline_in_7d === 'string'
-					? JSON.parse(coin.sparkline_in_7d)
-					: (coin.sparkline_in_7d ?? { price: [] }),
 		}))
+
+		return coinsListDataSchema.parse(coinsWithDefaults)
 	}),
 
 	getCoinsListByCate: baseProcedure
@@ -57,27 +44,12 @@ export const dashboardRouter = createTRPCRouter({
 			})
 
 			if (cachedData.length > 0) {
-				return cachedData.map(({ coinsListIDMap, ...coin }) => ({
+				const coinsWithDefaults = cachedData.map(({ coinsListIDMap, ...coin }) => ({
 					...coin,
 					...coinsListIDMap,
-					description: coin.description ?? '',
-					image: coin.image ?? '',
-					current_price: coin.current_price ?? 0,
-					market_cap: coin.market_cap ?? 0,
-					market_cap_rank: coin.market_cap_rank ?? 0,
-					total_volume: coin.total_volume ?? 0,
-					high_24h: coin.high_24h ?? 0,
-					low_24h: coin.low_24h ?? 0,
-					price_change_percentage_24h: coin.price_change_percentage_24h ?? 0,
-					price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency ?? 0,
-					circulating_supply: coin.circulating_supply ?? 0,
-					sparkline_in_7d: {
-						price:
-							typeof coin.sparkline_in_7d === 'string'
-								? JSON.parse(coin.sparkline_in_7d)
-								: (coin.sparkline_in_7d ?? []),
-					},
 				}))
+
+				return coinsListDataSchema.parse(coinsWithDefaults)
 			}
 
 			const response = await makeReq('GET', `/gecko/${cate}/coins`)
@@ -123,25 +95,7 @@ export const dashboardRouter = createTRPCRouter({
 				]),
 			)
 
-			return response.map((coin) => ({
-				id: coin.id,
-				symbol: coin.symbol,
-				name: coin.name,
-				description: coin.description ?? '',
-				image: coin.image ?? '',
-				current_price: coin.current_price ?? 0,
-				market_cap: coin.market_cap ?? 0,
-				market_cap_rank: coin.market_cap_rank ?? 0,
-				total_volume: coin.total_volume ?? 0,
-				high_24h: coin.high_24h ?? 0,
-				low_24h: coin.low_24h ?? 0,
-				price_change_percentage_24h: coin.price_change_percentage_24h ?? 0,
-				price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency ?? 0,
-				circulating_supply: coin.circulating_supply ?? 0,
-				sparkline_in_7d: {
-					price: coin.sparkline_in_7d?.price ?? [],
-				},
-			}))
+			return coinsListDataSchema.parse(response)
 		}),
 
 	getCategories: baseProcedure.output(categoriesDataSchema).query(async (): Promise<CategoriesData> => {
@@ -204,17 +158,15 @@ export const dashboardRouter = createTRPCRouter({
 				),
 			)
 
-			return { coins: trendingCoins }
+			return trendingDataSchema.parse({ coins: trendingCoins })
 		}
 
-		return {
+		const trendingData = {
 			coins: data.map((coin) => ({
-				item: {
-					...coin,
-					market_cap_rank: coin.market_cap_rank ?? 0,
-					data: typeof coin.data === 'string' ? JSON.parse(coin.data) : coin.data,
-				},
+				item: coin,
 			})),
 		}
+
+		return trendingDataSchema.parse(trendingData)
 	}),
 })

@@ -66,7 +66,7 @@ export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 					data={coinsList}
 					categories={categories}
 					currentCategory={currentCategory}
-					onCoinsClick={handleCoinClick}
+					onRowClick={(rowData) => handleCoinClick(rowData.id)}
 					onCategoryClick={onCategoryClick}
 				/>
 			)}

@@ -16,8 +16,9 @@ export const pieChartDataSchema = portfolioDataSchema.extend({
 	fill: z.string(),
 })
 
-export const lineChartDataSchema = userChartDataPointSchema.extend({
+export const lineChartDataSchema = z.object({
 	timestamp: z.string(),
+	value: z.number(),
 })
 
 export const portfolioChartResponseSchema = z.object({

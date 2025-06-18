@@ -7,11 +7,6 @@ import { isValid } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 import { MarketChart, Prisma } from '@prisma/client'
 
-import {
-	CategoriesData,
-	TrendingData,
-	type TrendingData as TrendingDataType,
-} from '@/modules/dashboard/schema'
 import { auth, signIn } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { makeReq } from './make-request'
@@ -19,6 +14,8 @@ import { sendEmail } from '@/lib/send-email'
 import { saltAndHashPassword } from '@/lib/salt'
 import { MarketChartData } from '@/modules/coins/schema'
 import { UserChartDataPoint } from '@/modules/charts/schema'
+import { trendingDataSchema } from '@/modules/dashboard/schema'
+import { CategoriesData, TrendingData } from '@/modules/dashboard/schema'
 import { AirdropsData, PrismaTransactionClient, CoinData, Airdrop } from './types'
 import { NotificationTemplate, VerificationUserTemplate } from '@/components/shared/email-templates'
 import { COINS_UPDATE_INTERVAL, DAYS_MAPPING, MARKET_CHART_UPDATE_INTERVAL, ValidDays } from './constants'
@@ -270,31 +267,27 @@ export const updateTrendingData = async (): Promise<TrendingData> => {
 		await prisma.trendingCoin.deleteMany()
 		console.log('🗑️ Old trending data deleted.')
 
-		// Transform the data into the required format
-		const trendingCoins = response.coins.map((coin: TrendingDataType['coins'][0]) => ({
-			item: {
-				id: coin.item.id,
-				name: coin.item.name,
-				symbol: coin.item.symbol,
-				market_cap_rank: coin.item.market_cap_rank,
-				thumb: coin.item.thumb,
-				slug: coin.item.slug,
-				price_btc: coin.item.price_btc,
-				data: coin.item.data,
-			},
-		}))
+		// Transform and validate the data
+		const trendingCoins = trendingDataSchema.parse({ coins: response.coins })
 
 		// Batch update
 		const transaction = await prisma.$transaction(
-			trendingCoins.map((coin: TrendingDataType['coins'][0]) =>
+			trendingCoins.coins.map((coin) =>
 				prisma.trendingCoin.create({
-					data: coin.item,
+					data: {
+						...coin.item,
+						thumb: coin.item.thumb || '',
+						market_cap_rank: coin.item.market_cap_rank || 0,
+						price_btc: coin.item.price_btc || 0,
+						data: typeof coin.item.data === 'string' ? coin.item.data : JSON.stringify(coin.item.data),
+					},
 				}),
 			),
 		)
 
 		console.log(`✅ Updated ${transaction.length} trendingCoins`)
-		return { coins: trendingCoins }
+
+		return trendingCoins
 	} catch (error) {
 		handleError(error, 'UPDATE_TRENDING_DATA')
 		return { coins: [] }
@@ -761,7 +754,28 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 			throw new Error('⚠️ Empty response from API')
 		}
 
-		// Update or create a record in the DB
+		// Create CoinsListIDMap
+		await prisma.coinsListIDMap.upsert({
+			where: { id: coinId },
+			update: {},
+			create: {
+				id: coinId,
+				symbol: coinId,
+				name: coinId,
+			},
+		})
+
+		// Create Coin
+		await prisma.coin.upsert({
+			where: { id: coinId },
+			update: {},
+			create: {
+				id: coinId,
+				coinsListIDMapId: coinId,
+			},
+		})
+
+		// Create/Update MarketChart
 		await prisma.marketChart.upsert({
 			where: { id: coinId },
 			update: {
