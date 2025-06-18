@@ -5,8 +5,8 @@ import { useState } from 'react'
 import { ChevronDownIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 
 import { cn } from '@/lib'
-import { TrendingData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
+import { TrendingData } from '@/modules/dashboard/schema'
 import { Button, ScrollArea, ScrollBar, Skeleton } from '@/components/ui'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 

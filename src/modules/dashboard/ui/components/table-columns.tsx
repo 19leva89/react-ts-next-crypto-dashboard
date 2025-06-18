@@ -6,11 +6,11 @@ import { Line, LineChart, YAxis } from 'recharts'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 
 import { cn } from '@/lib'
-import { CoinListData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
+import { CoinsListData } from '@/modules/dashboard/schema'
 import { Button, ChartConfig, ChartContainer } from '@/components/ui'
 
-export const columns: ColumnDef<CoinListData>[] = [
+export const columns: ColumnDef<CoinsListData[0]>[] = [
 	// #
 	{
 		accessorKey: 'market_cap_rank',

@@ -8,21 +8,18 @@ import { revalidatePath } from 'next/cache'
 import { MarketChart, Prisma } from '@prisma/client'
 
 import {
-	AirdropsData,
 	CategoriesData,
 	TrendingData,
-	PrismaTransactionClient,
-	TrendingCoin,
-	CoinData,
-	MarketChartDataPoint,
-	Airdrop,
-} from './types'
+	type TrendingData as TrendingDataType,
+} from '@/modules/dashboard/schema'
 import { auth, signIn } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { makeReq } from './make-request'
 import { sendEmail } from '@/lib/send-email'
 import { saltAndHashPassword } from '@/lib/salt'
 import { MarketChartData } from '@/modules/coins/schema'
+import { UserChartDataPoint } from '@/modules/charts/schema'
+import { AirdropsData, PrismaTransactionClient, CoinData, Airdrop } from './types'
 import { NotificationTemplate, VerificationUserTemplate } from '@/components/shared/email-templates'
 import { COINS_UPDATE_INTERVAL, DAYS_MAPPING, MARKET_CHART_UPDATE_INTERVAL, ValidDays } from './constants'
 
@@ -274,7 +271,7 @@ export const updateTrendingData = async (): Promise<TrendingData> => {
 		console.log('🗑️ Old trending data deleted.')
 
 		// Transform the data into the required format
-		const trendingCoins = response.coins.map((coin: TrendingCoin) => ({
+		const trendingCoins = response.coins.map((coin: TrendingDataType['coins'][0]) => ({
 			item: {
 				id: coin.item.id,
 				name: coin.item.name,
@@ -289,7 +286,7 @@ export const updateTrendingData = async (): Promise<TrendingData> => {
 
 		// Batch update
 		const transaction = await prisma.$transaction(
-			trendingCoins.map((coin: TrendingCoin) =>
+			trendingCoins.map((coin: TrendingDataType['coins'][0]) =>
 				prisma.trendingCoin.create({
 					data: coin.item,
 				}),
@@ -553,7 +550,7 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 	}
 }
 
-export const getUserCoinsListMarketChart = async (days: ValidDays): Promise<MarketChartDataPoint[]> => {
+export const getUserCoinsListMarketChart = async (days: ValidDays): Promise<UserChartDataPoint[]> => {
 	try {
 		// Checking if the user is authorized
 		const session = await auth()
@@ -622,7 +619,7 @@ export const getUserCoinsListMarketChart = async (days: ValidDays): Promise<Mark
 	} catch (error) {
 		handleError(error, 'GET_USER_COINS_MARKET_CHART')
 
-		return {} as MarketChartDataPoint[]
+		return {} as UserChartDataPoint[]
 	}
 }
 

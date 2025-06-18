@@ -44,7 +44,7 @@ import {
 	TableRow,
 } from '@/components/ui'
 import { cn } from '@/lib'
-import { CoinListData } from '@/app/api/types'
+import { CoinsListData } from '@/modules/dashboard/schema'
 
 interface Props<TData, TValue> {
 	data: TData[]
@@ -244,7 +244,7 @@ export function DataTable<TData, TValue>({
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
-									onClick={() => onCoinsClick((row.original as CoinListData).id)}
+									onClick={() => onCoinsClick((row.original as CoinsListData[0]).id)}
 									className='group cursor-pointer'
 								>
 									{row.getVisibleCells().map((cell, i) => (
