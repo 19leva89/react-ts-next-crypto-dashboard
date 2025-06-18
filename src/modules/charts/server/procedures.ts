@@ -96,7 +96,7 @@ export const chartsRouter = createTRPCRouter({
 								name: 'Other',
 								value: othersTotal,
 								symbol: 'Other',
-								percentage: (othersTotal / totalPortfolioValue) * 100,
+								percentage: totalPortfolioValue > 0 ? (othersTotal / totalPortfolioValue) * 100 : 0,
 							},
 						]
 					: []),

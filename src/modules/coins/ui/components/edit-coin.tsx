@@ -107,8 +107,8 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 		try {
 			const updatedTransactions = editTransactions.map((transaction) => ({
 				...transaction,
-				quantity: Number(transaction.quantity),
-				price: Number(transaction.price),
+				quantity: transaction.quantity,
+				price: transaction.price,
 				date: new Date(transaction.date).toISOString(),
 			}))
 

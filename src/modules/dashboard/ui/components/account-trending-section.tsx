@@ -137,17 +137,17 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 									<div
 										className={cn(
 											'flex items-center gap-2 rounded-full px-2 py-1 font-medium',
-											data.item.data.price_change_percentage_24h.usd > 0
+											(data.item.data.price_change_percentage_24h.usd ?? 0) > 0
 												? 'bg-green-100 text-green-600 dark:bg-green-900/30'
 												: 'bg-red-100 text-red-600 dark:bg-red-900/30',
 										)}
 									>
 										<span>
-											{data.item.data.price_change_percentage_24h.usd > 0 && '+'}
-											{data.item.data.price_change_percentage_24h.usd.toFixed(1)}%
+											{(data.item.data.price_change_percentage_24h.usd ?? 0) > 0 && '+'}
+											{(data.item.data.price_change_percentage_24h.usd ?? 0).toFixed(1)}%
 										</span>
 
-										{data.item.data.price_change_percentage_24h.usd > 0 ? (
+										{(data.item.data.price_change_percentage_24h.usd ?? 0) > 0 ? (
 											<TrendingUpIcon size={16} className='text-green-600' />
 										) : (
 											<TrendingDownIcon size={16} className='text-red-600' />
@@ -157,11 +157,11 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 
 								<div className='mt-3 flex flex-col '>
 									<span className='text-xs text-gray-600 dark:text-slate-400'>
-										₿{formatPrice(Number(data.item.data.market_cap_btc), true)}
+										₿{formatPrice(data.item.data.market_cap_btc, true)}
 									</span>
 
 									<span className='text-xs text-gray-600 dark:text-slate-400'>
-										${formatPrice(Number(data.item.data.market_cap.replace(/[$,]/g, '')), true)}
+										${formatPrice(Number(data.item.data.market_cap?.replace(/[$,]/g, '') || '0'), true)}
 									</span>
 								</div>
 							</div>

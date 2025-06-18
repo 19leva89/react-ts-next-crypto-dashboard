@@ -21,9 +21,11 @@ export const TableContainer = ({ editTransactions, onChange, className }: Props)
 
 	const deleteTransactionMutation = useMutation(
 		trpc.coins.deleteTransactionFromUser.mutationOptions({
-			onSuccess: () => {
-				if (editTransactions.length > 0) {
-					queryClient.invalidateQueries(trpc.coins.getUserCoin.queryOptions(editTransactions[0].userCoinId))
+			onSuccess: (_, transactionId) => {
+				const transaction = editTransactions.find((t) => t.id === transactionId)
+
+				if (transaction) {
+					queryClient.invalidateQueries(trpc.coins.getUserCoin.queryOptions(transaction.userCoinId))
 				}
 
 				toast.success('Transaction has been removed')

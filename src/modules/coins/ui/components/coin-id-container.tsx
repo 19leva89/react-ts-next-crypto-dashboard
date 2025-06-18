@@ -198,8 +198,8 @@ export const CoinIdContainer = ({ coin }: Props) => {
 		try {
 			const updatedTransactions = editTransactions.map(({ id, ...rest }) => ({
 				id,
-				quantity: Number(rest.quantity),
-				price: Number(rest.price),
+				quantity: rest.quantity,
+				price: rest.price,
 				date: new Date(rest.date).toISOString(),
 			}))
 

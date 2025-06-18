@@ -11,45 +11,78 @@ export const coinListSchema = z.object({
 	id: z.string(),
 	symbol: z.string().optional(),
 	name: z.string().optional(),
-	description: z.string(),
-	image: z.string(),
-	current_price: z.number(),
-	market_cap: z.number(),
-	market_cap_rank: z.number(),
-	total_volume: z.number(),
-	high_24h: z.number(),
-	low_24h: z.number(),
-	price_change_percentage_24h: z.number(),
-	circulating_supply: z.number(),
-	sparkline_in_7d: z.object({
-		price: z.array(z.number()),
-	}),
-	price_change_percentage_7d_in_currency: z.number(),
+	description: z.string().nullable().optional().default(''),
+	image: z.string().nullable().optional().default(''),
+	current_price: z.number().nullable().optional().default(0),
+	market_cap: z.number().nullable().optional().default(0),
+	market_cap_rank: z.number().nullable().optional().default(0),
+	total_volume: z.number().nullable().optional().default(0),
+	high_24h: z.number().nullable().optional().default(0),
+	low_24h: z.number().nullable().optional().default(0),
+	price_change_percentage_24h: z.number().nullable().optional().default(0),
+	circulating_supply: z.number().nullable().optional().default(0),
+	sparkline_in_7d: z
+		.union([z.string(), z.object({ price: z.array(z.number()) })])
+		.nullable()
+		.optional()
+		.transform((val) => {
+			if (typeof val === 'string') {
+				try {
+					return JSON.parse(val)
+				} catch {
+					return { price: [] }
+				}
+			}
+			return val ?? { price: [] }
+		}),
+	price_change_percentage_7d_in_currency: z.number().nullable().optional().default(0),
 })
 
 export const coinsListDataSchema = z.array(coinListSchema)
+
+const trendingItemDataSchema = z
+	.object({
+		price: z.number().nullable().optional().default(0),
+		price_btc: z.string().nullable().optional().default(''),
+		price_change_percentage_24h: z
+			.object({
+				btc: z.number().nullable().optional().default(0),
+				usd: z.number().nullable().optional().default(0),
+			})
+			.nullable()
+			.optional()
+			.transform((val) => val ?? { btc: 0, usd: 0 }),
+		market_cap: z.string().nullable().optional().default(''),
+		market_cap_btc: z.union([z.string(), z.number()]).transform((val) => Number(val) || 0),
+		total_volume: z.string().nullable().optional().default(''),
+		total_volume_btc: z.union([z.string(), z.number()]).transform((val) => Number(val) || 0),
+		sparkline: z.string().nullable().optional().default(''),
+	})
+	.nullable()
+	.optional()
+	.transform(
+		(val) =>
+			val ?? {
+				price: 0,
+				price_btc: '',
+				price_change_percentage_24h: { btc: 0, usd: 0 },
+				market_cap: '',
+				market_cap_btc: 0,
+				total_volume: '',
+				total_volume_btc: 0,
+				sparkline: '',
+			},
+	)
 
 export const trendingItemSchema = z.object({
 	id: z.string(),
 	name: z.string(),
 	symbol: z.string(),
-	market_cap_rank: z.number(),
-	thumb: z.string(),
+	market_cap_rank: z.number().nullable().optional().default(0),
+	thumb: z.string().nullable().optional().default(''),
 	slug: z.string(),
-	price_btc: z.number(),
-	data: z.object({
-		price: z.number(),
-		price_btc: z.string(),
-		price_change_percentage_24h: z.object({
-			btc: z.number(),
-			usd: z.number(),
-		}),
-		market_cap: z.string(),
-		market_cap_btc: z.number(),
-		total_volume: z.string(),
-		total_volume_btc: z.number(),
-		sparkline: z.string(),
-	}),
+	price_btc: z.number().nullable().optional().default(0),
+	data: trendingItemDataSchema,
 })
 
 export const trendingCoinSchema = z.object({
