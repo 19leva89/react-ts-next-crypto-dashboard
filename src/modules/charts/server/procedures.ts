@@ -1,6 +1,7 @@
 import { getUserCoinsList } from '@/app/api/actions'
+import { UserChartDataPoint } from '@/app/api/types'
+import { UserCoinData } from '@/modules/coins/schema'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
-import { UserChartDataPoint, UserCoinData } from '@/app/api/types'
 
 const processSparklineData = (coins: UserCoinData[]): UserChartDataPoint[] => {
 	if (!coins.length) return []
@@ -43,7 +44,7 @@ export const chartsRouter = createTRPCRouter({
 				id: transaction.id,
 				quantity: transaction.quantity,
 				price: transaction.price,
-				date: transaction.date,
+				date: transaction.date.toISOString(),
 				userCoinId: transaction.userCoinId,
 			})),
 		}))

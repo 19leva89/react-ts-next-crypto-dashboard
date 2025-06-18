@@ -3,9 +3,9 @@
 import Image from 'next/image'
 import { toast } from 'sonner'
 import { PlusIcon } from 'lucide-react'
-import { useMutation } from '@tanstack/react-query'
 import { FixedSizeList as List } from 'react-window'
-import { ChangeEvent, CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { ChangeEvent, CSSProperties, useCallback, useMemo, useState } from 'react'
 
 import {
 	Button,
@@ -25,55 +25,37 @@ import {
 	Skeleton,
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
-import { CoinsListIDMapData } from '@/app/api/types'
-import { getCoinsListIDMap } from '@/app/api/actions'
 
 export const AddCoin = () => {
 	const trpc = useTRPC()
+	const queryClient = useQueryClient()
 
-	const addCoinMutation = useMutation(
-		trpc.coins.addCoinToUser.mutationOptions({
-			onSuccess: () => {
-				toast.success('Coin added successfully')
-			},
-			onError: () => {
-				toast.error('Failed to add coin. Please try again')
-			},
-		}),
-	)
+	const { data: coinsListIDMapData = [], isLoading } = useQuery(trpc.coins.getCoinsListIDMap.queryOptions())
 
 	const [editPrice, setEditPrice] = useState<string>('')
 	const [isAdding, setIsAdding] = useState<boolean>(false)
-	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [editQuantity, setEditQuantity] = useState<string>('')
 	const [selectedCoin, setSelectedCoin] = useState<string>('')
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-	const [coinsListIDMapData, setCoinsListIDMapData] = useState<CoinsListIDMapData>([])
 
 	// New state variables for managing Select open state and search focus
 	const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
 	const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false)
 
-	useEffect(() => {
-		if (!isDialogOpen) return
+	const addCoinMutation = useMutation(
+		trpc.coins.addCoinToUser.mutationOptions({
+			onSuccess: async () => {
+				await queryClient.invalidateQueries(trpc.coins.getUserCoins.queryOptions())
 
-		const fetchData = async () => {
-			setIsLoading(true)
-
-			try {
-				const coinsList = await getCoinsListIDMap()
-
-				setCoinsListIDMapData(coinsList)
-			} catch (error) {
-				console.error('Error fetching CoinsListIDMap:', error)
-			} finally {
-				setIsLoading(false)
-			}
-		}
-
-		fetchData()
-	}, [isDialogOpen])
+				toast.success('Coin added successfully')
+			},
+			onError: (error) => {
+				console.error('Failed to add coin:', error)
+				toast.error('Failed to add coin. Please try again')
+			},
+		}),
+	)
 
 	const filteredCoins = useMemo(
 		() =>

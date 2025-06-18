@@ -11,23 +11,12 @@ export const CoinsView = () => {
 
 	const { data: userCoins } = useSuspenseQuery(trpc.coins.getUserCoins.queryOptions())
 
-	const transformedData = {
-		...userCoins,
-		coinData: userCoins.coinData.map((coin) => ({
-			...coin,
-			transactions: coin.transactions.map((tx) => ({
-				...tx,
-				date: new Date(tx.date),
-			})),
-		})),
-	}
-
 	return (
 		<CoinsContainer
-			coinData={transformedData.coinData}
-			totalInvestedValue={transformedData.totalInvestedValue}
-			totalValue={transformedData.totalPortfolioValue}
-			plannedProfit={transformedData.plannedProfit}
+			coinData={userCoins.coinData}
+			totalInvestedValue={userCoins.totalInvestedValue}
+			totalValue={userCoins.totalPortfolioValue}
+			plannedProfit={userCoins.plannedProfit}
 		/>
 	)
 }

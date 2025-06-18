@@ -1,13 +1,13 @@
 import { toast } from 'sonner'
 import { Draft, produce } from 'immer'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { cn } from '@/lib'
-import { DataTable } from './data'
-import { getColumns } from './columns'
 import { useTRPC } from '@/trpc/client'
 import { ScrollArea } from '@/components/ui'
-import { Transaction, UserCoinData } from '@/app/api/types'
+import { Transaction, UserCoinData } from '@/modules/coins/schema'
+import { DataTable } from '@/components/shared/data-tables/transaction-table/data'
+import { getColumns } from '@/components/shared/data-tables/transaction-table/columns'
 
 interface Props {
 	editTransactions: Transaction[]
@@ -17,10 +17,13 @@ interface Props {
 
 export const TableContainer = ({ editTransactions, onChange, className }: Props) => {
 	const trpc = useTRPC()
+	const queryClient = useQueryClient()
 
 	const deleteTransactionMutation = useMutation(
 		trpc.coins.deleteTransactionFromUser.mutationOptions({
 			onSuccess: () => {
+				queryClient.invalidateQueries(trpc.coins.getUserCoin.queryOptions(editTransactions[0].userCoinId))
+
 				toast.success('Transaction has been removed')
 			},
 			onError: (error) => {
@@ -37,7 +40,7 @@ export const TableContainer = ({ editTransactions, onChange, className }: Props)
 
 				if (transaction) {
 					if (field === 'date') {
-						;(transaction[field] as Date) = new Date(value)
+						;(transaction[field] as string) = value
 					} else {
 						;(transaction[field] as number) = parseFloat(value) || 0
 					}

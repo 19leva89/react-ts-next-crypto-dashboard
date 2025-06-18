@@ -1,5 +1,5 @@
 import { toast } from 'sonner'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import {
 	AlertDialog,
@@ -12,7 +12,7 @@ import {
 	AlertDialogTitle,
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
-import { UserCoinData } from '@/app/api/types'
+import { UserCoinData } from '@/modules/coins/schema'
 
 interface Props {
 	coin: UserCoinData
@@ -22,14 +22,19 @@ interface Props {
 
 export const DeleteCoin = ({ coin, isOpen, onClose }: Props) => {
 	const trpc = useTRPC()
+	const queryClient = useQueryClient()
 
 	const deleteCoinMutation = useMutation(
 		trpc.coins.deleteCoinFromUser.mutationOptions({
 			onSuccess: () => {
+				queryClient.invalidateQueries(trpc.coins.getUserCoins.queryOptions())
+
 				toast.success('Coin removed successfully')
+
 				onClose()
 			},
-			onError: () => {
+			onError: (error) => {
+				console.error('Failed to remove coin:', error)
 				toast.error('Failed to remove coin')
 			},
 		}),
@@ -53,7 +58,11 @@ export const DeleteCoin = ({ coin, isOpen, onClose }: Props) => {
 				<AlertDialogFooter className='gap-3'>
 					<AlertDialogCancel className='rounded-xl'>Cancel</AlertDialogCancel>
 
-					<AlertDialogAction onClick={handleDelete} className='rounded-xl'>
+					<AlertDialogAction
+						onClick={handleDelete}
+						disabled={deleteCoinMutation.isPending}
+						className='rounded-xl'
+					>
 						Delete
 					</AlertDialogAction>
 				</AlertDialogFooter>

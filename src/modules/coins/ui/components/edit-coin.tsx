@@ -1,7 +1,7 @@
 import { toast } from 'sonner'
 import { PlusIcon } from 'lucide-react'
-import { ChangeEvent, useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { ChangeEvent, useState, useEffect } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import {
 	Button,
@@ -16,7 +16,7 @@ import {
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
 import { formatPrice } from '@/constants/format-price'
-import { Transaction, UserCoinData } from '@/app/api/types'
+import { Transaction, UserCoinData } from '@/modules/coins/schema'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 
 interface Props {
@@ -27,6 +27,7 @@ interface Props {
 
 export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 	const trpc = useTRPC()
+	const queryClient = useQueryClient()
 	const totalValue = coin.current_price * coin.total_quantity
 
 	const [isSaving, setIsSaving] = useState<boolean>(false)
@@ -34,14 +35,21 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 
+	// Sync local state with updated data (important, don't remove)
+	useEffect(() => {
+		setEditTransactions(coin.transactions)
+
+		setEditSellPrice(String(coin.desired_sell_price || ''))
+	}, [coin.transactions, coin.desired_sell_price])
+
 	const createTransactionMutation = useMutation(
 		trpc.coins.addTransactionForUser.mutationOptions({
 			onSuccess: (newTransaction) => {
-				const transaction = {
-					...newTransaction,
-					date: new Date(newTransaction.date),
-				} as Transaction
-				setEditTransactions((prev) => [...prev, transaction])
+				setEditTransactions((prev) => [...prev, newTransaction])
+
+				queryClient.invalidateQueries(trpc.coins.getUserCoin.queryOptions(coin.coinId))
+				queryClient.invalidateQueries(trpc.coins.getUserCoins.queryOptions())
+
 				toast.success('Transaction created successfully')
 			},
 			onError: (error) => {
@@ -54,7 +62,11 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 	const updateCoinMutation = useMutation(
 		trpc.coins.updateUserCoin.mutationOptions({
 			onSuccess: () => {
+				queryClient.invalidateQueries(trpc.coins.getUserCoin.queryOptions(coin.coinId))
+				queryClient.invalidateQueries(trpc.coins.getUserCoins.queryOptions())
+
 				toast.success('Coin updated successfully')
+
 				onClose()
 			},
 			onError: (error) => {

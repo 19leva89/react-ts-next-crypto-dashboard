@@ -4,9 +4,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import { useMutation } from '@tanstack/react-query'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { ArrowLeftIcon, LoaderIcon, PlusIcon } from 'lucide-react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
 import {
@@ -25,8 +25,8 @@ import { useTRPC } from '@/trpc/client'
 import { formatPrice } from '@/constants/format-price'
 import { getCoinsMarketChart } from '@/app/api/actions'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
-import { MarketChartData, Transaction, UserCoinData } from '@/app/api/types'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
+import { MarketChartData, Transaction, UserCoinData } from '@/modules/coins/schema'
 
 interface Props {
 	coin: UserCoinData
@@ -35,6 +35,7 @@ interface Props {
 export const CoinIdContainer = ({ coin }: Props) => {
 	const trpc = useTRPC()
 	const router = useRouter()
+	const queryClient = useQueryClient()
 
 	const [days, setDays] = useState<number>(1)
 	const [isAdding, setIsAdding] = useState<boolean>(false)
@@ -45,34 +46,11 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 
-	const createTransactionMutation = useMutation(
-		trpc.coins.addTransactionForUser.mutationOptions({
-			onSuccess: (newTransaction) => {
-				const transaction = {
-					...newTransaction,
-					date: new Date(newTransaction.date),
-				} as Transaction
-				setEditTransactions((prev) => [...prev, transaction])
-				toast.success('Transaction created successfully')
-			},
-			onError: (error) => {
-				console.error('Create transaction error:', error)
-				toast.error('Failed to create transaction')
-			},
-		}),
-	)
-
-	const updateCoinMutation = useMutation(
-		trpc.coins.updateUserCoin.mutationOptions({
-			onSuccess: () => {
-				toast.success('Coin updated successfully')
-			},
-			onError: (error) => {
-				console.error('Update error:', error)
-				toast.error('Failed to update coin')
-			},
-		}),
-	)
+	// Sync local state with updated data (important, don't remove)
+	useEffect(() => {
+		setEditTransactions(coin.transactions)
+		setEditSellPrice(String(coin.desired_sell_price || ''))
+	}, [coin.transactions, coin.desired_sell_price])
 
 	useEffect(() => {
 		setIsLoading(true)
@@ -92,6 +70,38 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 		fetchData()
 	}, [coin.coinId, days])
+
+	const createTransactionMutation = useMutation(
+		trpc.coins.addTransactionForUser.mutationOptions({
+			onSuccess: (newTransaction) => {
+				setEditTransactions((prev) => [...prev, newTransaction])
+
+				queryClient.invalidateQueries(trpc.coins.getUserCoin.queryOptions(coin.coinId))
+				queryClient.invalidateQueries(trpc.coins.getUserCoins.queryOptions())
+
+				toast.success('Transaction created successfully')
+			},
+			onError: (error) => {
+				console.error('Create transaction error:', error)
+				toast.error('Failed to create transaction')
+			},
+		}),
+	)
+
+	const updateCoinMutation = useMutation(
+		trpc.coins.updateUserCoin.mutationOptions({
+			onSuccess: () => {
+				queryClient.invalidateQueries(trpc.coins.getUserCoin.queryOptions(coin.coinId))
+				queryClient.invalidateQueries(trpc.coins.getUserCoins.queryOptions())
+
+				toast.success('Coin updated successfully')
+			},
+			onError: (error) => {
+				console.error('Update error:', error)
+				toast.error('Failed to update coin')
+			},
+		}),
+	)
 
 	const totalValue = coin.current_price * coin.total_quantity
 
@@ -186,11 +196,11 @@ export const CoinIdContainer = ({ coin }: Props) => {
 		setIsSaving(true)
 
 		try {
-			const updatedTransactions = editTransactions.map((transaction) => ({
-				...transaction,
-				quantity: Number(transaction.quantity),
-				price: Number(transaction.price),
-				date: new Date(transaction.date).toISOString(),
+			const updatedTransactions = editTransactions.map(({ id, ...rest }) => ({
+				id,
+				quantity: Number(rest.quantity),
+				price: Number(rest.price),
+				date: new Date(rest.date).toISOString(),
 			}))
 
 			await updateCoinMutation.mutateAsync({

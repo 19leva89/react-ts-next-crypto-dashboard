@@ -2,7 +2,7 @@ import { format } from 'date-fns'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon } from 'lucide-react'
 
-import { Transaction } from '@/app/api/types'
+import { Transaction } from '@/modules/coins/schema'
 import { InputFormatPrice } from '@/components/shared'
 import { DeleteTransaction } from '@/modules/coins/ui/components/delete-transaction'
 import { Button, Calendar, Popover, PopoverContent, PopoverTrigger } from '@/components/ui'

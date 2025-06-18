@@ -2,8 +2,10 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 
 import { prisma } from '@/lib/prisma'
+import { makeReq } from '@/app/api/make-request'
+import { UserCoinDataSchema } from '@/modules/coins/schema'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
-import { getUserCoinData, getUserCoinsList, recalculateAveragePrice, getCoinData } from '@/app/api/actions'
+import { getUserCoinsList, recalculateAveragePrice, getCoinData } from '@/app/api/actions'
 
 export const coinsRouter = createTRPCRouter({
 	addCoinToUser: protectedProcedure
@@ -116,18 +118,109 @@ export const coinsRouter = createTRPCRouter({
 			return result
 		}),
 
-	getUserCoin: protectedProcedure.input(z.string()).query(async ({ input: coinId }) => {
-		const userCoin = await getUserCoinData(coinId)
+	getCoinsListIDMap: protectedProcedure.query(async () => {
+		const coins = await prisma.coinsListIDMap.findMany({
+			include: { coin: true },
+		})
 
-		if (!userCoin || !('coinId' in userCoin)) {
-			throw new TRPCError({
-				code: 'NOT_FOUND',
-				message: 'Coin not found',
-			})
-		}
-
-		return userCoin
+		return coins.map((list) => ({
+			id: list.id,
+			symbol: list.symbol,
+			name: list.name,
+			image: list.coin?.image,
+		}))
 	}),
+
+	getUserCoin: protectedProcedure
+		.input(z.string())
+		.output(UserCoinDataSchema)
+		.query(async ({ input: coinId, ctx }) => {
+			const userCoin = await prisma.userCoin.findUnique({
+				where: { userId_coinId: { userId: ctx.auth.user.id, coinId } },
+				select: {
+					total_quantity: true,
+					total_cost: true,
+					average_price: true,
+					desired_sell_price: true,
+					coinsListIDMap: {
+						select: {
+							name: true,
+							symbol: true,
+						},
+					},
+					coin: {
+						select: {
+							id: true,
+							current_price: true,
+							image: true,
+							sparkline_in_7d: true,
+							price_change_percentage_7d_in_currency: true,
+						},
+					},
+					transactions: {
+						select: {
+							id: true,
+							quantity: true,
+							price: true,
+							date: true,
+							userCoinId: true,
+						},
+					},
+				},
+			})
+
+			if (!userCoin) {
+				throw new TRPCError({
+					code: 'NOT_FOUND',
+					message: 'Coin not found',
+				})
+			}
+
+			// Launch an update in the background via API
+			const response = await makeReq('GET', `/update/user-coin/${coinId}`)
+
+			if (!response || !Array.isArray(response) || response.length === 0) {
+				console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')
+			}
+
+			// Transform the userCoin object to match the expected return type
+			return {
+				coinId: userCoin.coin.id,
+				name: userCoin.coinsListIDMap.name,
+				symbol: userCoin.coinsListIDMap.symbol,
+				current_price: userCoin.coin.current_price ?? 0,
+				total_quantity: userCoin.total_quantity,
+				total_cost: userCoin.total_cost,
+				average_price: userCoin.average_price,
+				desired_sell_price: userCoin.desired_sell_price ?? 0,
+				image: userCoin.coin.image ?? '/svg/coin-not-found.svg',
+				sparkline_in_7d: {
+					price: (() => {
+						const sparkline = userCoin.coin.sparkline_in_7d
+						if (typeof sparkline === 'string') {
+							try {
+								const parsed = JSON.parse(sparkline)
+								return Array.isArray(parsed?.price) ? parsed.price : []
+							} catch {
+								return []
+							}
+						}
+						if (typeof sparkline === 'object' && sparkline !== null && 'price' in sparkline) {
+							return Array.isArray(sparkline.price) ? sparkline.price : []
+						}
+						return []
+					})(),
+				},
+				price_change_percentage_7d_in_currency: userCoin.coin.price_change_percentage_7d_in_currency ?? 0,
+				transactions: userCoin.transactions.map((transaction) => ({
+					id: transaction.id,
+					quantity: transaction.quantity,
+					price: transaction.price,
+					date: transaction.date.toISOString(),
+					userCoinId: transaction.userCoinId,
+				})),
+			}
+		}),
 
 	getUserCoins: protectedProcedure.query(async () => {
 		const userCoins = await getUserCoinsList()
@@ -147,7 +240,7 @@ export const coinsRouter = createTRPCRouter({
 				id: transaction.id,
 				quantity: transaction.quantity,
 				price: transaction.price,
-				date: transaction.date,
+				date: transaction.date.toISOString(),
 				userCoinId: transaction.userCoinId,
 			})),
 		}))
