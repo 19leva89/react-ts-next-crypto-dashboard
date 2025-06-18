@@ -279,7 +279,7 @@ export const updateTrendingData = async (): Promise<TrendingData> => {
 						thumb: coin.item.thumb || '',
 						market_cap_rank: coin.item.market_cap_rank || 0,
 						price_btc: coin.item.price_btc || 0,
-						data: typeof coin.item.data === 'string' ? coin.item.data : JSON.stringify(coin.item.data),
+						data: JSON.stringify(coin.item.data),
 					},
 				}),
 			),

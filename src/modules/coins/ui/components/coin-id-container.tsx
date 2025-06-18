@@ -76,9 +76,6 @@ export const CoinIdContainer = ({ coin }: Props) => {
 			onSuccess: (newTransaction) => {
 				setEditTransactions((prev) => [...prev, newTransaction])
 
-				queryClient.invalidateQueries(trpc.coins.getUserCoin.queryOptions(coin.coinId))
-				queryClient.invalidateQueries(trpc.coins.getUserCoins.queryOptions())
-
 				toast.success('Transaction created successfully')
 			},
 			onError: (error) => {
