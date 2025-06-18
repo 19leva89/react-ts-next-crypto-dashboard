@@ -20,8 +20,9 @@ import {
 	Skeleton,
 } from '@/components/ui'
 import { cn } from '@/lib'
+import { CoinData } from '@/app/api/types'
 import { formatPrice } from '@/constants/format-price'
-import { CoinData, MarketChartData } from '@/app/api/types'
+import { MarketChartData } from '@/modules/coins/schema'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 import { getCoinData, getCoinsMarketChart } from '@/app/api/actions'
 

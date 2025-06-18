@@ -46,7 +46,6 @@ export const LoginForm = ({ onClose }: Props) => {
 			await update()
 		} catch (error) {
 			console.error('Error logging in:', error)
-
 			toast.error(error instanceof Error ? error.message : 'Error while logging in')
 		}
 	}

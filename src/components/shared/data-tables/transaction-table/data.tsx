@@ -11,12 +11,12 @@ import { useState } from 'react'
 import { formatPrice } from '@/constants/format-price'
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui'
 
-interface Props<TData extends { quantity: number; price: number; date: Date }> {
+interface Props<TData extends { quantity: number; price: number; date: string }> {
 	data: TData[]
 	columns: ColumnDef<TData>[]
 }
 
-export function DataTable<TData extends { quantity: number; price: number; date: Date }>({
+export function DataTable<TData extends { quantity: number; price: number; date: string }>({
 	columns,
 	data,
 }: Props<TData>) {
@@ -34,7 +34,7 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 	})
 
 	// Calculating total values
-	const sortedData = data.slice().sort((a, b) => a.date.getTime() - b.date.getTime())
+	const sortedData = data.slice().sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
 	const totals = sortedData.reduce(
 		(acc, transaction) => {

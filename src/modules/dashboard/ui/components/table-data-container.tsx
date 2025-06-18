@@ -1,14 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { useTRPC } from '@/trpc/client'
-import { DataTable } from './table-data'
-import { columns } from './table-columns'
 import { Skeleton } from '@/components/ui'
-import { getCoinsListByCate } from '@/app/api/actions'
 import { CategoriesData, CoinListData } from '@/app/api/types'
+import { DataTable } from '@/modules/dashboard/ui/components/table-data'
+import { columns } from '@/modules/dashboard/ui/components/table-columns'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 
 interface Props {
@@ -18,31 +17,31 @@ interface Props {
 
 export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 	const trpc = useTRPC()
+	const queryClient = useQueryClient()
 
-	const { data: allCoins } = useQuery(trpc.dashboard.getCoinsList.queryOptions())
+	const { data: allCoins } = useQuery({
+		...trpc.dashboard.getCoinsList.queryOptions(),
+	})
+
+	const { isLoading: isCategoryLoading } = useQuery({
+		...trpc.dashboard.getCoinsListByCate.queryOptions(''),
+		enabled: false,
+	})
 
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
-	const [fetchingCoins, setFetchingCoins] = useState<boolean>(false)
 	const [currentCategory, setCurrentCategory] = useState<string>('All')
 	const [coinsList, setCoinsList] = useState<CoinListData[]>(initialCoins)
 
 	// Handle category selection
 	const onCategoryClick = async (cate: string, name?: string) => {
-		setFetchingCoins(true)
-		setCoinsList([])
-
 		if (cate) {
 			name && setCurrentCategory(name)
 
-			const resp = await getCoinsListByCate(cate)
-			setFetchingCoins(false)
-
-			if (resp) setCoinsList(resp)
+			const data = await queryClient.fetchQuery(trpc.dashboard.getCoinsListByCate.queryOptions(cate))
+			if (data) setCoinsList(data)
 		} else {
 			setCurrentCategory('All')
-			setFetchingCoins(false)
-
 			if (allCoins) setCoinsList(allCoins)
 		}
 	}
@@ -59,7 +58,7 @@ export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 
 	return (
 		<>
-			{fetchingCoins ? (
+			{isCategoryLoading ? (
 				<Skeleton className='h-96 rounded-xl' />
 			) : (
 				<DataTable

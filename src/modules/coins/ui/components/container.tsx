@@ -16,10 +16,10 @@ import {
 	useSidebar,
 } from '@/components/ui'
 import { cn } from '@/lib'
-import { AddCoin } from './add-coin'
-import { CoinCard } from './coin-card'
-import { UserCoinData } from '@/app/api/types'
+import { UserCoinData } from '@/modules/coins/schema'
 import { formatPrice } from '@/constants/format-price'
+import { AddCoin } from '@/modules/coins/ui/components/add-coin'
+import { CoinCard } from '@/modules/coins/ui/components/coin-card'
 
 interface Props {
 	coinData: UserCoinData[]

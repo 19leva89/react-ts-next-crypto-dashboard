@@ -10,13 +10,6 @@ export type CategoriesData = {
 	name: string
 }[]
 
-export type CoinsListIDMapData = {
-	id: string
-	symbol: string
-	name: string
-	image?: string
-}[]
-
 export type CoinListData = {
 	id: string
 	symbol?: string
@@ -71,37 +64,12 @@ export type CoinData = {
 	}
 }
 
-export interface Transaction {
-	id: string
-	quantity: number
-	price: number
-	date: Date
-	userCoinId: string
-}
-
-export interface UserCoinData {
-	coinId: string
-	name: string
-	symbol: string
-	current_price: number
-	total_quantity: number
-	total_cost: number
-	average_price: number
-	desired_sell_price?: number
-	image: string
-	sparkline_in_7d: {
-		price: number[]
-	}
-	price_change_percentage_7d_in_currency?: number
-	transactions: Transaction[]
-}
-
 export interface UserChartDataPoint {
 	timestamp: Date
 	value: number
 }
 
-export type TrendingItem = {
+type TrendingItem = {
 	id: string
 	name: string
 	symbol: string
@@ -130,10 +98,6 @@ export type TrendingCoin = {
 
 export type TrendingData = {
 	coins: TrendingCoin[]
-}
-
-export type MarketChartData = {
-	prices: number[][]
 }
 
 export type MarketChartDataPoint = {
