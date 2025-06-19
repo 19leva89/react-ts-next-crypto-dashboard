@@ -33,7 +33,7 @@ export const addCoinToUserSchema = z.object({
 	coinId: z.string(),
 	quantity: z.number(),
 	price: z.number(),
-	image: z.string(),
+	image: z.string().optional(),
 })
 
 export type Transaction = z.infer<typeof transactionSchema>
