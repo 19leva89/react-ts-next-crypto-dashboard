@@ -3,19 +3,13 @@ import { TRPCError } from '@trpc/server'
 
 import { prisma } from '@/lib/prisma'
 import { makeReq } from '@/app/api/make-request'
-import { userCoinDataSchema } from '@/modules/coins/schema'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
+import { addCoinToUserSchema, userCoinDataSchema } from '@/modules/coins/schema'
 import { getUserCoinsList, recalculateAveragePrice, getCoinData } from '@/app/api/actions'
 
 export const coinsRouter = createTRPCRouter({
 	addCoinToUser: protectedProcedure
-		.input(
-			z.object({
-				coinId: z.string(),
-				quantity: z.number(),
-				price: z.number().positive(),
-			}),
-		)
+		.input(addCoinToUserSchema)
 		.mutation(async ({ input: { coinId, quantity, price }, ctx }) => {
 			if (quantity === 0) {
 				throw new TRPCError({

@@ -163,7 +163,19 @@ export const dashboardRouter = createTRPCRouter({
 
 		const trendingData = {
 			coins: data.map((coin) => ({
-				item: coin,
+				item: {
+					...coin,
+					data:
+						typeof coin.data === 'string'
+							? (() => {
+									try {
+										return JSON.parse(coin.data)
+									} catch {
+										return {}
+									}
+								})()
+							: coin.data,
+				},
 			})),
 		}
 

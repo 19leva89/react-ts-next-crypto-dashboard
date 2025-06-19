@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { PlusIcon } from 'lucide-react'
 import { FixedSizeList as List } from 'react-window'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ChangeEvent, CSSProperties, useCallback, useMemo, useState } from 'react'
+import { ChangeEvent, CSSProperties, useCallback, useMemo, useState, useRef, useEffect } from 'react'
 
 import {
 	Button,
@@ -29,6 +29,7 @@ import { useTRPC } from '@/trpc/client'
 export const AddCoin = () => {
 	const trpc = useTRPC()
 	const queryClient = useQueryClient()
+	const searchInputRef = useRef<HTMLInputElement>(null)
 
 	const { data: coinsListIDMapData = [], isLoading } = useQuery(trpc.coins.getCoinsListIDMap.queryOptions())
 
@@ -42,6 +43,12 @@ export const AddCoin = () => {
 	// New state variables for managing Select open state and search focus
 	const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
 	const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false)
+
+	useEffect(() => {
+		if (isSelectOpen && searchInputRef.current) {
+			searchInputRef.current.focus()
+		}
+	}, [isSelectOpen])
 
 	const addCoinMutation = useMutation(
 		trpc.coins.addCoinToUser.mutationOptions({
@@ -93,6 +100,7 @@ export const AddCoin = () => {
 				coinId: selectedCoin,
 				quantity: Number(editQuantity),
 				price: Number(editPrice),
+				image: selectedCoinData?.image ?? '',
 			})
 
 			setIsDialogOpen(false)
@@ -205,6 +213,7 @@ export const AddCoin = () => {
 										{/* Input for search filter */}
 										<div className='p-2'>
 											<Input
+												ref={searchInputRef}
 												type='text'
 												placeholder='Search coin...'
 												value={searchQuery}
@@ -214,7 +223,6 @@ export const AddCoin = () => {
 												}}
 												onFocus={() => setIsSearchFocused(true)}
 												onBlur={() => setIsSearchFocused(false)}
-												autoFocus={false}
 											/>
 										</div>
 

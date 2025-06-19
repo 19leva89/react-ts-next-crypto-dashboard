@@ -29,6 +29,14 @@ export const marketChartDataSchema = z.object({
 	prices: z.array(z.tuple([z.number(), z.number()])),
 })
 
+export const addCoinToUserSchema = z.object({
+	coinId: z.string(),
+	quantity: z.number(),
+	price: z.number(),
+	image: z.string(),
+})
+
 export type Transaction = z.infer<typeof transactionSchema>
 export type UserCoinData = z.infer<typeof userCoinDataSchema>
 export type MarketChartData = z.infer<typeof marketChartDataSchema>
+export type AddCoinToUserInput = z.infer<typeof addCoinToUserSchema>
