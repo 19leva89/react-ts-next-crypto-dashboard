@@ -148,6 +148,7 @@ export const AddCoin = () => {
 
 	const selectedCoinData = useMemo(
 		() => coinsListIDMapData.find((coin) => coin.id === selectedCoin),
+
 		[selectedCoin, coinsListIDMapData],
 	)
 
