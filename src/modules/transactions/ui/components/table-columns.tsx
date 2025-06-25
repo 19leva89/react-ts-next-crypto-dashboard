@@ -73,7 +73,7 @@ export const columns: ColumnDef<Transaction>[] = [
 			)
 		},
 		cell: ({ row }) => {
-			const amount = row.original.amount
+			const amount = parseFloat(row.getValue('quantity')) || 0
 
 			return (
 				<div className='inline-flex items-center gap-2'>
@@ -86,15 +86,15 @@ export const columns: ColumnDef<Transaction>[] = [
 			)
 		},
 		sortingFn: (rowA, rowB) => {
-			const amountA = rowA.original.amount
-			const amountB = rowB.original.amount
+			const amountA = rowA.original.quantity
+			const amountB = rowB.original.quantity
 			return amountA - amountB
 		},
 	},
 
 	// Quantity
 	{
-		accessorKey: 'amount',
+		accessorKey: 'quantity',
 		header: ({ column }) => {
 			return (
 				<Button
@@ -112,7 +112,7 @@ export const columns: ColumnDef<Transaction>[] = [
 			)
 		},
 		cell: ({ row }) => {
-			const amount = parseFloat(row.getValue('amount')) || 0
+			const amount = parseFloat(row.getValue('quantity')) || 0
 
 			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>{amount}</div>
 		},
@@ -166,8 +166,8 @@ export const columns: ColumnDef<Transaction>[] = [
 		},
 		cell: ({ row }) => {
 			const price = parseFloat(row.getValue('price')) || 0
-			const amount = parseFloat(row.getValue('amount')) || 0
-			const total = amount * price
+			const quantity = parseFloat(row.getValue('quantity')) || 0
+			const total = quantity * price
 
 			const formatted = formatPrice(total, true)
 
@@ -175,12 +175,12 @@ export const columns: ColumnDef<Transaction>[] = [
 		},
 		sortingFn: (rowA, rowB) => {
 			const priceA = parseFloat(rowA.getValue('price')) || 0
-			const amountA = parseFloat(rowA.getValue('amount')) || 0
-			const totalA = amountA * priceA
+			const quantityA = parseFloat(rowA.getValue('quantity')) || 0
+			const totalA = quantityA * priceA
 
 			const priceB = parseFloat(rowB.getValue('price')) || 0
-			const amountB = parseFloat(rowB.getValue('amount')) || 0
-			const totalB = amountB * priceB
+			const quantityB = parseFloat(rowB.getValue('quantity')) || 0
+			const totalB = quantityB * priceB
 
 			return totalA - totalB
 		},

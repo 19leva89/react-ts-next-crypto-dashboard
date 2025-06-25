@@ -35,9 +35,11 @@ export const columns: ColumnDef<CoinsListData[0]>[] = [
 				</Button>
 			)
 		},
-		cell: ({ row }) => (
-			<div className='px-3 py-2 text-base max-[1200px]:text-sm'>{row.getValue('market_cap_rank')}</div>
-		),
+		cell: ({ row }) => {
+			const rank = (row.getValue('market_cap_rank') as number) || 0
+
+			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>{rank}</div>
+		},
 		enableHiding: false,
 	},
 

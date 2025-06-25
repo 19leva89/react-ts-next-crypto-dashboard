@@ -38,7 +38,6 @@ export const transactionsRouter = createTRPCRouter({
 					image: t.userCoin.coin.image,
 				},
 			},
-			amount: t.quantity,
 		}))
 	}),
 })
