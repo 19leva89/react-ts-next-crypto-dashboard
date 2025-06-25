@@ -22,14 +22,12 @@ import {
 	useReactTable,
 } from '@tanstack/react-table'
 import { useState } from 'react'
-import { FixedSizeList as List } from 'react-window'
 
 import {
 	Button,
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
-	DropdownMenuItem,
 	DropdownMenuTrigger,
 	Input,
 	Select,
@@ -49,24 +47,14 @@ import { cn } from '@/lib'
 interface Props<TData, TValue> {
 	data: TData[]
 	columns: ColumnDef<TData, TValue>[]
-	categories: { category_id: string; name: string }[]
-	currentCategory: string
 	onRowClick: (rowData: TData) => void
-	onCategoryClick: (category: string, name?: string) => void
 }
 
-export function DataTable<TData, TValue>({
-	columns,
-	data,
-	categories,
-	currentCategory,
-	onRowClick,
-	onCategoryClick,
-}: Props<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TData, TValue>) {
 	const [rowSelection, setRowSelection] = useState({})
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-	const [sorting, setSorting] = useState<SortingState>([{ id: 'total_volume', desc: true }])
+	const [sorting, setSorting] = useState<SortingState>([{ id: 'date', desc: true }])
 
 	const table = useReactTable({
 		data,
@@ -87,10 +75,10 @@ export function DataTable<TData, TValue>({
 		onRowSelectionChange: setRowSelection,
 	})
 
-	const filterValue = (table.getColumn('name')?.getFilterValue() as string) ?? ''
+	const filterValue = (table.getColumn('userCoin_coin_name')?.getFilterValue() as string) ?? ''
 
 	const handleFilterChange = (value: string) => {
-		table.getColumn('name')?.setFilterValue(value)
+		table.getColumn('userCoin_coin_name')?.setFilterValue(value)
 	}
 
 	return (
@@ -104,7 +92,7 @@ export function DataTable<TData, TValue>({
 					/>
 
 					<Input
-						placeholder='Filter coins...'
+						placeholder='Filter transactions...'
 						value={filterValue}
 						onChange={(e) => handleFilterChange(e.target.value)}
 						className='rounded-xl px-10'
@@ -113,7 +101,7 @@ export function DataTable<TData, TValue>({
 					<Button
 						variant='ghost'
 						size='icon'
-						onClick={() => table.getColumn('name')?.setFilterValue('')}
+						onClick={() => table.getColumn('userCoin_coin_name')?.setFilterValue('')}
 						className={cn(
 							'absolute top-1/2 right-1 -translate-y-1/2 hover:bg-transparent hover:text-gray-400',
 							filterValue ? 'opacity-100' : 'pointer-events-none opacity-0',
@@ -124,71 +112,6 @@ export function DataTable<TData, TValue>({
 				</div>
 
 				<div className='flex items-center gap-2'>
-					{/* Filter by category */}
-					<div className='w-full sm:w-64'>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button
-									id='category-btn'
-									variant='outline'
-									size='lg'
-									disabled={!categories.length}
-									className='group h-10 w-full justify-between rounded-xl px-4 py-2 transition-colors duration-300 ease-in-out'
-								>
-									<span className='truncate'>{currentCategory || 'Categories'}</span>
-
-									<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
-										<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
-									</div>
-								</Button>
-							</DropdownMenuTrigger>
-
-							{categories.length ? (
-								<DropdownMenuContent
-									align='start'
-									className='mt-1 max-h-64 w-full overflow-y-hidden rounded-xl bg-white py-1 shadow-xl dark:bg-gray-900'
-								>
-									<DropdownMenuItem className='rounded-xl'>
-										<button
-											className='w-full cursor-pointer rounded-xl px-2 py-1 text-start'
-											onClick={() => {
-												onCategoryClick('')
-											}}
-										>
-											All categories
-										</button>
-									</DropdownMenuItem>
-
-									<List
-										height={200}
-										width={246}
-										itemSize={40} // Height of one element
-										itemCount={categories.length} // Quantity of elements
-									>
-										{({ index, style }) => (
-											<DropdownMenuItem
-												key={categories[index].category_id}
-												className='rounded-xl'
-												style={style}
-											>
-												<button
-													className='w-full cursor-pointer rounded-xl p-2 text-start'
-													onClick={() =>
-														onCategoryClick(categories[index].category_id, categories[index].name)
-													}
-												>
-													{categories[index].name}
-												</button>
-											</DropdownMenuItem>
-										)}
-									</List>
-								</DropdownMenuContent>
-							) : (
-								<p className='px-4 py-2 text-sm text-gray-500'>No categories available</p>
-							)}
-						</DropdownMenu>
-					</div>
-
 					{/* Visibility columns */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
@@ -239,8 +162,6 @@ export function DataTable<TData, TValue>({
 											className={cn(
 												'max-[1200px]:px-3 max-[1200px]:py-2 max-[600px]:px-2 max-[600px]:py-1 max-[400px]:px-1 max-[400px]:py-0',
 												i === 0 && 'sticky left-[0rem] bg-gray-100 dark:bg-slate-800',
-												i === 1 &&
-													'sticky left-[5rem] min-w-36 bg-gray-100 max-[600px]:left-[4.5rem] max-[400px]:left-[4rem] dark:bg-slate-800',
 											)}
 										>
 											{header.isPlaceholder
@@ -266,9 +187,7 @@ export function DataTable<TData, TValue>({
 											key={cell.id}
 											className={cn(
 												'group-hover:bg-gray-50 max-[1200px]:px-3 max-[1200px]:py-2 max-[600px]:px-2 max-[600px]:py-1 max-[400px]:px-1 max-[400px]:py-0 dark:group-hover:bg-gray-800',
-												i === 0 && 'sticky left-[0rem] bg-background dark:bg-background',
-												i === 1 &&
-													'sticky left-[5rem] min-w-36 bg-background max-[600px]:left-[4.5rem] max-[400px]:left-[4rem] dark:bg-background',
+												i === 0 && 'sticky left-[0rem] truncate bg-background dark:bg-background',
 											)}
 										>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}

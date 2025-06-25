@@ -5,7 +5,15 @@ import authConfig from '@/auth.config'
 
 const { auth } = NextAuth(authConfig)
 
-const protectedRoutes = ['/billing', '/cards', '/charts', '/coins', '/notifications', '/reports', '/settings']
+const protectedRoutes = [
+	'/billing',
+	'/cards',
+	'/charts',
+	'/coins',
+	'/notifications',
+	'/settings',
+	'/transactions',
+]
 
 export default auth(async function middleware(req: NextRequest) {
 	const session = await auth()

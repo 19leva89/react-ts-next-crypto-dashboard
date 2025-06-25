@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import useLocalStorageState from 'use-local-storage-state'
-import { LayoutGridIcon, ListIcon, SearchIcon } from 'lucide-react'
+import { LayoutGridIcon, ListIcon, SearchIcon, XIcon } from 'lucide-react'
 
 import {
 	Button,
@@ -113,7 +113,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 	}
 
 	return (
-		<div className='flex w-full flex-col'>
+		<div className='flex w-full flex-col gap-6'>
 			<div className='flex items-center justify-between gap-1 max-[900px]:flex-wrap'>
 				<div className='flex items-start gap-1 max-[1000px]:flex-col'>
 					<div className='p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6'>
@@ -202,15 +202,27 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 			</div>
 
 			{/* Search */}
-			<div className='relative w-full px-6 pt-6'>
-				<SearchIcon size={18} className='absolute top-2/3 left-9 -translate-y-1/2 transform text-gray-400' />
+			<div className='relative w-full px-6'>
+				<SearchIcon size={18} className='absolute top-1/2 left-9 -translate-y-1/2 transform text-gray-400' />
 
 				<Input
 					placeholder='Filter coins...'
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
-					className='rounded-xl pl-10 max-[600px]:pl-10'
+					className='rounded-xl px-10'
 				/>
+
+				<Button
+					variant='ghost'
+					size='icon'
+					onClick={() => setSearchQuery('')}
+					className={cn(
+						'absolute top-1/2 right-6 -translate-y-1/2 hover:bg-transparent hover:text-gray-400',
+						searchQuery ? 'opacity-100' : 'pointer-events-none opacity-0',
+					)}
+				>
+					<XIcon size={16} />
+				</Button>
 			</div>
 
 			<div
