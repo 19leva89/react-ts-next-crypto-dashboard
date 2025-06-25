@@ -33,7 +33,7 @@ export const columns: ColumnDef<Transaction>[] = [
 			const coin = row.original.userCoin.coin
 
 			return (
-				<div className='flex items-center gap-2'>
+				<div className='flex min-w-46 items-center gap-2'>
 					<Image
 						src={coin.image || '/svg/coin-not-found.svg'}
 						alt={coin.name}
@@ -44,7 +44,8 @@ export const columns: ColumnDef<Transaction>[] = [
 							e.currentTarget.src = '/svg/coin-not-found.svg'
 						}}
 					/>
-					<span>
+
+					<span className='truncate'>
 						{coin.name} ({coin.symbol.toUpperCase()})
 					</span>
 				</div>
