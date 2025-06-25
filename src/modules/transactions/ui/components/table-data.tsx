@@ -187,7 +187,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 											key={cell.id}
 											className={cn(
 												'group-hover:bg-gray-50 max-[1200px]:px-3 max-[1200px]:py-2 max-[600px]:px-2 max-[600px]:py-1 max-[400px]:px-1 max-[400px]:py-0 dark:group-hover:bg-gray-800',
-												i === 0 && 'sticky left-[0rem] truncate bg-background dark:bg-background',
+												i === 0 && 'sticky left-[0rem] bg-background dark:bg-background',
 											)}
 										>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -198,7 +198,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 						) : (
 							<TableRow>
 								<TableCell colSpan={columns.length} className='h-24 text-center'>
-									No results
+									No transactions found. Try another search!
 								</TableCell>
 							</TableRow>
 						)}
