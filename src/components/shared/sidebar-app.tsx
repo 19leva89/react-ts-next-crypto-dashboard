@@ -72,15 +72,15 @@ const sideBarData = [
 		protected: true,
 	},
 	{
-		title: 'Cards',
-		url: '/cards',
-		icon: CreditCardIcon,
+		title: 'Transactions',
+		url: '/transactions',
+		icon: FileTextIcon,
 		protected: true,
 	},
 	{
-		title: 'Reports',
-		url: '/reports',
-		icon: FileTextIcon,
+		title: 'Cards',
+		url: '/cards',
+		icon: CreditCardIcon,
 		protected: true,
 	},
 	{

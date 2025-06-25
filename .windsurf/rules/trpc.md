@@ -1,4 +1,8 @@
 ---
+trigger: always_on
+---
+
+---
 description: 
 globs: 
 alwaysApply: true
