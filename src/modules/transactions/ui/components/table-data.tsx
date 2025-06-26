@@ -12,6 +12,7 @@ import {
 import {
 	ColumnDef,
 	ColumnFiltersState,
+	RowSelectionState,
 	SortingState,
 	VisibilityState,
 	flexRender,
@@ -51,7 +52,7 @@ interface Props<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TData, TValue>) {
-	const [rowSelection, setRowSelection] = useState({})
+	const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const [sorting, setSorting] = useState<SortingState>([{ id: 'date', desc: true }])

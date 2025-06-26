@@ -12,6 +12,7 @@ import {
 import {
 	ColumnDef,
 	ColumnFiltersState,
+	RowSelectionState,
 	SortingState,
 	VisibilityState,
 	flexRender,
@@ -63,7 +64,7 @@ export function DataTable<TData, TValue>({
 	onRowClick,
 	onCategoryClick,
 }: Props<TData, TValue>) {
-	const [rowSelection, setRowSelection] = useState({})
+	const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const [sorting, setSorting] = useState<SortingState>([{ id: 'total_volume', desc: true }])

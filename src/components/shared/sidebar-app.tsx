@@ -1,24 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import {
-	BellIcon,
-	ChartNoAxesCombinedIcon,
-	ChevronDownIcon,
-	CreditCardIcon,
-	FileTextIcon,
-	HandCoinsIcon,
-	HelpCircleIcon,
-	HomeIcon,
-	LogOutIcon,
-	NewspaperIcon,
-	SettingsIcon,
-	UserIcon,
-	WalletIcon,
-} from 'lucide-react'
+import { signOut } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { ComponentProps, useState } from 'react'
+import { ChevronDownIcon, LogOutIcon, SettingsIcon, UserIcon } from 'lucide-react'
 
 import {
 	Avatar,
@@ -32,79 +19,25 @@ import {
 	SidebarFooter,
 	SidebarGroup,
 	SidebarGroupContent,
-	SidebarGroupLabel,
 	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarSeparator,
 	Skeleton,
 	useSidebar,
 } from '@/components/ui'
 import { cn } from '@/lib'
-import { signOut } from 'next-auth/react'
 import { Logo } from '@/components/shared'
+import { iconMap, MenuItem } from '@/constants/menu'
 import { AuthModal } from '@/components/shared/modals/auth-modal'
 
-// Menu items
-const sideBarData = [
-	{
-		title: 'Dashboard',
-		url: '/dashboard',
-		icon: HomeIcon,
-		protected: false,
-	},
-	{
-		title: 'News',
-		url: '/news',
-		icon: NewspaperIcon,
-		protected: false,
-	},
-	{
-		title: 'Coins',
-		url: '/coins',
-		icon: HandCoinsIcon,
-		protected: true,
-	},
-	{
-		title: 'Charts',
-		url: '/charts',
-		icon: ChartNoAxesCombinedIcon,
-		protected: true,
-	},
-	{
-		title: 'Transactions',
-		url: '/transactions',
-		icon: FileTextIcon,
-		protected: true,
-	},
-	{
-		title: 'Cards',
-		url: '/cards',
-		icon: CreditCardIcon,
-		protected: true,
-	},
-	{
-		title: 'Notifications',
-		url: '/notifications',
-		icon: BellIcon,
-		protected: true,
-	},
-	{
-		title: 'Billing',
-		url: '/billing',
-		icon: WalletIcon,
-		protected: true,
-	},
+interface Props extends ComponentProps<typeof Sidebar> {
+	firstSection: MenuItem[]
+	secondSection: MenuItem[]
+}
 
-	{
-		title: 'Help center',
-		url: '/help',
-		icon: HelpCircleIcon,
-		protected: false,
-	},
-]
-
-export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
+export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => {
 	const currentPath = usePathname()
 
 	const { open } = useSidebar()
@@ -112,20 +45,33 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 
 	const [openAuthModal, setOpenAuthModal] = useState<boolean>(false)
 
-	// Filtering sideBarData based on authorization
-	const filteredSideBarData = sideBarData.filter((item) => {
-		if (item.protected && !session?.user) {
-			return false
-		}
+	const renderMenuItems = (items: MenuItem[]) => {
+		return items.map((item) => {
+			const Icon = iconMap[item.icon]
 
-		return true
-	})
+			const isActive = currentPath
+				? currentPath === item.url || (item.url !== '/' && currentPath.startsWith(item.url + '/'))
+				: false
+
+			return (
+				<SidebarMenuItem key={item.title}>
+					<SidebarMenuButton className='text-lg' asChild isActive={isActive}>
+						<Link href={item.url} className='flex h-12 items-center gap-4'>
+							<Icon className={open ? 'size-5!' : 'size-4'} />
+
+							<span>{item.title}</span>
+						</Link>
+					</SidebarMenuButton>
+				</SidebarMenuItem>
+			)
+		})
+	}
 
 	return (
 		<Sidebar side='left' variant='sidebar' collapsible='icon' className='z-50' {...props}>
 			<SidebarHeader>
 				<div className='flex items-center justify-center px-4 pt-1'>
-					<Link href={sideBarData[0].url}>
+					<Link href='/'>
 						<Logo />
 					</Link>
 				</div>
@@ -133,26 +79,18 @@ export const SidebarApp = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel className='text-base'>Menu</SidebarGroupLabel>
-
 					<SidebarGroupContent>
-						<SidebarMenu>
-							{filteredSideBarData.map((item) => {
-								const isActive = currentPath === item.url
+						<SidebarMenu>{renderMenuItems(firstSection)}</SidebarMenu>
+					</SidebarGroupContent>
+				</SidebarGroup>
 
-								return (
-									<SidebarMenuItem key={item.title}>
-										<SidebarMenuButton className='text-lg' asChild isActive={isActive}>
-											<Link href={item.url} className='flex h-12 items-center gap-4'>
-												<item.icon className={open ? 'size-5!' : 'size-4'} />
+				<div className='px-4 py-0'>
+					<SidebarSeparator className='mx-0' />
+				</div>
 
-												<span>{item.title}</span>
-											</Link>
-										</SidebarMenuButton>
-									</SidebarMenuItem>
-								)
-							})}
-						</SidebarMenu>
+				<SidebarGroup>
+					<SidebarGroupContent>
+						<SidebarMenu>{renderMenuItems(secondSection)}</SidebarMenu>
 					</SidebarGroupContent>
 				</SidebarGroup>
 			</SidebarContent>
