@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react'
 
 import { Toaster } from '@/components/ui'
 import { constructMetadata } from '@/lib/utils'
+import { AppLayout } from '@/components/shared/app-layout'
 import { AppProvider, ThemeProvider } from '@/components/shared/providers'
 
 import './globals.css'
@@ -26,7 +27,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 						enableSystem={false}
 						disableTransitionOnChange
 					>
-						{children}
+						<AppLayout>{children}</AppLayout>
 					</ThemeProvider>
 				</AppProvider>
 
