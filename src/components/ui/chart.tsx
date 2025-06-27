@@ -1,6 +1,5 @@
 'use client'
 
-import * as RechartsPrimitive from 'recharts'
 import {
 	ComponentProps,
 	ComponentType,
@@ -11,6 +10,7 @@ import {
 	useId,
 	useMemo,
 } from 'react'
+import * as RechartsPrimitive from 'recharts'
 
 import { cn } from '@/lib'
 import { formatPrice } from '@/constants/format-price'

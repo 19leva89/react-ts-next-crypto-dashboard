@@ -209,7 +209,11 @@ export const columns: ColumnDef<Transaction>[] = [
 		cell: ({ row }) => {
 			const date = row.getValue('date') as Date
 
-			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>{format(new Date(date), 'PPpp')}</div>
+			return (
+				<div className='px-3 py-2 text-base max-[1200px]:text-sm'>
+					{format(new Date(date), 'dd.MM.yyyy, HH:mm')}
+				</div>
+			)
 		},
 	},
 ]
