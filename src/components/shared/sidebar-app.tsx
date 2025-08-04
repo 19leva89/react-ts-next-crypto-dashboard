@@ -28,6 +28,7 @@ import {
 	useSidebar,
 } from '@/components/ui'
 import { cn } from '@/lib'
+import { useTRPC } from '@/trpc/client'
 import { Logo } from '@/components/shared'
 import { iconMap, MenuItem } from '@/constants/menu'
 import { AuthModal } from '@/components/shared/modals/auth-modal'
@@ -38,6 +39,7 @@ interface Props extends ComponentProps<typeof Sidebar> {
 }
 
 export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => {
+	const trpc = useTRPC()
 	const currentPath = usePathname()
 
 	const { open } = useSidebar()
@@ -65,6 +67,16 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 				</SidebarMenuItem>
 			)
 		})
+	}
+
+	const handleLogout = async () => {
+		try {
+			trpc.notifications.addLogoutNotification.mutationOptions()
+
+			await signOut({ callbackUrl: '/' })
+		} catch (error) {
+			console.error('Error during logout:', error)
+		}
 	}
 
 	return (
@@ -169,7 +181,7 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 
 										<DropdownMenuItem className='h-10 w-full cursor-pointer' asChild>
 											<button
-												onClick={() => signOut()}
+												onClick={handleLogout}
 												className='flex w-full items-center gap-2 rounded-xl p-3'
 											>
 												<LogOutIcon size={16} />

@@ -1,25 +1,39 @@
 'use client'
 
 import { toast } from 'sonner'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signOut, useSession } from 'next-auth/react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useSuspenseQuery, useMutation } from '@tanstack/react-query'
 
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	Button,
+} from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
-import { Button } from '@/components/ui'
 import { FormInput } from '@/components/shared/form'
 import { Container, ErrorState, LoadingState, Title } from '@/components/shared'
 import { UpdateProfileValues, UserProfile, updateProfileSchema } from '@/modules/settings/schema'
 
 export const ProfileView = () => {
 	const trpc = useTRPC()
+	const router = useRouter()
+	const deleteUserMutation = useMutation(trpc.settings.deleteUser.mutationOptions())
+	const updateUserMutation = useMutation(trpc.settings.updateUserInfo.mutationOptions())
 
 	const { update } = useSession()
 	const { data: profile } = useSuspenseQuery(trpc.settings.getProfile.queryOptions()) as { data: UserProfile }
 
-	const deleteUserMutation = useMutation(trpc.settings.deleteUser.mutationOptions())
-	const updateUserMutation = useMutation(trpc.settings.updateUserInfo.mutationOptions())
+	const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
 
 	const form = useForm<UpdateProfileValues>({
 		resolver: zodResolver(updateProfileSchema),
@@ -56,10 +70,13 @@ export const ProfileView = () => {
 			toast.success('Your account has been deleted')
 
 			signOut()
+			router.push('/')
 		} catch (error) {
 			console.error('Error deleting account:', error)
 
 			toast.error(error instanceof Error ? error.message : 'Error while deleting account')
+		} finally {
+			setShowDeleteDialog(false)
 		}
 	}
 
@@ -94,14 +111,39 @@ export const ProfileView = () => {
 						variant='destructive'
 						size='lg'
 						type='button'
-						onClick={handleDeleteAccount}
-						disabled={form.formState.isSubmitting || deleteUserMutation.isPending}
+						onClick={() => setShowDeleteDialog(true)}
+						disabled={deleteUserMutation.isPending}
 						className='rounded-xl text-base transition-colors duration-300 ease-in-out'
 					>
-						Delete account
+						{deleteUserMutation.isPending ? 'Deleting...' : 'Delete account'}
 					</Button>
 				</form>
 			</FormProvider>
+
+			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+
+						<AlertDialogDescription>
+							This action cannot be undone. This will permanently delete your account and remove your data
+							from our servers.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+
+					<AlertDialogFooter>
+						<AlertDialogCancel disabled={deleteUserMutation.isPending}>Cancel</AlertDialogCancel>
+
+						<AlertDialogAction
+							onClick={handleDeleteAccount}
+							disabled={deleteUserMutation.isPending}
+							className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+						>
+							{deleteUserMutation.isPending ? 'Deleting...' : 'Delete account'}
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</Container>
 	)
 }

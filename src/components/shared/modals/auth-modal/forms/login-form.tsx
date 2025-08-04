@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { toast } from 'sonner'
-import { useSession } from 'next-auth/react'
+import { useState } from 'react'
+import { signIn, useSession } from 'next-auth/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -13,16 +14,21 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui'
+import { useTRPC } from '@/trpc/client'
+import { loginUser } from '@/app/api/actions'
 import { FormInput } from '@/components/shared/form'
 import { TFormLoginValues, formLoginSchema } from './schemas'
-import { loginUser, loginUserWithCreds } from '@/app/api/actions'
 
 interface Props {
 	onClose?: VoidFunction
 }
 
 export const LoginForm = ({ onClose }: Props) => {
+	const trpc = useTRPC()
+
 	const { update } = useSession()
+
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 
 	const form = useForm<TFormLoginValues>({
 		resolver: zodResolver(formLoginSchema),
@@ -33,27 +39,69 @@ export const LoginForm = ({ onClose }: Props) => {
 	})
 
 	const onSubmit = async (data: TFormLoginValues) => {
+		setIsLoading(true)
+
 		try {
-			await loginUserWithCreds({
+			const result = await signIn('credentials', {
 				email: data.email,
 				password: data.password,
+				redirect: false,
 			})
 
-			toast.success('You have successfully logged in')
+			if (result?.error) {
+				let errorMessage = 'Something went wrong. Please try again.'
 
-			onClose?.()
+				if (result.error === 'CredentialsSignin') {
+					errorMessage = 'Invalid email or password'
+				} else if (result.error.includes('social login')) {
+					errorMessage = 'This email is linked to a social login. Please use GitHub or Google'
+				} else if (result.error.includes('not verified')) {
+					errorMessage = 'Email is not verified. Please check your inbox for verification link'
+				}
 
-			await update()
+				toast.error(errorMessage)
+
+				return
+			}
+
+			if (result?.ok) {
+				onClose?.()
+
+				const session = await update()
+
+				if (session) {
+					try {
+						trpc.notifications.addLoginNotification.mutationOptions()
+					} catch (error) {
+						console.error('Error adding login notification:', error)
+					}
+				}
+
+				toast.success('You have successfully logged in')
+			}
 		} catch (error) {
-			console.error('Error logging in:', error)
-			toast.error(error instanceof Error ? error.message : 'Error while logging in')
+			console.error('Login error:', error)
+
+			toast.error('An unexpected error occurred. Please try again.')
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
 	const handleLogin = async (provider: string) => {
 		await loginUser(provider)
 
-		await update()
+		const session = await update()
+
+		if (session) {
+			try {
+				trpc.notifications.addLoginNotification.mutationOptions()
+			} catch (error) {
+				console.error('Error adding login notification:', error)
+			}
+		}
+
+		toast.success('You have successfully logged in')
 	}
 
 	return (
@@ -79,7 +127,7 @@ export const LoginForm = ({ onClose }: Props) => {
 							variant='default'
 							size='lg'
 							type='submit'
-							loading={form.formState.isSubmitting}
+							loading={isLoading || form.formState.isSubmitting}
 							className='w-full rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 						>
 							Login

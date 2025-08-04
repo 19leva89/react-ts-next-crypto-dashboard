@@ -1,7 +1,7 @@
 'use client'
 
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { InputHTMLAttributes, useState } from 'react'
 
 import { Input } from '@/components/ui'

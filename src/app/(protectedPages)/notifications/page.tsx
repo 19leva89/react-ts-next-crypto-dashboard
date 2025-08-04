@@ -1,10 +1,11 @@
 import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { ErrorBoundary } from 'react-error-boundary'
-// import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 
 import { auth } from '@/auth'
 import { constructMetadata } from '@/lib'
+import { getQueryClient, trpc } from '@/trpc/server'
 import {
 	NotificationsView,
 	NotificationsViewError,
@@ -20,14 +21,18 @@ const NotificationsPage = async () => {
 		redirect('/not-auth')
 	}
 
+	const queryClient = getQueryClient()
+
+	void queryClient.prefetchQuery(trpc.notifications.getNotifications.queryOptions())
+
 	return (
-		// <HydrationBoundary state={dehydrate(queryClient)}>
-		<Suspense fallback={<NotificationsViewLoading />}>
-			<ErrorBoundary fallback={<NotificationsViewError />}>
-				<NotificationsView />
-			</ErrorBoundary>
-		</Suspense>
-		// </HydrationBoundary>
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<Suspense fallback={<NotificationsViewLoading />}>
+				<ErrorBoundary fallback={<NotificationsViewError />}>
+					<NotificationsView />
+				</ErrorBoundary>
+			</Suspense>
+		</HydrationBoundary>
 	)
 }
 

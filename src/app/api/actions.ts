@@ -2,7 +2,6 @@
 
 import axios from 'axios'
 import { pick } from 'lodash'
-import { compare } from 'bcryptjs'
 import { isValid } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 import { MarketChart, Prisma } from '@prisma/client'
@@ -155,34 +154,6 @@ export const registerUser = async (body: Prisma.UserCreateInput) => {
 
 export const loginUser = async (provider: string) => {
 	await signIn(provider, { redirectTo: '/' })
-
-	revalidatePath('/')
-}
-
-export const loginUserWithCreds = async (body: Prisma.UserCreateInput) => {
-	const user = await prisma.user.findUnique({
-		where: { email: body.email },
-		include: { accounts: true },
-	})
-
-	if (!user) throw new Error('Invalid password or email')
-	if (user.accounts.length > 0)
-		throw new Error('This email is linked to a social login. Please use GitHub or Google')
-
-	const isPasswordValid = await compare(body.password as string, user.password ?? '')
-
-	if (!isPasswordValid) throw new Error('Invalid password or email')
-	if (!user.emailVerified) throw new Error('Email is not verified')
-
-	const data = {
-		email: body.email,
-		password: body.password,
-		redirect: false,
-	}
-
-	const result = await signIn('credentials', data)
-
-	if (result?.error) throw new Error(result.error)
 
 	revalidatePath('/')
 }
