@@ -5,6 +5,7 @@ import { chartsRouter } from '@/modules/charts/server/procedures'
 import { settingsRouter } from '@/modules/settings/server/procedures'
 import { dashboardRouter } from '@/modules/dashboard/server/procedures'
 import { transactionsRouter } from '@/modules/transactions/server/procedures'
+import { notificationsRouter } from '@/modules/notifications/server/procedures'
 
 export const appRouter = createTRPCRouter({
 	news: newsRouter,
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
 	settings: settingsRouter,
 	dashboard: dashboardRouter,
 	transactions: transactionsRouter,
+	notifications: notificationsRouter,
 })
 
 // export type definition of API
