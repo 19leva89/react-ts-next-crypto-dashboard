@@ -40,7 +40,6 @@ export const coinsRouter = createTRPCRouter({
 					},
 					update: {},
 					create: {
-						id: coinId,
 						user: { connect: { id: ctx.auth.user.id } },
 						coin: { connect: { id: coinId } },
 						coinsListIDMap: { connect: { id: coinId } },

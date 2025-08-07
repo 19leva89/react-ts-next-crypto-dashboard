@@ -144,13 +144,12 @@ export const registerUser = async (body: Prisma.UserCreateInput) => {
 			},
 		})
 
-		await sendEmail(
-			createdUser.email,
-			'Crypto / 📝 Registration confirmation',
-			VerificationUserTemplate({
-				code,
-			}),
-		)
+		await sendEmail({
+			to: createdUser.email,
+			subject: 'Crypto / 📝 Registration confirmation',
+			html: VerificationUserTemplate({ code }).toString(),
+			text: VerificationUserTemplate({ code }).toString(),
+		})
 	} catch (error) {
 		handleError(error, 'CREATE_USER')
 	}
@@ -231,12 +230,7 @@ export const notifyUsersOnPriceTarget = async () => {
 		const { email, coins } = userMap[userId]
 
 		try {
-			await sendEmail(
-				email,
-				`🚀 ${coins.length > 1 ? 'A few coins' : coins[0].name} reached your target`,
-				NotificationTemplate({ coins }),
-			)
-
+			// Creating notifications
 			for (const coin of coins) {
 				await prisma.notification.create({
 					data: {
@@ -248,6 +242,14 @@ export const notifyUsersOnPriceTarget = async () => {
 					},
 				})
 			}
+
+			// Sending emails
+			await sendEmail({
+				to: email,
+				subject: `🚀 ${coins.length > 1 ? 'A few coins' : coins[0].name} reached your target`,
+				html: NotificationTemplate({ coins }).toString(),
+				text: NotificationTemplate({ coins }).toString(),
+			})
 		} catch (error) {
 			handleError(error, 'NOTIFY_USER_ON_PRICE_TARGET')
 		}

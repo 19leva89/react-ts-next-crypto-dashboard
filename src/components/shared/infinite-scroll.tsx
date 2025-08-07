@@ -25,7 +25,7 @@ export const InfiniteScroll = ({ isManual, hasNextPage, isFetchingNextPage, fetc
 	}, [isIntersecting, hasNextPage, isFetchingNextPage, isManual, fetchNextPage])
 
 	return (
-		<div className='flex flex-col items-center gap-4 p-4'>
+		<div className='flex items-center px-4 py-2'>
 			<div ref={targetRef} className='h-1' />
 
 			{hasNextPage ? (

@@ -31,7 +31,6 @@ import {
 	DropdownMenuTrigger,
 	Switch,
 } from '@/components/ui'
-
 import { useTRPC } from '@/trpc/client'
 import { DEFAULT_LIMIT } from '@/constants/default-limit'
 import { Notification } from '@/modules/notifications/schema'
@@ -240,17 +239,17 @@ export const NotificationsView = () => {
 							<div className='p-4 text-center text-sm text-muted-foreground'>No notifications yet</div>
 						)}
 					</div>
-
-					<InfiniteScroll
-						isManual
-						hasNextPage={hasNextPage}
-						isFetchingNextPage={isFetchingNextPage}
-						fetchNextPage={fetchNextPage}
-					/>
 				</CardContent>
 
 				{notifications.length > 0 && (
-					<CardFooter className='border-t bg-muted/20 p-4'>
+					<CardFooter className='justify-between border-t bg-muted/20 p-4'>
+						<InfiniteScroll
+							isManual
+							hasNextPage={hasNextPage}
+							isFetchingNextPage={isFetchingNextPage}
+							fetchNextPage={fetchNextPage}
+						/>
+
 						<Button
 							variant='ghost'
 							className='group flex items-center gap-2 text-primary hover:bg-transparent hover:underline'

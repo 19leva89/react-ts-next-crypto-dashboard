@@ -15,7 +15,7 @@ Data Fetching and State Management:
 - React Hook Form (working with forms)
 
 Email Services:
-- Resend (send email)
+- Nodemailer (send email)
 
 Form and Validation:
 - Zod (first schema validation)

@@ -162,7 +162,7 @@ model Coin {
 }
 
 model UserCoin {
-  id                 String                @id @unique
+  id                 String                @id @unique @default(cuid())
   total_quantity     Float                 @default(0)
   total_cost         Float                 @default(0)
   average_price      Float                 @default(0)
