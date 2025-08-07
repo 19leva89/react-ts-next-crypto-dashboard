@@ -15,7 +15,7 @@ const ERROR_MESSAGES = {
 export const userProfileSchema = z.object({
 	id: z.string(),
 	name: z.string().trim().min(2, { message: ERROR_MESSAGES.name }),
-	email: z.string().trim().email({ message: ERROR_MESSAGES.email }),
+	email: z.email({ message: ERROR_MESSAGES.email }).trim(),
 	image: z.string().nullable(),
 })
 

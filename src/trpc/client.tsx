@@ -1,11 +1,12 @@
 'use client'
 // ^-- to make sure we can mount the Provider from a server component
 
+// import superjson from 'superjson'
 import { PropsWithChildren, useState } from 'react'
 import type { QueryClient } from '@tanstack/react-query'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { createTRPCContext } from '@trpc/tanstack-react-query'
-import { createTRPCClient, httpBatchLink, TRPCClient } from '@trpc/client'
+import { createTRPCClient, httpBatchLink, loggerLink, TRPCClient } from '@trpc/client'
 
 import { absoluteUrl } from '@/lib/utils'
 import type { AppRouter } from '@/trpc/routers/_app'
@@ -42,8 +43,14 @@ export function TRPCReactProvider(props: PropsWithChildren) {
 	const [trpcClient] = useState<TRPCClient<AppRouter>>(() =>
 		createTRPCClient<AppRouter>({
 			links: [
+				loggerLink({
+					enabled: (opts) =>
+						process.env.NODE_ENV === 'development' ||
+						(opts.direction === 'down' && opts.result instanceof Error),
+				}),
+
 				httpBatchLink({
-					// transformer: superjson, <-- if you use a data transformer
+					// transformer: superjson,
 					url: fullUrl,
 				}),
 			],

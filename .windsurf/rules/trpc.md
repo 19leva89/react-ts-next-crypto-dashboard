@@ -189,7 +189,7 @@ export function TRPCReactProvider(props: PropsWithChildren) {
     procedure
       .input(z.object({ 
         id: z.string().uuid(),
-        email: z.string().email(),
+        email: z.email(),
         age: z.number().min(18) 
       }))
       .mutation(({ input }) => { /* your code */ })

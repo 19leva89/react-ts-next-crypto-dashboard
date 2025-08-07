@@ -1,11 +1,13 @@
-import NextAuth from 'next-auth'
+import { JWT } from 'next-auth/jwt'
 import { Adapter } from 'next-auth/adapters'
+import NextAuth, { Session, User } from 'next-auth'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 
 import { prisma } from '@/lib/prisma'
 import authConfig from '@/auth.config'
+import { createLoginNotification } from '@/app/api/actions'
 
-export const { auth, handlers, signIn, signOut } = NextAuth({
+export const authOptions: any = {
 	adapter: PrismaAdapter(prisma) as Adapter,
 
 	secret: process.env.NEXTAUTH_SECRET,
@@ -17,7 +19,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 	},
 
 	callbacks: {
-		async jwt({ token }) {
+		async jwt({ token }: { token: JWT }) {
 			if (!token.email) {
 				return token
 			}
@@ -38,7 +40,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 			return token
 		},
 
-		async session({ session, token }) {
+		async session({ session, token }: { session: Session; token: JWT }) {
 			if (session.user) {
 				session.user.id = token.id as string
 				session.user.email = token.email as string
@@ -49,5 +51,20 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 		},
 	},
 
+	events: {
+		async signIn({ user }: { user: User }) {
+			if (user.id) {
+				await createLoginNotification(user.id)
+			}
+		},
+	},
+
 	...authConfig,
-})
+}
+
+export const {
+	handlers: { GET, POST },
+	auth,
+	signIn,
+	signOut,
+} = NextAuth(authOptions)

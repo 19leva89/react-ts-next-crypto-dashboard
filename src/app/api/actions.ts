@@ -111,13 +111,17 @@ const getLatestBefore = <T extends { timestamp: Date }>(entries: T[], target: Da
 
 export const registerUser = async (body: Prisma.UserCreateInput) => {
 	try {
-		const user = await prisma.user.findFirst({
+		const user = await prisma.user.findUnique({
 			where: {
 				email: body.email,
 			},
+			include: { accounts: true },
 		})
 
 		if (user) {
+			if (user.accounts.length > 0)
+				throw new Error('This email is linked to a social login. Please use GitHub or Google')
+
 			if (!user.emailVerified) throw new Error('Email not confirmed')
 
 			throw new Error('User already exists')
@@ -156,6 +160,21 @@ export const loginUser = async (provider: string) => {
 	await signIn(provider, { redirectTo: '/' })
 
 	revalidatePath('/')
+}
+
+export const createLoginNotification = async (userId: string) => {
+	try {
+		await prisma.notification.create({
+			data: {
+				userId,
+				type: 'LOGIN',
+				title: 'Login',
+				message: 'You have successfully logged in',
+			},
+		})
+	} catch (error) {
+		handleError(error, 'CREATE_LOGIN_NOTIFICATION')
+	}
 }
 
 export const notifyUsersOnPriceTarget = async () => {
@@ -207,7 +226,7 @@ export const notifyUsersOnPriceTarget = async () => {
 		})
 	}
 
-	// Sending emails to users
+	// Sending emails to users and creating notifications
 	for (const userId in userMap) {
 		const { email, coins } = userMap[userId]
 
@@ -217,6 +236,18 @@ export const notifyUsersOnPriceTarget = async () => {
 				`🚀 ${coins.length > 1 ? 'A few coins' : coins[0].name} reached your target`,
 				NotificationTemplate({ coins }),
 			)
+
+			for (const coin of coins) {
+				await prisma.notification.create({
+					data: {
+						userId,
+						type: 'PRICE_ALERT',
+						title: '🎯 Target price reached!',
+						message: `${coin.name} reached your target (${coin.currentPrice}$)`,
+						coinId: coin.name,
+					},
+				})
+			}
 		} catch (error) {
 			handleError(error, 'NOTIFY_USER_ON_PRICE_TARGET')
 		}

@@ -273,7 +273,7 @@ model Airdrop {
 }
 
 model Notification {
-  id        String           @id @default(cuid())
+  id        String           @id @default(cuid()) @map("_id")
   userId    String
   user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   title     String

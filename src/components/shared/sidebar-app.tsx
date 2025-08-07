@@ -5,6 +5,7 @@ import { signOut } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { ComponentProps, useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { ChevronDownIcon, LogOutIcon, SettingsIcon, UserIcon } from 'lucide-react'
 
 import {
@@ -41,6 +42,9 @@ interface Props extends ComponentProps<typeof Sidebar> {
 export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => {
 	const trpc = useTRPC()
 	const currentPath = usePathname()
+	const addLogoutNotificationMutation = useMutation(
+		trpc.notifications.addLogoutNotification.mutationOptions(),
+	)
 
 	const { open } = useSidebar()
 	const { data: session, status } = useSession()
@@ -71,7 +75,7 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 
 	const handleLogout = async () => {
 		try {
-			trpc.notifications.addLogoutNotification.mutationOptions()
+			await addLogoutNotificationMutation.mutateAsync()
 
 			await signOut({ callbackUrl: '/' })
 		} catch (error) {

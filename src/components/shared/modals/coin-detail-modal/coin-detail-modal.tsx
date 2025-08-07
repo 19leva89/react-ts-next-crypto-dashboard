@@ -203,8 +203,12 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									{/* Popup tooltip */}
 									<ChartTooltip
 										cursor={true}
-										content={
+										content={({ active, payload, coordinate }) => (
 											<ChartTooltipContent
+												active={active}
+												payload={payload}
+												coordinate={coordinate}
+												accessibilityLayer={true}
 												formatter={(value, name) => {
 													const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
 
@@ -213,7 +217,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 													return [name, numericValue]
 												}}
 											/>
-										}
+										)}
 									/>
 
 									{/* Line on chart */}

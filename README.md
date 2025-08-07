@@ -47,7 +47,8 @@ Utilities and Libraries:
 terminal powershell -> `npm i` (install dependencies)
 terminal powershell -> `npm run all`
 terminal powershell -> `npm run lint` (loading ESLint checker)
-terminal powershell -> `npm run knip`
+terminal powershell -> `npm run types` (loading typescript checker)
+terminal powershell -> `npm run knip` (loading knip checker)
 
 # Database commands:
 terminal powershell -> `npx prisma generate`

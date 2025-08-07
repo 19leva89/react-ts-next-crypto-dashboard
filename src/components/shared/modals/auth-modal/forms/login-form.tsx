@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { toast } from 'sonner'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { signIn, useSession } from 'next-auth/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -14,17 +15,16 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui'
-import { useTRPC } from '@/trpc/client'
 import { loginUser } from '@/app/api/actions'
 import { FormInput } from '@/components/shared/form'
-import { TFormLoginValues, formLoginSchema } from './schemas'
+import { TFormLoginValues, formLoginSchema } from '@/components/shared/modals/auth-modal/forms/schemas'
 
 interface Props {
 	onClose?: VoidFunction
 }
 
 export const LoginForm = ({ onClose }: Props) => {
-	const trpc = useTRPC()
+	const router = useRouter()
 
 	const { update } = useSession()
 
@@ -38,7 +38,7 @@ export const LoginForm = ({ onClose }: Props) => {
 		},
 	})
 
-	const onSubmit = async (data: TFormLoginValues) => {
+	const handleCredentialsLogin = async (data: TFormLoginValues) => {
 		setIsLoading(true)
 
 		try {
@@ -49,7 +49,7 @@ export const LoginForm = ({ onClose }: Props) => {
 			})
 
 			if (result?.error) {
-				let errorMessage = 'Something went wrong. Please try again.'
+				let errorMessage = 'Something went wrong. Please try again'
 
 				if (result.error === 'CredentialsSignin') {
 					errorMessage = 'Invalid email or password'
@@ -65,48 +65,46 @@ export const LoginForm = ({ onClose }: Props) => {
 			}
 
 			if (result?.ok) {
+				await update()
+				router.refresh()
+
 				onClose?.()
-
-				const session = await update()
-
-				if (session) {
-					try {
-						trpc.notifications.addLoginNotification.mutationOptions()
-					} catch (error) {
-						console.error('Error adding login notification:', error)
-					}
-				}
-
 				toast.success('You have successfully logged in')
 			}
 		} catch (error) {
 			console.error('Login error:', error)
 
-			toast.error('An unexpected error occurred. Please try again.')
+			toast.error('An unexpected error occurred. Please try again')
 		} finally {
 			setIsLoading(false)
 		}
 	}
 
-	const handleLogin = async (provider: string) => {
-		await loginUser(provider)
+	const handleProviderLogin = async (provider: string) => {
+		setIsLoading(true)
 
-		const session = await update()
+		try {
+			await loginUser(provider)
 
-		if (session) {
-			try {
-				trpc.notifications.addLoginNotification.mutationOptions()
-			} catch (error) {
-				console.error('Error adding login notification:', error)
-			}
+			await update()
+
+			onClose?.()
+			toast.success('You have successfully logged in')
+		} catch (error) {
+			console.error('Provider login error:', error)
+
+			toast.error('An unexpected error occurred. Please try again')
+		} finally {
+			setIsLoading(false)
 		}
-
-		toast.success('You have successfully logged in')
 	}
 
 	return (
 		<FormProvider {...form}>
-			<form className='flex h-full min-h-[450px] flex-col gap-5' onSubmit={form.handleSubmit(onSubmit)}>
+			<form
+				onSubmit={form.handleSubmit(handleCredentialsLogin)}
+				className='flex h-full min-h-[450px] flex-col gap-5'
+			>
 				<Card className='flex grow flex-col items-stretch justify-between dark:bg-card'>
 					<div className='flex flex-col gap-5'>
 						<CardHeader>
@@ -138,7 +136,7 @@ export const LoginForm = ({ onClose }: Props) => {
 								variant='outline'
 								size='lg'
 								type='button'
-								onClick={() => handleLogin('github')}
+								onClick={() => handleProviderLogin('github')}
 								className='flex-1 gap-2 rounded-xl p-2 transition-colors duration-300 ease-in-out'
 							>
 								<Image
@@ -155,7 +153,7 @@ export const LoginForm = ({ onClose }: Props) => {
 								variant='outline'
 								size='lg'
 								type='button'
-								onClick={() => handleLogin('google')}
+								onClick={() => handleProviderLogin('google')}
 								className='flex-1 gap-2 rounded-xl p-2 transition-colors duration-300 ease-in-out'
 							>
 								<Image width={24} height={24} alt='Google' src='/svg/google-icon.svg' />

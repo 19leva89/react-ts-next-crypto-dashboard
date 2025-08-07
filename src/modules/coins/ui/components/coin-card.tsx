@@ -115,6 +115,8 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
 								<EllipsisVerticalIcon size={16} className='absolute inset-0 m-auto' />
 							</div>
+
+							<span className='sr-only'>More</span>
 						</Button>
 					</DropdownMenuTrigger>
 

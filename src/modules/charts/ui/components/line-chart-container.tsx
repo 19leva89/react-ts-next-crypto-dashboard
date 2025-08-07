@@ -128,8 +128,12 @@ export const LineChartContainer = ({ chartData }: Props) => {
 						{/* Popup tooltip */}
 						<ChartTooltip
 							cursor={true}
-							content={
+							content={({ active, payload, coordinate }) => (
 								<ChartTooltipContent
+									active={active}
+									payload={payload}
+									coordinate={coordinate}
+									accessibilityLayer={true}
 									formatter={(value, name) => {
 										const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
 
@@ -138,7 +142,7 @@ export const LineChartContainer = ({ chartData }: Props) => {
 										return [name, numericValue]
 									}}
 								/>
-							}
+							)}
 						/>
 
 						{/* Line on chart */}

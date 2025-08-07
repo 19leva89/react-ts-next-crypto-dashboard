@@ -16,7 +16,7 @@ export const settingsRouter = createTRPCRouter({
 	updateUserInfo: protectedProcedure
 		.input(
 			z.object({
-				email: z.string().email().optional(),
+				email: z.email().optional(),
 				name: z.string().optional(),
 				password: z.string().optional(),
 			}),

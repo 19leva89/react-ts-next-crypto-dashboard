@@ -57,8 +57,12 @@ export const PieChartContainer = ({ chartData }: Props) => {
 					<PieChart>
 						<ChartTooltip
 							cursor={false}
-							content={
+							content={({ active, payload, coordinate }) => (
 								<ChartTooltipContent
+									active={active}
+									payload={payload}
+									coordinate={coordinate}
+									accessibilityLayer={true}
 									formatter={(value, name) => {
 										const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
 
@@ -68,7 +72,7 @@ export const PieChartContainer = ({ chartData }: Props) => {
 									}}
 									hideLabel
 								/>
-							}
+							)}
 						/>
 
 						<Pie data={chartData} dataKey='value' nameKey='name' cx='50%' cy='50%' innerRadius={40} />

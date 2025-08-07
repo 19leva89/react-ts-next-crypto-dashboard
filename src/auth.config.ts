@@ -6,6 +6,7 @@ import GitHub from 'next-auth/providers/github'
 import Credentials from 'next-auth/providers/credentials'
 
 import { prisma } from '@/lib/prisma'
+import { formLoginSchema } from '@/components/shared/modals/auth-modal/forms/schemas'
 
 export default {
 	providers: [
@@ -35,10 +36,14 @@ export default {
 			},
 			async authorize(credentials) {
 				try {
-					if (!credentials?.email || !credentials?.password) return null
+					const validatedFields = formLoginSchema.safeParse(credentials)
+					if (!validatedFields.success) return null
+
+					const { email, password } = validatedFields.data
+					if (!email || !password) return null
 
 					const user = await prisma.user.findUnique({
-						where: { email: credentials.email as string },
+						where: { email },
 						include: { accounts: true },
 					})
 
@@ -56,7 +61,7 @@ export default {
 
 					if (!user.password) return null
 
-					const isPasswordValid = await compare(credentials.password as string, user.password)
+					const isPasswordValid = await compare(password, user.password)
 
 					if (!isPasswordValid) {
 						return null

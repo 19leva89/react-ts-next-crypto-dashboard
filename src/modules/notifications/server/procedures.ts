@@ -1,44 +1,9 @@
-import z from 'zod'
+import { z } from 'zod'
 
 import { prisma } from '@/lib/prisma'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 
 export const notificationsRouter = createTRPCRouter({
-	addNotification: protectedProcedure
-		.input(
-			z.object({
-				type: z.enum(['LOGIN', 'LOGOUT', 'PRICE_ALERT']),
-				coinId: z.string().optional(),
-			}),
-		)
-		.mutation(async ({ input: { type, coinId }, ctx }) => {
-			const data: any = {
-				userId: ctx.auth.user.id,
-				type,
-				title: type === 'PRICE_ALERT' ? 'Price Alert' : type,
-				message: type === 'PRICE_ALERT' ? 'Price alert triggered' : `${type} successful`,
-			}
-
-			if (coinId) {
-				data.coinId = coinId
-			}
-
-			await prisma.notification.create({
-				data,
-			})
-		}),
-
-	addLoginNotification: protectedProcedure.mutation(async ({ ctx }) => {
-		await prisma.notification.create({
-			data: {
-				userId: ctx.auth.user.id,
-				type: 'LOGIN',
-				title: 'Login',
-				message: 'You have successfully logged in',
-			},
-		})
-	}),
-
 	addLogoutNotification: protectedProcedure.mutation(async ({ ctx }) => {
 		await prisma.notification.create({
 			data: {
@@ -50,13 +15,39 @@ export const notificationsRouter = createTRPCRouter({
 		})
 	}),
 
-	getNotifications: protectedProcedure.query(async ({ ctx }) => {
-		return prisma.notification.findMany({
-			where: {
-				userId: ctx.auth.user.id,
-			},
-		})
-	}),
+	getNotifications: protectedProcedure
+		.input(
+			z.object({
+				cursor: z.string().nullish(),
+				limit: z.number().min(1).max(50),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const { cursor } = input
+			const limit = input.limit
+
+			const items = await prisma.notification.findMany({
+				take: limit + 1,
+				where: {
+					userId: ctx.auth.user.id,
+				},
+				cursor: cursor ? { id: cursor } : undefined,
+				orderBy: {
+					createdAt: 'desc',
+				},
+			})
+
+			let nextCursor: typeof cursor | undefined = undefined
+			if (items.length > limit) {
+				const nextItem = items.pop()
+				nextCursor = nextItem?.id
+			}
+
+			return {
+				items,
+				nextCursor,
+			}
+		}),
 
 	markAsRead: protectedProcedure.input(z.string()).mutation(async ({ input: notificationId, ctx }) => {
 		await prisma.notification.update({
@@ -80,4 +71,15 @@ export const notificationsRouter = createTRPCRouter({
 			},
 		})
 	}),
+
+	deleteNotification: protectedProcedure
+		.input(z.string())
+		.mutation(async ({ input: notificationId, ctx }) => {
+			await prisma.notification.delete({
+				where: {
+					id: notificationId,
+					userId: ctx.auth.user.id,
+				},
+			})
+		}),
 })
