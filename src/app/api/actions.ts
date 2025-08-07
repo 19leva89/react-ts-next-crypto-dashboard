@@ -146,8 +146,8 @@ export const registerUser = async (body: Prisma.UserCreateInput) => {
 
 		await sendEmail({
 			to: createdUser.email,
-			subject: 'Crypto / 📝 Registration confirmation',
-			html: VerificationUserTemplate({ code }).toString(),
+			subject: '📝 Registration confirmation',
+			html: VerificationUserTemplate({ code }),
 		})
 	} catch (error) {
 		handleError(error, 'CREATE_USER')
@@ -246,7 +246,7 @@ export const notifyUsersOnPriceTarget = async () => {
 			await sendEmail({
 				to: email,
 				subject: `🚀 ${coins.length > 1 ? 'A few coins' : coins[0].name} reached your target`,
-				html: NotificationTemplate({ coins }).toString(),
+				html: NotificationTemplate({ coins }),
 			})
 		} catch (error) {
 			handleError(error, 'NOTIFY_USER_ON_PRICE_TARGET')

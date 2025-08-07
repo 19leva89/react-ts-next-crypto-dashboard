@@ -1,4 +1,6 @@
 import nodemailer from 'nodemailer'
+import { ReactElement } from 'react'
+import { render } from '@react-email/render'
 
 // Get environment variables
 const oAuthEmail = process.env.OAUTH_EMAIL || ''
@@ -18,8 +20,8 @@ const createTransporter = async () => {
 				clientSecret: oAuthClientSecret,
 				refreshToken: oAuthRefreshToken,
 			},
-			debug: true,
-			logger: true,
+			debug: false,
+			logger: false,
 		})
 
 		// Verify connection configuration
@@ -42,7 +44,7 @@ const createTransporter = async () => {
 interface Props {
 	to: string
 	subject: string
-	html: string
+	html: ReactElement
 	text?: string
 }
 
@@ -51,10 +53,10 @@ export const sendEmail = async (options: Props) => {
 		const transporter = await createTransporter()
 
 		const info = await transporter.sendMail({
-			from: `"Crypto" <${process.env.EMAIL_FROM || 'noreply@example.com'}>`,
+			from: `"Crypto Dashboard" <${oAuthEmail}>`,
 			to: options.to,
 			subject: options.subject,
-			html: options.html,
+			html: await render(options.html),
 			text: options.text || options.subject, // fallback to subject if no text provided
 		})
 		console.log('Email sent successfully: %s', info.messageId)
