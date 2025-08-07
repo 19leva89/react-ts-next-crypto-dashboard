@@ -1,36 +1,55 @@
 import nodemailer from 'nodemailer'
 
+// Get environment variables
+const oAuthEmail = process.env.OAUTH_EMAIL || ''
+const oAuthClientId = process.env.OAUTH_CLIENT_ID || ''
+const oAuthClientSecret = process.env.OAUTH_CLIENT_SECRET || ''
+const oAuthRefreshToken = process.env.OAUTH_REFRESH_TOKEN || ''
+
 // Create reusable transporter object using the default SMTP transport
-const transporter = nodemailer.createTransport({
-	service: 'gmail',
-	auth: {
-		type: 'OAuth2',
-		user: process.env.EMAIL_FROM,
-		clientId: process.env.GOOGLE_CLIENT_ID,
-		clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-		refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-	},
-})
+const createTransporter = async () => {
+	try {
+		const transporter = nodemailer.createTransport({
+			service: 'gmail',
+			auth: {
+				type: 'OAuth2',
+				user: oAuthEmail,
+				clientId: oAuthClientId,
+				clientSecret: oAuthClientSecret,
+				refreshToken: oAuthRefreshToken,
+			},
+			debug: true,
+			logger: true,
+		})
 
-// Verify connection configuration
-transporter.verify((error) => {
-	if (error) {
-		console.error('SMTP connection error:', error)
-	} else {
-		console.log('Server is ready to take our messages')
+		// Verify connection configuration
+		transporter.verify((error) => {
+			if (error) {
+				console.error('SMTP connection error:', error)
+			} else {
+				console.log('SMTP server is ready to send emails')
+			}
+		})
+
+		return transporter
+	} catch (error) {
+		console.error('Error creating transporter:', error)
+
+		throw error
 	}
-})
+}
 
-interface EmailOptions {
+interface Props {
 	to: string
 	subject: string
 	html: string
 	text?: string
 }
 
-export const sendEmail = async (options: EmailOptions) => {
+export const sendEmail = async (options: Props) => {
 	try {
-		// Send mail with defined transport object
+		const transporter = await createTransporter()
+
 		const info = await transporter.sendMail({
 			from: `"Crypto" <${process.env.EMAIL_FROM || 'noreply@example.com'}>`,
 			to: options.to,
@@ -38,11 +57,10 @@ export const sendEmail = async (options: EmailOptions) => {
 			html: options.html,
 			text: options.text || options.subject, // fallback to subject if no text provided
 		})
-
-		console.log('Message sent: %s', info.messageId)
-		return info
+		console.log('Email sent successfully: %s', info.messageId)
 	} catch (error) {
-		console.error('Error sending email:', error)
+		console.error('ERROR sending email:', error)
+
 		throw error
 	}
 }
