@@ -20,10 +20,11 @@ import {
 	Skeleton,
 } from '@/components/ui'
 import { cn, formatPrice } from '@/lib'
+import { getCoinData } from '@/data/coin'
 import { CoinData } from '@/app/api/types'
 import { MarketChartData } from '@/modules/coins/schema'
+import { getCoinsMarketChart } from '@/data/market-chart'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
-import { getCoinData, getCoinsMarketChart } from '@/app/api/actions'
 
 interface Props {
 	coinId: string

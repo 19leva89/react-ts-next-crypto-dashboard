@@ -82,7 +82,7 @@ export const settingsRouter = createTRPCRouter({
 			include: {
 				accounts: true,
 				sessions: true,
-				verificationCode: true,
+				authenticator: true,
 			},
 		})
 	}),

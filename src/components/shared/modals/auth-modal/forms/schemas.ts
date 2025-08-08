@@ -18,7 +18,7 @@ const passwordSchema = z
 export const formLoginSchema = z.object({
 	email: z.email({ message: errMsg.email }),
 	password: passwordSchema,
-	code: z.optional(z.string()),
+	token: z.optional(z.string()),
 })
 
 // Scheme for registration

@@ -1,39 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { prisma } from '@/lib/prisma'
+import { getUserByEmail } from '@/data/user'
+import { getVerificationTokenByToken } from '@/data/verification-token'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
 	try {
-		const code = req.nextUrl.searchParams.get('code')
+		const token = req.nextUrl.searchParams.get('token')
 
-		if (!code) {
-			return NextResponse.json({ error: 'Invalid code' }, { status: 400 })
+		if (!token) {
+			return NextResponse.json({ error: 'Invalid token' }, { status: 400 })
 		}
 
-		const verificationCode = await prisma.verificationCode.findFirst({
-			where: {
-				code,
-			},
-		})
+		const existingToken = await getVerificationTokenByToken(token)
 
-		if (!verificationCode) {
-			return NextResponse.json({ error: 'Invalid code' }, { status: 400 })
+		if (!existingToken) {
+			return NextResponse.json({ error: 'Token does not exist!' }, { status: 400 })
+		}
+
+		const hasExpired = new Date(existingToken.expires) < new Date()
+
+		if (hasExpired) {
+			return NextResponse.json({ error: 'Token has expired!' }, { status: 400 })
+		}
+
+		const existingUser = await getUserByEmail(existingToken.email)
+
+		if (!existingUser) {
+			return NextResponse.json({ error: 'Email does not exist!' }, { status: 400 })
 		}
 
 		await prisma.user.update({
 			where: {
-				id: verificationCode.userId,
+				id: existingUser.id,
 			},
 			data: {
 				emailVerified: new Date(),
+				email: existingToken.email,
 			},
 		})
 
-		await prisma.verificationCode.delete({
+		await prisma.verificationToken.delete({
 			where: {
-				id: verificationCode.id,
+				id: existingToken.id,
 			},
 		})
 

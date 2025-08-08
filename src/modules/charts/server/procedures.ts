@@ -3,7 +3,7 @@ import {
 	UserChartDataPoint,
 	type PortfolioChartResponse,
 } from '@/modules/charts/schema'
-import { getUserCoinsList } from '@/app/api/actions'
+import { getUserCoinsList } from '@/data/user'
 import { UserCoinData } from '@/modules/coins/schema'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 

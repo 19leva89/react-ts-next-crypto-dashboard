@@ -1,38 +1,25 @@
 'use server'
 
-import axios from 'axios'
 import { pick } from 'lodash'
-import { isValid } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 import { MarketChart, Prisma } from '@prisma/client'
 
+import { signIn } from '@/auth'
 import { formatPrice } from '@/lib'
-import { auth, signIn } from '@/auth'
 import { prisma } from '@/lib/prisma'
-import { makeReq } from './make-request'
 import { sendEmail } from '@/lib/send-email'
+import { getUserByEmail } from '@/data/user'
+import { makeReq } from '@/app/api/make-request'
+import { handleError } from '@/lib/handle-error'
 import { saltAndHashPassword } from '@/lib/salt'
+import { getFieldForDays } from '@/data/field-for-days'
 import { MarketChartData } from '@/modules/coins/schema'
-import { UserChartDataPoint } from '@/modules/charts/schema'
+import { generateVerificationToken } from '@/lib/tokens'
+import { PrismaTransactionClient } from '@/app/api/types'
 import { trendingDataSchema } from '@/modules/dashboard/schema'
+import { COINS_UPDATE_INTERVAL, ValidDays } from '@/app/api/constants'
 import { CategoriesData, TrendingData } from '@/modules/dashboard/schema'
-import { AirdropsData, PrismaTransactionClient, CoinData, Airdrop } from './types'
 import { NotificationTemplate, VerificationUserTemplate } from '@/components/shared/email-templates'
-import { COINS_UPDATE_INTERVAL, DAYS_MAPPING, MARKET_CHART_UPDATE_INTERVAL, ValidDays } from './constants'
-
-const handleError = (error: unknown, context: string) => {
-	if (error instanceof Prisma.PrismaClientKnownRequestError) {
-		console.error(`💾 Prisma error [${context}]:`, error.code, error.message)
-	} else if (axios.isAxiosError(error)) {
-		console.error(`🌐 API error [${context}]:`, error.response?.status, error.message)
-	} else if (error instanceof Error) {
-		console.error(`🚨 Unexpected error [${context}]:`, error.message)
-	} else {
-		console.error(`❌ Unknown error [${context}]`, error)
-	}
-
-	throw error
-}
 
 // General function for recalculating aggregated data
 export const recalculateAveragePrice = async (
@@ -85,39 +72,9 @@ export const recalculateAveragePrice = async (
 	})
 }
 
-const getFieldForDays = (days: number): keyof MarketChart | null => {
-	return (DAYS_MAPPING[days as ValidDays] as keyof MarketChart) || null
-}
-
-const getLatestBefore = <T extends { timestamp: Date }>(entries: T[], target: Date): T | null => {
-	let left = 0
-	let right = entries.length - 1
-	let resultIdx = -1
-	const targetTime = target.getTime()
-
-	while (left <= right) {
-		const mid = Math.floor((left + right) / 2)
-		const midTime = entries[mid].timestamp.getTime()
-
-		if (midTime <= targetTime) {
-			resultIdx = mid
-			left = mid + 1
-		} else {
-			right = mid - 1
-		}
-	}
-
-	return resultIdx >= 0 ? entries[resultIdx] : null
-}
-
 export const registerUser = async (body: Prisma.UserCreateInput) => {
 	try {
-		const user = await prisma.user.findUnique({
-			where: {
-				email: body.email,
-			},
-			include: { accounts: true },
-		})
+		const user = await getUserByEmail(body.email)
 
 		if (user) {
 			if (user.accounts.length > 0)
@@ -136,19 +93,12 @@ export const registerUser = async (body: Prisma.UserCreateInput) => {
 			},
 		})
 
-		const code = Math.floor(100000 + Math.random() * 900000).toString()
-
-		await prisma.verificationCode.create({
-			data: {
-				code,
-				userId: createdUser.id,
-			},
-		})
+		const verificationToken = await generateVerificationToken(createdUser.email)
 
 		await sendEmail({
 			to: createdUser.email,
 			subject: '📝 Registration confirmation',
-			html: VerificationUserTemplate({ code }),
+			html: VerificationUserTemplate({ token: verificationToken.token }),
 		})
 	} catch (error) {
 		handleError(error, 'CREATE_USER')
@@ -408,65 +358,6 @@ export const updateCoinsList = async (): Promise<any> => {
 	}
 }
 
-export const getUserCoinsList = async () => {
-	try {
-		const session = await auth()
-
-		// Checking if the user is authorized
-		if (!session?.user) throw new Error('User not authenticated')
-
-		// Return old data immediately
-		const userCoins = await prisma.userCoin.findMany({
-			where: { userId: session.user.id },
-			select: {
-				total_quantity: true,
-				total_cost: true,
-				average_price: true,
-				desired_sell_price: true,
-				coinsListIDMap: {
-					select: {
-						name: true,
-						symbol: true,
-					},
-				},
-				coin: {
-					select: {
-						id: true,
-						current_price: true,
-						image: true,
-						sparkline_in_7d: true,
-						price_change_percentage_7d_in_currency: true,
-					},
-				},
-				transactions: {
-					select: {
-						id: true,
-						quantity: true,
-						price: true,
-						date: true,
-						userCoinId: true,
-					},
-				},
-			},
-		})
-
-		// Launch an update in the background via API
-		const response = await makeReq('GET', `/update/user-coins?userId=${session.user.id}`)
-
-		if (!response || !Array.isArray(response) || response.length === 0) {
-			console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')
-
-			return userCoins
-		}
-
-		return userCoins
-	} catch (error) {
-		handleError(error, 'GET_USER_COINS')
-
-		return []
-	}
-}
-
 export const updateUserCoinsList = async (userId: string): Promise<any> => {
 	try {
 		const currentTime = new Date()
@@ -553,264 +444,8 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 	}
 }
 
-export const getUserCoinsListMarketChart = async (days: ValidDays): Promise<UserChartDataPoint[]> => {
-	try {
-		// Checking if the user is authorized
-		const session = await auth()
-		if (!session?.user) throw new Error('User not authenticated')
-
-		const field = getFieldForDays(days)
-		if (!field) throw new Error('Invalid days parameter')
-
-		const priceField = `prices_${days}d` as keyof MarketChart
-
-		// Get all user coins with transactions and MarketChart data
-		const userCoins = await prisma.userCoin.findMany({
-			where: { userId: session.user.id },
-			select: {
-				transactions: { orderBy: { date: 'asc' } },
-				coin: {
-					select: {
-						marketCharts: true,
-					},
-				},
-			},
-		})
-
-		// 2. Coins processing
-		const coinsData = userCoins.map(({ transactions, coin }) => {
-			// 2.1. Collecting timeline
-			let quantity = 0
-
-			const timeline = transactions.map((tx) => {
-				return {
-					timestamp: tx.date,
-					quantity: (quantity += tx.quantity),
-				}
-			})
-
-			// 2.2. Price processing
-			const marketChart = coin.marketCharts?.find((chart) => chart[priceField])
-
-			const prices = (marketChart?.[priceField] as [number, number][]) ?? []
-
-			const pricePoints = prices
-				.map(([timestampMs, price]) => ({ timestamp: new Date(timestampMs), price }))
-				.filter(({ timestamp }) => isValid(timestamp))
-
-			return { timeline, pricePoints }
-		})
-
-		// 3. Collecting timestamps
-		const timestamps = Array.from(
-			new Set(coinsData.flatMap((c) => c.pricePoints.map((p) => p.timestamp.getTime()))),
-		)
-			.sort((a, b) => a - b)
-			.map((t) => new Date(t))
-
-		// 4. Calculating cost for each timestamp
-		return timestamps
-			.map((timestamp) => ({
-				timestamp,
-				value: coinsData.reduce((total, { timeline, pricePoints }) => {
-					const quantity = getLatestBefore(timeline, timestamp)?.quantity ?? 0
-					const price = getLatestBefore(pricePoints, timestamp)?.price ?? 0
-					return total + quantity * price
-				}, 0),
-			}))
-			.filter(({ value }) => value > 0)
-	} catch (error) {
-		handleError(error, 'GET_USER_COINS_MARKET_CHART')
-
-		return {} as UserChartDataPoint[]
-	}
-}
-
-export const getCoinData = async (coinId: string): Promise<CoinData> => {
-	try {
-		const updateTime = new Date(Date.now() - COINS_UPDATE_INTERVAL)
-
-		// Checking the availability of data in the DB
-		const cachedData = await prisma.coin.findUnique({
-			where: { id: coinId },
-			include: { coinsListIDMap: true },
-		})
-
-		if (cachedData && cachedData.updatedAt > updateTime) {
-			console.log('✅ Using cached CoinData from DB')
-
-			return {
-				id: cachedData.id,
-				symbol: cachedData.coinsListIDMap.symbol,
-				name: cachedData.coinsListIDMap.name,
-				description: { en: cachedData.description || '' },
-				image: { thumb: cachedData.image || '' },
-				market_cap_rank: cachedData.market_cap_rank || 0,
-				market_data: {
-					current_price: { usd: cachedData.current_price || 0 },
-					market_cap: { usd: cachedData.market_cap || 0 },
-					high_24h: { usd: cachedData.high_24h || 0 },
-					low_24h: { usd: cachedData.low_24h || 0 },
-					circulating_supply: cachedData.circulating_supply || 0,
-					sparkline_7d: { price: cachedData.sparkline_in_7d || [] },
-				},
-				last_updated: cachedData.updatedAt.toISOString(),
-			} as CoinData
-		}
-
-		// If there is no data, make a request to the API
-		console.log(`🔄 Outdated records, request CoinData ${coinId} via API...`)
-		const response = await makeReq('GET', `/gecko/coins-get/${coinId}`)
-
-		// Validate the API response
-		if (!response || typeof response !== 'object' || Array.isArray(response)) {
-			console.warn('⚠️ Empty response from API, using old CoinData')
-
-			return {} as CoinData
-		}
-
-		const { id, symbol, name, image, description, market_cap_rank, market_data } = response
-
-		const mapToDbFields = (data: any) => ({
-			current_price: data.market_data?.current_price?.usd || 0,
-			description: data.description?.en || '',
-			image: data.image?.thumb || '',
-			market_cap: data.market_data?.market_cap?.usd || 0,
-			market_cap_rank: data.market_cap_rank || 0,
-			high_24h: data.market_data?.high_24h?.usd || 0,
-			low_24h: data.market_data?.low_24h?.usd || 0,
-			circulating_supply: data.market_data?.circulating_supply || 0,
-			price_change_percentage_24h: data.market_data?.price_change_percentage_24h || 0,
-			price_change_percentage_7d_in_currency:
-				data.market_data?.price_change_percentage_7d_in_currency?.usd || 0,
-			total_volume: data.market_data?.total_volume?.usd || 0,
-			updatedAt: new Date(),
-		})
-
-		// Merged transaction
-		await prisma.$transaction([
-			prisma.coinsListIDMap.upsert({
-				where: { id },
-				update: { symbol, name },
-				create: { id, symbol, name },
-			}),
-			prisma.coin.upsert({
-				where: { id },
-				update: {
-					...mapToDbFields(response),
-					updatedAt: new Date(),
-				},
-				create: {
-					id,
-					coinsListIDMapId: id,
-					...mapToDbFields(response),
-				},
-			}),
-		])
-
-		console.log('✅ Records CoinData updated!')
-
-		return {
-			id,
-			symbol,
-			name,
-			description: { en: description?.en || '' },
-			image: { thumb: image?.thumb || '' },
-			market_cap_rank: market_cap_rank || 0,
-			market_data: {
-				current_price: { usd: market_data?.current_price?.usd || 0 },
-				market_cap: { usd: market_data?.market_cap?.usd || 0 },
-				high_24h: { usd: market_data?.high_24h?.usd || 0 },
-				low_24h: { usd: market_data?.low_24h?.usd || 0 },
-				circulating_supply: market_data?.circulating_supply || 0,
-			},
-		} as CoinData
-	} catch (error) {
-		handleError(error, 'GET_COIN_DATA')
-
-		return {} as CoinData
-	}
-}
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const updateUserCoinData = async (coinId: string) => {}
-
-export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Promise<MarketChartData> => {
-	try {
-		const field = getFieldForDays(days)
-		if (!field) throw new Error('Invalid days parameter')
-
-		const updatedField = `updatedAt_${days}d` as keyof MarketChart
-
-		// Get all the data about the charts from the DB
-		const cachedData = await prisma.marketChart.findUnique({
-			where: { id: coinId },
-		})
-
-		const currentTime = new Date()
-		const updateTime = new Date(currentTime.getTime() - MARKET_CHART_UPDATE_INTERVAL)
-
-		// If the data for the required period already exists, return it
-		if (cachedData?.[field] && cachedData?.[updatedField] && cachedData[updatedField]! > updateTime) {
-			return { prices: cachedData[field] } as MarketChartData
-		}
-
-		// Request data from the API
-		console.log(`🔄 Fetching CoinsMarketChart from API for ${days} day(s)...`)
-		const response = await makeReq('GET', `/gecko/chart/${coinId}`, { days })
-
-		// If there is no data or it is empty, display a warning
-		if (!response || !response.prices || !response.prices.length) {
-			throw new Error('⚠️ Empty response from API')
-		}
-
-		// Create CoinsListIDMap
-		await prisma.coinsListIDMap.upsert({
-			where: { id: coinId },
-			update: {},
-			create: {
-				id: coinId,
-				symbol: coinId,
-				name: coinId,
-			},
-		})
-
-		// Create Coin
-		await prisma.coin.upsert({
-			where: { id: coinId },
-			update: {},
-			create: {
-				id: coinId,
-				coinsListIDMapId: coinId,
-			},
-		})
-
-		// Create/Update MarketChart
-		await prisma.marketChart.upsert({
-			where: { id: coinId },
-			update: {
-				[field]: response.prices,
-				[updatedField]: currentTime,
-			},
-			create: {
-				id: coinId,
-				[field]: response.prices,
-				[updatedField]: currentTime,
-				coin: {
-					connect: { id: coinId },
-				},
-			},
-		})
-
-		console.log(`✅ Records CoinsMarketChart updated for ${days} day(s)!`)
-
-		return { prices: response.prices } as MarketChartData
-	} catch (error) {
-		handleError(error, 'GET_COINS_MARKET_CHART')
-
-		return {} as MarketChartData
-	}
-}
 
 // cron 24h
 export const updateCoinsMarketChart = async (days: ValidDays): Promise<MarketChartData> => {
@@ -907,97 +542,5 @@ export const updateCoinsMarketChart = async (days: ValidDays): Promise<MarketCha
 		handleError(error, 'UPDATE_COINS_MARKET_CHART')
 
 		return {} as MarketChartData
-	}
-}
-
-export const getAirdrops = async (): Promise<AirdropsData> => {
-	try {
-		// Getting airdrop data from the DB
-		const cachedData = await prisma.airdrop.findMany({
-			include: {
-				coin: { select: { id: true } },
-				coinsListIDMap: { select: { name: true, symbol: true } },
-			},
-		})
-
-		// If the airdrops data already exists in the DB, return it
-		if (cachedData.length) {
-			console.log('✅ Using cached Airdrops from DB')
-
-			return {
-				data: cachedData.map(({ coin, coinsListIDMap, start_date, end_date, ...rest }) => ({
-					...rest,
-					coin: { id: coin.id, ...coinsListIDMap },
-					startDate: new Date(start_date.toISOString()),
-					endDate: new Date(end_date.toISOString()),
-					projectName: rest.project_name,
-					totalPrize: rest.total_prize,
-					winnerCount: rest.winner_count,
-				})),
-			}
-		}
-
-		// If there is no data or it is outdated, request it via API
-		console.log('🔄 Outdated records, request Airdrops via API...')
-		const response = await makeReq('GET', '/cmc/airdrops')
-
-		if (!response || !Array.isArray(response.data) || !response.data.length) {
-			console.warn('⚠️ Empty response from API, using old Airdrops')
-
-			return { data: [] } as AirdropsData
-		}
-
-		const transformAirdropData = (airdrop: Airdrop) => ({
-			project_name: airdrop.projectName,
-			description: airdrop.description,
-			status: airdrop.status,
-			coinId: airdrop.coin.id,
-			coinsListIDMapId: airdrop.coin.id,
-			start_date: new Date(airdrop.startDate),
-			end_date: new Date(airdrop.endDate),
-			total_prize: airdrop.totalPrize,
-			winner_count: airdrop.winnerCount,
-			link: airdrop.link,
-		})
-
-		// Batch processing via transaction
-		const upsertOperations = response.data.map((airdrop: Airdrop) =>
-			prisma.airdrop.upsert({
-				where: { id: airdrop.id },
-				update: transformAirdropData(airdrop),
-				create: {
-					id: airdrop.id,
-					...transformAirdropData(airdrop),
-				},
-			}),
-		)
-
-		await prisma.$transaction(upsertOperations)
-
-		// Returning current data from DB
-		const updatedData = await prisma.airdrop.findMany({
-			include: {
-				coin: { select: { id: true } },
-				coinsListIDMap: { select: { name: true, symbol: true } },
-			},
-		})
-
-		console.log('✅ Records Airdrops updated!')
-
-		return {
-			data: updatedData.map(({ coin, coinsListIDMap, start_date, end_date, ...rest }) => ({
-				...rest,
-				coin: { id: coin.id, ...coinsListIDMap },
-				startDate: new Date(start_date),
-				endDate: new Date(end_date),
-				projectName: rest.project_name,
-				totalPrize: rest.total_prize,
-				winnerCount: rest.winner_count,
-			})),
-		}
-	} catch (error) {
-		handleError(error, 'GET_AIRDROPS')
-
-		return { data: [] } as AirdropsData
 	}
 }

@@ -1,7 +1,7 @@
 # This project contains the following technologies
 
 Authentication and User Management:
-- Bcrypt.js (password hashing)
+- Bcrypt-ts (password hashing)
 - NextAuth 5 (authentication)
 
 Core Technologies:
@@ -45,10 +45,11 @@ Utilities and Libraries:
 
 # Project setup commands:
 terminal powershell -> `npm i` (install dependencies)
+terminal powershell -> `npx npm-check-updates --interactive` (update dependencies)
 terminal powershell -> `npm run all`
 terminal powershell -> `npm run lint` (loading ESLint checker)
-terminal powershell -> `npm run types` (loading typescript checker)
-terminal powershell -> `npm run knip` (loading knip checker)
+terminal powershell -> `npm run types` (loading TypeScript checker)
+terminal powershell -> `npm run knip` (loading Knip checker)
 
 # Database commands:
 terminal powershell -> `npx prisma generate`

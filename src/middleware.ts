@@ -1,9 +1,9 @@
 import NextAuth from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 
-import authConfig from '@/auth.config'
+import { authOptions } from '@/auth'
 
-const { auth } = NextAuth(authConfig)
+const { auth } = NextAuth(authOptions)
 
 const protectedRoutes = [
 	'/billing',
@@ -31,4 +31,5 @@ export default auth(async function middleware(req: NextRequest) {
 
 export const config = {
 	matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+	runtime: 'nodejs',
 }

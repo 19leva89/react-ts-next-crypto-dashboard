@@ -1,17 +1,17 @@
 import { absoluteUrl } from '@/lib'
 
 interface Props {
-	code: string
+	token: string
 }
 
-export const VerificationUserTemplate = ({ code }: Props) => (
+export const VerificationUserTemplate = ({ token }: Props) => (
 	<div>
 		<p>
-			Confirmation code: <h2>{code}</h2>
+			Confirmation code: <h2>{token}</h2>
 		</p>
 
 		<p>
-			<a href={absoluteUrl(`/api/auth/verify?code=${code}`)}>Confirm registration</a>
+			<a href={absoluteUrl(`/api/auth/verify?token=${token}`)}>Confirm registration</a>
 		</p>
 	</div>
 )

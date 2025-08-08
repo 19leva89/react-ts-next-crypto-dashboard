@@ -22,7 +22,7 @@ import {
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
 import { cn, formatPrice } from '@/lib'
-import { getCoinsMarketChart } from '@/app/api/actions'
+import { getCoinsMarketChart } from '@/data/market-chart'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 import { MarketChartData, Transaction, UserCoinData } from '@/modules/coins/schema'

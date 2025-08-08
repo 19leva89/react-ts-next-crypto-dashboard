@@ -2,10 +2,12 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 
 import { prisma } from '@/lib/prisma'
+import { getCoinData } from '@/data/coin'
+import { getUserCoinsList } from '@/data/user'
 import { makeReq } from '@/app/api/make-request'
+import { recalculateAveragePrice } from '@/app/api/actions'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 import { addCoinToUserSchema, userCoinDataSchema } from '@/modules/coins/schema'
-import { getUserCoinsList, recalculateAveragePrice, getCoinData } from '@/app/api/actions'
 
 export const coinsRouter = createTRPCRouter({
 	addCoinToUser: protectedProcedure

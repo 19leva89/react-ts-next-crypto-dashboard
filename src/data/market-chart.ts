@@ -1,0 +1,85 @@
+import { MarketChart } from '@prisma/client'
+
+import { prisma } from '@/lib/prisma'
+import { makeReq } from '@/app/api/make-request'
+import { handleError } from '@/lib/handle-error'
+import { getFieldForDays } from '@/data/field-for-days'
+import { MarketChartData } from '@/modules/coins/schema'
+import { MARKET_CHART_UPDATE_INTERVAL, ValidDays } from '@/app/api/constants'
+
+export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Promise<MarketChartData> => {
+	try {
+		const field = getFieldForDays(days)
+		if (!field) throw new Error('Invalid days parameter')
+
+		const updatedField = `updatedAt_${days}d` as keyof MarketChart
+
+		// Get all the data about the charts from the DB
+		const cachedData = await prisma.marketChart.findUnique({
+			where: { id: coinId },
+		})
+
+		const currentTime = new Date()
+		const updateTime = new Date(currentTime.getTime() - MARKET_CHART_UPDATE_INTERVAL)
+
+		// If the data for the required period already exists, return it
+		if (cachedData?.[field] && cachedData?.[updatedField] && cachedData[updatedField]! > updateTime) {
+			return { prices: cachedData[field] } as MarketChartData
+		}
+
+		// Request data from the API
+		console.log(`🔄 Fetching CoinsMarketChart from API for ${days} day(s)...`)
+		const response = await makeReq('GET', `/gecko/chart/${coinId}`, { days })
+
+		// If there is no data or it is empty, display a warning
+		if (!response || !response.prices || !response.prices.length) {
+			throw new Error('⚠️ Empty response from API')
+		}
+
+		// Create CoinsListIDMap
+		await prisma.coinsListIDMap.upsert({
+			where: { id: coinId },
+			update: {},
+			create: {
+				id: coinId,
+				symbol: coinId,
+				name: coinId,
+			},
+		})
+
+		// Create Coin
+		await prisma.coin.upsert({
+			where: { id: coinId },
+			update: {},
+			create: {
+				id: coinId,
+				coinsListIDMapId: coinId,
+			},
+		})
+
+		// Create/Update MarketChart
+		await prisma.marketChart.upsert({
+			where: { id: coinId },
+			update: {
+				[field]: response.prices,
+				[updatedField]: currentTime,
+			},
+			create: {
+				id: coinId,
+				[field]: response.prices,
+				[updatedField]: currentTime,
+				coin: {
+					connect: { id: coinId },
+				},
+			},
+		})
+
+		console.log(`✅ Records CoinsMarketChart updated for ${days} day(s)!`)
+
+		return { prices: response.prices } as MarketChartData
+	} catch (error) {
+		handleError(error, 'GET_COINS_MARKET_CHART')
+
+		return {} as MarketChartData
+	}
+}
