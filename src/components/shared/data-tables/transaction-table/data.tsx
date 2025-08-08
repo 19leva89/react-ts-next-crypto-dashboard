@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-table'
 import { useState } from 'react'
 
-import { formatPrice } from '@/constants/format-price'
+import { formatPrice } from '@/lib'
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui'
 
 interface Props<TData extends { quantity: number; price: number; date: string }> {

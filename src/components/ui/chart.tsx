@@ -16,8 +16,7 @@ import type { Props as LegendProps } from 'recharts/types/component/Legend'
 import type { LegendPayload } from 'recharts/types/component/DefaultLegendContent'
 import { NameType, Payload, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 
-import { cn } from '@/lib'
-import { formatPrice } from '@/constants/format-price'
+import { cn, formatPrice } from '@/lib'
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: '', dark: '.dark' } as const

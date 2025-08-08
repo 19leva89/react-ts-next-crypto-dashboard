@@ -5,8 +5,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Line, LineChart, YAxis } from 'recharts'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 
-import { cn } from '@/lib'
-import { formatPrice } from '@/constants/format-price'
+import { cn, formatPrice } from '@/lib'
 import { CoinsListData } from '@/modules/dashboard/schema'
 import { Button, ChartConfig, ChartContainer } from '@/components/ui'
 

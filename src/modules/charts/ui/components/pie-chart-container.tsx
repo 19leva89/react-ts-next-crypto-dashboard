@@ -13,7 +13,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from '@/components/ui'
-import { formatPrice } from '@/constants/format-price'
+import { formatPrice } from '@/lib'
 
 interface PieChartData {
 	name: string

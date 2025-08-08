@@ -20,9 +20,8 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
-import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
-import { formatPrice } from '@/constants/format-price'
+import { cn, formatPrice } from '@/lib'
 import { getCoinsMarketChart } from '@/app/api/actions'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'

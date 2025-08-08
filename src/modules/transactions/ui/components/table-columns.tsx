@@ -5,8 +5,8 @@ import { format } from 'date-fns'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowDownIcon, ArrowDownToLine, ArrowUpFromLine, ArrowUpIcon } from 'lucide-react'
 
+import { formatPrice } from '@/lib'
 import { Button } from '@/components/ui'
-import { formatPrice } from '@/constants/format-price'
 import { Transaction } from '@/modules/transactions/schema'
 
 export const columns: ColumnDef<Transaction>[] = [

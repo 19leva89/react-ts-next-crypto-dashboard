@@ -2,8 +2,8 @@
 
 import { useSuspenseQuery } from '@tanstack/react-query'
 
+import { formatPrice } from '@/lib'
 import { useTRPC } from '@/trpc/client'
-import { formatPrice } from '@/constants/format-price'
 import { ErrorState, LoadingState } from '@/components/shared'
 import { PieChartContainer } from '@/modules/charts/ui/components/pie-chart-container'
 import { LineChartContainer } from '@/modules/charts/ui/components/line-chart-container'

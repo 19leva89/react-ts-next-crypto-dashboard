@@ -59,6 +59,7 @@ export const sendEmail = async (options: Props) => {
 			html: await render(options.html),
 			text: options.text || options.subject, // fallback to subject if no text provided
 		})
+
 		console.log('Email sent successfully: %s', info.messageId)
 	} catch (error) {
 		console.error('ERROR sending email:', error)

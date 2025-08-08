@@ -12,8 +12,8 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from '@/components/ui'
+import { formatPrice } from '@/lib'
 import { MONTH_OPTIONS } from '@/constants/chart'
-import { formatPrice } from '@/constants/format-price'
 
 interface Props {
 	chartData: { timestamp: string; value: number }[]

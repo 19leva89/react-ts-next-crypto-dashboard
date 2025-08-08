@@ -6,6 +6,7 @@ import { isValid } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 import { MarketChart, Prisma } from '@prisma/client'
 
+import { formatPrice } from '@/lib'
 import { auth, signIn } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { makeReq } from './make-request'
@@ -199,7 +200,13 @@ export const notifyUsersOnPriceTarget = async () => {
 		string,
 		{
 			email: string
-			coins: { name: string; image: string; currentPrice: number; desiredPrice: number }[]
+			coins: {
+				id: string
+				name: string
+				image: string
+				currentPrice: number
+				desiredPrice: number
+			}[]
 		}
 	> = {}
 
@@ -217,6 +224,7 @@ export const notifyUsersOnPriceTarget = async () => {
 		}
 
 		userMap[user.id].coins.push({
+			id: coin.id,
 			name: coinsListIDMap?.name ?? coin.id,
 			image: coin.image ?? '/svg/coin-not-found.svg',
 			currentPrice: coin.current_price,
@@ -236,8 +244,8 @@ export const notifyUsersOnPriceTarget = async () => {
 						userId,
 						type: 'PRICE_ALERT',
 						title: '🎯 Target price reached!',
-						message: `${coin.name} reached your target (${coin.currentPrice}$)`,
-						coinId: coin.name,
+						message: `${coin.name} reached your target $${formatPrice(coin.currentPrice)}`,
+						coinId: coin.id,
 					},
 				})
 			}

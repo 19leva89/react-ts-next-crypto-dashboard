@@ -17,9 +17,8 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui'
-import { cn } from '@/lib'
+import { cn, formatPrice } from '@/lib'
 import { UserCoinData } from '@/modules/coins/schema'
-import { formatPrice } from '@/constants/format-price'
 import { EditCoin } from '@/modules/coins/ui/components/edit-coin'
 import { DeleteCoin } from '@/modules/coins/ui/components/delete-coin'
 

@@ -14,8 +14,8 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
+import { formatPrice } from '@/lib'
 import { useTRPC } from '@/trpc/client'
-import { formatPrice } from '@/constants/format-price'
 import { Transaction, UserCoinData } from '@/modules/coins/schema'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 

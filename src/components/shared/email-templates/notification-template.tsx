@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { absoluteUrl } from '@/lib'
+import { absoluteUrl, formatPrice } from '@/lib'
 
 interface Props {
 	coins: {
@@ -29,8 +29,8 @@ export const NotificationTemplate = ({ coins }: Props) => {
 						/>
 
 						<span>
-							<strong>{coin.name}</strong>: ${coin.currentPrice.toFixed(2)} (Target: $
-							{coin.desiredPrice.toFixed(2)})
+							<strong>{coin.name}</strong>: ${formatPrice(coin.currentPrice)} (Target: $
+							{formatPrice(coin.desiredPrice)})
 						</span>
 					</li>
 				))}
@@ -40,7 +40,7 @@ export const NotificationTemplate = ({ coins }: Props) => {
 
 			<p style={{ fontSize: '14px', color: '#666' }}>
 				Check your{' '}
-				<a href={absoluteUrl('/')} target='_blank' rel='noopener noreferrer'>
+				<a href={absoluteUrl('/coins')} target='_blank' rel='noopener noreferrer'>
 					crypto portfolio
 				</a>{' '}
 				- it may be time to take profits 💰
