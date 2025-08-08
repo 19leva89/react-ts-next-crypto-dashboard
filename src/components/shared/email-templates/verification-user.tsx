@@ -1,3 +1,5 @@
+import { absoluteUrl } from '@/lib'
+
 interface Props {
 	code: string
 }
@@ -9,11 +11,7 @@ export const VerificationUserTemplate = ({ code }: Props) => (
 		</p>
 
 		<p>
-			<a
-				href={`${process.env.NEXT_PUBLIC_DOMAIN_URL}${process.env.NEXT_PUBLIC_API_URL}/auth/verify?code=${code}`}
-			>
-				Confirm registration
-			</a>
+			<a href={absoluteUrl(`/api/auth/verify?code=${code}`)}>Confirm registration</a>
 		</p>
 	</div>
 )
