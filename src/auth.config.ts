@@ -1,4 +1,4 @@
-import { compare } from 'bcryptjs'
+import { compare } from 'bcrypt-ts'
 import { UserRole } from '@prisma/client'
 import type { NextAuthConfig } from 'next-auth'
 import Google from 'next-auth/providers/google'
