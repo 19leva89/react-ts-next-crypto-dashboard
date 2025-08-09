@@ -161,7 +161,7 @@ export const ProfileView = () => {
 						size='lg'
 						type='button'
 						onClick={() => setShowDeleteDialog(true)}
-						disabled={deleteUserMutation.isPending}
+						disabled={deleteUserMutation.isPending || updateUserMutation.isPending}
 						className='rounded-xl text-base transition-colors duration-300 ease-in-out'
 					>
 						{deleteUserMutation.isPending ? 'Deleting...' : 'Delete account'}
@@ -188,7 +188,9 @@ export const ProfileView = () => {
 							disabled={deleteUserMutation.isPending}
 							className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
 						>
-							{deleteUserMutation.isPending ? 'Deleting...' : 'Delete account'}
+							{deleteUserMutation.isPending || updateUserMutation.isPending
+								? 'Deleting...'
+								: 'Delete account'}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
