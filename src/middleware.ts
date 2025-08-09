@@ -14,14 +14,18 @@ const protectedRoutes = [
 ]
 
 export async function middleware(req: NextRequest) {
+	const { pathname, origin, search } = req.nextUrl
+
+	const isProtected = protectedRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
+	if (!isProtected) return NextResponse.next()
+
 	const token = await getToken({ req, secret })
+	if (!token) {
+		const absoluteURL = new URL('/not-auth', origin)
 
-	const isProtected = protectedRoutes.some((route) => req.nextUrl.pathname.startsWith(route))
+		absoluteURL.searchParams.set('callbackUrl', `${pathname}${search}`)
 
-	if (!token && isProtected) {
-		const absoluteURL = new URL('/not-auth', req.nextUrl.origin)
-
-		return NextResponse.redirect(absoluteURL.toString())
+		return NextResponse.redirect(absoluteURL)
 	}
 
 	return NextResponse.next()

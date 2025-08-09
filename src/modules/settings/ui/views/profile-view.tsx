@@ -185,7 +185,7 @@ export const ProfileView = () => {
 
 						<AlertDialogAction
 							onClick={handleDeleteAccount}
-							disabled={deleteUserMutation.isPending}
+							disabled={deleteUserMutation.isPending || updateUserMutation.isPending}
 							className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
 						>
 							{deleteUserMutation.isPending || updateUserMutation.isPending
