@@ -3,7 +3,7 @@ import { MarketChart } from '@prisma/client'
 
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
-import { ValidDays } from '@/app/api/constants'
+import { ValidDays } from '@/constants/chart'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
 import { getFieldForDays } from '@/data/field-for-days'

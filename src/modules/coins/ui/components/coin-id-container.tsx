@@ -52,22 +52,25 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	}, [coin.transactions, coin.desired_sell_price])
 
 	useEffect(() => {
-		setIsLoading(true)
-		setCoinMarketChartData(undefined)
-
-		const fetchData = async () => {
+		const fetchMarketChartData = async () => {
 			try {
-				const marketChart = (await getCoinsMarketChart(coin.coinId, days)) as MarketChartData
+				setIsLoading(true)
 
-				setCoinMarketChartData(marketChart)
+				const data = await getCoinsMarketChart(coin.coinId, days)
+
+				if (data?.prices) {
+					setCoinMarketChartData(data)
+				}
 			} catch (error) {
-				console.error('Error fetching coin details:', error)
+				console.error('Error fetching market chart data:', error)
 			} finally {
 				setIsLoading(false)
 			}
 		}
 
-		fetchData()
+		if (coin?.coinId) {
+			void fetchMarketChartData()
+		}
 	}, [coin.coinId, days])
 
 	const createTransactionMutation = useMutation(

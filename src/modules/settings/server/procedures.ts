@@ -9,8 +9,28 @@ import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 export const settingsRouter = createTRPCRouter({
 	getProfile: protectedProcedure.query(async () => {
 		const session = await auth()
+		if (!session?.user) return null
 
-		return session?.user ?? null
+		const user = await prisma.user.findUnique({
+			where: { id: session.user.id },
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				image: true,
+				isTwoFactorEnabled: true,
+				accounts: {
+					select: {
+						provider: true,
+					},
+				},
+			},
+		})
+
+		return {
+			...user,
+			isOAuth: (user?.accounts?.length ?? 0) > 0,
+		}
 	}),
 
 	updateUserInfo: protectedProcedure
@@ -19,6 +39,7 @@ export const settingsRouter = createTRPCRouter({
 				email: z.email().optional(),
 				name: z.string().optional(),
 				password: z.string().optional(),
+				isTwoFactorEnabled: z.boolean().optional(),
 			}),
 		)
 		.mutation(async ({ input }) => {
@@ -55,21 +76,32 @@ export const settingsRouter = createTRPCRouter({
 				name?: string
 				email?: string
 				password?: string | null
+				isTwoFactorEnabled?: boolean
 			} = {
 				name: input.name,
 			}
 
-			if (!hasOAuthAccounts) {
-				updatedData.email = input.email ?? existingUser.email
-				updatedData.password = input.password
-					? await saltAndHashPassword(input.password)
-					: existingUser.password
+			if (input.email && !hasOAuthAccounts) {
+				updatedData.email = input.email
 			}
 
-			return prisma.user.update({
+			if (input.password && !hasOAuthAccounts) {
+				updatedData.password = await saltAndHashPassword(input.password)
+			}
+
+			if (typeof input.isTwoFactorEnabled !== 'undefined') {
+				updatedData.isTwoFactorEnabled = input.isTwoFactorEnabled
+			}
+
+			const updatedUser = await prisma.user.update({
 				where: { id: session.user.id },
 				data: updatedData,
 			})
+
+			return {
+				...updatedUser,
+				isOAuth: hasOAuthAccounts,
+			}
 		}),
 
 	deleteUser: protectedProcedure.mutation(async () => {

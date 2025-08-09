@@ -3,9 +3,10 @@ import { chunk, pick } from 'lodash'
 import { Prisma } from '@prisma/client'
 
 // Do not change the path, made for seed.ts
-import { makeReq } from './make-request'
-import { prisma } from './../../lib/prisma'
-import { CoinsListData } from './../../modules/dashboard/schema'
+
+import { prisma } from './../lib/prisma'
+import { makeReq } from './../app/api/make-request'
+import { CoinsListData } from './../modules/dashboard/schema'
 
 const BATCH_SIZE = 50
 

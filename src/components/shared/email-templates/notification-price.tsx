@@ -10,7 +10,7 @@ interface Props {
 	}[]
 }
 
-export const NotificationTemplate = ({ coins }: Props) => {
+export const NotificationPriceTemplate = ({ coins }: Props) => {
 	return (
 		<div>
 			<h1>🎯 Target price reached!</h1>

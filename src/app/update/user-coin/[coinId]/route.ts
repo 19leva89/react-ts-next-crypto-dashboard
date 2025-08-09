@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { updateUserCoinData } from '@/app/api/actions'
+import { updateUserCoinData } from '@/actions/user'
 
 export async function GET(req: NextRequest, context: { params: any }) {
 	try {

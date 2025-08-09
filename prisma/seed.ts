@@ -1,6 +1,6 @@
 // Do not change the path, made for seed.ts
 import { prisma } from './../src/lib/prisma'
-import { getCoinsList, updateCoinsListIDMapFromAPI } from './../src/app/api/actions-seed'
+import { getCoinsList, updateCoinsListIDMapFromAPI } from './../src/actions/actions-seed'
 
 //! To run the command "npx prisma db seed" the server must be running
 

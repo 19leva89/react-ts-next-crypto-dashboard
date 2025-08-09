@@ -32,6 +32,7 @@ export {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from './dropdown-menu'
+export { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from './form'
 export { Input } from './input'
 export { Label } from './label'
 export { Popover, PopoverTrigger, PopoverContent } from './popover'

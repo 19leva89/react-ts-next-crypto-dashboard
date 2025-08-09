@@ -17,6 +17,8 @@ export const userProfileSchema = z.object({
 	name: z.string().trim().min(2, { message: ERROR_MESSAGES.name }),
 	email: z.email({ message: ERROR_MESSAGES.email }).trim(),
 	image: z.string().nullable(),
+	isTwoFactorEnabled: z.boolean().optional(),
+	isOAuth: z.boolean().optional(),
 })
 
 export const updateProfileSchema = userProfileSchema

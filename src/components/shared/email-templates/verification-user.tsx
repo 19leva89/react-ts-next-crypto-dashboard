@@ -7,11 +7,7 @@ interface Props {
 export const VerificationUserTemplate = ({ token }: Props) => (
 	<div>
 		<p>
-			Confirmation code: <h2>{token}</h2>
-		</p>
-
-		<p>
-			<a href={absoluteUrl(`/api/auth/verify?token=${token}`)}>Confirm registration</a>
+			Click <a href={absoluteUrl(`/auth/new-verification?token=${token}`)}>here</a> to confirm your email.
 		</p>
 	</div>
 )

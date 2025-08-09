@@ -1,3 +1,5 @@
+'use server'
+
 import { prisma } from '@/lib/prisma'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { updateCategories } from '@/app/api/actions'
+import { updateCategories } from '@/actions/cron'
 
 export const maxDuration = 60
 

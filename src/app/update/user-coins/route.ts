@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { updateUserCoinsList } from '@/app/api/actions'
+import { updateUserCoinsList } from '@/actions/user'
 
 export async function GET(req: NextRequest) {
 	try {

@@ -1,13 +1,23 @@
 import { z } from 'zod'
+import { TRPCError } from '@trpc/server'
 
 import { prisma } from '@/lib/prisma'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 
 export const notificationsRouter = createTRPCRouter({
 	addLogoutNotification: protectedProcedure.mutation(async ({ ctx }) => {
+		if (!ctx.auth?.user?.id) {
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'User must be authenticated',
+			})
+		}
+
+		const userId = ctx.auth.user.id
+
 		await prisma.notification.create({
 			data: {
-				userId: ctx.auth.user.id,
+				userId,
 				type: 'LOGOUT',
 				title: 'Logout',
 				message: 'You have been logged out',

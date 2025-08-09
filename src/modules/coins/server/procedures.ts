@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma'
 import { getCoinData } from '@/data/coin'
 import { getUserCoinsList } from '@/data/user'
 import { makeReq } from '@/app/api/make-request'
-import { recalculateAveragePrice } from '@/app/api/actions'
+import { recalculateAveragePrice } from '@/actions/cron'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 import { addCoinToUserSchema, userCoinDataSchema } from '@/modules/coins/schema'
 
@@ -13,6 +13,15 @@ export const coinsRouter = createTRPCRouter({
 	addCoinToUser: protectedProcedure
 		.input(addCoinToUserSchema)
 		.mutation(async ({ input: { coinId, quantity, price }, ctx }) => {
+			if (!ctx.auth?.user?.id) {
+				throw new TRPCError({
+					code: 'UNAUTHORIZED',
+					message: 'User must be authenticated',
+				})
+			}
+
+			const userId = ctx.auth.user.id
+
 			if (quantity === 0) {
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
@@ -36,13 +45,13 @@ export const coinsRouter = createTRPCRouter({
 				const userCoin = await transactionPrisma.userCoin.upsert({
 					where: {
 						userId_coinId: {
-							userId: ctx.auth.user.id,
+							userId,
 							coinId,
 						},
 					},
 					update: {},
 					create: {
-						user: { connect: { id: ctx.auth.user.id } },
+						user: { connect: { id: userId } },
 						coin: { connect: { id: coinId } },
 						coinsListIDMap: { connect: { id: coinId } },
 					},
@@ -68,7 +77,7 @@ export const coinsRouter = createTRPCRouter({
 				})
 
 				// 4. Recalculating aggregated data
-				await recalculateAveragePrice(ctx.auth.user.id, coinId, transactionPrisma)
+				await recalculateAveragePrice(userId, coinId, transactionPrisma)
 			})
 
 			return { success: true }
@@ -84,6 +93,15 @@ export const coinsRouter = createTRPCRouter({
 			}),
 		)
 		.mutation(async ({ input: { coinId, quantity, price, date }, ctx }) => {
+			if (!ctx.auth?.user?.id) {
+				throw new TRPCError({
+					code: 'UNAUTHORIZED',
+					message: 'User must be authenticated',
+				})
+			}
+
+			const userId = ctx.auth.user.id
+
 			if (!coinId) {
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
@@ -99,13 +117,13 @@ export const coinsRouter = createTRPCRouter({
 						price,
 						date,
 						userCoin: {
-							connect: { userId_coinId: { userId: ctx.auth.user.id, coinId } },
+							connect: { userId_coinId: { userId, coinId } },
 						},
 					},
 				})
 
 				// Recalculation of the average price
-				await recalculateAveragePrice(ctx.auth.user.id, coinId, prisma)
+				await recalculateAveragePrice(userId, coinId, prisma)
 
 				return newTransaction
 			})
@@ -130,8 +148,17 @@ export const coinsRouter = createTRPCRouter({
 		.input(z.string())
 		.output(userCoinDataSchema)
 		.query(async ({ input: coinId, ctx }) => {
+			if (!ctx.auth?.user?.id) {
+				throw new TRPCError({
+					code: 'UNAUTHORIZED',
+					message: 'User must be authenticated',
+				})
+			}
+
+			const userId = ctx.auth.user.id
+
 			const userCoin = await prisma.userCoin.findUnique({
-				where: { userId_coinId: { userId: ctx.auth.user.id, coinId } },
+				where: { userId_coinId: { userId, coinId } },
 				select: {
 					total_quantity: true,
 					total_cost: true,
@@ -281,6 +308,15 @@ export const coinsRouter = createTRPCRouter({
 			}),
 		)
 		.mutation(async ({ input: { coinId, desiredSellPrice, transactions }, ctx }) => {
+			if (!ctx.auth?.user?.id) {
+				throw new TRPCError({
+					code: 'UNAUTHORIZED',
+					message: 'User must be authenticated',
+				})
+			}
+
+			const userId = ctx.auth.user.id
+
 			if (!coinId) {
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
@@ -322,14 +358,14 @@ export const coinsRouter = createTRPCRouter({
 				// Update sale price
 				if (typeof desiredSellPrice !== 'undefined') {
 					await transactionPrisma.userCoin.update({
-						where: { userId_coinId: { userId: ctx.auth.user.id, coinId } },
+						where: { userId_coinId: { userId, coinId } },
 						data: { desired_sell_price: desiredSellPrice },
 					})
 				}
 
 				// Recalculation of the average price
 				if (transactions?.length) {
-					await recalculateAveragePrice(ctx.auth.user.id, coinId, transactionPrisma)
+					await recalculateAveragePrice(userId, coinId, transactionPrisma)
 				}
 			})
 
@@ -337,6 +373,15 @@ export const coinsRouter = createTRPCRouter({
 		}),
 
 	deleteCoinFromUser: protectedProcedure.input(z.string()).mutation(async ({ input: coinId, ctx }) => {
+		if (!ctx.auth?.user?.id) {
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'User must be authenticated',
+			})
+		}
+
+		const userId = ctx.auth.user.id
+
 		if (!coinId) {
 			throw new TRPCError({
 				code: 'BAD_REQUEST',
@@ -346,7 +391,7 @@ export const coinsRouter = createTRPCRouter({
 
 		await prisma.userCoin.delete({
 			where: {
-				userId_coinId: { userId: ctx.auth.user.id, coinId },
+				userId_coinId: { userId, coinId },
 			},
 		})
 
@@ -356,6 +401,15 @@ export const coinsRouter = createTRPCRouter({
 	deleteTransactionFromUser: protectedProcedure
 		.input(z.string())
 		.mutation(async ({ input: transactionId, ctx }) => {
+			if (!ctx.auth?.user?.id) {
+				throw new TRPCError({
+					code: 'UNAUTHORIZED',
+					message: 'User must be authenticated',
+				})
+			}
+
+			const userId = ctx.auth.user.id
+
 			if (!transactionId) {
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
@@ -380,7 +434,7 @@ export const coinsRouter = createTRPCRouter({
 					where: { id: transactionId },
 				})
 
-				await recalculateAveragePrice(ctx.auth.user.id, transaction.userCoin.coinId, transactionPrisma)
+				await recalculateAveragePrice(userId, transaction.userCoin.coinId, transactionPrisma)
 			})
 
 			return { success: true }

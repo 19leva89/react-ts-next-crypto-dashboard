@@ -1,8 +1,10 @@
+'use server'
+
 import { prisma } from '@/lib/prisma'
 import { CoinData } from '@/app/api/types'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
-import { COINS_UPDATE_INTERVAL } from '@/app/api/constants'
+import { COINS_UPDATE_INTERVAL } from '@/constants/intervals'
 
 export const getCoinData = async (coinId: string): Promise<CoinData> => {
 	try {
