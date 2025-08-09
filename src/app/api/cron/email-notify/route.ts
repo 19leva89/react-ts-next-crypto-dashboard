@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { notifyUsersOnPriceTarget } from '@/app/api/actions'
+import { notifyUsersOnPriceTarget } from '@/actions/user'
 
 export const maxDuration = 60
 

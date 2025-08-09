@@ -32,7 +32,7 @@ import {
 	Switch,
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
-import { DEFAULT_LIMIT } from '@/constants/default-limit'
+import { INFINITE_SCROLL_LIMIT } from '@/constants/infinite-scroll'
 import { Notification } from '@/modules/notifications/schema'
 import { ErrorState, InfiniteScroll, LoadingState } from '@/components/shared'
 
@@ -53,7 +53,7 @@ export const NotificationsView = () => {
 	const queryClient = useQueryClient()
 
 	const queryOptions = trpc.notifications.getNotifications.infiniteQueryOptions(
-		{ limit: DEFAULT_LIMIT },
+		{ limit: INFINITE_SCROLL_LIMIT },
 		{
 			getNextPageParam: (lastPage) => lastPage.nextCursor,
 		},
@@ -82,7 +82,7 @@ export const NotificationsView = () => {
 			onSuccess: () => {
 				// Optimistic cache update
 				queryClient.setQueryData(
-					trpc.notifications.getNotifications.infiniteQueryKey({ limit: DEFAULT_LIMIT }),
+					trpc.notifications.getNotifications.infiniteQueryKey({ limit: INFINITE_SCROLL_LIMIT }),
 					(oldData: any) => {
 						if (!oldData) return oldData
 
@@ -109,7 +109,7 @@ export const NotificationsView = () => {
 			onSuccess: (_, notificationId) => {
 				// Optimistic cache update
 				queryClient.setQueryData(
-					trpc.notifications.getNotifications.infiniteQueryKey({ limit: DEFAULT_LIMIT }),
+					trpc.notifications.getNotifications.infiniteQueryKey({ limit: INFINITE_SCROLL_LIMIT }),
 					(oldData: any) => {
 						if (!oldData) return oldData
 

@@ -1,4 +1,5 @@
-import { GECKO_ROUTE_V3, MARKETCAP_ROUTE_V1, ValidDays } from './constants'
+import { ValidDays } from '@/constants/chart'
+import { GECKO_ROUTE_V3, MARKETCAP_ROUTE_V1 } from '@/constants/routes'
 
 // getTrendingData
 export const getCgTrendingRoute = (): string => {

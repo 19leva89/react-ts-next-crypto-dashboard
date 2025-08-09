@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { ValidDays } from '@/app/api/constants'
+import { ValidDays } from '@/constants/chart'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgCoinsMarketChartRoute } from '@/app/api/resources'
 

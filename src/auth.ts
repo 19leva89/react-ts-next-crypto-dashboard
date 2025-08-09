@@ -1,16 +1,19 @@
 import { compare } from 'bcrypt-ts'
 import { JWT } from 'next-auth/jwt'
+import { UserRole } from '@prisma/client'
 import { Adapter } from 'next-auth/adapters'
 import GitHub from 'next-auth/providers/github'
 import Google from 'next-auth/providers/google'
-import NextAuth, { Session, User } from 'next-auth'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import Credentials from 'next-auth/providers/credentials'
+import NextAuth, { Account, Session, User } from 'next-auth'
 
 import { prisma } from '@/lib/prisma'
-import { getUserByEmail } from '@/data/user'
-import { createLoginNotification } from '@/app/api/actions'
-import { formLoginSchema } from '@/components/shared/modals/auth-modal/forms/schemas'
+import { getAccountByUserId } from '@/data/account'
+import { createLoginNotification } from '@/actions/login'
+import { getUserByEmail, getUserById } from '@/data/user'
+import { LoginSchema } from '@/components/shared/modals/auth-modal/forms/schemas'
+import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation'
 
 const providers = [
 	Google({
@@ -28,36 +31,43 @@ const providers = [
 		},
 		async authorize(credentials) {
 			try {
-				const validatedFields = formLoginSchema.safeParse(credentials)
-				if (!validatedFields.success) return null
+				const validatedFields = LoginSchema.safeParse(credentials)
+
+				if (!validatedFields.success) {
+					throw new Error('Invalid fields')
+				}
 
 				const { email, password } = validatedFields.data
-				if (!email || !password) return null
-
 				const user = await getUserByEmail(email)
-				if (!user || !user.emailVerified || user.accounts?.length > 0 || !user.password) {
-					return null
+
+				// Enforce all checks here
+				if (!user || !user.password) {
+					throw new Error('Invalid credentials')
 				}
 
-				const isPasswordValid = await compare(password, user.password)
-				if (!isPasswordValid) return null
-
-				return {
-					id: user.id,
-					email: user.email,
-					name: user.name,
-					role: user.role,
+				if (user.accounts?.length > 0) {
+					throw new Error('Account uses social login')
 				}
+
+				if (!user.emailVerified) {
+					throw new Error('Email not verified')
+				}
+
+				const passwordsMatch = await compare(password, user.password)
+				if (!passwordsMatch) {
+					throw new Error('Invalid credentials')
+				}
+
+				return user
 			} catch (error) {
 				console.error('Authorization error:', error)
-
 				return null
 			}
 		},
 	}),
 ]
 
-export const authOptions = {
+export const authOptions: any = {
 	adapter: PrismaAdapter(prisma) as Adapter,
 
 	secret: process.env.NEXTAUTH_SECRET,
@@ -71,31 +81,68 @@ export const authOptions = {
 	},
 
 	callbacks: {
-		async jwt({ token }: { token: JWT }) {
-			if (!token.email) return token
+		async signIn({ user, account }: { user: User; account: Account | null }) {
+			// Allow OAuth without email verification
+			if (account?.provider !== 'credentials') return true
 
-			const findUser = await prisma.user.findUnique({
-				where: { email: token.email },
-				select: { id: true, email: true, name: true, image: true, role: true },
-			})
-
-			if (findUser) {
-				token.id = findUser.id
-				token.email = findUser.email
-				token.name = findUser.name
-				token.image = findUser.image
-				token.role = findUser.role
+			if (!user.id) {
+				return false // Reject sign-in if user ID is undefined
 			}
+
+			const existingUser = await getUserById(user.id)
+
+			// Prevent sign in without email verification
+			if (!existingUser?.emailVerified) return false
+
+			if (existingUser.isTwoFactorEnabled) {
+				const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id)
+
+				if (!twoFactorConfirmation) return false
+
+				// Delete two-factor confirmation for next sign in
+				await prisma.twoFactorConfirmation.delete({
+					where: { id: twoFactorConfirmation.id },
+				})
+			}
+
+			return true
+		},
+
+		async session({ session, token }: { session: Session; token: JWT }) {
+			if (token.sub && session.user) {
+				session.user.id = token.sub
+			}
+
+			if (token.role && session.user) {
+				session.user.role = token.role as UserRole
+			}
+
+			if (session.user) {
+				session.user.name = token.name
+				session.user.email = token.email
+				session.user.isOAuth = token.isOAuth as boolean
+				session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean
+			}
+
+			return session
+		},
+
+		async jwt({ token }: { token: JWT }) {
+			if (!token.sub) return token
+
+			const existingUser = await getUserById(token.sub)
+
+			if (!existingUser) return token
+
+			const existingAccount = await getAccountByUserId(existingUser.id)
+
+			token.isOAuth = !!existingAccount
+			token.name = existingUser.name
+			token.email = existingUser.email
+			token.role = existingUser.role
+			token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled
 
 			return token
-		},
-		async session({ session, token }: { session: Session; token: JWT }) {
-			if (session.user) {
-				session.user.id = token.id as string
-				session.user.email = token.email as string
-				session.user.role = token.role as string
-			}
-			return session
 		},
 	},
 

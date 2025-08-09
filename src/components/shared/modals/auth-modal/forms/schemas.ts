@@ -15,22 +15,38 @@ const passwordSchema = z
 	.regex(/\d/, { message: 'Password must contain at least one digit' })
 
 // Scheme for login
-export const formLoginSchema = z.object({
+export const LoginSchema = z.object({
 	email: z.email({ message: errMsg.email }),
 	password: passwordSchema,
-	token: z.optional(z.string()),
+	code: z.optional(z.string()),
 })
 
 // Scheme for registration
-export const formRegisterSchema = formLoginSchema
-	.extend({
-		name: z.string().min(2, { message: errMsg.name }),
-		confirmPassword: passwordSchema,
+export const RegisterSchema = LoginSchema.extend({
+	name: z.string().min(2, { message: errMsg.name }),
+	confirmPassword: passwordSchema,
+}).refine((data) => data.password === data.confirmPassword, {
+	message: errMsg.confirmPassword,
+	path: ['confirmPassword'],
+})
+
+export const NewPasswordSchema = z
+	.object({
+		password: passwordSchema,
+		confirmPassword: z.string().min(1, { message: 'Please confirm your password' }),
 	})
 	.refine((data) => data.password === data.confirmPassword, {
 		message: errMsg.confirmPassword,
 		path: ['confirmPassword'],
 	})
 
-export type TFormLoginValues = z.infer<typeof formLoginSchema>
-export type TFormRegisterValues = z.infer<typeof formRegisterSchema>
+export const ResetSchema = z.object({
+	email: z.email({
+		message: 'Email is required',
+	}),
+})
+
+export type TLoginValues = z.infer<typeof LoginSchema>
+export type TRegisterValues = z.infer<typeof RegisterSchema>
+export type TNewPasswordValues = z.infer<typeof NewPasswordSchema>
+export type TResetValues = z.infer<typeof ResetSchema>

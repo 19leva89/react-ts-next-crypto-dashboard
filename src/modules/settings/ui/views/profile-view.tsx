@@ -18,11 +18,17 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	Button,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	Switch,
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
 import { FormInput } from '@/components/shared/form'
 import { Container, ErrorState, LoadingState, Title } from '@/components/shared'
-import { UpdateProfileValues, UserProfile, updateProfileSchema } from '@/modules/settings/schema'
+import { UpdateProfileValues, updateProfileSchema } from '@/modules/settings/schema'
 
 export const ProfileView = () => {
 	const trpc = useTRPC()
@@ -31,25 +37,26 @@ export const ProfileView = () => {
 	const updateUserMutation = useMutation(trpc.settings.updateUserInfo.mutationOptions())
 
 	const { update } = useSession()
-	const { data: profile } = useSuspenseQuery(trpc.settings.getProfile.queryOptions()) as { data: UserProfile }
+	const { data: profile } = useSuspenseQuery(trpc.settings.getProfile.queryOptions())
 
 	const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
 
 	const form = useForm<UpdateProfileValues>({
 		resolver: zodResolver(updateProfileSchema),
 		defaultValues: {
-			email: profile.email,
-			name: profile.name || '',
-			password: '',
-			confirmPassword: '',
+			email: profile?.email || undefined,
+			name: profile?.name || undefined,
+			password: undefined,
+			confirmPassword: undefined,
+			isTwoFactorEnabled: profile?.isTwoFactorEnabled || undefined,
 		},
 	})
 
 	const onSubmit = async (formData: UpdateProfileValues) => {
 		try {
 			await updateUserMutation.mutateAsync({
-				email: formData.email || '',
-				name: formData.name || '',
+				email: formData.email || undefined,
+				name: formData.name || undefined,
 				...(formData.password ? { password: formData.password } : {}),
 			})
 
@@ -60,6 +67,24 @@ export const ProfileView = () => {
 			console.error('Error updating user info:', error)
 
 			toast.error(error instanceof Error ? error.message : 'Error while updating data')
+		}
+	}
+
+	const handleTwoFactorToggle = async (checked: boolean) => {
+		form.setValue('isTwoFactorEnabled', checked)
+
+		try {
+			await updateUserMutation.mutateAsync({
+				isTwoFactorEnabled: checked,
+			})
+
+			toast.success(`Two-factor authentication ${checked ? 'enabled' : 'disabled'}`)
+
+			await update()
+		} catch (error) {
+			console.error('Error updating 2FA:', error)
+
+			toast.error(error instanceof Error ? error.message : 'Failed to update 2FA')
 		}
 	}
 
@@ -96,6 +121,30 @@ export const ProfileView = () => {
 					<FormInput name='password' label='New password' type='password' />
 
 					<FormInput name='confirmPassword' label='Repeat password' type='password' />
+
+					{profile?.isOAuth === false && (
+						<FormField
+							control={form.control}
+							name='isTwoFactorEnabled'
+							render={({ field }) => (
+								<FormItem className='mt-8 flex flex-row items-center justify-between rounded-lg border p-3 shadow-xs'>
+									<div className='space-y-0.5'>
+										<FormLabel>Two Factor Authentication</FormLabel>
+
+										<FormDescription>Enable two factor authentication for your account</FormDescription>
+									</div>
+
+									<FormControl>
+										<Switch
+											disabled={updateUserMutation.isPending}
+											checked={field.value}
+											onCheckedChange={handleTwoFactorToggle}
+										/>
+									</FormControl>
+								</FormItem>
+							)}
+						/>
+					)}
 
 					<Button
 						variant='default'

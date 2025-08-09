@@ -1,25 +1,17 @@
 'use server'
 
 import { pick } from 'lodash'
-import { revalidatePath } from 'next/cache'
-import { MarketChart, Prisma } from '@prisma/client'
+import { MarketChart } from '@prisma/client'
 
-import { signIn } from '@/auth'
-import { formatPrice } from '@/lib'
 import { prisma } from '@/lib/prisma'
-import { sendEmail } from '@/lib/send-email'
-import { getUserByEmail } from '@/data/user'
+import { ValidDays } from '@/constants/chart'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
-import { saltAndHashPassword } from '@/lib/salt'
 import { getFieldForDays } from '@/data/field-for-days'
 import { MarketChartData } from '@/modules/coins/schema'
-import { generateVerificationToken } from '@/lib/tokens'
 import { PrismaTransactionClient } from '@/app/api/types'
 import { trendingDataSchema } from '@/modules/dashboard/schema'
-import { COINS_UPDATE_INTERVAL, ValidDays } from '@/app/api/constants'
 import { CategoriesData, TrendingData } from '@/modules/dashboard/schema'
-import { NotificationTemplate, VerificationUserTemplate } from '@/components/shared/email-templates'
 
 // General function for recalculating aggregated data
 export const recalculateAveragePrice = async (
@@ -70,146 +62,6 @@ export const recalculateAveragePrice = async (
 			average_price: totals.totalQuantity > 0 ? totals.totalCost / totals.totalQuantity : 0,
 		},
 	})
-}
-
-export const registerUser = async (body: Prisma.UserCreateInput) => {
-	try {
-		const user = await getUserByEmail(body.email)
-
-		if (user) {
-			if (user.accounts.length > 0)
-				throw new Error('This email is linked to a social login. Please use GitHub or Google')
-
-			if (!user.emailVerified) throw new Error('Email not confirmed')
-
-			throw new Error('User already exists')
-		}
-
-		const createdUser = await prisma.user.create({
-			data: {
-				name: body.name,
-				email: body.email,
-				password: await saltAndHashPassword(body.password as string),
-			},
-		})
-
-		const verificationToken = await generateVerificationToken(createdUser.email)
-
-		await sendEmail({
-			to: createdUser.email,
-			subject: '📝 Registration confirmation',
-			html: VerificationUserTemplate({ token: verificationToken.token }),
-		})
-	} catch (error) {
-		handleError(error, 'CREATE_USER')
-	}
-}
-
-export const loginUser = async (provider: string) => {
-	await signIn(provider, { redirectTo: '/' })
-
-	revalidatePath('/')
-}
-
-export const createLoginNotification = async (userId: string) => {
-	try {
-		await prisma.notification.create({
-			data: {
-				userId,
-				type: 'LOGIN',
-				title: 'Login',
-				message: 'You have successfully logged in',
-			},
-		})
-	} catch (error) {
-		handleError(error, 'CREATE_LOGIN_NOTIFICATION')
-	}
-}
-
-export const notifyUsersOnPriceTarget = async () => {
-	const userCoins = await prisma.userCoin.findMany({
-		where: {
-			desired_sell_price: {
-				not: null,
-			},
-			coin: {
-				current_price: {
-					not: null,
-				},
-			},
-		},
-		include: {
-			coinsListIDMap: true,
-			coin: true,
-			user: true,
-		},
-	})
-
-	// Grouping by user
-	const userMap: Record<
-		string,
-		{
-			email: string
-			coins: {
-				id: string
-				name: string
-				image: string
-				currentPrice: number
-				desiredPrice: number
-			}[]
-		}
-	> = {}
-
-	for (const userCoin of userCoins) {
-		const { user, coin, desired_sell_price, coinsListIDMap } = userCoin
-
-		if (!user.email || desired_sell_price == null || coin.current_price == null) continue
-		if (coin.current_price < desired_sell_price) continue
-
-		if (!userMap[user.id]) {
-			userMap[user.id] = {
-				email: user.email,
-				coins: [],
-			}
-		}
-
-		userMap[user.id].coins.push({
-			id: coin.id,
-			name: coinsListIDMap?.name ?? coin.id,
-			image: coin.image ?? '/svg/coin-not-found.svg',
-			currentPrice: coin.current_price,
-			desiredPrice: desired_sell_price,
-		})
-	}
-
-	// Sending emails to users and creating notifications
-	for (const userId in userMap) {
-		const { email, coins } = userMap[userId]
-
-		try {
-			// Creating notifications
-			for (const coin of coins) {
-				await prisma.notification.create({
-					data: {
-						userId,
-						type: 'PRICE_ALERT',
-						title: '🎯 Target price reached!',
-						message: `${coin.name} reached your target $${formatPrice(coin.currentPrice)}`,
-						coinId: coin.id,
-					},
-				})
-			}
-
-			// Sending emails
-			await sendEmail({
-				to: email,
-				subject: `🚀 ${coins.length > 1 ? 'A few coins' : coins[0].name} reached your target`,
-				html: NotificationTemplate({ coins }),
-			})
-		} catch (error) {
-			handleError(error, 'NOTIFY_USER_ON_PRICE_TARGET')
-		}
-	}
 }
 
 // cron 24h
@@ -357,95 +209,6 @@ export const updateCoinsList = async (): Promise<any> => {
 		handleError(error, 'UPDATE_COINS_LIST')
 	}
 }
-
-export const updateUserCoinsList = async (userId: string): Promise<any> => {
-	try {
-		const currentTime = new Date()
-		const updateTime = new Date(currentTime.getTime() - COINS_UPDATE_INTERVAL)
-
-		// Get a list of user coins
-		const coinsToUpdate = await prisma.userCoin.findMany({
-			where: {
-				userId,
-				updatedAt: { lt: updateTime },
-			},
-			orderBy: { updatedAt: 'asc' },
-			take: 50, // Limit in DB
-			select: {
-				coinId: true,
-				coin: { select: { id: true } },
-			},
-		})
-
-		if (!coinsToUpdate.length) {
-			console.log('✅ Using cached UserCoins')
-
-			return prisma.userCoin.findMany({
-				where: { userId },
-				include: { coin: true },
-			})
-		}
-
-		// Forming a string for an API request
-		const coinIds = coinsToUpdate.map((coin) => encodeURIComponent(coin.coinId)).join('%2C')
-
-		// Requesting fresh data from the API
-		console.log('🔄 Outdated records, request UserCoins via API...')
-		const response = await makeReq('GET', `/gecko/user/${coinIds}`)
-
-		if (!response || !Array.isArray(response) || !response.length) {
-			console.warn('⚠️ UPDATE_USER_COINS: Empty response from API, using old UserCoinsList')
-
-			return prisma.userCoin.findMany({
-				where: { userId },
-				include: { coin: true },
-			})
-		}
-
-		// Batch update
-		const updateOperations = response.flatMap((coin) => [
-			prisma.coin.upsert({
-				where: { id: coin.id },
-				update: {
-					current_price: coin.current_price,
-					image: coin.image,
-					sparkline_in_7d: coin.sparkline_in_7d,
-					updatedAt: currentTime,
-				},
-				create: {
-					id: coin.id,
-					coinsListIDMapId: coin.id,
-					current_price: coin.current_price,
-					sparkline_in_7d: coin.sparkline_in_7d,
-					image: coin.image,
-					updatedAt: currentTime,
-				},
-			}),
-			prisma.userCoin.updateMany({
-				where: {
-					userId,
-					coinId: coin.id,
-				},
-				data: { updatedAt: currentTime },
-			}),
-		])
-
-		await prisma.$transaction(updateOperations)
-
-		console.log('✅ Records UserCoinsList updated!')
-
-		// Returning an updated list of coins
-		return await prisma.userCoin.findMany({
-			where: { userId },
-			include: { coin: true },
-		})
-	} catch (error) {
-		handleError(error, 'UPDATE_USER_COINS_LIST')
-	}
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const updateUserCoinData = async (coinId: string) => {}
 
 // cron 24h
 export const updateCoinsMarketChart = async (days: ValidDays): Promise<MarketChartData> => {

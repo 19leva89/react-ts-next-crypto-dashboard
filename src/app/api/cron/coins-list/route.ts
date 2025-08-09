@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { updateCoinsList } from '@/app/api/actions'
+import { updateCoinsList } from '@/actions/cron'
 
 export const maxDuration = 60
 

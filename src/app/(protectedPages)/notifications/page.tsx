@@ -6,7 +6,7 @@ import { auth } from '@/auth'
 import { constructMetadata } from '@/lib'
 import { getQueryClient, trpc } from '@/trpc/server'
 
-import { DEFAULT_LIMIT } from '@/constants/default-limit'
+import { INFINITE_SCROLL_LIMIT } from '@/constants/infinite-scroll'
 import {
 	NotificationsView,
 	NotificationsViewError,
@@ -25,7 +25,7 @@ const NotificationsPage = async () => {
 	const queryClient = getQueryClient()
 
 	void queryClient.prefetchInfiniteQuery(
-		trpc.notifications.getNotifications.infiniteQueryOptions({ limit: DEFAULT_LIMIT }),
+		trpc.notifications.getNotifications.infiniteQueryOptions({ limit: INFINITE_SCROLL_LIMIT }),
 	)
 
 	return (

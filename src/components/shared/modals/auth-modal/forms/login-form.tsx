@@ -1,8 +1,9 @@
+import Link from 'next/link'
 import Image from 'next/image'
 import { toast } from 'sonner'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { signIn, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -15,9 +16,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui'
-import { loginUser } from '@/app/api/actions'
 import { FormInput } from '@/components/shared/form'
-import { TFormLoginValues, formLoginSchema } from '@/components/shared/modals/auth-modal/forms/schemas'
+import { credentialsLoginUser, loginUser } from '@/actions/login'
+import { TLoginValues, LoginSchema } from '@/components/shared/modals/auth-modal/forms/schemas'
 
 interface Props {
 	onClose?: VoidFunction
@@ -29,47 +30,40 @@ export const LoginForm = ({ onClose }: Props) => {
 	const { update } = useSession()
 
 	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [showTwoFactor, setShowTwoFactor] = useState<boolean>(false)
 
-	const form = useForm<TFormLoginValues>({
-		resolver: zodResolver(formLoginSchema),
+	const form = useForm<TLoginValues>({
+		resolver: zodResolver(LoginSchema),
 		defaultValues: {
 			email: '',
 			password: '',
 		},
 	})
 
-	const handleCredentialsLogin = async (data: TFormLoginValues) => {
+	const handleCredentialsLogin = async (data: TLoginValues) => {
 		setIsLoading(true)
 
 		try {
-			const result = await signIn('credentials', {
-				email: data.email,
-				password: data.password,
-				redirect: false,
-			})
+			const result = await credentialsLoginUser(data)
 
 			if (result?.error) {
-				let errorMessage = 'Something went wrong. Please try again'
-
-				if (result.error === 'CredentialsSignin') {
-					errorMessage = 'Invalid email or password'
-				} else if (result.error.includes('social login')) {
-					errorMessage = 'This email is linked to a social login. Please use GitHub or Google'
-				} else if (result.error.includes('not verified')) {
-					errorMessage = 'Email is not verified. Please check your inbox for verification link'
-				}
-
-				toast.error(errorMessage)
-
+				toast.error(result.error)
 				return
 			}
 
-			if (result?.ok) {
+			if (result?.twoFactor) {
+				setShowTwoFactor(true)
+
+				toast.success('Please verify your email first. We sent you a new 2FA code')
+			}
+
+			if (result?.success) {
 				await update()
 				router.refresh()
+				router.push('/coins')
 
 				onClose?.()
-				toast.success('You have successfully logged in')
+				toast.success('You have successfully login')
 			}
 		} catch (error) {
 			console.error('Login error:', error)
@@ -89,7 +83,7 @@ export const LoginForm = ({ onClose }: Props) => {
 			await update()
 
 			onClose?.()
-			toast.success('You have successfully logged in')
+			toast.success('You have successfully login')
 		} catch (error) {
 			console.error('Provider login error:', error)
 
@@ -110,13 +104,25 @@ export const LoginForm = ({ onClose }: Props) => {
 						<CardHeader>
 							<CardTitle>Login to your account</CardTitle>
 
-							<CardDescription>Enter your email to log in to your account</CardDescription>
+							<CardDescription>Enter your email to login to your account</CardDescription>
 						</CardHeader>
 
 						<CardContent className='flex flex-col gap-5'>
 							<FormInput name='email' type='email' placeholder='Email' required />
 
 							<FormInput name='password' type='password' placeholder='Password' required />
+
+							{showTwoFactor && <FormInput name='code' type='password' placeholder='2FA code' required />}
+
+							<Button
+								asChild
+								size='sm'
+								variant='link'
+								onClick={() => onClose?.()}
+								className='px-0 font-normal'
+							>
+								<Link href='/auth/reset'>Forgot password?</Link>
+							</Button>
 						</CardContent>
 					</div>
 
@@ -128,7 +134,7 @@ export const LoginForm = ({ onClose }: Props) => {
 							loading={isLoading || form.formState.isSubmitting}
 							className='w-full rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 						>
-							Login
+							{showTwoFactor ? 'Confirm' : 'Login'}
 						</Button>
 
 						<div className='flex w-full gap-2'>

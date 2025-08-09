@@ -11,17 +11,17 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui'
-import { registerUser } from '@/app/api/actions'
+import { registerUser } from '@/actions/register'
 import { FormInput } from '@/components/shared/form'
-import { TFormRegisterValues, formRegisterSchema } from './schemas'
+import { TRegisterValues, RegisterSchema } from '@/components/shared/modals/auth-modal/forms/schemas'
 
 interface Props {
 	onClose?: VoidFunction
 }
 
 export const RegisterForm = ({ onClose }: Props) => {
-	const form = useForm<TFormRegisterValues>({
-		resolver: zodResolver(formRegisterSchema),
+	const form = useForm<TRegisterValues>({
+		resolver: zodResolver(RegisterSchema),
 		defaultValues: {
 			email: '',
 			name: '',
@@ -30,12 +30,13 @@ export const RegisterForm = ({ onClose }: Props) => {
 		},
 	})
 
-	const onSubmit = async (data: TFormRegisterValues) => {
+	const onSubmit = async (data: TRegisterValues) => {
 		try {
 			await registerUser({
-				name: data.name,
 				email: data.email,
 				password: data.password,
+				name: data.name,
+				confirmPassword: data.confirmPassword,
 			})
 
 			toast.success('Registration successful 📝. Confirm your email')

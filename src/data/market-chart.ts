@@ -1,11 +1,14 @@
+'use server'
+
 import { MarketChart } from '@prisma/client'
 
 import { prisma } from '@/lib/prisma'
+import { ValidDays } from '@/constants/chart'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
 import { getFieldForDays } from '@/data/field-for-days'
 import { MarketChartData } from '@/modules/coins/schema'
-import { MARKET_CHART_UPDATE_INTERVAL, ValidDays } from '@/app/api/constants'
+import { MARKET_CHART_UPDATE_INTERVAL } from '@/constants/intervals'
 
 export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Promise<MarketChartData> => {
 	try {
