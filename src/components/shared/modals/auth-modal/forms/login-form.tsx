@@ -59,11 +59,12 @@ export const LoginForm = ({ onClose }: Props) => {
 
 			if (result?.success) {
 				await update()
-				router.refresh()
-				router.push('/coins')
 
 				onClose?.()
 				toast.success('You have successfully login')
+
+				router.push('/coins')
+				router.refresh()
 			}
 		} catch (error) {
 			console.error('Login error:', error)
