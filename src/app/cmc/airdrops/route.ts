@@ -1,3 +1,5 @@
+import { NextResponse } from 'next/server'
+
 import { makeServerReq } from '@/app/api/make-request'
 import { getCmcOngoingAirdropsDataRoute, getCmcUpcomingAirdropsDataRoute } from '@/app/api/resources'
 
@@ -20,11 +22,11 @@ export async function GET() {
 	}
 
 	if (airdropsData.data.length > 0) {
-		return Response.json(airdropsData, { status: 200 })
+		return NextResponse.json(airdropsData, { status: 200 })
 	}
 
 	if (ongoingResp.ok && upcomingResp.ok) {
-		return Response.json(airdropsData, { status: 200 })
+		return NextResponse.json(airdropsData, { status: 200 })
 	}
 
 	return !ongoingResp.ok ? ongoingResp : upcomingResp

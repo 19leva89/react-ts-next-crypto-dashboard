@@ -7,6 +7,7 @@ import { signIn } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { getUserByEmail } from '@/data/user'
 import { handleError } from '@/lib/handle-error'
+import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import { getTwoFactorTokenByEmail } from '@/data/two-factor-token'
 import { generateTwoFactorToken, generateVerificationToken } from '@/lib/tokens'
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation'
@@ -14,7 +15,7 @@ import { sendTwoFactorTokenEmail, sendVerificationEmail } from '@/lib/send-email
 import { LoginSchema, TLoginValues } from '@/components/shared/modals/auth-modal/forms/schemas'
 
 export const loginUser = async (provider: string) => {
-	await signIn(provider, { redirectTo: '/coins' })
+	await signIn(provider, { redirectTo: DEFAULT_LOGIN_REDIRECT })
 
 	revalidatePath('/')
 }

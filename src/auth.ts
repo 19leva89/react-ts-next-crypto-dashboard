@@ -1,87 +1,31 @@
-import { compare } from 'bcrypt-ts'
 import { JWT } from 'next-auth/jwt'
 import { UserRole } from '@prisma/client'
 import { Adapter } from 'next-auth/adapters'
-import GitHub from 'next-auth/providers/github'
-import Google from 'next-auth/providers/google'
 import { PrismaAdapter } from '@auth/prisma-adapter'
-import Credentials from 'next-auth/providers/credentials'
-import NextAuth, { Account, Session, User } from 'next-auth'
+import NextAuth, { Session, User } from 'next-auth'
 
 import { prisma } from '@/lib/prisma'
+import authConfig from '@/auth.config'
+import { getUserById } from '@/data/user'
 import { getAccountByUserId } from '@/data/account'
 import { createLoginNotification } from '@/actions/login'
-import { getUserByEmail, getUserById } from '@/data/user'
-import { LoginSchema } from '@/components/shared/modals/auth-modal/forms/schemas'
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation'
 
-const providers = [
-	Google({
-		clientId: process.env.GOOGLE_CLIENT_ID!,
-		clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-	}),
-	GitHub({
-		clientId: process.env.GITHUB_ID!,
-		clientSecret: process.env.GITHUB_SECRET!,
-	}),
-	Credentials({
-		credentials: {
-			email: { label: 'Email', type: 'email' },
-			password: { label: 'Password', type: 'password' },
-		},
-		async authorize(credentials) {
-			try {
-				const validatedFields = LoginSchema.safeParse(credentials)
-
-				if (!validatedFields.success) {
-					throw new Error('Invalid fields')
-				}
-
-				const { email, password } = validatedFields.data
-				const user = await getUserByEmail(email)
-
-				// Enforce all checks here
-				if (!user || !user.password) {
-					throw new Error('Invalid credentials')
-				}
-
-				if (user.accounts?.length > 0) {
-					throw new Error('Account uses social login')
-				}
-
-				if (!user.emailVerified) {
-					throw new Error('Email not verified')
-				}
-
-				const passwordsMatch = await compare(password, user.password)
-				if (!passwordsMatch) {
-					throw new Error('Invalid credentials')
-				}
-
-				return user
-			} catch (error) {
-				console.error('Authorization error:', error)
-				return null
-			}
-		},
-	}),
-]
-
-export const authOptions: any = {
+export const { auth, handlers, signIn, signOut } = NextAuth({
 	adapter: PrismaAdapter(prisma) as Adapter,
 
-	secret: process.env.NEXTAUTH_SECRET,
-
-	providers,
+	trustHost: true,
 
 	session: {
-		strategy: 'jwt' as const,
+		strategy: 'jwt',
 		maxAge: 30 * 60, // 30 minutes
 		updateAge: 10 * 60, // 10 minutes
 	},
 
 	callbacks: {
-		async signIn({ user, account }: { user: User; account: Account | null }) {
+		async signIn(params) {
+			const { user, account } = params
+
 			// Allow OAuth without email verification
 			if (account?.provider !== 'credentials') return true
 
@@ -153,11 +97,6 @@ export const authOptions: any = {
 			}
 		},
 	},
-}
 
-export const {
-	handlers: { GET, POST },
-	auth,
-	signIn,
-	signOut,
-} = NextAuth(authOptions)
+	...authConfig,
+})

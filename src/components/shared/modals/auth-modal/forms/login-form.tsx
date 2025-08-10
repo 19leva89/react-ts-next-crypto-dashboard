@@ -16,6 +16,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui'
+import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import { FormInput } from '@/components/shared/form'
 import { credentialsLoginUser, loginUser } from '@/actions/login'
 import { TLoginValues, LoginSchema } from '@/components/shared/modals/auth-modal/forms/schemas'
@@ -63,7 +64,7 @@ export const LoginForm = ({ onClose }: Props) => {
 				onClose?.()
 				toast.success('You have successfully login')
 
-				router.push('/coins')
+				router.push(DEFAULT_LOGIN_REDIRECT)
 				router.refresh()
 			}
 		} catch (error) {
@@ -86,7 +87,7 @@ export const LoginForm = ({ onClose }: Props) => {
 			onClose?.()
 			toast.success('You have successfully login')
 
-			router.push('/coins')
+			router.push(DEFAULT_LOGIN_REDIRECT)
 			router.refresh()
 		} catch (error) {
 			console.error('Provider login error:', error)
