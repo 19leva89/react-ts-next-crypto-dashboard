@@ -13,7 +13,7 @@ const CardsPage = async () => {
 	const session = await auth()
 
 	if (!session) {
-		redirect('/not-auth')
+		redirect('auth/not-auth')
 	}
 
 	return (

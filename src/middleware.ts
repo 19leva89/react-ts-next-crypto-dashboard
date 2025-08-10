@@ -7,7 +7,7 @@ const secret = process.env.AUTH_SECRET
 
 export async function middleware(req: NextRequest) {
 	const { nextUrl } = req
-	const { pathname, origin, search } = req.nextUrl
+	const { pathname, search } = req.nextUrl
 
 	const token = await getToken({ req, secret })
 	const isLoggedIn = !!token
@@ -15,11 +15,6 @@ export async function middleware(req: NextRequest) {
 	const isApiAuthRoute = pathname.startsWith(apiAuthPrefix)
 	const isAuthRoute = authRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'))
 	const isPublicRoute = publicRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'))
-
-	// Exclude '/not-auth' from the check to avoid getting stuck
-	if (pathname === '/not-auth') {
-		return NextResponse.next()
-	}
 
 	// 1. Do nothing for API auth routes
 	if (isApiAuthRoute) {
@@ -46,10 +41,15 @@ export async function middleware(req: NextRequest) {
 			})
 		}
 
-		// For browser navigation, redirect to /not-auth with a callback
-		const notAuthUrl = new URL('/not-auth', origin)
-		notAuthUrl.searchParams.set('callbackUrl', encodeURIComponent(pathname + search))
-		return NextResponse.redirect(notAuthUrl)
+		// Redirect unauthenticated users to the login page
+		let callbackUrl = pathname
+		if (search) {
+			callbackUrl += search
+		}
+
+		const encodedCallbackUrl = encodeURIComponent(callbackUrl)
+
+		return Response.redirect(new URL(`/auth/not-auth?callbackUrl=${encodedCallbackUrl}`, nextUrl))
 	}
 
 	// 4. Skip everything else

@@ -10,11 +10,11 @@ import { BillingView, BillingViewError, BillingViewLoading } from '@/modules/bil
 export const metadata = constructMetadata({ title: 'Billing' })
 
 const BillingPage = async () => {
-	const session = await auth()
+	// const session = await auth()
 
-	if (!session) {
-		redirect('/not-auth')
-	}
+	// if (!session) {
+	// 	redirect('auth/not-auth')
+	// }
 
 	return (
 		// <HydrationBoundary state={dehydrate(queryClient)}>
