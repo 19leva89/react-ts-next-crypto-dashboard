@@ -14,14 +14,15 @@ import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation
 export const { auth, handlers, signIn, signOut } = NextAuth({
 	adapter: PrismaAdapter(prisma) as Adapter,
 
+	secret: process.env.AUTH_SECRET,
+
+	trustHost: process.env.AUTH_TRUST_PROXY !== 'false',
+
 	session: {
 		strategy: 'jwt',
 		maxAge: 30 * 60, // 30 minutes
 		updateAge: 10 * 60, // 10 minutes
 	},
-
-	trustHost: true,
-	secret: process.env.AUTH_SECRET,
 
 	callbacks: {
 		async signIn(params) {

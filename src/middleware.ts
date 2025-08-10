@@ -9,13 +9,9 @@ export async function middleware(req: NextRequest) {
 	const { nextUrl } = req
 	const { pathname, protocol, search } = req.nextUrl
 
+	//! Important to set secureCookie
 	const token = await getToken({ req, secret, secureCookie: protocol === 'https:' })
 	const isLoggedIn = !!token
-
-	console.log('req:', req)
-	console.log('token:', token)
-	console.log('secret:', secret)
-	console.log('secureCookie:', protocol)
 
 	const isAuthRoute = authRoutes.includes(pathname)
 	const isApiAuthRoute = pathname.startsWith(apiAuthPrefix)
