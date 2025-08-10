@@ -1,9 +1,17 @@
 /**
- * An array of routes that are accessible to the public
- * These routes do not require authentication
+ * An array of routes that are accessible to the protected
+ * These routes require authentication
  * @type {string[]}
  */
-export const publicRoutes = ['/', '/auth/new-verification', '/dashboard', '/help', '/news', '/cmc', '/gecko']
+export const protectedRoutes = [
+	'/billing',
+	'/cards',
+	'/charts',
+	'/coins',
+	'/notifications',
+	'/settings',
+	'/transactions',
+]
 
 /**
  * An array of routes that are used for authentication
@@ -11,19 +19,6 @@ export const publicRoutes = ['/', '/auth/new-verification', '/dashboard', '/help
  * @type {string[]}
  */
 export const authRoutes = ['/auth/reset', '/auth/new-password', '/auth/not-auth']
-
-/**
- * The prefix for API authentication routes
- * Routes that start with this prefix are used for API authentication purposes
- * @type {string}
- */
-export const apiAuthPrefix = '/api/auth'
-
-/**
- * Routes that start with this prefix are used for API cron-requests, service console.cron-job.org
- * @type {string}
- */
-export const apiCronPrefix = '/api/cron'
 
 /**
  * The default redirect path after logging in

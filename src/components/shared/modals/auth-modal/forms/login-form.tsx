@@ -85,10 +85,6 @@ export const LoginForm = ({ onClose }: Props) => {
 			await update()
 
 			onClose?.()
-			toast.success('You have successfully login')
-
-			router.push(DEFAULT_LOGIN_REDIRECT)
-			router.refresh()
 		} catch (error) {
 			console.error('Provider login error:', error)
 

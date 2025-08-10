@@ -28,27 +28,36 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 		async signIn(params) {
 			const { user, account } = params
 
-			// Allow OAuth without email verification
-			if (account?.provider !== 'credentials') return true
-
 			if (!user.id) {
 				return false // Reject sign-in if user ID is undefined
 			}
 
 			const existingUser = await getUserById(user.id)
 
-			// Prevent sign in without email verification
-			if (!existingUser?.emailVerified) return false
+			// If the user is found and already has a linked account
+			if (existingUser?.accounts?.length) {
+				const provider = existingUser.accounts[0].provider
+				if (provider !== account?.provider) {
+					throw new Error(
+						`This account can only be accessed with ${provider.charAt(0).toUpperCase() + provider.slice(1)} login`,
+					)
+				}
+			}
 
-			if (existingUser.isTwoFactorEnabled) {
-				const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id)
+			if (account?.provider === 'credentials') {
+				// Prevent sign in without email verification
+				if (!existingUser?.emailVerified) return false
 
-				if (!twoFactorConfirmation) return false
+				if (existingUser.isTwoFactorEnabled) {
+					const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id)
 
-				// Delete two-factor confirmation for next sign in
-				await prisma.twoFactorConfirmation.delete({
-					where: { id: twoFactorConfirmation.id },
-				})
+					if (!twoFactorConfirmation) return false
+
+					// Delete two-factor confirmation for next sign in
+					await prisma.twoFactorConfirmation.delete({
+						where: { id: twoFactorConfirmation.id },
+					})
+				}
 			}
 
 			return true
