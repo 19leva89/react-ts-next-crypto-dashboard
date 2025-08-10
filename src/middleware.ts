@@ -7,16 +7,18 @@ const secret = process.env.AUTH_SECRET
 
 export async function middleware(req: NextRequest) {
 	const { nextUrl } = req
-	const { pathname, search } = req.nextUrl
+	const { pathname, protocol, search } = req.nextUrl
 
-	const token = await getToken({ req, secret })
-	console.log('req:', req)
-	console.log('secret:', secret)
-	console.log('token:', token)
+	const token = await getToken({ req, secret, secureCookie: protocol === 'https:' })
 	const isLoggedIn = !!token
 
+	console.log('req:', req)
+	console.log('token:', token)
+	console.log('secret:', secret)
+	console.log('secureCookie:', protocol)
+
+	const isAuthRoute = authRoutes.includes(pathname)
 	const isApiAuthRoute = pathname.startsWith(apiAuthPrefix)
-	const isAuthRoute = authRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'))
 	const isPublicRoute = publicRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'))
 
 	// 1. Do nothing for API auth routes

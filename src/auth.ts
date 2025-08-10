@@ -21,6 +21,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 	},
 
 	trustHost: true,
+	secret: process.env.AUTH_SECRET,
 
 	callbacks: {
 		async signIn(params) {
