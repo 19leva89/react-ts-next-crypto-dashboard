@@ -20,6 +20,12 @@ export const authRoutes = ['/auth/reset', '/auth/new-password', '/auth/not-auth'
 export const apiAuthPrefix = '/api/auth'
 
 /**
+ * Routes that start with this prefix are used for API cron-requests, service console.cron-job.org
+ * @type {string}
+ */
+export const apiCronPrefix = '/api/cron'
+
+/**
  * The default redirect path after logging in
  * @type {string}
  */

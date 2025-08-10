@@ -1,7 +1,7 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from '@/routes'
+import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, apiCronPrefix, authRoutes, publicRoutes } from '@/routes'
 
 const secret = process.env.AUTH_SECRET
 
@@ -15,10 +15,11 @@ export async function middleware(req: NextRequest) {
 
 	const isAuthRoute = authRoutes.includes(pathname)
 	const isApiAuthRoute = pathname.startsWith(apiAuthPrefix)
+	const isApiCronRoute = pathname.startsWith(apiCronPrefix)
 	const isPublicRoute = publicRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'))
 
-	// 1. Do nothing for API auth routes
-	if (isApiAuthRoute) {
+	// 1. Do nothing for API auth routes and cron API requests
+	if (isApiAuthRoute || isApiCronRoute) {
 		return NextResponse.next()
 	}
 
@@ -34,14 +35,6 @@ export async function middleware(req: NextRequest) {
 
 	// 3. If this is a secure route and the user is not logged in, redirect to '/not-auth'
 	if (!isLoggedIn && !isPublicRoute) {
-		// For programmatic callers, respond with JSON (no HTML redirects)
-		if (pathname.startsWith('/trpc') && !isApiAuthRoute) {
-			return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-				status: 401,
-				headers: { 'content-type': 'application/json' },
-			})
-		}
-
 		// Redirect unauthenticated users to the login page
 		let callbackUrl = pathname
 		if (search) {
@@ -50,10 +43,10 @@ export async function middleware(req: NextRequest) {
 
 		const encodedCallbackUrl = encodeURIComponent(callbackUrl)
 
-		return Response.redirect(new URL(`/auth/not-auth?callbackUrl=${encodedCallbackUrl}`, nextUrl))
+		return NextResponse.redirect(new URL(`/auth/not-auth?callbackUrl=${encodedCallbackUrl}`, nextUrl))
 	}
 
-	// 4. Skip everything else
+	// 4. Allow access to public routes or logged-in users
 	return NextResponse.next()
 }
 
