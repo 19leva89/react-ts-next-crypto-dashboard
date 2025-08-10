@@ -1,10 +1,17 @@
 'use client'
 
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from '@/components/ui'
 import { LoginForm } from './forms/login-form'
 import { RegisterForm } from './forms/register-form'
-import { DialogDescription } from '@/components/ui/dialog'
-
-import { Dialog, DialogContent, DialogTitle, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui'
 
 interface Props {
 	open: boolean

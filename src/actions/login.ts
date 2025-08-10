@@ -14,7 +14,7 @@ import { sendTwoFactorTokenEmail, sendVerificationEmail } from '@/lib/send-email
 import { LoginSchema, TLoginValues } from '@/components/shared/modals/auth-modal/forms/schemas'
 
 export const loginUser = async (provider: string) => {
-	await signIn(provider, { redirectTo: '/' })
+	await signIn(provider, { redirectTo: '/coins' })
 
 	revalidatePath('/')
 }

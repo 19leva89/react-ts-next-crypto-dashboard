@@ -63,8 +63,8 @@ terminal powershell -> `git pull origin master` (get latest changes)
 
 terminal powershell -> `git add .` (add all changes)
 terminal powershell -> `git commit -m "commit message"` (commit changes)
-terminal powershell -> `git push origin master:<branch-name>` (if branch already exists)
 terminal powershell -> `git checkout -b <branch-name>` (create new branch)
 
 terminal powershell -> `git push origin master` (push changes to master)
+terminal powershell -> `git push origin master:<branch-name>` (if branch already exists)
 terminal powershell -> `git push origin <branch-name>` (push changes to branch)
