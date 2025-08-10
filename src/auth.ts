@@ -1,8 +1,8 @@
 import { JWT } from 'next-auth/jwt'
 import { UserRole } from '@prisma/client'
 import { Adapter } from 'next-auth/adapters'
-import { PrismaAdapter } from '@auth/prisma-adapter'
 import NextAuth, { Session, User } from 'next-auth'
+import { PrismaAdapter } from '@auth/prisma-adapter'
 
 import { prisma } from '@/lib/prisma'
 import authConfig from '@/auth.config'
@@ -13,8 +13,6 @@ import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
 	adapter: PrismaAdapter(prisma) as Adapter,
-
-	trustHost: true,
 
 	session: {
 		strategy: 'jwt',

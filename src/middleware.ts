@@ -10,6 +10,9 @@ export async function middleware(req: NextRequest) {
 	const { pathname, search } = req.nextUrl
 
 	const token = await getToken({ req, secret })
+	console.log('req:', req)
+	console.log('secret:', secret)
+	console.log('token:', token)
 	const isLoggedIn = !!token
 
 	const isApiAuthRoute = pathname.startsWith(apiAuthPrefix)
