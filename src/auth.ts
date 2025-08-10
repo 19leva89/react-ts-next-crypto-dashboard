@@ -20,6 +20,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 		updateAge: 10 * 60, // 10 minutes
 	},
 
+	trustHost: true,
+
 	callbacks: {
 		async signIn(params) {
 			const { user, account } = params
