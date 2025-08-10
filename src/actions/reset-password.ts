@@ -20,6 +20,11 @@ export const resetPassword = async (values: TResetValues) => {
 		return { error: 'Email not found!' }
 	}
 
+	// Check if user has a password (not a social login)
+	if (!existingUser.password) {
+		return { error: 'This email is linked to a social login. Please use GitHub or Google' }
+	}
+
 	const passwordResetToken = await generatePasswordResetToken(email)
 	await sendPasswordResetEmail(passwordResetToken.email, passwordResetToken.token)
 
