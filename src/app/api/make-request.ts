@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-// Do not change the path, made for seed.ts
+//! Do not change the path, made for seed.ts
 import { absoluteUrl } from './../../lib/utils'
 
 async function makeReq(

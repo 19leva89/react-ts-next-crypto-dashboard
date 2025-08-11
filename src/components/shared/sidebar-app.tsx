@@ -42,17 +42,20 @@ interface Props extends ComponentProps<typeof Sidebar> {
 export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => {
 	const trpc = useTRPC()
 	const currentPath = usePathname()
-	const addLogoutNotificationMutation = useMutation(
-		trpc.notifications.addLogoutNotification.mutationOptions(),
-	)
-	const { data: unreadPriceNotifications } = useQuery(
-		trpc.notifications.getUnreadPriceNotifications.queryOptions(),
-	)
 
-	const { open } = useSidebar()
+	const { open, isMobile } = useSidebar()
 	const { data: session, status } = useSession()
 
 	const [openAuthModal, setOpenAuthModal] = useState<boolean>(false)
+
+	const addLogoutNotificationMutation = useMutation(
+		trpc.notifications.addLogoutNotification.mutationOptions(),
+	)
+
+	const { data: unreadPriceNotifications } = useQuery({
+		...trpc.notifications.getUnreadPriceNotifications.queryOptions(),
+		enabled: !!session?.user,
+	})
 
 	const renderMenuItems = (items: MenuItem[]) => {
 		return items.map((item) => {
@@ -74,7 +77,7 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 							<div className='relative'>
 								<Icon className={open ? 'size-5!' : 'size-4'} />
 
-								{!open && hasUnread && (
+								{!isMobile && !open && hasUnread && (
 									<span className='absolute -top-1 -right-1 size-1.5 rounded-full bg-red-500' />
 								)}
 							</div>
@@ -82,7 +85,7 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 							<span className='relative flex-1'>
 								{item.title}
 
-								{open && hasUnread && (
+								{(isMobile || open) && hasUnread && (
 									<span className='absolute top-1 right-1 size-2 rounded-full bg-red-500' />
 								)}
 							</span>

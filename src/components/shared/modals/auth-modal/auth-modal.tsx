@@ -10,8 +10,7 @@ import {
 	TabsList,
 	TabsTrigger,
 } from '@/components/ui'
-import { LoginForm } from './forms/login-form'
-import { RegisterForm } from './forms/register-form'
+import { LoginForm, RegisterForm } from '@/components/shared/modals/auth-modal/forms'
 
 interface Props {
 	open: boolean

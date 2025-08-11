@@ -12,11 +12,10 @@ import {
 	LoaderIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useMemo } from 'react'
 import { enUS } from 'date-fns/locale'
 import { useRouter } from 'next/navigation'
 import { formatDistanceToNow } from 'date-fns'
-import { useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
+import { useMutation, useQueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query'
 
 import {
 	Card,
@@ -51,6 +50,7 @@ export const NotificationsView = () => {
 	const trpc = useTRPC()
 	const router = useRouter()
 	const queryClient = useQueryClient()
+	const setDoNotDisturbMutation = useMutation(trpc.user.setDoNotDisturb.mutationOptions())
 
 	const queryOptions = trpc.notifications.getNotifications.infiniteQueryOptions(
 		{ limit: INFINITE_SCROLL_LIMIT },
@@ -59,23 +59,10 @@ export const NotificationsView = () => {
 		},
 	)
 
+	const { data: doNotDisturb } = useQuery(trpc.user.getDoNotDisturb.queryOptions())
 	const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isPending } = useInfiniteQuery(queryOptions)
 
-	const notifications = useMemo(() => {
-		const items = data?.pages.flatMap((page) => page.items) ?? []
-
-		// Check for duplicate IDs
-		const seen = new Set()
-		items.forEach((notification) => {
-			if (seen.has(notification.id)) {
-				console.warn('Duplicate notification ID:', notification.id)
-			} else {
-				seen.add(notification.id)
-			}
-		})
-
-		return items
-	}, [data?.pages])
+	const notifications = data?.pages.flatMap((page) => page.items) ?? []
 
 	const { mutate: markAsRead } = useMutation(
 		trpc.notifications.markAsRead.mutationOptions({
@@ -120,10 +107,28 @@ export const NotificationsView = () => {
 		}),
 	)
 
+	const handleDoNotDisturbToggle = async (checked: boolean) => {
+		queryClient.setQueryData(trpc.user.getDoNotDisturb.queryKey(), checked)
+
+		try {
+			await setDoNotDisturbMutation.mutateAsync({ enabled: checked })
+
+			await queryClient.invalidateQueries({
+				queryKey: trpc.notifications.getUnreadPriceNotifications.queryKey(),
+			})
+
+			toast.success(`Do not disturb ${checked ? 'enabled' : 'disabled'}`)
+		} catch (error) {
+			queryClient.setQueryData(trpc.user.getDoNotDisturb.queryKey(), !checked)
+
+			toast.error(error instanceof Error ? error.message : 'Failed to update')
+		}
+	}
+
 	return (
 		<div className='container mx-auto max-w-2xl'>
 			<Card className='gap-0 overflow-hidden py-0'>
-				<CardHeader className='flex flex-row items-center justify-between border-b py-6 '>
+				<CardHeader className='flex flex-row items-center justify-between border-b py-6'>
 					<div className='flex items-center space-x-2'>
 						<BellRingIcon className='size-5 text-primary' />
 
@@ -137,7 +142,15 @@ export const NotificationsView = () => {
 						>
 							Do not disturb
 						</label>
-						<Switch id='dnd' aria-label='Do not disturb' className='cursor-pointer' />
+
+						<Switch
+							id='dnd'
+							aria-label='Do not disturb'
+							disabled={setDoNotDisturbMutation.isPending || notifications.length === 0}
+							checked={doNotDisturb}
+							onCheckedChange={handleDoNotDisturbToggle}
+							className='cursor-pointer'
+						/>
 					</div>
 				</CardHeader>
 

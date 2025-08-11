@@ -1,4 +1,4 @@
-import { NewPasswordForm } from '@/components/shared/modals/auth-modal/forms/new-password-form'
+import { NewPasswordForm } from '@/components/shared/modals/auth-modal/forms'
 
 const NewPasswordPage = () => {
 	return <NewPasswordForm />
