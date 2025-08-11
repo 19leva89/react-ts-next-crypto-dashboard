@@ -32,6 +32,7 @@ model User {
   password              String?
   image                 String?
   role                  UserRole               @default(USER)
+  doNotDisturb          Boolean                @default(false)
   //
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
@@ -130,6 +131,25 @@ model TwoFactorConfirmation {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
+}
+
+model Notification {
+  id        String           @id @default(cuid()) @map("_id")
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  coinId    String?
+  coin      Coin?            @relation(fields: [coinId], references: [id])
+  //
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([type])
 }
 
 model CoinsListIDMap {
@@ -285,23 +305,4 @@ model Airdrop {
   @@index([coinId])
   @@index([coinsListIDMapId])
   @@map("airdrop")
-}
-
-model Notification {
-  id        String           @id @default(cuid()) @map("_id")
-  userId    String
-  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title     String
-  message   String
-  type      NotificationType
-  isRead    Boolean          @default(false)
-  coinId    String?
-  coin      Coin?            @relation(fields: [coinId], references: [id])
-  //
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-
-  @@index([userId])
-  @@index([isRead])
-  @@index([type])
 }

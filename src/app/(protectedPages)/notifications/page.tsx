@@ -24,6 +24,8 @@ const NotificationsPage = async () => {
 
 	const queryClient = getQueryClient()
 
+	void queryClient.prefetchQuery(trpc.user.getDoNotDisturb.queryOptions())
+	void queryClient.prefetchQuery(trpc.notifications.getUnreadPriceNotifications.queryOptions())
 	void queryClient.prefetchInfiniteQuery(
 		trpc.notifications.getNotifications.infiniteQueryOptions({ limit: INFINITE_SCROLL_LIMIT }),
 	)

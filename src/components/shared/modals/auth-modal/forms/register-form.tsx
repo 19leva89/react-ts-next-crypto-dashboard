@@ -1,3 +1,5 @@
+'use client'
+
 import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'

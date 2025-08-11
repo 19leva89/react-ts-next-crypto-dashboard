@@ -1,4 +1,4 @@
-import { NewVerificationForm } from '@/components/shared/modals/auth-modal/forms/new-verification-form'
+import { NewVerificationForm } from '@/components/shared/modals/auth-modal/forms'
 
 const NewVerificationPage = () => {
 	return <NewVerificationForm />

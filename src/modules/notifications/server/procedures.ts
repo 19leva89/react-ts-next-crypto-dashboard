@@ -60,11 +60,23 @@ export const notificationsRouter = createTRPCRouter({
 		}),
 
 	getUnreadPriceNotifications: protectedProcedure.query(async ({ ctx }) => {
+		// 1) Get the doNotDisturb flag - the minimum request
+		const user = await prisma.user.findUnique({
+			where: { id: ctx.auth.user.id },
+			select: { doNotDisturb: true },
+		})
+
+		// 2) If doNotDisturb is enabled, return an empty list
+		if (user?.doNotDisturb) {
+			return []
+		}
+
+		// 3) Otherwise, return unread price alerts
 		const items = await prisma.notification.findMany({
 			where: {
 				userId: ctx.auth.user.id,
-				isRead: false,
 				type: 'PRICE_ALERT',
+				isRead: false,
 			},
 		})
 
