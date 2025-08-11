@@ -59,6 +59,18 @@ export const notificationsRouter = createTRPCRouter({
 			}
 		}),
 
+	getUnreadPriceNotifications: protectedProcedure.query(async ({ ctx }) => {
+		const items = await prisma.notification.findMany({
+			where: {
+				userId: ctx.auth.user.id,
+				isRead: false,
+				type: 'PRICE_ALERT',
+			},
+		})
+
+		return items
+	}),
+
 	markAsRead: protectedProcedure.input(z.string()).mutation(async ({ input: notificationId, ctx }) => {
 		await prisma.notification.update({
 			where: {

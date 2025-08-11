@@ -32,8 +32,8 @@ import {
 	Switch,
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
-import { INFINITE_SCROLL_LIMIT } from '@/constants/infinite-scroll'
 import { Notification } from '@/modules/notifications/schema'
+import { INFINITE_SCROLL_LIMIT } from '@/constants/infinite-scroll'
 import { ErrorState, InfiniteScroll, LoadingState } from '@/components/shared'
 
 const getNotificationIcon = (type: Notification['type']) => {
@@ -77,27 +77,30 @@ export const NotificationsView = () => {
 		return items
 	}, [data?.pages])
 
+	const { mutate: markAsRead } = useMutation(
+		trpc.notifications.markAsRead.mutationOptions({
+			onSuccess: () => {
+				// Invalidate both the notifications list and unread count
+				queryClient.invalidateQueries({
+					queryKey: trpc.notifications.getNotifications.infiniteQueryKey({ limit: INFINITE_SCROLL_LIMIT }),
+				})
+				queryClient.invalidateQueries({
+					queryKey: trpc.notifications.getUnreadPriceNotifications.queryKey(),
+				})
+			},
+		}),
+	)
+
 	const { mutate: markAllAsRead } = useMutation(
 		trpc.notifications.markAllAsRead.mutationOptions({
 			onSuccess: () => {
-				// Optimistic cache update
-				queryClient.setQueryData(
-					trpc.notifications.getNotifications.infiniteQueryKey({ limit: INFINITE_SCROLL_LIMIT }),
-					(oldData: any) => {
-						if (!oldData) return oldData
-
-						return {
-							...oldData,
-							pages: oldData.pages.map((page: any) => ({
-								...page,
-								items: page.items.map((item: any) => ({
-									...item,
-									isRead: true,
-								})),
-							})),
-						}
-					},
-				)
+				// Invalidate both the notifications list and unread count
+				queryClient.invalidateQueries({
+					queryKey: trpc.notifications.getNotifications.infiniteQueryKey({ limit: INFINITE_SCROLL_LIMIT }),
+				})
+				queryClient.invalidateQueries({
+					queryKey: trpc.notifications.getUnreadPriceNotifications.queryKey(),
+				})
 
 				toast.success('All notifications marked as read')
 			},
@@ -106,22 +109,11 @@ export const NotificationsView = () => {
 
 	const { mutate: deleteNotification } = useMutation(
 		trpc.notifications.deleteNotification.mutationOptions({
-			onSuccess: (_, notificationId) => {
+			onSuccess: () => {
 				// Optimistic cache update
-				queryClient.setQueryData(
-					trpc.notifications.getNotifications.infiniteQueryKey({ limit: INFINITE_SCROLL_LIMIT }),
-					(oldData: any) => {
-						if (!oldData) return oldData
-
-						return {
-							...oldData,
-							pages: oldData.pages.map((page: any) => ({
-								...page,
-								items: page.items.filter((item: any) => item.id !== notificationId),
-							})),
-						}
-					},
-				)
+				queryClient.invalidateQueries({
+					queryKey: trpc.notifications.getNotifications.infiniteQueryKey({ limit: INFINITE_SCROLL_LIMIT }),
+				})
 
 				toast.success('Notification deleted')
 			},
@@ -131,11 +123,11 @@ export const NotificationsView = () => {
 	return (
 		<div className='container mx-auto max-w-2xl'>
 			<Card className='gap-0 overflow-hidden py-0'>
-				<CardHeader className='flex flex-row items-center justify-between border-b py-6 max-[400px]:flex-col'>
+				<CardHeader className='flex flex-row items-center justify-between border-b py-6 '>
 					<div className='flex items-center space-x-2'>
 						<BellRingIcon className='size-5 text-primary' />
 
-						<CardTitle className='text-xl font-semibold'>Notifications</CardTitle>
+						<CardTitle className='hidden text-xl font-semibold sm:block'>Notifications</CardTitle>
 					</div>
 
 					<div className='flex items-center space-x-3'>
@@ -192,6 +184,23 @@ export const NotificationsView = () => {
 										</DropdownMenuTrigger>
 
 										<DropdownMenuContent side='right' align='start' sideOffset={0} className='rounded-xl'>
+											{!notification.isRead && (
+												<DropdownMenuItem
+													onClick={() => markAsRead(notification.id)}
+													className='cursor-pointer rounded-xl p-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden'
+												>
+													<Button
+														variant='ghost'
+														size='icon'
+														className='mx-2 flex items-center justify-start gap-3'
+													>
+														<CheckIcon size={16} />
+
+														<span>Mark read</span>
+													</Button>
+												</DropdownMenuItem>
+											)}
+
 											{notification.type === 'PRICE_ALERT' && (
 												<DropdownMenuItem
 													onSelect={() => router.push(`/coins/${notification.coinId}`)}

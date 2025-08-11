@@ -34,7 +34,7 @@ export const InfiniteScroll = ({ isManual, hasNextPage, isFetchingNextPage, fetc
 					disabled={!hasNextPage || isFetchingNextPage}
 					onClick={() => fetchNextPage()}
 				>
-					{isFetchingNextPage ? 'Loading...' : 'Load More'}
+					{isFetchingNextPage ? 'Loading...' : 'Load more'}
 				</Button>
 			) : (
 				<p className='text-sm text-muted-foreground'>You have reached the end of the list</p>

@@ -5,7 +5,7 @@ import { signOut } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { ComponentProps, useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { ChevronDownIcon, LogOutIcon, SettingsIcon, UserIcon } from 'lucide-react'
 
 import {
@@ -45,6 +45,9 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 	const addLogoutNotificationMutation = useMutation(
 		trpc.notifications.addLogoutNotification.mutationOptions(),
 	)
+	const { data: unreadPriceNotifications } = useQuery(
+		trpc.notifications.getUnreadPriceNotifications.queryOptions(),
+	)
 
 	const { open } = useSidebar()
 	const { data: session, status } = useSession()
@@ -55,6 +58,11 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 		return items.map((item) => {
 			const Icon = iconMap[item.icon]
 
+			const hasUnread =
+				item.url === '/notifications' &&
+				Array.isArray(unreadPriceNotifications) &&
+				unreadPriceNotifications.length > 0
+
 			const isActive = currentPath
 				? currentPath === item.url || (item.url !== '/' && currentPath.startsWith(item.url + '/'))
 				: false
@@ -63,9 +71,21 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 				<SidebarMenuItem key={item.title}>
 					<SidebarMenuButton className='text-lg' asChild isActive={isActive}>
 						<Link href={item.url} className='flex h-12 items-center gap-4'>
-							<Icon className={open ? 'size-5!' : 'size-4'} />
+							<div className='relative'>
+								<Icon className={open ? 'size-5!' : 'size-4'} />
 
-							<span>{item.title}</span>
+								{!open && hasUnread && (
+									<span className='absolute -top-1 -right-1 size-1.5 rounded-full bg-red-500' />
+								)}
+							</div>
+
+							<span className='relative flex-1'>
+								{item.title}
+
+								{open && hasUnread && (
+									<span className='absolute top-1 right-1 size-2 rounded-full bg-red-500' />
+								)}
+							</span>
 						</Link>
 					</SidebarMenuButton>
 				</SidebarMenuItem>

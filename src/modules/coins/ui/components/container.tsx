@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import useLocalStorageState from 'use-local-storage-state'
 import { LayoutGridIcon, ListIcon, SearchIcon, XIcon } from 'lucide-react'
 
@@ -12,7 +12,6 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-	Skeleton,
 	useSidebar,
 } from '@/components/ui'
 import { cn, formatPrice } from '@/lib'
@@ -30,7 +29,6 @@ interface Props {
 export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
 	const { open } = useSidebar()
 
-	const [isMounted, setIsMounted] = useState<boolean>(false)
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [viewMode, setViewMode] = useLocalStorageState<'list' | 'grid'>('viewMode', {
 		defaultValue: 'grid',
@@ -90,26 +88,6 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 			coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 			coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()),
 	)
-
-	useEffect(() => {
-		setIsMounted(true)
-	}, [])
-
-	if (!isMounted) {
-		return (
-			<div className='flex w-full flex-col'>
-				<div className='flex items-center justify-between'>
-					<Skeleton className='h-14 w-full' />
-				</div>
-
-				<div className='flex w-full flex-col items-start justify-start gap-2 p-6'>
-					<Skeleton className='h-24 w-full' />
-					<Skeleton className='h-24 w-full' />
-					<Skeleton className='h-24 w-full' />
-				</div>
-			</div>
-		)
-	}
 
 	return (
 		<div className='flex w-full flex-col gap-6'>
