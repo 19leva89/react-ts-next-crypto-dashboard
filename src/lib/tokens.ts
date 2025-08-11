@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import { v4 as uuidv4 } from 'uuid'
 
 import { prisma } from '@/lib/prisma'
@@ -6,7 +7,7 @@ import { getVerificationTokenByEmail } from '@/data/verification-token'
 import { getPasswordResetTokenByEmail } from '@/data/password-reset-token'
 
 export const generateTwoFactorToken = async (email: string) => {
-	const token = Math.floor(100000 + Math.random() * 900000).toString()
+	const token = crypto.randomInt(100_000, 1_000_000).toString() // Range [100000, 999999]
 	const expires = new Date(new Date().getTime() + 5 * 60 * 1000) // 5min
 
 	const existingToken = await getTwoFactorTokenByEmail(email)
