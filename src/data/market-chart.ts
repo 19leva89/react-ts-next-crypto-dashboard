@@ -7,10 +7,10 @@ import { ValidDays } from '@/constants/chart'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
 import { getFieldForDays } from '@/data/field-for-days'
-import { MarketChartData } from '@/modules/coins/schema'
+import { TMarketChartData } from '@/modules/coins/schema'
 import { MARKET_CHART_UPDATE_INTERVAL } from '@/constants/intervals'
 
-export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Promise<MarketChartData> => {
+export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Promise<TMarketChartData> => {
 	try {
 		const field = getFieldForDays(days)
 		if (!field) throw new Error('Invalid days parameter')
@@ -27,7 +27,7 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 
 		// If the data for the required period already exists, return it
 		if (cachedData?.[field] && cachedData?.[updatedField] && cachedData[updatedField]! > updateTime) {
-			return { prices: cachedData[field] } as MarketChartData
+			return { prices: cachedData[field] } as TMarketChartData
 		}
 
 		// Request data from the API
@@ -79,10 +79,10 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 
 		console.log(`✅ Records CoinsMarketChart updated for ${days} day(s)!`)
 
-		return { prices: response.prices } as MarketChartData
+		return { prices: response.prices } as TMarketChartData
 	} catch (error) {
 		handleError(error, 'GET_COINS_MARKET_CHART')
 
-		return {} as MarketChartData
+		return {} as TMarketChartData
 	}
 }

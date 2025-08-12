@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signOut, useSession } from 'next-auth/react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { useSuspenseQuery, useMutation } from '@tanstack/react-query'
 
 import {
@@ -28,7 +28,7 @@ import {
 import { useTRPC } from '@/trpc/client'
 import { FormInput } from '@/components/shared/form'
 import { Container, ErrorState, LoadingState, Title } from '@/components/shared'
-import { UpdateProfileValues, updateProfileSchema } from '@/modules/settings/schema'
+import { TUpdateProfileValues, updateProfileSchema } from '@/modules/settings/schema'
 
 export const ProfileView = () => {
 	const trpc = useTRPC()
@@ -41,8 +41,8 @@ export const ProfileView = () => {
 
 	const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
 
-	const form = useForm<UpdateProfileValues>({
-		resolver: zodResolver(updateProfileSchema),
+	const form = useForm<TUpdateProfileValues>({
+		resolver: zodResolver(updateProfileSchema) as Resolver<TUpdateProfileValues>,
 		defaultValues: {
 			email: profile?.email || undefined,
 			name: profile?.name || undefined,
@@ -52,7 +52,7 @@ export const ProfileView = () => {
 		},
 	})
 
-	const onSubmit = async (formData: UpdateProfileValues) => {
+	const onSubmit = async (formData: TUpdateProfileValues) => {
 		try {
 			await updateUserMutation.mutateAsync({
 				email: formData.email || undefined,

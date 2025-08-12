@@ -5,12 +5,12 @@ import { useState } from 'react'
 import { ChevronDownIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 
 import { cn, formatPrice } from '@/lib'
-import { TrendingData } from '@/modules/dashboard/schema'
+import { TTrendingData } from '@/modules/dashboard/schema'
 import { Button, ScrollArea, ScrollBar, Skeleton } from '@/components/ui'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 
 interface Props {
-	trendingData: TrendingData
+	trendingData: TTrendingData
 }
 
 export const AccountTrendingSection = ({ trendingData }: Props) => {

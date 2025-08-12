@@ -7,9 +7,9 @@ import { ArrowDownIcon, ArrowDownToLine, ArrowUpFromLine, ArrowUpIcon } from 'lu
 
 import { formatPrice } from '@/lib'
 import { Button } from '@/components/ui'
-import { Transaction } from '@/modules/transactions/schema'
+import { TTransaction } from '@/modules/transactions/schema'
 
-export const columns: ColumnDef<Transaction>[] = [
+export const columns: ColumnDef<TTransaction>[] = [
 	// Coin name
 	{
 		accessorKey: 'userCoin.coin.name',

@@ -22,7 +22,7 @@ import {
 import { cn, formatPrice } from '@/lib'
 import { getCoinData } from '@/data/coin'
 import { CoinData } from '@/app/api/types'
-import { MarketChartData } from '@/modules/coins/schema'
+import { TMarketChartData } from '@/modules/coins/schema'
 import { getCoinsMarketChart } from '@/data/market-chart'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 
@@ -35,7 +35,7 @@ interface Props {
 export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) => {
 	const [days, setDays] = useState<number>(1)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
-	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
+	const [coinMarketChartData, setCoinMarketChartData] = useState<TMarketChartData>()
 	const [coinData, setCoinData] = useState<CoinData>()
 
 	useEffect(() => {

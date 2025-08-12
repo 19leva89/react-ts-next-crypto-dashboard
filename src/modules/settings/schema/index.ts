@@ -37,5 +37,5 @@ export const updateProfileSchema = userProfileSchema
 		path: ['confirmPassword'],
 	})
 
-export type UserProfile = z.infer<typeof userProfileSchema>
-export type UpdateProfileValues = z.infer<typeof updateProfileSchema>
+export type TUserProfile = z.infer<typeof userProfileSchema>
+export type TUpdateProfileValues = z.infer<typeof updateProfileSchema>

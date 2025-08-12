@@ -25,10 +25,10 @@ import { cn, formatPrice } from '@/lib'
 import { getCoinsMarketChart } from '@/data/market-chart'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
-import { MarketChartData, Transaction, UserCoinData } from '@/modules/coins/schema'
+import { TMarketChartData, TTransaction, TUserCoinData } from '@/modules/coins/schema'
 
 interface Props {
-	coin: UserCoinData
+	coin: TUserCoinData
 }
 
 export const CoinIdContainer = ({ coin }: Props) => {
@@ -41,8 +41,8 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const [isSaving, setIsSaving] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [isNavigatingBack, setIsNavigatingBack] = useState<boolean>(false)
-	const [coinMarketChartData, setCoinMarketChartData] = useState<MarketChartData>()
-	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
+	const [coinMarketChartData, setCoinMarketChartData] = useState<TMarketChartData>()
+	const [editTransactions, setEditTransactions] = useState<TTransaction[]>(coin.transactions)
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 
 	// Sync local state with updated data (important, don't remove)

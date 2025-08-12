@@ -5,16 +5,16 @@ import {
 	coinsListDataSchema,
 	categoriesDataSchema,
 	trendingDataSchema,
-	type CoinsListData,
-	type CategoriesData,
-	type TrendingData,
+	type TCoinsListData,
+	type TCategoriesData,
+	type TTrendingData,
 } from '@/modules/dashboard/schema'
 import { prisma } from '@/lib/prisma'
 import { makeReq } from '@/app/api/make-request'
 import { baseProcedure, createTRPCRouter } from '@/trpc/init'
 
 export const dashboardRouter = createTRPCRouter({
-	getCoinsList: baseProcedure.output(coinsListDataSchema).query(async (): Promise<CoinsListData> => {
+	getCoinsList: baseProcedure.output(coinsListDataSchema).query(async (): Promise<TCoinsListData> => {
 		const cachedCoins = await prisma.coin.findMany({
 			include: {
 				coinsListIDMap: true,
@@ -33,7 +33,7 @@ export const dashboardRouter = createTRPCRouter({
 	getCoinsListByCate: baseProcedure
 		.input(z.string())
 		.output(coinsListDataSchema)
-		.query(async ({ input: cate }): Promise<CoinsListData> => {
+		.query(async ({ input: cate }): Promise<TCoinsListData> => {
 			const cachedData = await prisma.coin.findMany({
 				where: { categoryId: cate },
 				include: {
@@ -98,7 +98,7 @@ export const dashboardRouter = createTRPCRouter({
 			return coinsListDataSchema.parse(response)
 		}),
 
-	getCategories: baseProcedure.output(categoriesDataSchema).query(async (): Promise<CategoriesData> => {
+	getCategories: baseProcedure.output(categoriesDataSchema).query(async (): Promise<TCategoriesData> => {
 		const data = await prisma.category.findMany({
 			select: {
 				category_id: true,
@@ -111,7 +111,7 @@ export const dashboardRouter = createTRPCRouter({
 		return data
 	}),
 
-	getTrending: baseProcedure.output(trendingDataSchema).query(async (): Promise<TrendingData> => {
+	getTrending: baseProcedure.output(trendingDataSchema).query(async (): Promise<TTrendingData> => {
 		const data = await prisma.trendingCoin.findMany({
 			select: {
 				id: true,

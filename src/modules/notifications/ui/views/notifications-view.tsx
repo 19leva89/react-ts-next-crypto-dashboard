@@ -31,11 +31,11 @@ import {
 	Switch,
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
-import { Notification } from '@/modules/notifications/schema'
+import { TNotification } from '@/modules/notifications/schema'
 import { INFINITE_SCROLL_LIMIT } from '@/constants/infinite-scroll'
 import { ErrorState, InfiniteScroll, LoadingState } from '@/components/shared'
 
-const getNotificationIcon = (type: Notification['type']) => {
+const getNotificationIcon = (type: TNotification['type']) => {
 	switch (type) {
 		case 'LOGIN':
 			return <LogInIcon />

@@ -17,4 +17,4 @@ export const transactionSchema = z.object({
 	updatedAt: z.string(),
 })
 
-export type Transaction = z.infer<typeof transactionSchema>
+export type TTransaction = z.infer<typeof transactionSchema>

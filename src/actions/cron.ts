@@ -8,10 +8,10 @@ import { ValidDays } from '@/constants/chart'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
 import { getFieldForDays } from '@/data/field-for-days'
-import { MarketChartData } from '@/modules/coins/schema'
+import { TMarketChartData } from '@/modules/coins/schema'
 import { PrismaTransactionClient } from '@/app/api/types'
 import { trendingDataSchema } from '@/modules/dashboard/schema'
-import { CategoriesData, TrendingData } from '@/modules/dashboard/schema'
+import { TCategoriesData, TTrendingData } from '@/modules/dashboard/schema'
 
 // General function for recalculating aggregated data
 export const recalculateAveragePrice = async (
@@ -65,14 +65,14 @@ export const recalculateAveragePrice = async (
 }
 
 // cron 24h
-export const updateTrendingData = async (): Promise<TrendingData> => {
+export const updateTrendingData = async (): Promise<TTrendingData> => {
 	try {
 		console.log('🔄 Starting TrendingData update via API...')
 		const response = await makeReq('GET', '/gecko/trending')
 
 		if (!response || !response.coins || !response.coins.length) {
 			console.warn('⚠️ Empty response from API, aborting update')
-			return { coins: [] } as TrendingData
+			return { coins: [] } as TTrendingData
 		}
 
 		// Delete old data
@@ -107,7 +107,7 @@ export const updateTrendingData = async (): Promise<TrendingData> => {
 }
 
 // cron 24h
-export const updateCategories = async (): Promise<CategoriesData> => {
+export const updateCategories = async (): Promise<TCategoriesData> => {
 	try {
 		console.log('🔄 Starting categories update via API...')
 		const response = await makeReq('GET', '/gecko/categories')
@@ -118,7 +118,7 @@ export const updateCategories = async (): Promise<CategoriesData> => {
 		}
 
 		// Data transformation
-		const categoriesData: CategoriesData = response.map((category: any) => ({
+		const categoriesData: TCategoriesData = response.map((category: any) => ({
 			category_id: category.category_id,
 			name: category.name,
 		}))
@@ -211,7 +211,7 @@ export const updateCoinsList = async (): Promise<any> => {
 }
 
 // cron 24h
-export const updateCoinsMarketChart = async (days: ValidDays): Promise<MarketChartData> => {
+export const updateCoinsMarketChart = async (days: ValidDays): Promise<TMarketChartData> => {
 	const RPM_LIMIT = 30 // 30 requests per minute
 	const DELAY = (60 * 1000) / RPM_LIMIT + 100 // 2100ms between requests
 	let requestCount = 0
@@ -300,10 +300,10 @@ export const updateCoinsMarketChart = async (days: ValidDays): Promise<MarketCha
 			`✅ Results: ${results.success} updated, ${results.skipped} skipped, ${results.errors} errors`,
 		)
 
-		return { success: true } as unknown as MarketChartData
+		return { success: true } as unknown as TMarketChartData
 	} catch (error) {
 		handleError(error, 'UPDATE_COINS_MARKET_CHART')
 
-		return {} as MarketChartData
+		return {} as TMarketChartData
 	}
 }

@@ -19,4 +19,4 @@ export const notificationSchema = z.object({
 	updatedAt: z.string().or(z.date()),
 })
 
-export type Notification = z.infer<typeof notificationSchema>
+export type TNotification = z.infer<typeof notificationSchema>

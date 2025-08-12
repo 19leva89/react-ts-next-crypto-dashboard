@@ -80,22 +80,30 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 				session.user.rememberMe = token.rememberMe as boolean
 			}
 
+			if (token.exp) {
+				session.expires = new Date(token.exp * 1000).toISOString()
+			}
+
 			return session
 		},
 
-		async jwt({ token, user }: { token: JWT; user: User }) {
-			if (!token.sub) return token
-
+		async jwt({ token, user, trigger, session }) {
 			if (user) {
-				const extendedUser = user
-				token.rememberMe = extendedUser.rememberMe
+				const rememberMe = user.rememberMe ?? false
 
-				token.exp =
-					Math.floor(Date.now() / 1000) +
-					(extendedUser.rememberMe
-						? 60 * 60 * 24 * 7 // 7 days
-						: 60 * 60 * 24) // 1 day
+				const expiresIn = rememberMe
+					? 60 * 60 * 24 * 7 // 7 days
+					: 60 * 60 * 24 // 1 day
+
+				token.exp = Math.floor(Date.now() / 1000) + expiresIn
+				token.rememberMe = rememberMe
 			}
+
+			if (trigger === 'update' && session?.rememberMe !== undefined) {
+				token.rememberMe = session.rememberMe
+			}
+
+			if (!token.sub) return token
 
 			const existingUser = await getUserById(token.sub)
 

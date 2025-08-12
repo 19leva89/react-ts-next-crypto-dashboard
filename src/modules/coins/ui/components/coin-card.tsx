@@ -18,12 +18,12 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui'
 import { cn, formatPrice } from '@/lib'
-import { UserCoinData } from '@/modules/coins/schema'
+import { TUserCoinData } from '@/modules/coins/schema'
 import { EditCoin } from '@/modules/coins/ui/components/edit-coin'
 import { DeleteCoin } from '@/modules/coins/ui/components/delete-coin'
 
 interface Props {
-	coin: UserCoinData
+	coin: TUserCoinData
 	viewMode: 'list' | 'grid'
 }
 

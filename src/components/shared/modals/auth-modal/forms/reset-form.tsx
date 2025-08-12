@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, Resolver, useForm } from 'react-hook-form'
 
 import {
 	Button,
@@ -32,7 +32,7 @@ export const ResetForm = ({ onClose }: Props) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 
 	const form = useForm<TResetValues>({
-		resolver: zodResolver(ResetSchema),
+		resolver: zodResolver(ResetSchema) as Resolver<TResetValues>,
 		defaultValues: {
 			email: '',
 		},

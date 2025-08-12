@@ -12,10 +12,10 @@ import {
 	AlertDialogTitle,
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
-import { UserCoinData } from '@/modules/coins/schema'
+import { TUserCoinData } from '@/modules/coins/schema'
 
 interface Props {
-	coin: UserCoinData
+	coin: TUserCoinData
 	isOpen: boolean
 	onClose: () => void
 }

@@ -93,6 +93,6 @@ export const trendingDataSchema = z.object({
 	coins: z.array(trendingCoinSchema),
 })
 
-export type CategoriesData = z.infer<typeof categoriesDataSchema>
-export type CoinsListData = z.infer<typeof coinsListDataSchema>
-export type TrendingData = z.infer<typeof trendingDataSchema>
+export type TCategoriesData = z.infer<typeof categoriesDataSchema>
+export type TCoinsListData = z.infer<typeof coinsListDataSchema>
+export type TTrendingData = z.infer<typeof trendingDataSchema>

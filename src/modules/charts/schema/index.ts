@@ -29,8 +29,8 @@ export const portfolioChartResponseSchema = z.object({
 	pieChartData: z.array(pieChartDataSchema),
 })
 
-export type UserChartDataPoint = z.infer<typeof userChartDataPointSchema>
-export type PortfolioData = z.infer<typeof portfolioDataSchema>
-export type PieChartData = z.infer<typeof pieChartDataSchema>
-export type LineChartData = z.infer<typeof lineChartDataSchema>
-export type PortfolioChartResponse = z.infer<typeof portfolioChartResponseSchema>
+export type TUserChartDataPoint = z.infer<typeof userChartDataPointSchema>
+export type TPortfolioData = z.infer<typeof portfolioDataSchema>
+export type TPieChartData = z.infer<typeof pieChartDataSchema>
+export type TLineChartData = z.infer<typeof lineChartDataSchema>
+export type TPortfolioChartResponse = z.infer<typeof portfolioChartResponseSchema>

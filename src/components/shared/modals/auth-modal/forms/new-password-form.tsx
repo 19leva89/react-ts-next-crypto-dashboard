@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { TriangleAlertIcon } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, Resolver, useForm } from 'react-hook-form'
 
 import {
 	Button,
@@ -28,7 +28,7 @@ export const NewPasswordForm = () => {
 	const [success, setSuccess] = useState<string | undefined>()
 
 	const form = useForm<TNewPasswordValues>({
-		resolver: zodResolver(NewPasswordSchema),
+		resolver: zodResolver(NewPasswordSchema) as Resolver<TNewPasswordValues>,
 		defaultValues: {
 			password: '',
 			confirmPassword: '',

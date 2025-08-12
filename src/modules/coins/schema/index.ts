@@ -36,7 +36,7 @@ export const addCoinToUserSchema = z.object({
 	image: z.string().optional(),
 })
 
-export type Transaction = z.infer<typeof transactionSchema>
-export type UserCoinData = z.infer<typeof userCoinDataSchema>
-export type MarketChartData = z.infer<typeof marketChartDataSchema>
-export type AddCoinToUserInput = z.infer<typeof addCoinToUserSchema>
+export type TTransaction = z.infer<typeof transactionSchema>
+export type TUserCoinData = z.infer<typeof userCoinDataSchema>
+export type TMarketChartData = z.infer<typeof marketChartDataSchema>
+export type TAddCoinToUserInput = z.infer<typeof addCoinToUserSchema>
