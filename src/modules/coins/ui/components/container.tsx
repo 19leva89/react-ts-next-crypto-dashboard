@@ -15,12 +15,12 @@ import {
 	useSidebar,
 } from '@/components/ui'
 import { cn, formatPrice } from '@/lib'
-import { UserCoinData } from '@/modules/coins/schema'
+import { TUserCoinData } from '@/modules/coins/schema'
 import { AddCoin } from '@/modules/coins/ui/components/add-coin'
 import { CoinCard } from '@/modules/coins/ui/components/coin-card'
 
 interface Props {
-	coinData: UserCoinData[]
+	coinData: TUserCoinData[]
 	totalInvestedValue: number
 	totalValue: number
 	plannedProfit: number

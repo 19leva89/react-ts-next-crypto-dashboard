@@ -1,13 +1,13 @@
 import {
 	portfolioChartResponseSchema,
-	UserChartDataPoint,
-	type PortfolioChartResponse,
+	TUserChartDataPoint,
+	type TPortfolioChartResponse,
 } from '@/modules/charts/schema'
 import { getUserCoinsList } from '@/data/user'
-import { UserCoinData } from '@/modules/coins/schema'
+import { TUserCoinData } from '@/modules/coins/schema'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 
-const processSparklineData = (coins: UserCoinData[]): UserChartDataPoint[] => {
+const processSparklineData = (coins: TUserCoinData[]): TUserChartDataPoint[] => {
 	if (!coins.length) return []
 
 	const validCoins = coins.filter((coin) => coin.sparkline_in_7d?.price?.length > 0)
@@ -31,7 +31,7 @@ const processSparklineData = (coins: UserCoinData[]): UserChartDataPoint[] => {
 export const chartsRouter = createTRPCRouter({
 	getPortfolioData: protectedProcedure
 		.output(portfolioChartResponseSchema)
-		.query(async (): Promise<PortfolioChartResponse> => {
+		.query(async (): Promise<TPortfolioChartResponse> => {
 			const userCoins = await getUserCoinsList()
 
 			const coinData = userCoins.map((userCoin) => ({

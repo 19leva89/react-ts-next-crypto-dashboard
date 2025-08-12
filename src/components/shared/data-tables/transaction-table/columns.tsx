@@ -2,15 +2,15 @@ import { format } from 'date-fns'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon } from 'lucide-react'
 
-import { Transaction } from '@/modules/coins/schema'
+import { TTransaction } from '@/modules/coins/schema'
 import { InputFormatPrice } from '@/components/shared'
 import { DeleteTransaction } from '@/modules/coins/ui/components/delete-transaction'
 import { Button, Calendar, Popover, PopoverContent, PopoverTrigger } from '@/components/ui'
 
 export const getColumns = (
-	onTransactionChange: (id: string, field: keyof Transaction, value: string) => void,
+	onTransactionChange: (id: string, field: keyof TTransaction, value: string) => void,
 	onTransactionDelete: (id: string) => void,
-): ColumnDef<Transaction>[] => [
+): ColumnDef<TTransaction>[] => [
 	// Quantity
 	{
 		accessorKey: 'quantity',

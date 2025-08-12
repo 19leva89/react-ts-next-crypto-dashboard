@@ -5,13 +5,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
 import { ScrollArea } from '@/components/ui'
-import { Transaction, UserCoinData } from '@/modules/coins/schema'
+import { TTransaction, TUserCoinData } from '@/modules/coins/schema'
 import { DataTable } from '@/components/shared/data-tables/transaction-table/data'
 import { getColumns } from '@/components/shared/data-tables/transaction-table/columns'
 
 interface Props {
-	editTransactions: Transaction[]
-	onChange: (transactions: Transaction[]) => void
+	editTransactions: TTransaction[]
+	onChange: (transactions: TTransaction[]) => void
 	className?: string
 }
 
@@ -40,9 +40,9 @@ export const TableContainer = ({ editTransactions, onChange, className }: Props)
 		}),
 	)
 
-	const onTransactionChange = (id: string, field: keyof UserCoinData['transactions'][0], value: string) => {
+	const onTransactionChange = (id: string, field: keyof TUserCoinData['transactions'][0], value: string) => {
 		onChange(
-			produce(editTransactions, (draft: Draft<Transaction[]>) => {
+			produce(editTransactions, (draft: Draft<TTransaction[]>) => {
 				const transaction = draft.find((p) => p.id === id)
 
 				if (transaction) {

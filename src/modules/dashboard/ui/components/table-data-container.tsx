@@ -7,12 +7,12 @@ import { useTRPC } from '@/trpc/client'
 import { Skeleton } from '@/components/ui'
 import { DataTable } from '@/modules/dashboard/ui/components/table-data'
 import { columns } from '@/modules/dashboard/ui/components/table-columns'
-import { CategoriesData, CoinsListData } from '@/modules/dashboard/schema'
+import { TCategoriesData, TCoinsListData } from '@/modules/dashboard/schema'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 
 interface Props {
-	categories: CategoriesData
-	initialCoins: CoinsListData
+	categories: TCategoriesData
+	initialCoins: TCoinsListData
 }
 
 export const DataTableContainer = ({ categories, initialCoins }: Props) => {
@@ -31,7 +31,7 @@ export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
 	const [currentCategory, setCurrentCategory] = useState<string>('All')
-	const [coinsList, setCoinsList] = useState<CoinsListData>(initialCoins)
+	const [coinsList, setCoinsList] = useState<TCoinsListData>(initialCoins)
 
 	// Handle category selection
 	const onCategoryClick = async (cate: string, name?: string) => {

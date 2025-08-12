@@ -6,7 +6,7 @@ import { Line, LineChart, YAxis } from 'recharts'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 
 import { cn, formatPrice } from '@/lib'
-import { CoinsListData } from '@/modules/dashboard/schema'
+import { TCoinsListData } from '@/modules/dashboard/schema'
 import { Button, ChartConfig, ChartContainer } from '@/components/ui'
 
 interface ChartDataPoint {
@@ -14,7 +14,7 @@ interface ChartDataPoint {
 	Price: number
 }
 
-export const columns: ColumnDef<CoinsListData[0]>[] = [
+export const columns: ColumnDef<TCoinsListData[0]>[] = [
 	// #
 	{
 		accessorKey: 'market_cap_rank',

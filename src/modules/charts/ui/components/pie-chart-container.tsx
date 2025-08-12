@@ -14,17 +14,10 @@ import {
 	ChartTooltipContent,
 } from '@/components/ui'
 import { formatPrice } from '@/lib'
-
-interface PieChartData {
-	name: string
-	value: number
-	percentage: number
-	fill: string
-	symbol?: string
-}
+import { TPieChartData } from '@/modules/charts/schema'
 
 interface Props {
-	chartData: PieChartData[]
+	chartData: TPieChartData[]
 }
 
 export const PieChartContainer = ({ chartData }: Props) => {

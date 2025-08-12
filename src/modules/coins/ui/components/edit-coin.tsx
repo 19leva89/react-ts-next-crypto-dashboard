@@ -16,11 +16,11 @@ import {
 } from '@/components/ui'
 import { formatPrice } from '@/lib'
 import { useTRPC } from '@/trpc/client'
-import { Transaction, UserCoinData } from '@/modules/coins/schema'
+import { TTransaction, TUserCoinData } from '@/modules/coins/schema'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 
 interface Props {
-	coin: UserCoinData
+	coin: TUserCoinData
 	isOpen: boolean
 	onClose: () => void
 }
@@ -32,7 +32,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 
 	const [isSaving, setIsSaving] = useState<boolean>(false)
 	const [isAdding, setIsAdding] = useState<boolean>(false)
-	const [editTransactions, setEditTransactions] = useState<Transaction[]>(coin.transactions)
+	const [editTransactions, setEditTransactions] = useState<TTransaction[]>(coin.transactions)
 	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
 
 	// Sync local state with updated data (important, don't remove)

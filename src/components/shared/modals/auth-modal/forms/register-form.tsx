@@ -2,7 +2,7 @@
 
 import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, Resolver, useForm } from 'react-hook-form'
 
 import {
 	Button,
@@ -23,7 +23,7 @@ interface Props {
 
 export const RegisterForm = ({ onClose }: Props) => {
 	const form = useForm<TRegisterValues>({
-		resolver: zodResolver(RegisterSchema),
+		resolver: zodResolver(RegisterSchema) as Resolver<TRegisterValues>,
 		defaultValues: {
 			email: '',
 			name: '',

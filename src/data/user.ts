@@ -7,7 +7,7 @@ import { ValidDays } from '@/constants/chart'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
 import { getFieldForDays } from '@/data/field-for-days'
-import { UserChartDataPoint } from '@/modules/charts/schema'
+import { TUserChartDataPoint } from '@/modules/charts/schema'
 
 const getLatestBefore = <T extends { timestamp: Date }>(entries: T[], target: Date): T | null => {
 	let left = 0
@@ -115,7 +115,7 @@ export const getUserCoinsList = async () => {
 	}
 }
 
-export const getUserCoinsListMarketChart = async (days: ValidDays): Promise<UserChartDataPoint[]> => {
+export const getUserCoinsListMarketChart = async (days: ValidDays): Promise<TUserChartDataPoint[]> => {
 	try {
 		// Checking if the user is authorized
 		const session = await auth()
@@ -184,6 +184,6 @@ export const getUserCoinsListMarketChart = async (days: ValidDays): Promise<User
 	} catch (error) {
 		handleError(error, 'GET_USER_COINS_MARKET_CHART')
 
-		return {} as UserChartDataPoint[]
+		return {} as TUserChartDataPoint[]
 	}
 }

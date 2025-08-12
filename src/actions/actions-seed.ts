@@ -6,7 +6,7 @@ import { Prisma } from '@prisma/client'
 
 import { prisma } from './../lib/prisma'
 import { makeReq } from './../app/api/make-request'
-import { CoinsListData } from './../modules/dashboard/schema'
+import { TCoinsListData } from './../modules/dashboard/schema'
 
 const BATCH_SIZE = 50
 
@@ -62,7 +62,7 @@ export const updateCoinsListIDMapFromAPI = async (): Promise<void> => {
 	}
 }
 
-export const getCoinsList = async (): Promise<CoinsListData> => {
+export const getCoinsList = async (): Promise<TCoinsListData> => {
 	try {
 		console.log('🔄 Requesting current CoinsList via API...')
 		const response = await makeReq('GET', '/gecko/list')
@@ -70,7 +70,7 @@ export const getCoinsList = async (): Promise<CoinsListData> => {
 		if (!response || !Array.isArray(response) || response.length === 0) {
 			console.warn('⚠️ Empty response from API, using old CoinsList')
 
-			return [] as CoinsListData
+			return [] as TCoinsListData
 		}
 
 		console.log(`📊 CoinsList is available in API: ${response.length}`)

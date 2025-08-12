@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, Resolver, useForm } from 'react-hook-form'
 
 import {
 	Button,
@@ -36,7 +36,7 @@ export const LoginForm = ({ onClose }: Props) => {
 	const [showTwoFactor, setShowTwoFactor] = useState<boolean>(false)
 
 	const form = useForm<TLoginValues>({
-		resolver: zodResolver(LoginSchema),
+		resolver: zodResolver(LoginSchema) as Resolver<TLoginValues>,
 		defaultValues: {
 			email: '',
 			password: '',

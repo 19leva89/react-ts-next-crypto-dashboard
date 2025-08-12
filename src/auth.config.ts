@@ -25,11 +25,7 @@ export default {
 			},
 			async authorize(credentials) {
 				try {
-					const convertToBoolean = {
-						...credentials,
-						rememberMe: credentials?.rememberMe === 'true',
-					}
-					const validatedFields = LoginSchema.safeParse(convertToBoolean)
+					const validatedFields = LoginSchema.safeParse(credentials)
 
 					if (!validatedFields.success) {
 						throw new Error('Invalid fields')

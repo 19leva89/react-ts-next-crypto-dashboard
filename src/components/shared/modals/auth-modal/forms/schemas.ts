@@ -19,7 +19,7 @@ export const LoginSchema = z.object({
 	email: z.email({ message: errMsg.email }),
 	password: passwordSchema,
 	code: z.optional(z.string()),
-	rememberMe: z.boolean(),
+	rememberMe: z.preprocess((val) => (typeof val === 'string' ? val === 'true' : val), z.boolean()),
 })
 
 // Scheme for registration
