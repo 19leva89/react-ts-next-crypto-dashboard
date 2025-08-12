@@ -21,16 +21,21 @@ export default {
 			credentials: {
 				email: { label: 'Email', type: 'email' },
 				password: { label: 'Password', type: 'password' },
+				rememberMe: { label: 'Remember me', type: 'checkbox' },
 			},
 			async authorize(credentials) {
 				try {
-					const validatedFields = LoginSchema.safeParse(credentials)
+					const convertToBoolean = {
+						...credentials,
+						rememberMe: credentials?.rememberMe === 'true',
+					}
+					const validatedFields = LoginSchema.safeParse(convertToBoolean)
 
 					if (!validatedFields.success) {
 						throw new Error('Invalid fields')
 					}
 
-					const { email, password } = validatedFields.data
+					const { email, password, rememberMe } = validatedFields.data
 					const user = await getUserByEmail(email)
 
 					// Enforce all checks here
@@ -51,7 +56,15 @@ export default {
 						throw new Error('Invalid credentials')
 					}
 
-					return user
+					return {
+						id: user.id,
+						email: user.email,
+						name: user.name,
+						role: user.role,
+						isTwoFactorEnabled: user.isTwoFactorEnabled,
+						isOAuth: user.accounts?.length > 0,
+						rememberMe,
+					}
 				} catch (error) {
 					console.error('Authorization error:', error)
 					return null

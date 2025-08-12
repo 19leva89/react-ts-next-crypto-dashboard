@@ -15,6 +15,7 @@ export { Calendar } from './calendar'
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card'
 export { ChartContainer, ChartTooltip, ChartTooltipContent } from './chart'
 export type { ChartConfig } from './chart'
+export { Checkbox } from './checkbox'
 export { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command'
 export {
 	Dialog,

@@ -27,7 +27,7 @@ export const credentialsLoginUser = async (values: TLoginValues) => {
 		return { error: 'Invalid fields!' }
 	}
 
-	const { email, password, code } = validatedFields.data
+	const { email, password, code, rememberMe } = validatedFields.data
 
 	try {
 		const existingUser = await getUserByEmail(email)
@@ -42,6 +42,7 @@ export const credentialsLoginUser = async (values: TLoginValues) => {
 
 		if (existingUser.password) {
 			const passwordsMatch = await compare(password, existingUser.password)
+
 			if (!passwordsMatch) {
 				return { error: 'Invalid email or password!' }
 			}
@@ -75,10 +76,12 @@ export const credentialsLoginUser = async (values: TLoginValues) => {
 					return { error: '2FA code expired!' }
 				}
 
+				// Clean up 2FA token
 				await prisma.twoFactorToken.delete({
 					where: { id: twoFactorToken.id },
 				})
 
+				// Handle 2FA confirmation
 				const existingConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id)
 
 				if (existingConfirmation) {
@@ -104,6 +107,7 @@ export const credentialsLoginUser = async (values: TLoginValues) => {
 		await signIn('credentials', {
 			email,
 			password,
+			rememberMe,
 			redirect: false,
 		})
 

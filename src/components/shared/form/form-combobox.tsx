@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
 
 import {
@@ -17,7 +18,6 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { ErrorText } from '@/components/shared'
-import { useFormContext } from 'react-hook-form'
 
 interface Item {
 	id: number

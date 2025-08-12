@@ -20,8 +20,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
 	session: {
 		strategy: 'jwt',
-		maxAge: 30 * 60, // 30 minutes
-		updateAge: 10 * 60, // 10 minutes
+		maxAge: 60 * 60 * 24 * 7, // 7 days
+		updateAge: 60 * 60 * 24, // 1 day
 	},
 
 	callbacks: {
@@ -77,13 +77,25 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 				session.user.email = token.email
 				session.user.isOAuth = token.isOAuth as boolean
 				session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean
+				session.user.rememberMe = token.rememberMe as boolean
 			}
 
 			return session
 		},
 
-		async jwt({ token }: { token: JWT }) {
+		async jwt({ token, user }: { token: JWT; user: User }) {
 			if (!token.sub) return token
+
+			if (user) {
+				const extendedUser = user
+				token.rememberMe = extendedUser.rememberMe
+
+				token.exp =
+					Math.floor(Date.now() / 1000) +
+					(extendedUser.rememberMe
+						? 60 * 60 * 24 * 7 // 7 days
+						: 60 * 60 * 24) // 1 day
+			}
 
 			const existingUser = await getUserById(token.sub)
 
