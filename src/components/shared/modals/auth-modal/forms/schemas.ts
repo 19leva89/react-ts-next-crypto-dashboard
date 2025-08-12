@@ -19,16 +19,19 @@ export const LoginSchema = z.object({
 	email: z.email({ message: errMsg.email }),
 	password: passwordSchema,
 	code: z.optional(z.string()),
+	rememberMe: z.boolean(),
 })
 
 // Scheme for registration
-export const RegisterSchema = LoginSchema.extend({
-	name: z.string().min(2, { message: errMsg.name }),
-	confirmPassword: passwordSchema,
-}).refine((data) => data.password === data.confirmPassword, {
-	message: errMsg.confirmPassword,
-	path: ['confirmPassword'],
-})
+export const RegisterSchema = LoginSchema.omit({ rememberMe: true })
+	.extend({
+		name: z.string().min(2, { message: errMsg.name }),
+		confirmPassword: passwordSchema,
+	})
+	.refine((data) => data.password === data.confirmPassword, {
+		message: errMsg.confirmPassword,
+		path: ['confirmPassword'],
+	})
 
 export const NewPasswordSchema = z
 	.object({

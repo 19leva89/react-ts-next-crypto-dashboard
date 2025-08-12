@@ -19,8 +19,8 @@ import {
 	CardTitle,
 } from '@/components/ui'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
-import { FormInput } from '@/components/shared/form'
 import { credentialsLoginUser, loginUser } from '@/actions/login'
+import { FormInput, FormCheckbox } from '@/components/shared/form'
 import { TLoginValues, LoginSchema } from '@/components/shared/modals/auth-modal/forms/schemas'
 
 interface Props {
@@ -40,6 +40,7 @@ export const LoginForm = ({ onClose }: Props) => {
 		defaultValues: {
 			email: '',
 			password: '',
+			rememberMe: false,
 		},
 	})
 
@@ -116,6 +117,8 @@ export const LoginForm = ({ onClose }: Props) => {
 							<FormInput name='password' type='password' placeholder='Password' required />
 
 							{showTwoFactor && <FormInput name='code' type='password' placeholder='2FA code' required />}
+
+							<FormCheckbox name='rememberMe' label='Remember me' className='mt-2' required={false} />
 
 							<Button
 								asChild

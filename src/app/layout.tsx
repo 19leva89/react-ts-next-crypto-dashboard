@@ -2,7 +2,7 @@ import { Nunito } from 'next/font/google'
 import { PropsWithChildren } from 'react'
 
 import { Toaster } from '@/components/ui'
-import { constructMetadata } from '@/lib/utils'
+import { constructMetadata } from '@/lib'
 import { AppLayout } from '@/components/shared/app-layout'
 import { AppProvider, ThemeProvider } from '@/components/shared/providers'
 
