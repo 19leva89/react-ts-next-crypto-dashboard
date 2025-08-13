@@ -241,8 +241,8 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 			} satisfies ChartConfig
 
 			const formattedData = coin.sparkline_in_7d.price
-				.map((price: number, index: number) => ({
-					Hour: index,
+				.map((price: number, i: number) => ({
+					Hour: i,
 					Price: price,
 				}))
 				.filter((item: ChartDataPoint) => !isNaN(item.Price)) // <-- Filter invalid numbers

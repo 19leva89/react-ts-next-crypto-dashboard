@@ -76,8 +76,8 @@ export const Navbar = () => {
 						align='start'
 						className='flex w-23 min-w-[5rem] flex-col gap-2 rounded-xl bg-white shadow-lg dark:bg-gray-900'
 					>
-						{['CAD', 'EUR', 'XCD'].map((currency, index) => (
-							<DropdownMenuItem key={index} className='rounded-xl p-0'>
+						{['CAD', 'EUR', 'XCD'].map((currency, i) => (
+							<DropdownMenuItem key={i} className='rounded-xl p-0'>
 								<Button variant='ghost' size='sm' className='w-full rounded-xl'>
 									{currency}
 								</Button>

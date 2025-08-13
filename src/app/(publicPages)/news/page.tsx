@@ -11,7 +11,7 @@ export const metadata = constructMetadata({ title: 'News' })
 const NewsPage = () => {
 	const queryClient = getQueryClient()
 
-	void queryClient.prefetchQuery(trpc.news.getCryptoNews.queryOptions())
+	void queryClient.prefetchQuery(trpc.news.getCryptoNews.queryOptions({ page: 1 }))
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>

@@ -18,8 +18,8 @@ export const NotificationPriceTemplate = ({ coins }: Props) => {
 			<p>The following coins have reached or exceeded your desired price:</p>
 
 			<ul style={{ paddingLeft: 0, listStyleType: 'none' }}>
-				{coins.map((coin, index) => (
-					<li key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+				{coins.map((coin, i) => (
+					<li key={i} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
 						<img
 							src={coin.image}
 							alt={coin.name}
