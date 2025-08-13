@@ -100,9 +100,9 @@ export const chartsRouter = createTRPCRouter({
 							},
 						]
 					: []),
-			].map((item, index) => ({
+			].map((item, i) => ({
 				...item,
-				fill: index < 11 ? `hsl(var(--chart-${index + 1}))` : 'hsl(var(--color-other))',
+				fill: i < 11 ? `hsl(var(--chart-${i + 1}))` : 'hsl(var(--color-other))',
 			}))
 
 			return {

@@ -156,9 +156,9 @@ export const NotificationsView = () => {
 
 				<CardContent className='p-0'>
 					<div className='divide-y'>
-						{notifications.map((notification, index) => (
+						{notifications.map((notification, i) => (
 							<div
-								key={`${notification.id}-${index}`}
+								key={`${notification.id}-${i}`}
 								className='relative cursor-pointer p-4 transition-colors hover:bg-muted/50'
 							>
 								<div className='flex items-start'>

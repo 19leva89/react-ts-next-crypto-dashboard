@@ -76,9 +76,9 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 			<ScrollArea className='flex-nowrap pb-3'>
 				{isLoading ? (
 					<div className='flex flex-nowrap gap-2 text-sm'>
-						{[...Array(5)].map((_, index) => (
+						{[...Array(5)].map((_, i) => (
 							<div
-								key={index}
+								key={i}
 								className='w-full max-w-[18rem] min-w-[15rem] rounded-xl border p-3 dark:border-gray-700'
 							>
 								<div className='flex items-center justify-between'>
@@ -103,9 +103,9 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 					</div>
 				) : (
 					<div className='flex flex-nowrap gap-2 text-sm'>
-						{trendingData.coins.slice(dataIndex.start, dataIndex.end).map((data, index) => (
+						{trendingData.coins.slice(dataIndex.start, dataIndex.end).map((data, i) => (
 							<div
-								key={index}
+								key={i}
 								onClick={() => handleCoinClick(data.item.id)}
 								className='w-full max-w-[18rem] min-w-[15rem] cursor-pointer rounded-xl border p-3 duration-500 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-slate-800'
 							>
