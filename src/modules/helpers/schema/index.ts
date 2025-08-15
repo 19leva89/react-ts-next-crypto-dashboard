@@ -8,7 +8,6 @@ export const exchangeRateSchema = z.object({
 		eur: z.number(),
 		uah: z.number(),
 	}),
-	selectedCurrency: z.string().default('usd'),
 })
 
 export type TExchangeRate = z.infer<typeof exchangeRateSchema>
