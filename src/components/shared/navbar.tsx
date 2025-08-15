@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
 import { ChevronsUpDownIcon, WalletIcon } from 'lucide-react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 import {
 	Button,
@@ -17,33 +17,21 @@ import {
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
 import { ModeToggle } from '@/components/shared'
+import { useSelectedCurrency } from '@/hooks/use-selected-currency'
 
 export const Navbar = () => {
 	const trpc = useTRPC()
 	const pathName = usePathname()
-	const queryClient = useQueryClient()
 
 	const { data: session, status } = useSession()
+	const { currency, changeCurrency } = useSelectedCurrency()
+
 	const { data: exchangeRate } = useQuery(trpc.helpers.getExchangeRate.queryOptions())
 
 	const [mounted, setMounted] = useState<boolean>(false)
-	const [selectedCurrency, setSelectedCurrency] = useState<string>(exchangeRate?.selectedCurrency ?? '')
 
-	const updateExchangeRateMutation = useMutation(
-		trpc.helpers.setExchangeRate.mutationOptions({
-			onSuccess: async () => {
-				await queryClient.invalidateQueries(trpc.helpers.getExchangeRate.queryOptions())
-			},
-		}),
-	)
-
-	const handleUpdateExchangeRate = async (currency: string) => {
-		setSelectedCurrency(currency)
-
-		await updateExchangeRateMutation.mutateAsync({
-			vsCurrencies: exchangeRate?.vsCurrencies ?? {},
-			selectedCurrency: currency,
-		})
+	const handleUpdateExchangeRate = async (newCurrency: 'usd' | 'eur' | 'uah') => {
+		changeCurrency(newCurrency)
 	}
 
 	// Needed to avoid hydration error
@@ -87,7 +75,7 @@ export const Navbar = () => {
 							size='lg'
 							className='group flex gap-3 rounded-xl px-4 text-sm transition-colors duration-300 ease-in-out'
 						>
-							<span className='relative top-[1px] text-sm'>{selectedCurrency.toUpperCase()}</span>
+							<span className='relative top-[1px] text-sm'>{currency.toUpperCase()}</span>
 
 							<div className='relative size-6 transition-transform duration-300 group-hover:rotate-180 max-[460px]:hidden'>
 								<ChevronsUpDownIcon size={18} className='absolute inset-0 m-auto size-4.5!' />
@@ -99,18 +87,18 @@ export const Navbar = () => {
 						align='start'
 						className='flex w-23 min-w-[5rem] flex-col gap-2 rounded-xl bg-white shadow-lg dark:bg-gray-900'
 					>
-						{Object.entries(exchangeRate?.vsCurrencies || {}).map(([currency]) => (
+						{Object.entries(exchangeRate?.vsCurrencies || {}).map(([curr]) => (
 							<DropdownMenuItem
-								key={currency}
-								onClick={() => handleUpdateExchangeRate(currency)}
+								key={curr}
+								onClick={() => handleUpdateExchangeRate(curr as 'usd' | 'eur' | 'uah')}
 								className='rounded-xl p-0'
 							>
 								<Button
 									variant='ghost'
 									size='sm'
-									className={`w-full rounded-xl ${selectedCurrency === currency ? 'bg-accent text-accent-foreground' : ''}`}
+									className={`w-full rounded-xl ${currency === curr ? 'bg-accent text-accent-foreground' : ''}`}
 								>
-									{currency.toUpperCase()}
+									{curr.toUpperCase()}
 								</Button>
 							</DropdownMenuItem>
 						))}

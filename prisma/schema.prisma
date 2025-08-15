@@ -197,15 +197,13 @@ model Coin {
 }
 
 model ExchangeRate {
-  id               String   @id @default(cuid())
-  baseCurrency     String
-  vsCurrencies     Json
-  selectedCurrency String   @default("usd")
+  id           String   @id @default("exchange-rate")
+  baseCurrency String   @default("usd")
+  vsCurrencies Json
   //
-  updatedAt        DateTime @updatedAt
-  createdAt        DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
 
-  @@index([selectedCurrency])
   @@map("exchange_rate")
 }
 

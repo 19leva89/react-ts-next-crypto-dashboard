@@ -289,7 +289,6 @@ export const updateExchangeRate = async () => {
 				uah: response.usd.uah,
 				usd: response.usd.usd,
 			},
-			selectedCurrency: 'usd',
 		}
 
 		// Single update
