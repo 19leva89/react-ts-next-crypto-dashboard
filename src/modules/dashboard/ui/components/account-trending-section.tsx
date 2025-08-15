@@ -4,11 +4,11 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { ChevronDownIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 
-import { cn, formatPrice } from '@/lib'
+import { cn } from '@/lib'
+import { useFormatPrice } from '@/hooks/use-format-price'
 import { TTrendingData } from '@/modules/dashboard/schema'
 import { Button, ScrollArea, ScrollBar, Skeleton } from '@/components/ui'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
-
 interface Props {
 	trendingData: TTrendingData
 }
@@ -18,6 +18,8 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
 	const [dataIndex, setDataIndex] = useState<{ start: number; end: number }>({ start: 0, end: 5 })
+
+	const formatPrice = useFormatPrice()
 
 	const onShowMoreBtnClick = (reset = false) => {
 		setIsLoading(true)
@@ -156,11 +158,11 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 
 								<div className='mt-3 flex flex-col '>
 									<span className='text-xs text-gray-600 dark:text-slate-400'>
-										₿{formatPrice(data.item.data.market_cap_btc, true)}
+										{formatPrice(data.item.data.market_cap_btc, false, true)} ₿
 									</span>
 
 									<span className='text-xs text-gray-600 dark:text-slate-400'>
-										${formatPrice(Number(data.item.data.market_cap?.replace(/[$,]/g, '') || '0'), true)}
+										{formatPrice(Number(data.item.data.market_cap?.replace(/[$,]/g, '') || '0'), true, true)}
 									</span>
 								</div>
 							</div>

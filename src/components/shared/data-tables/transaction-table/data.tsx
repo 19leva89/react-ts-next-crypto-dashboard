@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-table'
 import { useState } from 'react'
 
-import { formatPrice } from '@/lib'
+import { useFormatPrice } from '@/hooks/use-format-price'
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui'
 
 interface Props<TData extends { quantity: number; price: number; date: string }> {
@@ -20,6 +20,8 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 	columns,
 	data,
 }: Props<TData>) {
+	const formatPrice = useFormatPrice()
+
 	const [sorting, setSorting] = useState<SortingState>([{ id: 'date', desc: false }])
 
 	const table = useReactTable({

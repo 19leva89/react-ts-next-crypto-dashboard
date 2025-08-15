@@ -6,6 +6,11 @@ export const getCgTrendingRoute = (): string => {
 	return `${GECKO_ROUTE_V3}/search/trending`
 }
 
+// getExchangeRate
+export const getCgExchangeRateRoute = (): string => {
+	return `${GECKO_ROUTE_V3}/simple/price?vs_currencies=usd%2Ceur%2Cuah&ids=usd`
+}
+
 // getCategories
 export const getCgCategoriesRoute = (): string => {
 	return `${GECKO_ROUTE_V3}/coins/categories/list`

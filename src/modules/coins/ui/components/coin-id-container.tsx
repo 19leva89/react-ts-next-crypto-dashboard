@@ -20,8 +20,9 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
+import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
-import { cn, formatPrice } from '@/lib'
+import { useFormatPrice } from '@/hooks/use-format-price'
 import { getCoinsMarketChart } from '@/data/market-chart'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
@@ -35,6 +36,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const trpc = useTRPC()
 	const router = useRouter()
 	const queryClient = useQueryClient()
+	const formatPrice = useFormatPrice()
 
 	const [days, setDays] = useState<number>(1)
 	const [isAdding, setIsAdding] = useState<boolean>(false)
@@ -229,11 +231,11 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				</Button>
 
 				<div className='flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1'>
-					<p>Quantity: {formatPrice(coin.total_quantity, false)}</p>
+					<p>Quantity: {formatPrice(coin.total_quantity, true, false)}</p>
 
-					<p>Total invested: ${formatPrice(coin.total_cost, false)}</p>
+					<p>Total invested: {formatPrice(coin.total_cost, true, false)}</p>
 
-					<p>Total value: ${formatPrice(totalValue, false)}</p>
+					<p>Total value: {formatPrice(totalValue, true, false)}</p>
 				</div>
 			</div>
 
@@ -357,9 +359,9 @@ export const CoinIdContainer = ({ coin }: Props) => {
 											<div className='flex flex-col gap-1'>
 												<span className='text-xs'>{timeValue}</span>
 
-												<span className='text-xs'>Price: ${formatPrice(priceValue)}</span>
+												<span className='text-xs'>Price: {formatPrice(priceValue)}</span>
 
-												<span className='text-xs'>Total value: ${formatPrice(totalValue)}</span>
+												<span className='text-xs'>Total value: {formatPrice(totalValue)}</span>
 											</div>
 										</div>
 									)

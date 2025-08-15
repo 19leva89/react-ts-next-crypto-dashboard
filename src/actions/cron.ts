@@ -8,6 +8,7 @@ import { ValidDays } from '@/constants/chart'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
 import { getFieldForDays } from '@/data/field-for-days'
+import { TExchangeRate } from '@/modules/helpers/schema'
 import { TMarketChartData } from '@/modules/coins/schema'
 import { PrismaTransactionClient } from '@/app/api/types'
 import { trendingDataSchema } from '@/modules/dashboard/schema'
@@ -62,48 +63,6 @@ export const recalculateAveragePrice = async (
 			average_price: totals.totalQuantity > 0 ? totals.totalCost / totals.totalQuantity : 0,
 		},
 	})
-}
-
-// cron 24h
-export const updateTrendingData = async (): Promise<TTrendingData> => {
-	try {
-		console.log('🔄 Starting TrendingData update via API...')
-		const response = await makeReq('GET', '/gecko/trending')
-
-		if (!response || !response.coins || !response.coins.length) {
-			console.warn('⚠️ Empty response from API, aborting update')
-			return { coins: [] } as TTrendingData
-		}
-
-		// Delete old data
-		await prisma.trendingCoin.deleteMany()
-		console.log('🗑️ Old trending data deleted.')
-
-		// Transform and validate the data
-		const trendingCoins = trendingDataSchema.parse({ coins: response.coins })
-
-		// Batch update
-		const transaction = await prisma.$transaction(
-			trendingCoins.coins.map((coin) =>
-				prisma.trendingCoin.create({
-					data: {
-						...coin.item,
-						thumb: coin.item.thumb || '',
-						market_cap_rank: coin.item.market_cap_rank || 0,
-						price_btc: coin.item.price_btc || 0,
-						data: JSON.stringify(coin.item.data),
-					},
-				}),
-			),
-		)
-
-		console.log(`✅ Updated ${transaction.length} trendingCoins`)
-
-		return trendingCoins
-	} catch (error) {
-		handleError(error, 'UPDATE_TRENDING_DATA')
-		return { coins: [] }
-	}
 }
 
 // cron 24h
@@ -305,5 +264,91 @@ export const updateCoinsMarketChart = async (days: ValidDays): Promise<TMarketCh
 		handleError(error, 'UPDATE_COINS_MARKET_CHART')
 
 		return {} as TMarketChartData
+	}
+}
+
+// cron 10min
+export const updateExchangeRate = async () => {
+	try {
+		console.log('🔄 Starting exchange rate update via API...')
+		const response = await makeReq('GET', '/gecko/exchange-rate')
+
+		if (!response || !response.usd) {
+			console.warn('⚠️ Invalid response from API, aborting update')
+			return []
+		}
+
+		console.log(response)
+
+		// Data transformation
+		const exchangeRateData: TExchangeRate = {
+			id: 'exchange-rate',
+			baseCurrency: 'usd',
+			vsCurrencies: {
+				eur: response.usd.eur,
+				uah: response.usd.uah,
+				usd: response.usd.usd,
+			},
+			selectedCurrency: 'usd',
+		}
+
+		// Single update
+		const transaction = await prisma.$transaction([
+			prisma.exchangeRate.upsert({
+				where: { id: exchangeRateData.id },
+				update: exchangeRateData,
+				create: exchangeRateData,
+			}),
+		])
+
+		console.log(
+			`✅ Updated exchange rates: 1 USD = ${exchangeRateData.vsCurrencies.usd} USD, ${exchangeRateData.vsCurrencies.eur} EUR, ${exchangeRateData.vsCurrencies.uah} UAH`,
+		)
+		return transaction
+	} catch (error) {
+		handleError(error, 'UPDATE_EXCHANGE_RATE')
+		return []
+	}
+}
+
+// cron 24h
+export const updateTrendingData = async (): Promise<TTrendingData> => {
+	try {
+		console.log('🔄 Starting TrendingData update via API...')
+		const response = await makeReq('GET', '/gecko/trending')
+
+		if (!response || !response.coins || !response.coins.length) {
+			console.warn('⚠️ Empty response from API, aborting update')
+			return { coins: [] } as TTrendingData
+		}
+
+		// Delete old data
+		await prisma.trendingCoin.deleteMany()
+		console.log('🗑️ Old trending data deleted.')
+
+		// Transform and validate the data
+		const trendingCoins = trendingDataSchema.parse({ coins: response.coins })
+
+		// Batch update
+		const transaction = await prisma.$transaction(
+			trendingCoins.coins.map((coin) =>
+				prisma.trendingCoin.create({
+					data: {
+						...coin.item,
+						thumb: coin.item.thumb || '',
+						market_cap_rank: coin.item.market_cap_rank || 0,
+						price_btc: coin.item.price_btc || 0,
+						data: JSON.stringify(coin.item.data),
+					},
+				}),
+			),
+		)
+
+		console.log(`✅ Updated ${transaction.length} trendingCoins`)
+
+		return trendingCoins
+	} catch (error) {
+		handleError(error, 'UPDATE_TRENDING_DATA')
+		return { coins: [] }
 	}
 }

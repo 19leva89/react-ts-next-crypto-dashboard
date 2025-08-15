@@ -5,9 +5,9 @@ import { format } from 'date-fns'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowDownIcon, ArrowDownToLine, ArrowUpFromLine, ArrowUpIcon } from 'lucide-react'
 
-import { formatPrice } from '@/lib'
 import { Button } from '@/components/ui'
 import { TTransaction } from '@/modules/transactions/schema'
+import { TableCell } from '@/modules/transactions/ui/components/table-cell'
 
 export const columns: ColumnDef<TTransaction>[] = [
 	// Coin name
@@ -140,9 +140,8 @@ export const columns: ColumnDef<TTransaction>[] = [
 		},
 		cell: ({ row }) => {
 			const amount = parseFloat(row.getValue('price')) || 0
-			const formatted = formatPrice(amount, true)
 
-			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>${formatted}</div>
+			return <TableCell value={amount} />
 		},
 	},
 
@@ -170,9 +169,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 			const quantity = parseFloat(row.getValue('quantity')) || 0
 			const total = quantity * price
 
-			const formatted = formatPrice(total, true)
-
-			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>${formatted}</div>
+			return <TableCell value={total} />
 		},
 		sortingFn: (rowA, rowB) => {
 			const priceA = parseFloat(rowA.getValue('price')) || 0

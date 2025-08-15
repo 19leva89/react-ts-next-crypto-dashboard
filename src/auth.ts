@@ -88,19 +88,20 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 		},
 
 		async jwt({ token, user, trigger, session }) {
+			const now = Math.floor(Date.now() / 1000)
+			const ONE_DAY = 60 * 60 * 24
+			const SEVEN_DAYS = ONE_DAY * 7
+
 			if (user) {
-				const rememberMe = user.rememberMe ?? false
+				const rememberMe = typeof user.rememberMe === 'boolean' ? user.rememberMe : true
 
-				const expiresIn = rememberMe
-					? 60 * 60 * 24 * 7 // 7 days
-					: 60 * 60 * 24 // 1 day
-
-				token.exp = Math.floor(Date.now() / 1000) + expiresIn
 				token.rememberMe = rememberMe
+				token.exp = now + (rememberMe ? SEVEN_DAYS : ONE_DAY)
 			}
 
-			if (trigger === 'update' && session?.rememberMe !== undefined) {
+			if (trigger === 'update' && typeof session?.rememberMe === 'boolean') {
 				token.rememberMe = session.rememberMe
+				token.exp = now + (session.rememberMe ? SEVEN_DAYS : ONE_DAY)
 			}
 
 			if (!token.sub) return token
