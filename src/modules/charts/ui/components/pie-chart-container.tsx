@@ -15,6 +15,7 @@ import {
 } from '@/components/ui'
 import { TPieChartData } from '@/modules/charts/schema'
 import { useFormatPrice } from '@/hooks/use-format-price'
+import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 
 interface Props {
 	chartData: TPieChartData[]
@@ -22,6 +23,7 @@ interface Props {
 
 export const PieChartContainer = ({ chartData }: Props) => {
 	const formatPrice = useFormatPrice()
+	const { fromUSD } = useCurrencyConverter()
 
 	const chartConfig = {
 		value: {
@@ -61,7 +63,7 @@ export const PieChartContainer = ({ chartData }: Props) => {
 									formatter={(value, name) => {
 										const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
 
-										const formattedValue = `: ${formatPrice(numericValue)}`
+										const formattedValue = `: ${formatPrice(fromUSD(numericValue))}`
 
 										return [name, formattedValue]
 									}}

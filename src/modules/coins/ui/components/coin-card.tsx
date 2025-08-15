@@ -21,6 +21,7 @@ import { cn } from '@/lib'
 import { TUserCoinData } from '@/modules/coins/schema'
 import { useFormatPrice } from '@/hooks/use-format-price'
 import { EditCoin } from '@/modules/coins/ui/components/edit-coin'
+import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 import { DeleteCoin } from '@/modules/coins/ui/components/delete-coin'
 
 interface Props {
@@ -30,6 +31,7 @@ interface Props {
 
 export const CoinCard = ({ coin, viewMode }: Props) => {
 	const formatPrice = useFormatPrice()
+	const { fromUSD } = useCurrencyConverter()
 
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
@@ -81,11 +83,13 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 						<div
 							className={cn('flex', viewMode === 'grid' ? 'flex-col' : 'flex-row gap-4 max-[1000px]:hidden')}
 						>
-							<span>Buy: {formatPrice(coin.average_price)}</span>
+							<span>Buy: {formatPrice(fromUSD(coin.average_price))}</span>
 
-							<span>Curr: {formatPrice(coin.current_price)}</span>
+							<span>Curr: {formatPrice(fromUSD(coin.current_price))}</span>
 
-							{coin.desired_sell_price ? <span>Sell: {formatPrice(coin.desired_sell_price)}</span> : null}
+							{coin.desired_sell_price ? (
+								<span>Sell: {formatPrice(fromUSD(coin.desired_sell_price))}</span>
+							) : null}
 						</div>
 
 						<div
@@ -156,7 +160,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 			>
 				<p className='text-lg font-semibold'>Quantity: {formatPrice(coin.total_quantity, false)}</p>
 
-				<p className='text-lg font-semibold'>Total value: {formatPrice(totalValue, true, false)}</p>
+				<p className='text-lg font-semibold'>Total value: {formatPrice(fromUSD(totalValue), true, false)}</p>
 			</CardContent>
 
 			{/* Edit Dialog */}

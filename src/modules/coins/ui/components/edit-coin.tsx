@@ -17,6 +17,7 @@ import {
 import { useTRPC } from '@/trpc/client'
 import { useFormatPrice } from '@/hooks/use-format-price'
 import { TTransaction, TUserCoinData } from '@/modules/coins/schema'
+import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 
 interface Props {
@@ -31,18 +32,33 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 	const totalValue = coin.current_price * coin.total_quantity
 
 	const formatPrice = useFormatPrice()
+	const { fromUSD, toUSD, selectedCurrency } = useCurrencyConverter()
 
 	const [isSaving, setIsSaving] = useState<boolean>(false)
 	const [isAdding, setIsAdding] = useState<boolean>(false)
 	const [editTransactions, setEditTransactions] = useState<TTransaction[]>(coin.transactions)
-	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
+	const [editSellPrice, setEditSellPrice] = useState<string>(() => {
+		if (coin.desired_sell_price) {
+			const convertedPrice = fromUSD(coin.desired_sell_price)
+
+			return String(convertedPrice)
+		}
+
+		return ''
+	})
 
 	// Sync local state with updated data (important, don't remove)
 	useEffect(() => {
 		setEditTransactions(coin.transactions)
 
-		setEditSellPrice(String(coin.desired_sell_price || ''))
-	}, [coin.transactions, coin.desired_sell_price])
+		if (coin.desired_sell_price) {
+			const convertedPrice = fromUSD(coin.desired_sell_price)
+			setEditSellPrice(String(convertedPrice))
+		} else {
+			setEditSellPrice('')
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [coin.transactions, coin.desired_sell_price, selectedCurrency])
 
 	const createTransactionMutation = useMutation(
 		trpc.coins.addTransactionForUser.mutationOptions({
@@ -111,9 +127,11 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 				date: new Date(transaction.date).toISOString(),
 			}))
 
+			const sellPriceInUSD = sellPrice ? toUSD(Number(sellPrice)) : undefined
+
 			await updateCoinMutation.mutateAsync({
 				coinId: coin.coinId,
-				desiredSellPrice: sellPrice ? Number(sellPrice) : undefined,
+				desiredSellPrice: sellPriceInUSD,
 				transactions: updatedTransactions,
 			})
 		} finally {
@@ -154,9 +172,9 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 							<h3 className='px-4 text-lg font-semibold max-[400px]:text-sm'>Transaction History</h3>
 
 							<div className='flex flex-col px-4 max-[600px]:text-sm'>
-								<p className=''>Total invested: {formatPrice(coin.total_cost, true, false)}</p>
+								<p className=''>Total invested: {formatPrice(fromUSD(coin.total_cost), true, false)}</p>
 
-								<p className=''>Total value: {formatPrice(totalValue, true, false)}</p>
+								<p className=''>Total value: {formatPrice(fromUSD(totalValue), true, false)}</p>
 							</div>
 						</div>
 

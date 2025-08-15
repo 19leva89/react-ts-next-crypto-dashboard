@@ -14,6 +14,7 @@ import {
 } from '@/components/ui'
 import { MONTH_OPTIONS } from '@/constants/chart'
 import { useFormatPrice } from '@/hooks/use-format-price'
+import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 
 interface Props {
 	chartData: { timestamp: string; value: number }[]
@@ -21,6 +22,7 @@ interface Props {
 
 export const LineChartContainer = ({ chartData }: Props) => {
 	const formatPrice = useFormatPrice()
+	const { fromUSD } = useCurrencyConverter()
 
 	const days = 7
 
@@ -139,7 +141,7 @@ export const LineChartContainer = ({ chartData }: Props) => {
 									formatter={(value, name) => {
 										const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
 
-										if (name === 'TotalValue') return ['Total value: ', formatPrice(numericValue)]
+										if (name === 'TotalValue') return ['Total value: ', formatPrice(fromUSD(numericValue))]
 
 										return [name, numericValue]
 									}}

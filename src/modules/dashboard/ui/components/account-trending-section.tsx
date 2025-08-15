@@ -7,6 +7,7 @@ import { ChevronDownIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 import { cn } from '@/lib'
 import { useFormatPrice } from '@/hooks/use-format-price'
 import { TTrendingData } from '@/modules/dashboard/schema'
+import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 import { Button, ScrollArea, ScrollBar, Skeleton } from '@/components/ui'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 interface Props {
@@ -20,6 +21,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 	const [dataIndex, setDataIndex] = useState<{ start: number; end: number }>({ start: 0, end: 5 })
 
 	const formatPrice = useFormatPrice()
+	const { fromUSD } = useCurrencyConverter()
 
 	const onShowMoreBtnClick = (reset = false) => {
 		setIsLoading(true)
@@ -162,7 +164,11 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 									</span>
 
 									<span className='text-xs text-gray-600 dark:text-slate-400'>
-										{formatPrice(Number(data.item.data.market_cap?.replace(/[$,]/g, '') || '0'), true, true)}
+										{formatPrice(
+											fromUSD(Number(data.item.data.market_cap?.replace(/[$,]/g, '') || '0')),
+											true,
+											true,
+										)}
 									</span>
 								</div>
 							</div>

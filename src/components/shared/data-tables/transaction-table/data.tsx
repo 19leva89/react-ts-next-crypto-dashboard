@@ -9,6 +9,7 @@ import {
 import { useState } from 'react'
 
 import { useFormatPrice } from '@/hooks/use-format-price'
+import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui'
 
 interface Props<TData extends { quantity: number; price: number; date: string }> {
@@ -21,6 +22,7 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 	data,
 }: Props<TData>) {
 	const formatPrice = useFormatPrice()
+	const { fromUSD } = useCurrencyConverter()
 
 	const [sorting, setSorting] = useState<SortingState>([{ id: 'date', desc: false }])
 
@@ -103,11 +105,11 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 			<TableFooter className='sticky bottom-0 bg-secondary'>
 				<TableRow className='max-[900px]:text-sm max-[600px]:text-xs'>
 					<TableCell className='pl-7 max-[900px]:pr-2 max-[900px]:pl-5 max-[600px]:pr-0 max-[600px]:pl-2'>
-						{formatPrice(totals.totalQuantity)}
+						{formatPrice(totals.totalQuantity, false)}
 					</TableCell>
 
 					<TableCell className='pl-7 max-[900px]:pr-2 max-[900px]:pl-5 max-[600px]:pr-0 max-[600px]:pl-2'>
-						{formatPrice(averagePrice)}
+						{formatPrice(fromUSD(averagePrice))}
 					</TableCell>
 
 					<TableCell className='pl-7 max-[900px]:pr-2 max-[900px]:pl-5 max-[600px]:pr-0 max-[600px]:pl-2' />

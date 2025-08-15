@@ -26,6 +26,7 @@ import { useFormatPrice } from '@/hooks/use-format-price'
 import { TMarketChartData } from '@/modules/coins/schema'
 import { getCoinsMarketChart } from '@/data/market-chart'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
+import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 
 interface Props {
 	coinId: string
@@ -35,6 +36,7 @@ interface Props {
 
 export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) => {
 	const formatPrice = useFormatPrice()
+	const { fromUSD } = useCurrencyConverter()
 
 	const [days, setDays] = useState<number>(1)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -215,7 +217,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 												formatter={(value, name) => {
 													const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
 
-													if (name === 'Price') return ['Price: ', formatPrice(numericValue)]
+													if (name === 'Price') return ['Price: ', formatPrice(fromUSD(numericValue))]
 
 													return [name, numericValue]
 												}}
@@ -268,7 +270,9 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									</div>
 								</Link>
 
-								<div>{formatPrice(coinData?.market_data.current_price.usd as number, true, true)}</div>
+								<div>
+									{formatPrice(fromUSD(coinData?.market_data.current_price.usd as number), true, true)}
+								</div>
 							</div>
 
 							<div className='text-md mt-8 flex flex-col gap-2 max-[500px]:text-sm'>
@@ -284,7 +288,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span>Market cap</span>
 
 									<span className='text-gray-600 dark:text-gray-300'>
-										{formatPrice(coinData?.market_data.market_cap.usd as number, true, true)}
+										{formatPrice(fromUSD(coinData?.market_data.market_cap.usd as number), true, true)}
 									</span>
 								</div>
 
@@ -292,7 +296,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span>Circulating supply</span>
 
 									<span className='text-gray-600 dark:text-gray-300'>
-										{formatPrice(coinData?.market_data.circulating_supply as number, true, true)}
+										{formatPrice(fromUSD(coinData?.market_data.circulating_supply as number), true, true)}
 									</span>
 								</div>
 
@@ -300,7 +304,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span className='capitalize'>24 hour high</span>
 
 									<span className='text-gray-600 dark:text-gray-300'>
-										{formatPrice(coinData?.market_data.high_24h.usd as number, true, true)}
+										{formatPrice(fromUSD(coinData?.market_data.high_24h.usd as number), true, true)}
 									</span>
 								</div>
 
@@ -308,7 +312,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									<span className='capitalize'>24 hour low</span>
 
 									<span className='text-gray-600 dark:text-gray-300'>
-										{formatPrice(coinData?.market_data.low_24h.usd as number, true, true)}
+										{formatPrice(fromUSD(coinData?.market_data.low_24h.usd as number), true, true)}
 									</span>
 								</div>
 							</div>

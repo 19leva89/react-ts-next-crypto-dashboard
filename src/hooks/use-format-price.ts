@@ -1,15 +1,9 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
-
-import { useTRPC } from '@/trpc/client'
-import { useSelectedCurrency } from '@/hooks/use-selected-currency'
+import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 
 export const useFormatPrice = () => {
-	const trpc = useTRPC()
-
-	const { currency: selectedCurrency } = useSelectedCurrency()
-	const { data: exchangeRate } = useQuery(trpc.helpers.getExchangeRate.queryOptions())
+	const { selectedCurrency } = useCurrencyConverter()
 
 	return (price: number, showCurrency: boolean = true, useGrouping?: boolean, locale?: string): string => {
 		if (price === undefined || price === null) {
@@ -20,18 +14,7 @@ export const useFormatPrice = () => {
 		const absPrice = Math.abs(price)
 		const isLargeNumber = absPrice >= 1
 
-		let finalPrice = price
-
-		// If selected currency is not base currency, apply exchange rate
-		if (selectedCurrency !== 'usd') {
-			const rate = exchangeRate?.vsCurrencies?.[selectedCurrency as keyof typeof exchangeRate.vsCurrencies]
-
-			if (rate) {
-				finalPrice = price * rate
-			}
-		}
-
-		return finalPrice.toLocaleString(userLocale, {
+		return price.toLocaleString(userLocale, {
 			...(showCurrency
 				? {
 						style: 'currency',

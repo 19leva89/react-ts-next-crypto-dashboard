@@ -3,30 +3,19 @@
 import { ChangeEvent, useState } from 'react'
 
 import { Input } from '@/components/ui'
-import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 
 interface Props {
-	value: number // USD value from DB
-	onChange: (value: number) => void // Should return USD value for DB
+	value: number
+	onChange: (value: number) => void
 }
 
-export const InputFormatPrice = ({ value, onChange }: Props) => {
-	const { fromUSD, toUSD } = useCurrencyConverter()
-
+export const InputFormatQuantity = ({ value, onChange }: Props) => {
 	const [isEditing, setIsEditing] = useState<boolean>(false)
-	const [displayValue, setDisplayValue] = useState<string>(() => {
-		// Convert USD to selected currency for display
-		const convertedValue = fromUSD(value)
-
-		return convertedValue.toString()
-	})
+	const [displayValue, setDisplayValue] = useState<string>(value.toString())
 
 	const handleFocus = () => {
 		setIsEditing(true)
-
-		// Convert USD to selected currency when starting to edit
-		const convertedValue = fromUSD(value)
-		setDisplayValue(convertedValue.toString())
+		setDisplayValue(value.toString())
 	}
 
 	const handleBlur = () => {
@@ -39,11 +28,7 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 			numericValue = 0
 		}
 
-		// Convert back to USD before saving to DB
-		const usdValue = toUSD(numericValue)
-		onChange(usdValue)
-
-		// Update display value with the converted value
+		onChange(numericValue)
 		setDisplayValue(numericValue.toString())
 	}
 
@@ -58,15 +43,13 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 		setDisplayValue(newValue)
 	}
 
-	// When not editing, show the converted value from USD
+	// When not editing, show the value
 	const getDisplayValue = () => {
 		if (isEditing) {
 			return displayValue
 		}
 
-		const convertedValue = fromUSD(value)
-
-		return convertedValue.toString()
+		return value.toString()
 	}
 
 	return (

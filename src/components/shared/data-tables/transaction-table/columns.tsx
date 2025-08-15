@@ -3,7 +3,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon } from 'lucide-react'
 
 import { TTransaction } from '@/modules/coins/schema'
-import { InputFormatPrice } from '@/components/shared'
+import { InputFormatPrice, InputFormatQuantity } from '@/components/shared'
 import { DeleteTransaction } from '@/modules/coins/ui/components/delete-transaction'
 import { Button, Calendar, Popover, PopoverContent, PopoverTrigger } from '@/components/ui'
 
@@ -31,7 +31,7 @@ export const getColumns = (
 			)
 		},
 		cell: ({ row }) => (
-			<InputFormatPrice
+			<InputFormatQuantity
 				value={row.original.quantity}
 				onChange={(newValue) => onTransactionChange(row.original.id, 'quantity', newValue.toString())}
 			/>

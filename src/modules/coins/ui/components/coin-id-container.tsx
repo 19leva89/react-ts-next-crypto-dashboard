@@ -25,6 +25,7 @@ import { useTRPC } from '@/trpc/client'
 import { useFormatPrice } from '@/hooks/use-format-price'
 import { getCoinsMarketChart } from '@/data/market-chart'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
+import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 import { TMarketChartData, TTransaction, TUserCoinData } from '@/modules/coins/schema'
 
@@ -36,7 +37,9 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const trpc = useTRPC()
 	const router = useRouter()
 	const queryClient = useQueryClient()
+
 	const formatPrice = useFormatPrice()
+	const { fromUSD, toUSD, selectedCurrency } = useCurrencyConverter()
 
 	const [days, setDays] = useState<number>(1)
 	const [isAdding, setIsAdding] = useState<boolean>(false)
@@ -45,13 +48,28 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const [isNavigatingBack, setIsNavigatingBack] = useState<boolean>(false)
 	const [coinMarketChartData, setCoinMarketChartData] = useState<TMarketChartData>()
 	const [editTransactions, setEditTransactions] = useState<TTransaction[]>(coin.transactions)
-	const [editSellPrice, setEditSellPrice] = useState<string>(String(coin.desired_sell_price || ''))
+	const [editSellPrice, setEditSellPrice] = useState<string>(() => {
+		if (coin.desired_sell_price) {
+			const convertedPrice = fromUSD(coin.desired_sell_price)
+
+			return String(convertedPrice)
+		}
+
+		return ''
+	})
 
 	// Sync local state with updated data (important, don't remove)
 	useEffect(() => {
 		setEditTransactions(coin.transactions)
-		setEditSellPrice(String(coin.desired_sell_price || ''))
-	}, [coin.transactions, coin.desired_sell_price])
+
+		if (coin.desired_sell_price) {
+			const convertedPrice = fromUSD(coin.desired_sell_price)
+			setEditSellPrice(String(convertedPrice))
+		} else {
+			setEditSellPrice('')
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [coin.transactions, coin.desired_sell_price, selectedCurrency])
 
 	useEffect(() => {
 		const fetchMarketChartData = async () => {
@@ -204,9 +222,11 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				date: new Date(rest.date).toISOString(),
 			}))
 
+			const sellPriceInUSD = sellPrice ? toUSD(Number(sellPrice)) : undefined
+
 			await updateCoinMutation.mutateAsync({
 				coinId: coin.coinId,
-				desiredSellPrice: sellPrice ? Number(sellPrice) : undefined,
+				desiredSellPrice: sellPriceInUSD,
 				transactions: updatedTransactions,
 			})
 		} finally {
@@ -231,11 +251,11 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				</Button>
 
 				<div className='flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1'>
-					<p>Quantity: {formatPrice(coin.total_quantity, true, false)}</p>
+					<p>Quantity: {formatPrice(coin.total_quantity, false, false)}</p>
 
-					<p>Total invested: {formatPrice(coin.total_cost, true, false)}</p>
+					<p>Total invested: {formatPrice(fromUSD(coin.total_cost), true, false)}</p>
 
-					<p>Total value: {formatPrice(totalValue, true, false)}</p>
+					<p>Total value: {formatPrice(fromUSD(totalValue), true, false)}</p>
 				</div>
 			</div>
 
@@ -359,9 +379,9 @@ export const CoinIdContainer = ({ coin }: Props) => {
 											<div className='flex flex-col gap-1'>
 												<span className='text-xs'>{timeValue}</span>
 
-												<span className='text-xs'>Price: {formatPrice(priceValue)}</span>
+												<span className='text-xs'>Price: {formatPrice(fromUSD(priceValue))}</span>
 
-												<span className='text-xs'>Total value: {formatPrice(totalValue)}</span>
+												<span className='text-xs'>Total value: {formatPrice(fromUSD(totalValue))}</span>
 											</div>
 										</div>
 									)
