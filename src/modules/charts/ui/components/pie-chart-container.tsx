@@ -13,14 +13,16 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from '@/components/ui'
-import { formatPrice } from '@/lib'
 import { TPieChartData } from '@/modules/charts/schema'
+import { useFormatPrice } from '@/hooks/use-format-price'
 
 interface Props {
 	chartData: TPieChartData[]
 }
 
 export const PieChartContainer = ({ chartData }: Props) => {
+	const formatPrice = useFormatPrice()
+
 	const chartConfig = {
 		value: {
 			label: 'Value',
@@ -59,7 +61,7 @@ export const PieChartContainer = ({ chartData }: Props) => {
 									formatter={(value, name) => {
 										const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
 
-										const formattedValue = `: $${formatPrice(numericValue)}`
+										const formattedValue = `: ${formatPrice(numericValue)}`
 
 										return [name, formattedValue]
 									}}

@@ -2,8 +2,8 @@
 
 import { useSuspenseQuery } from '@tanstack/react-query'
 
-import { formatPrice } from '@/lib'
 import { useTRPC } from '@/trpc/client'
+import { useFormatPrice } from '@/hooks/use-format-price'
 import { ErrorState, LoadingState } from '@/components/shared'
 import { PieChartContainer } from '@/modules/charts/ui/components/pie-chart-container'
 import { LineChartContainer } from '@/modules/charts/ui/components/line-chart-container'
@@ -11,14 +11,16 @@ import { LineChartContainer } from '@/modules/charts/ui/components/line-chart-co
 export const ChartsView = () => {
 	const trpc = useTRPC()
 
+	const formatPrice = useFormatPrice()
+
 	const { data } = useSuspenseQuery(trpc.charts.getPortfolioData.queryOptions())
 
 	return (
 		<div className='3xl:mx-30 mx-0 flex flex-col gap-4 xl:mx-10 2xl:mx-20'>
 			<div className='flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1'>
-				<p>Total invested: ${formatPrice(data.totalInvestedValue, false)}</p>
-				<p>Total value: ${formatPrice(data.totalPortfolioValue, false)}</p>
-				<p>Planned profit: ${formatPrice(data.plannedProfit, false)}</p>
+				<p>Total invested: {formatPrice(data.totalInvestedValue, true, false)}</p>
+				<p>Total value: {formatPrice(data.totalPortfolioValue, true, false)}</p>
+				<p>Planned profit: {formatPrice(data.plannedProfit, true, false)}</p>
 			</div>
 
 			<div className='flex flex-row gap-4 max-[1200px]:flex-col max-[1200px]:items-center'>

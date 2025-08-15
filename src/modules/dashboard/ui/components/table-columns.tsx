@@ -5,9 +5,10 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Line, LineChart, YAxis } from 'recharts'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 
-import { cn, formatPrice } from '@/lib'
+import { cn } from '@/lib'
 import { TCoinsListData } from '@/modules/dashboard/schema'
 import { Button, ChartConfig, ChartContainer } from '@/components/ui'
+import { TableCell } from '@/modules/dashboard/ui/components/table-cell'
 
 interface ChartDataPoint {
 	Hour: number
@@ -109,9 +110,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 		cell: ({ row }) => {
 			const amount = parseFloat(row.getValue('current_price')) || 0
 
-			const formatted = formatPrice(amount, true)
-
-			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>${formatted}</div>
+			return <TableCell value={amount} />
 		},
 	},
 
@@ -183,9 +182,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 		cell: ({ row }) => {
 			const amount = parseFloat(row.getValue('total_volume')) || 0
 
-			const formatted = formatPrice(amount, true)
-
-			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>${formatted}</div>
+			return <TableCell value={amount} />
 		},
 	},
 
@@ -211,9 +208,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 		cell: ({ row }) => {
 			const amount = parseFloat(row.getValue('market_cap')) || 0
 
-			const formatted = formatPrice(amount, true)
-
-			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>${formatted}</div>
+			return <TableCell value={amount} />
 		},
 	},
 

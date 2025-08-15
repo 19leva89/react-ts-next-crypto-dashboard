@@ -12,14 +12,16 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from '@/components/ui'
-import { formatPrice } from '@/lib'
 import { MONTH_OPTIONS } from '@/constants/chart'
+import { useFormatPrice } from '@/hooks/use-format-price'
 
 interface Props {
 	chartData: { timestamp: string; value: number }[]
 }
 
 export const LineChartContainer = ({ chartData }: Props) => {
+	const formatPrice = useFormatPrice()
+
 	const days = 7
 
 	const chartConfig = {
@@ -137,7 +139,7 @@ export const LineChartContainer = ({ chartData }: Props) => {
 									formatter={(value, name) => {
 										const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
 
-										if (name === 'TotalValue') return ['Total value: $', formatPrice(numericValue)]
+										if (name === 'TotalValue') return ['Total value: ', formatPrice(numericValue)]
 
 										return [name, numericValue]
 									}}

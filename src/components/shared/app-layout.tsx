@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import { type PropsWithChildren } from 'react'
 
 import { auth } from '@/auth'
+import { getQueryClient, trpc } from '@/trpc/server'
 import { firstSection, secondSection } from '@/constants/menu'
 import { SidebarInset, SidebarProvider } from '@/components/ui'
 import { SidebarApp, Footer, Navbar } from '@/components/shared'
@@ -13,6 +14,9 @@ export const AppLayout = async ({ children }: PropsWithChildren) => {
 
 	const filteredFirstSection = firstSection.filter((item) => !item.private || !!session)
 	const filteredSecondSection = secondSection.filter((item) => !item.private || !!session)
+
+	const queryClient = getQueryClient()
+	void queryClient.prefetchQuery(trpc.helpers.getExchangeRate.queryOptions())
 
 	return (
 		<SidebarProvider defaultOpen={defaultOpen}>

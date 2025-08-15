@@ -14,8 +14,8 @@ import {
 	Input,
 	Label,
 } from '@/components/ui'
-import { formatPrice } from '@/lib'
 import { useTRPC } from '@/trpc/client'
+import { useFormatPrice } from '@/hooks/use-format-price'
 import { TTransaction, TUserCoinData } from '@/modules/coins/schema'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 
@@ -29,6 +29,8 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 	const trpc = useTRPC()
 	const queryClient = useQueryClient()
 	const totalValue = coin.current_price * coin.total_quantity
+
+	const formatPrice = useFormatPrice()
 
 	const [isSaving, setIsSaving] = useState<boolean>(false)
 	const [isAdding, setIsAdding] = useState<boolean>(false)
@@ -152,9 +154,9 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 							<h3 className='px-4 text-lg font-semibold max-[400px]:text-sm'>Transaction History</h3>
 
 							<div className='flex flex-col px-4 max-[600px]:text-sm'>
-								<p className=''>Total invested: ${formatPrice(coin.total_cost, false)}</p>
+								<p className=''>Total invested: {formatPrice(coin.total_cost, true, false)}</p>
 
-								<p className=''>Total value: ${formatPrice(totalValue, false)}</p>
+								<p className=''>Total value: {formatPrice(totalValue, true, false)}</p>
 							</div>
 						</div>
 
