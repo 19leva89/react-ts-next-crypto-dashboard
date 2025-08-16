@@ -1,10 +1,13 @@
 import { z } from 'zod'
 
+import { walletSchema } from '@/modules/coins/schema'
+
 export const transactionSchema = z.object({
 	id: z.string(),
 	quantity: z.number(),
 	price: z.number(),
 	date: z.string(),
+	wallet: walletSchema,
 	userCoin: z.object({
 		coin: z.object({
 			id: z.string(),

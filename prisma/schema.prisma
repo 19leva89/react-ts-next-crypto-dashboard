@@ -24,6 +24,17 @@ enum NotificationType {
   PRICE_ALERT
 }
 
+enum Wallet {
+  BINANCE       @map("Binance")
+  GATE          @map("Gate")
+  LEDGER        @map("Ledger")
+  MEXC          @map("MEXC")
+  PROBIT_GLOBAL @map("ProBit Global")
+  OTHER         @map("Other")
+
+  @@map("wallet")
+}
+
 model User {
   id                    String                 @id @default(cuid()) @map("_id")
   name                  String?
@@ -237,6 +248,7 @@ model UserCoinTransaction {
   quantity   Float
   price      Float
   date       DateTime
+  wallet     Wallet   @default(OTHER)
   //
   userCoin   UserCoin @relation(fields: [userCoinId], references: [id], onDelete: Cascade)
   userCoinId String

@@ -3,6 +3,7 @@
 import { ChangeEvent, useState } from 'react'
 
 import { Input } from '@/components/ui'
+import { useFormatValue } from '@/hooks/use-format-value'
 
 interface Props {
 	value: number
@@ -10,6 +11,8 @@ interface Props {
 }
 
 export const InputFormatQuantity = ({ value, onChange }: Props) => {
+	const formatValue = useFormatValue()
+
 	const [isEditing, setIsEditing] = useState<boolean>(false)
 	const [displayValue, setDisplayValue] = useState<string>(value.toString())
 
@@ -49,7 +52,7 @@ export const InputFormatQuantity = ({ value, onChange }: Props) => {
 			return displayValue
 		}
 
-		return value.toString()
+		return formatValue(value)
 	}
 
 	return (

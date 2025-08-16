@@ -2,10 +2,34 @@ import { format } from 'date-fns'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon } from 'lucide-react'
 
-import { TTransaction } from '@/modules/coins/schema'
+import {
+	Button,
+	Calendar,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui'
+import { TTransaction, WALLETS } from '@/modules/coins/schema'
 import { InputFormatPrice, InputFormatQuantity } from '@/components/shared'
 import { DeleteTransaction } from '@/modules/coins/ui/components/delete-transaction'
-import { Button, Calendar, Popover, PopoverContent, PopoverTrigger } from '@/components/ui'
+
+const WALLET_DISPLAY_NAMES = {
+	BINANCE: 'Binance',
+	GATE: 'Gate',
+	LEDGER: 'Ledger',
+	MEXC: 'MEXC',
+	PROBIT_GLOBAL: 'ProBit Global',
+	OTHER: 'Other',
+} as const
+
+const getWalletDisplayName = (wallet: keyof typeof WALLETS): string => {
+	return WALLET_DISPLAY_NAMES[wallet] || wallet
+}
 
 export const getColumns = (
 	onTransactionChange: (id: string, field: keyof TTransaction, value: string) => void,
@@ -114,6 +138,47 @@ export const getColumns = (
 				</Popover>
 			)
 		},
+	},
+
+	// Wallet
+	{
+		accessorKey: 'wallet',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					className='px-0 has-[>svg]:px-0'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Wallet
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon className='size-4' />
+					) : (
+						<ArrowDownIcon className='size-4' />
+					)}
+				</Button>
+			)
+		},
+		cell: ({ row }) => (
+			<Select
+				value={row.original.wallet}
+				onValueChange={(value) => {
+					onTransactionChange(row.original.id, 'wallet', value)
+				}}
+			>
+				<SelectTrigger className='w-full rounded-xl max-[900px]:text-sm max-[600px]:text-xs'>
+					<SelectValue placeholder='Select wallet' />
+				</SelectTrigger>
+
+				<SelectContent>
+					{Object.keys(WALLETS).map((walletKey) => (
+						<SelectItem key={walletKey} value={walletKey}>
+							{getWalletDisplayName(walletKey as keyof typeof WALLETS)}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+		),
 	},
 
 	// Delete

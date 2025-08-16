@@ -3,6 +3,7 @@
 import { ChangeEvent, useState } from 'react'
 
 import { Input } from '@/components/ui'
+import { useFormatValue } from '@/hooks/use-format-value'
 import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export const InputFormatPrice = ({ value, onChange }: Props) => {
+	const formatValue = useFormatValue()
 	const { fromUSD, toUSD } = useCurrencyConverter()
 
 	const [isEditing, setIsEditing] = useState<boolean>(false)
@@ -66,7 +68,7 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 
 		const convertedValue = fromUSD(value)
 
-		return convertedValue.toString()
+		return formatValue(convertedValue)
 	}
 
 	return (

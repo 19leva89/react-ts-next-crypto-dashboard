@@ -52,6 +52,7 @@ export const chartsRouter = createTRPCRouter({
 					quantity: transaction.quantity,
 					price: transaction.price,
 					date: transaction.date.toISOString(),
+					wallet: transaction.wallet,
 					userCoinId: transaction.userCoinId,
 				})),
 			}))

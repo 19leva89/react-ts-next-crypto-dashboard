@@ -7,12 +7,12 @@ import { getUserCoinsList } from '@/data/user'
 import { makeReq } from '@/app/api/make-request'
 import { recalculateAveragePrice } from '@/actions/cron'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
-import { addCoinToUserSchema, userCoinDataSchema } from '@/modules/coins/schema'
+import { addCoinToUserSchema, userCoinDataSchema, walletSchema, WALLETS } from '@/modules/coins/schema'
 
 export const coinsRouter = createTRPCRouter({
 	addCoinToUser: protectedProcedure
 		.input(addCoinToUserSchema)
-		.mutation(async ({ input: { coinId, quantity, price }, ctx }) => {
+		.mutation(async ({ input: { coinId, quantity, price, wallet }, ctx }) => {
 			if (!ctx.auth?.user?.id) {
 				throw new TRPCError({
 					code: 'UNAUTHORIZED',
@@ -72,6 +72,7 @@ export const coinsRouter = createTRPCRouter({
 						quantity,
 						price,
 						date: new Date(),
+						wallet,
 						userCoinId: userCoin.id,
 					},
 				})
@@ -90,9 +91,10 @@ export const coinsRouter = createTRPCRouter({
 				quantity: z.number(),
 				price: z.number(),
 				date: z.string().transform((str) => new Date(str)),
+				wallet: walletSchema.default(WALLETS.OTHER),
 			}),
 		)
-		.mutation(async ({ input: { coinId, quantity, price, date }, ctx }) => {
+		.mutation(async ({ input: { coinId, quantity, price, date, wallet }, ctx }) => {
 			if (!ctx.auth?.user?.id) {
 				throw new TRPCError({
 					code: 'UNAUTHORIZED',
@@ -116,6 +118,7 @@ export const coinsRouter = createTRPCRouter({
 						quantity,
 						price,
 						date,
+						wallet,
 						userCoin: {
 							connect: { userId_coinId: { userId, coinId } },
 						},
@@ -185,6 +188,7 @@ export const coinsRouter = createTRPCRouter({
 							quantity: true,
 							price: true,
 							date: true,
+							wallet: true,
 							userCoinId: true,
 						},
 					},
@@ -239,6 +243,7 @@ export const coinsRouter = createTRPCRouter({
 					quantity: transaction.quantity,
 					price: transaction.price,
 					date: transaction.date.toISOString(),
+					wallet: transaction.wallet,
 					userCoinId: transaction.userCoinId,
 				})),
 			}
@@ -263,6 +268,7 @@ export const coinsRouter = createTRPCRouter({
 				quantity: transaction.quantity,
 				price: transaction.price,
 				date: transaction.date.toISOString(),
+				wallet: transaction.wallet,
 				userCoinId: transaction.userCoinId,
 			})),
 		}))
@@ -302,6 +308,7 @@ export const coinsRouter = createTRPCRouter({
 							quantity: z.number(),
 							price: z.number(),
 							date: z.string().transform((str) => new Date(str)),
+							wallet: walletSchema.default(WALLETS.OTHER),
 						}),
 					)
 					.optional(),

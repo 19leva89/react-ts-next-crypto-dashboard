@@ -92,6 +92,7 @@ export const getUserCoinsList = async () => {
 						quantity: true,
 						price: true,
 						date: true,
+						wallet: true,
 						userCoinId: true,
 					},
 				},
