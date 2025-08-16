@@ -115,6 +115,8 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 					<TableCell className='pl-7 max-[900px]:pr-2 max-[900px]:pl-5 max-[600px]:pr-0 max-[600px]:pl-2' />
 
 					<TableCell className='pl-7 max-[900px]:pr-2 max-[900px]:pl-5 max-[600px]:pr-0 max-[600px]:pl-2' />
+
+					<TableCell className='pl-7 max-[900px]:pr-2 max-[900px]:pl-5 max-[600px]:pr-0 max-[600px]:pl-2' />
 				</TableRow>
 			</TableFooter>
 		</Table>

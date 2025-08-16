@@ -1,10 +1,22 @@
 import { z } from 'zod'
 
+export const WALLETS = {
+	BINANCE: 'BINANCE',
+	GATE: 'GATE',
+	LEDGER: 'LEDGER',
+	MEXC: 'MEXC',
+	PROBIT_GLOBAL: 'PROBIT_GLOBAL',
+	OTHER: 'OTHER',
+} as const
+
+export const walletSchema = z.enum(['BINANCE', 'GATE', 'LEDGER', 'MEXC', 'PROBIT_GLOBAL', 'OTHER'])
+
 export const transactionSchema = z.object({
 	id: z.string(),
 	quantity: z.number(),
 	price: z.number(),
 	date: z.string(),
+	wallet: walletSchema,
 	userCoinId: z.string(),
 })
 
@@ -33,6 +45,7 @@ export const addCoinToUserSchema = z.object({
 	coinId: z.string(),
 	quantity: z.number(),
 	price: z.number(),
+	wallet: walletSchema.optional().default(WALLETS.OTHER),
 	image: z.string().optional(),
 })
 
@@ -40,3 +53,4 @@ export type TTransaction = z.infer<typeof transactionSchema>
 export type TUserCoinData = z.infer<typeof userCoinDataSchema>
 export type TMarketChartData = z.infer<typeof marketChartDataSchema>
 export type TAddCoinToUserInput = z.infer<typeof addCoinToUserSchema>
+export type TWallet = z.infer<typeof walletSchema>

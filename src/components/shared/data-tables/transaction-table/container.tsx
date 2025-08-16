@@ -46,10 +46,12 @@ export const TableContainer = ({ editTransactions, onChange, className }: Props)
 				const transaction = draft.find((p) => p.id === id)
 
 				if (transaction) {
-					if (field === 'date') {
+					if (field === 'date' || field === 'wallet') {
 						;(transaction[field] as string) = value
-					} else {
+					} else if (field === 'quantity' || field === 'price') {
 						;(transaction[field] as number) = parseFloat(value) || 0
+					} else {
+						;(transaction[field] as any) = value
 					}
 				}
 			}),

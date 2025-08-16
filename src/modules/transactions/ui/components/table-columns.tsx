@@ -6,6 +6,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { ArrowDownIcon, ArrowDownToLine, ArrowUpFromLine, ArrowUpIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui'
+import { TWallet } from '@/modules/coins/schema'
 import { TTransaction } from '@/modules/transactions/schema'
 import { TableCell } from '@/modules/transactions/ui/components/table-cell'
 
@@ -209,6 +210,42 @@ export const columns: ColumnDef<TTransaction>[] = [
 			return (
 				<div className='px-3 py-2 text-base max-[1200px]:text-sm'>
 					{format(new Date(date), 'dd.MM.yyyy, HH:mm')}
+				</div>
+			)
+		},
+	},
+
+	// Wallet
+	{
+		accessorKey: 'wallet',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					className='px-0'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+				>
+					Wallet
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon className='size-4' />
+					) : (
+						<ArrowDownIcon className='size-4' />
+					)}
+				</Button>
+			)
+		},
+		cell: ({ row }) => {
+			const wallet = row.getValue('wallet') as TWallet
+			const label = wallet.replace(/_/g, ' ').toLowerCase()
+
+			return (
+				<div
+					className='flex min-w-46 items-center gap-2 px-3 py-2 text-base max-[1200px]:text-sm'
+					role='textbox'
+					aria-label={`wallet: ${label}`}
+					tabIndex={0}
+				>
+					<span className='truncate capitalize'>{label}</span>
 				</div>
 			)
 		},

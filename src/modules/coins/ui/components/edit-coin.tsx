@@ -125,6 +125,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 				quantity: transaction.quantity,
 				price: transaction.price,
 				date: new Date(transaction.date).toISOString(),
+				wallet: transaction.wallet,
 			}))
 
 			const sellPriceInUSD = sellPrice ? toUSD(Number(sellPrice)) : undefined

@@ -222,6 +222,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				quantity: rest.quantity,
 				price: rest.price,
 				date: new Date(rest.date).toISOString(),
+				wallet: rest.wallet,
 			}))
 
 			const sellPriceInUSD = sellPrice ? toUSD(Number(sellPrice)) : undefined
