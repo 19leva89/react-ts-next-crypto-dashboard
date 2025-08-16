@@ -1,6 +1,6 @@
 'use server'
 
-import { formatPrice } from '@/lib'
+import { formatValue } from '@/lib'
 import { prisma } from '@/lib/prisma'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
@@ -164,7 +164,7 @@ export const notifyUsersOnPriceTarget = async () => {
 						userId,
 						type: 'PRICE_ALERT',
 						title: '🎯 Target price reached!',
-						message: `${coin.name} reached your target $${formatPrice(coin.currentPrice)}`,
+						message: `${coin.name} reached your target $${formatValue(coin.currentPrice, true)}`,
 						coinId: coin.id,
 					},
 				})

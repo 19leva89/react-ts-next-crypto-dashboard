@@ -1,5 +1,6 @@
 'use client'
 
+import { ReactNode } from 'react'
 import { Pie, PieChart } from 'recharts'
 
 import {
@@ -14,16 +15,15 @@ import {
 	ChartTooltipContent,
 } from '@/components/ui'
 import { TPieChartData } from '@/modules/charts/schema'
-import { useFormatPrice } from '@/hooks/use-format-price'
-import { useCurrencyConverter } from '@/hooks/use-currency-converter'
+
+import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
 
 interface Props {
 	chartData: TPieChartData[]
 }
 
 export const PieChartContainer = ({ chartData }: Props) => {
-	const formatPrice = useFormatPrice()
-	const { fromUSD } = useCurrencyConverter()
+	const formatUSDPrice = useFormatUSDPrice()
 
 	const chartConfig = {
 		value: {
@@ -39,6 +39,14 @@ export const PieChartContainer = ({ chartData }: Props) => {
 			]),
 		),
 	} satisfies ChartConfig
+
+	const formatTooltipValue = (value: unknown, name: unknown): [ReactNode, string] => {
+		const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
+
+		const formattedValue = `: ${formatUSDPrice(numericValue)}`
+
+		return [name as string, formattedValue]
+	}
 
 	return (
 		<Card className='flex w-1/3 flex-col gap-0 rounded-xl py-1 max-[1200px]:w-1/2 max-[700px]:w-3/4 max-[450px]:w-full'>
@@ -60,13 +68,7 @@ export const PieChartContainer = ({ chartData }: Props) => {
 									payload={payload}
 									coordinate={coordinate}
 									accessibilityLayer={true}
-									formatter={(value, name) => {
-										const numericValue = typeof value === 'number' ? value : parseFloat(value as string)
-
-										const formattedValue = `: ${formatPrice(fromUSD(numericValue))}`
-
-										return [name, formattedValue]
-									}}
+									formatter={formatTooltipValue}
 									hideLabel
 								/>
 							)}

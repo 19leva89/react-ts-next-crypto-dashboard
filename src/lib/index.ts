@@ -1,2 +1,2 @@
-export { formatPrice } from './format-price'
+export { formatValue } from './format-value'
 export { absoluteUrl, constructMetadata, cn } from './utils'

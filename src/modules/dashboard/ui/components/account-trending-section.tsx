@@ -5,9 +5,9 @@ import { useState } from 'react'
 import { ChevronDownIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 
 import { cn } from '@/lib'
-import { useFormatPrice } from '@/hooks/use-format-price'
+import { useFormatValue } from '@/hooks/use-format-value'
 import { TTrendingData } from '@/modules/dashboard/schema'
-import { useCurrencyConverter } from '@/hooks/use-currency-converter'
+import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
 import { Button, ScrollArea, ScrollBar, Skeleton } from '@/components/ui'
 import { CoinDetailModal } from '@/components/shared/modals/coin-detail-modal'
 interface Props {
@@ -20,8 +20,8 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
 	const [dataIndex, setDataIndex] = useState<{ start: number; end: number }>({ start: 0, end: 5 })
 
-	const formatPrice = useFormatPrice()
-	const { fromUSD } = useCurrencyConverter()
+	const formatValue = useFormatValue()
+	const formatUSDPrice = useFormatUSDPrice()
 
 	const onShowMoreBtnClick = (reset = false) => {
 		setIsLoading(true)
@@ -160,15 +160,11 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 
 								<div className='mt-3 flex flex-col '>
 									<span className='text-xs text-gray-600 dark:text-slate-400'>
-										{formatPrice(data.item.data.market_cap_btc, false, true)} ₿
+										₿{formatValue(data.item.data.market_cap_btc, true)}
 									</span>
 
 									<span className='text-xs text-gray-600 dark:text-slate-400'>
-										{formatPrice(
-											fromUSD(Number(data.item.data.market_cap?.replace(/[$,]/g, '') || '0')),
-											true,
-											true,
-										)}
+										{formatUSDPrice(Number(data.item.data.market_cap?.replace(/[$,]/g, '') || '0'), true)}
 									</span>
 								</div>
 							</div>

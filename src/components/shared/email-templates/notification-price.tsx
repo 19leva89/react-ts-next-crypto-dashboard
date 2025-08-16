@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { absoluteUrl, formatPrice } from '@/lib'
+import { absoluteUrl, formatValue } from '@/lib'
 
 interface Props {
 	coins: {
@@ -29,8 +29,8 @@ export const NotificationPriceTemplate = ({ coins }: Props) => {
 						/>
 
 						<span>
-							<strong>{coin.name}</strong>: ${formatPrice(coin.currentPrice)} (Target: $
-							{formatPrice(coin.desiredPrice)})
+							<strong>{coin.name}</strong>: ${formatValue(coin.currentPrice, true)} (Target: $
+							{formatValue(coin.desiredPrice, true)})
 						</span>
 					</li>
 				))}

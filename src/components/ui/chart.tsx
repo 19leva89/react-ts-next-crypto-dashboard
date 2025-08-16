@@ -16,7 +16,7 @@ import type { Props as LegendProps } from 'recharts/types/component/Legend'
 import type { LegendPayload } from 'recharts/types/component/DefaultLegendContent'
 import { NameType, Payload, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 
-import { cn, formatPrice } from '@/lib'
+import { cn, formatValue } from '@/lib'
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: '', dark: '.dark' } as const
@@ -237,7 +237,7 @@ function ChartTooltipContent({
 										</div>
 										{item.value && (
 											<span className='font-mono font-medium text-foreground tabular-nums'>
-												{formatPrice(Number(item.value))}
+												{formatValue(Number(item.value))}
 											</span>
 										)}
 									</div>

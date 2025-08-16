@@ -19,9 +19,9 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { TUserCoinData } from '@/modules/coins/schema'
-import { useFormatPrice } from '@/hooks/use-format-price'
+import { useFormatValue } from '@/hooks/use-format-value'
+import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
 import { EditCoin } from '@/modules/coins/ui/components/edit-coin'
-import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 import { DeleteCoin } from '@/modules/coins/ui/components/delete-coin'
 
 interface Props {
@@ -30,8 +30,8 @@ interface Props {
 }
 
 export const CoinCard = ({ coin, viewMode }: Props) => {
-	const formatPrice = useFormatPrice()
-	const { fromUSD } = useCurrencyConverter()
+	const formatValue = useFormatValue()
+	const formatUSDPrice = useFormatUSDPrice()
 
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
@@ -83,13 +83,11 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 						<div
 							className={cn('flex', viewMode === 'grid' ? 'flex-col' : 'flex-row gap-4 max-[1000px]:hidden')}
 						>
-							<span>Buy: {formatPrice(fromUSD(coin.average_price))}</span>
+							<span>Buy: {formatUSDPrice(coin.average_price)}</span>
 
-							<span>Curr: {formatPrice(fromUSD(coin.current_price))}</span>
+							<span>Curr: {formatUSDPrice(coin.current_price)}</span>
 
-							{coin.desired_sell_price ? (
-								<span>Sell: {formatPrice(fromUSD(coin.desired_sell_price))}</span>
-							) : null}
+							{coin.desired_sell_price ? <span>Sell: {formatUSDPrice(coin.desired_sell_price)}</span> : null}
 						</div>
 
 						<div
@@ -158,9 +156,9 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 					viewMode === 'grid' ? 'flex-col items-start' : 'flex-row items-center justify-between gap-8',
 				)}
 			>
-				<p className='text-lg font-semibold'>Quantity: {formatPrice(coin.total_quantity, false)}</p>
+				<p className='text-lg font-semibold'>Quantity: {formatValue(coin.total_quantity)}</p>
 
-				<p className='text-lg font-semibold'>Total value: {formatPrice(fromUSD(totalValue), true, false)}</p>
+				<p className='text-lg font-semibold'>Total value: {formatUSDPrice(totalValue, false)}</p>
 			</CardContent>
 
 			{/* Edit Dialog */}

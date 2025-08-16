@@ -22,9 +22,10 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
-import { useFormatPrice } from '@/hooks/use-format-price'
+import { useFormatValue } from '@/hooks/use-format-value'
 import { getCoinsMarketChart } from '@/data/market-chart'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
+import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
 import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 import { TMarketChartData, TTransaction, TUserCoinData } from '@/modules/coins/schema'
@@ -38,7 +39,8 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	const router = useRouter()
 	const queryClient = useQueryClient()
 
-	const formatPrice = useFormatPrice()
+	const formatValue = useFormatValue()
+	const formatUSDPrice = useFormatUSDPrice()
 	const { fromUSD, toUSD, selectedCurrency } = useCurrencyConverter()
 
 	const [days, setDays] = useState<number>(1)
@@ -251,11 +253,11 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				</Button>
 
 				<div className='flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1'>
-					<p>Quantity: {formatPrice(coin.total_quantity, false, false)}</p>
+					<p>Quantity: {formatValue(coin.total_quantity)}</p>
 
-					<p>Total invested: {formatPrice(fromUSD(coin.total_cost), true, false)}</p>
+					<p>Total invested: {formatUSDPrice(coin.total_cost, false)}</p>
 
-					<p>Total value: {formatPrice(fromUSD(totalValue), true, false)}</p>
+					<p>Total value: {formatUSDPrice(totalValue, false)}</p>
 				</div>
 			</div>
 
@@ -379,9 +381,9 @@ export const CoinIdContainer = ({ coin }: Props) => {
 											<div className='flex flex-col gap-1'>
 												<span className='text-xs'>{timeValue}</span>
 
-												<span className='text-xs'>Price: {formatPrice(fromUSD(priceValue))}</span>
+												<span className='text-xs'>Price: {formatUSDPrice(priceValue)}</span>
 
-												<span className='text-xs'>Total value: {formatPrice(fromUSD(totalValue))}</span>
+												<span className='text-xs'>Total value: {formatUSDPrice(totalValue)}</span>
 											</div>
 										</div>
 									)

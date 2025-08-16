@@ -16,10 +16,9 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { TUserCoinData } from '@/modules/coins/schema'
-import { useFormatPrice } from '@/hooks/use-format-price'
 import { AddCoin } from '@/modules/coins/ui/components/add-coin'
+import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
 import { CoinCard } from '@/modules/coins/ui/components/coin-card'
-import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 
 interface Props {
 	coinData: TUserCoinData[]
@@ -31,8 +30,7 @@ interface Props {
 export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
 	const { open } = useSidebar()
 
-	const formatPrice = useFormatPrice()
-	const { fromUSD } = useCurrencyConverter()
+	const formatUSDPrice = useFormatUSDPrice()
 
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [viewMode, setViewMode] = useLocalStorageState<'list' | 'grid'>('viewMode', {
@@ -100,19 +98,19 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 				<div className='flex items-start gap-1 max-[1000px]:flex-col'>
 					<div className='p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6'>
 						<h2 className='text-xl font-bold max-[460px]:text-lg'>
-							Total invested: {formatPrice(fromUSD(totalInvestedValue), true, true)}
+							Total invested: {formatUSDPrice(totalInvestedValue, true)}
 						</h2>
 					</div>
 
 					<div className='p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6'>
 						<h2 className='text-xl font-bold max-[460px]:text-lg'>
-							Total coin: {formatPrice(fromUSD(totalValue), true, true)}
+							Total coin: {formatUSDPrice(totalValue, true)}
 						</h2>
 					</div>
 
 					<div className='p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6'>
 						<h2 className='text-xl font-bold max-[460px]:text-lg'>
-							Planned profit: {formatPrice(fromUSD(plannedProfit), true, true)}
+							Planned profit: {formatUSDPrice(plannedProfit, true)}
 						</h2>
 					</div>
 				</div>

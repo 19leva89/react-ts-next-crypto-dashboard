@@ -1,11 +1,7 @@
-import { useFormatPrice } from '@/hooks/use-format-price'
-import { useCurrencyConverter } from '@/hooks/use-currency-converter'
+import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
 
 export function TableCell({ value }: { value: number }) {
-	const formatPrice = useFormatPrice()
-	const { fromUSD } = useCurrencyConverter()
+	const formatUSDPrice = useFormatUSDPrice()
 
-	return (
-		<div className='px-3 py-2 text-base max-[1200px]:text-sm'>{formatPrice(fromUSD(value), true, true)}</div>
-	)
+	return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>{formatUSDPrice(value, true)}</div>
 }
