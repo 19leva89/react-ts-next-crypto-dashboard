@@ -19,6 +19,7 @@ import { getWalletDisplayName } from '@/data/wallet'
 import { TTransaction, WALLETS } from '@/modules/coins/schema'
 import { InputFormatPrice, InputFormatQuantity } from '@/components/shared'
 import { DeleteTransaction } from '@/modules/coins/ui/components/delete-transaction'
+import { WalletIcon } from '@/modules/transactions/ui/components/wallet-icon'
 
 export const getColumns = (
 	onTransactionChange: (id: string, field: keyof TTransaction, value: string) => void,
@@ -156,7 +157,7 @@ export const getColumns = (
 				}}
 			>
 				<SelectTrigger
-					id='wallet'
+					id={`wallet-${row.original.id}`}
 					aria-label={`Current wallet: ${getWalletDisplayName(row.original.wallet as keyof typeof WALLETS)}`}
 					className='w-full rounded-xl max-[900px]:text-sm max-[600px]:text-xs'
 				>
@@ -166,6 +167,8 @@ export const getColumns = (
 				<SelectContent>
 					{Object.keys(WALLETS).map((walletKey) => (
 						<SelectItem key={walletKey} value={walletKey}>
+							<WalletIcon wallet={walletKey as keyof typeof WALLETS} />
+
 							{getWalletDisplayName(walletKey as keyof typeof WALLETS)}
 						</SelectItem>
 					))}

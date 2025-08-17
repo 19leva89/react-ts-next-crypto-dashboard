@@ -8,7 +8,7 @@ import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
 import { getFieldForDays } from '@/data/field-for-days'
 import { TMarketChartData } from '@/modules/coins/schema'
-import { MARKET_CHART_UPDATE_INTERVAL } from '@/constants/intervals'
+import { INTERVAL_MARKET_CHART_UPDATE } from '@/constants/intervals'
 
 export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Promise<TMarketChartData> => {
 	try {
@@ -23,7 +23,7 @@ export const getCoinsMarketChart = async (coinId: string, days: ValidDays): Prom
 		})
 
 		const currentTime = new Date()
-		const updateTime = new Date(currentTime.getTime() - MARKET_CHART_UPDATE_INTERVAL)
+		const updateTime = new Date(currentTime.getTime() - INTERVAL_MARKET_CHART_UPDATE)
 
 		// If the data for the required period already exists, return it
 		if (cachedData?.[field] && cachedData?.[updatedField] && cachedData[updatedField]! > updateTime) {

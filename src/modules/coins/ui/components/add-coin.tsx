@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { PlusIcon } from 'lucide-react'
 import { FixedSizeList as List } from 'react-window'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ChangeEvent, CSSProperties, useCallback, useMemo, useState, useRef, useEffect } from 'react'
+import { ChangeEvent, CSSProperties, useCallback, useMemo, useState, useRef, useEffect, useId } from 'react'
 
 import {
 	Button,
@@ -31,6 +31,7 @@ import { WALLETS, TWallet } from '@/modules/coins/schema'
 
 export const AddCoin = () => {
 	const trpc = useTRPC()
+	const walletSelectId = useId()
 	const queryClient = useQueryClient()
 	const searchInputRef = useRef<HTMLInputElement>(null)
 
@@ -95,7 +96,7 @@ export const AddCoin = () => {
 		try {
 			// Check that the cryptocurrency is selected and the amount is entered
 			if (!selectedCoin || !editQuantity || !editPrice) {
-				toast.error('Please select a coin, enter a quantity and buy price')
+				toast.error('Please select a coin, enter quantity and price')
 
 				return
 			}
@@ -176,7 +177,7 @@ export const AddCoin = () => {
 						<DialogHeader>
 							<DialogTitle>Add Transaction</DialogTitle>
 
-							<DialogDescription>Select a coin, enter the quantity and price</DialogDescription>
+							<DialogDescription>Select a coin, enter quantity and price</DialogDescription>
 						</DialogHeader>
 
 						<div className='grid gap-4 py-4'>
@@ -284,7 +285,7 @@ export const AddCoin = () => {
 							</div>
 
 							<div className='grid grid-cols-4 items-center gap-4'>
-								<Label htmlFor='wallet' className='text-right'>
+								<Label htmlFor={walletSelectId} className='text-right'>
 									Wallet
 								</Label>
 
@@ -296,7 +297,7 @@ export const AddCoin = () => {
 										}}
 									>
 										<SelectTrigger
-											id='wallet'
+											id={walletSelectId}
 											aria-label={`Current wallet: ${getWalletDisplayName(selectedWallet as keyof typeof WALLETS)}`}
 											className='w-full'
 										>
