@@ -135,15 +135,13 @@ export const coinsRouter = createTRPCRouter({
 		}),
 
 	getCoinsListIDMap: protectedProcedure.query(async () => {
-		const coins = await prisma.coinsListIDMap.findMany({
-			include: { coin: true },
-		})
+		const coins = await prisma.coinsListIDMap.findMany()
 
 		return coins.map((list) => ({
 			id: list.id,
 			symbol: list.symbol,
 			name: list.name,
-			image: list.coin?.image,
+			image: list.image,
 		}))
 	}),
 
@@ -171,13 +169,13 @@ export const coinsRouter = createTRPCRouter({
 						select: {
 							name: true,
 							symbol: true,
+							image: true,
 						},
 					},
 					coin: {
 						select: {
 							id: true,
 							current_price: true,
-							image: true,
 							sparkline_in_7d: true,
 							price_change_percentage_7d_in_currency: true,
 						},
@@ -214,12 +212,12 @@ export const coinsRouter = createTRPCRouter({
 				coinId: userCoin.coin.id,
 				name: userCoin.coinsListIDMap.name,
 				symbol: userCoin.coinsListIDMap.symbol,
+				image: userCoin.coinsListIDMap.image ?? '/svg/coin-not-found.svg',
 				current_price: userCoin.coin.current_price ?? 0,
 				total_quantity: userCoin.total_quantity,
 				total_cost: userCoin.total_cost,
 				average_price: userCoin.average_price,
 				desired_sell_price: userCoin.desired_sell_price ?? 0,
-				image: userCoin.coin.image ?? '/svg/coin-not-found.svg',
 				sparkline_in_7d: {
 					price: (() => {
 						const sparkline = userCoin.coin.sparkline_in_7d
@@ -256,12 +254,12 @@ export const coinsRouter = createTRPCRouter({
 			coinId: userCoin.coin.id,
 			name: userCoin.coinsListIDMap.name,
 			symbol: userCoin.coinsListIDMap.symbol,
+			image: userCoin.coinsListIDMap.image ?? '/svg/coin-not-found.svg',
 			current_price: userCoin.coin.current_price as number,
 			total_quantity: userCoin.total_quantity,
 			total_cost: userCoin.total_cost,
 			average_price: userCoin.average_price,
 			desired_sell_price: userCoin.desired_sell_price as number,
-			image: userCoin.coin.image as string,
 			sparkline_in_7d: userCoin.coin.sparkline_in_7d as { price: number[] },
 			transactions: userCoin.transactions.map((transaction) => ({
 				id: transaction.id,

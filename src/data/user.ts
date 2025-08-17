@@ -75,13 +75,13 @@ export const getUserCoinsList = async () => {
 					select: {
 						name: true,
 						symbol: true,
+						image: true,
 					},
 				},
 				coin: {
 					select: {
 						id: true,
 						current_price: true,
-						image: true,
 						sparkline_in_7d: true,
 						price_change_percentage_7d_in_currency: true,
 					},

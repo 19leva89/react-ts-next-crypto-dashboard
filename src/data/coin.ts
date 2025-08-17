@@ -24,7 +24,7 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 				symbol: cachedData.coinsListIDMap.symbol,
 				name: cachedData.coinsListIDMap.name,
 				description: { en: cachedData.description || '' },
-				image: { thumb: cachedData.image || '' },
+				image: { thumb: cachedData.coinsListIDMap.image || '/svg/coin-not-found.svg' },
 				market_cap_rank: cachedData.market_cap_rank || 0,
 				market_data: {
 					current_price: { usd: cachedData.current_price || 0 },
@@ -54,7 +54,6 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 		const mapToDbFields = (data: any) => ({
 			current_price: data.market_data?.current_price?.usd || 0,
 			description: data.description?.en || '',
-			image: data.image?.thumb || '',
 			market_cap: data.market_data?.market_cap?.usd || 0,
 			market_cap_rank: data.market_cap_rank || 0,
 			high_24h: data.market_data?.high_24h?.usd || 0,
@@ -94,8 +93,8 @@ export const getCoinData = async (coinId: string): Promise<CoinData> => {
 			id,
 			symbol,
 			name,
+			image,
 			description: { en: description?.en || '' },
-			image: { thumb: image?.thumb || '' },
 			market_cap_rank: market_cap_rank || 0,
 			market_data: {
 				current_price: { usd: market_data?.current_price?.usd || 0 },

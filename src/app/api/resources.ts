@@ -11,6 +11,16 @@ export const getCgExchangeRateRoute = (): string => {
 	return `${GECKO_ROUTE_V3}/simple/price?vs_currencies=usd%2Ceur%2Cuah&ids=usd`
 }
 
+// getCoinsListIDMap
+export const getCgCoinsListIDMap = (): string => {
+	return `${GECKO_ROUTE_V3}/coins/list`
+}
+
+// getCoinsListIDMapImage
+export const getCgCoinsListIDMapImage = (page: string, per_page: string): string => {
+	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&page=${page}&per_page=${per_page}`
+}
+
 // getCategories
 export const getCgCategoriesRoute = (): string => {
 	return `${GECKO_ROUTE_V3}/coins/categories/list`
@@ -29,11 +39,6 @@ export const getCgUpdateCoinsListRoute = (coinList: string): string => {
 // updateUserCoinsList
 export const getCgUserCoinsListRoute = (coinList: string): string => {
 	return `${GECKO_ROUTE_V3}/coins/markets?vs_currency=usd&ids=${coinList}&per_page=250&sparkline=true`
-}
-
-// getCoinsListIDMap
-export const getCgCoinsListIDMap = (): string => {
-	return `${GECKO_ROUTE_V3}/coins/list`
 }
 
 // getCoinData
