@@ -22,9 +22,12 @@ import {
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
+	SelectValue,
 	Skeleton,
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
+import { getWalletDisplayName } from '@/data/wallet'
+import { WALLETS, TWallet } from '@/modules/coins/schema'
 
 export const AddCoin = () => {
 	const trpc = useTRPC()
@@ -39,6 +42,7 @@ export const AddCoin = () => {
 	const [editQuantity, setEditQuantity] = useState<string>('')
 	const [selectedCoin, setSelectedCoin] = useState<string>('')
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+	const [selectedWallet, setSelectedWallet] = useState<TWallet>(WALLETS.OTHER)
 
 	// New state variables for managing Select open state and search focus
 	const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
@@ -100,7 +104,8 @@ export const AddCoin = () => {
 				coinId: selectedCoin,
 				quantity: Number(editQuantity),
 				price: Number(editPrice),
-				image: selectedCoinData?.image ?? '',
+				image: selectedCoinData?.image ?? '/svg/coin-not-found.svg',
+				wallet: selectedWallet,
 			})
 
 			setIsDialogOpen(false)
@@ -277,20 +282,51 @@ export const AddCoin = () => {
 									className='col-span-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
 								/>
 							</div>
-						</div>
 
-						<DialogFooter>
-							<Button
-								variant='default'
-								size='default'
-								onClick={handleAddCoin}
-								disabled={isLoading || isAdding}
-								loading={isAdding}
-								className='rounded-xl text-white transition-colors duration-300 ease-in-out'
-							>
-								Submit
-							</Button>
-						</DialogFooter>
+							<div className='grid grid-cols-4 items-center gap-4'>
+								<Label htmlFor='wallet' className='text-right'>
+									Wallet
+								</Label>
+
+								<div className='col-span-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'>
+									<Select
+										value={selectedWallet}
+										onValueChange={(value) => {
+											setSelectedWallet(value as TWallet)
+										}}
+									>
+										<SelectTrigger
+											id='wallet'
+											aria-label={`Current wallet: ${getWalletDisplayName(selectedWallet as keyof typeof WALLETS)}`}
+											className='w-full'
+										>
+											<SelectValue placeholder='Select wallet' />
+										</SelectTrigger>
+
+										<SelectContent>
+											{Object.keys(WALLETS).map((walletKey) => (
+												<SelectItem key={walletKey} value={walletKey}>
+													{getWalletDisplayName(walletKey as keyof typeof WALLETS)}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
+							</div>
+
+							<DialogFooter>
+								<Button
+									variant='default'
+									size='default'
+									onClick={handleAddCoin}
+									disabled={isLoading || isAdding}
+									loading={isAdding}
+									className='rounded-xl text-white transition-colors duration-300 ease-in-out'
+								>
+									Submit
+								</Button>
+							</DialogFooter>
+						</div>
 					</DialogContent>
 				</Dialog>
 			</div>

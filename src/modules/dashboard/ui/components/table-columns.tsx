@@ -67,20 +67,17 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 
 			return (
 				<div className='flex items-center gap-2 px-3 py-2 text-base max-[1200px]:text-sm'>
-					{coin.image && coin.name ? (
-						<Image
-							src={coin.image || '/svg/coin-not-found.svg'}
-							alt={coin.name || 'Coin image'}
-							width={32}
-							height={32}
-							className='size-8 rounded-full max-[1200px]:size-6'
-							onError={(e) => {
-								e.currentTarget.src = '/svg/coin-not-found.svg'
-							}}
-						/>
-					) : (
-						'-'
-					)}
+					<Image
+						src={coin.image || '/svg/coin-not-found.svg'}
+						alt={coin.name || 'Coin image'}
+						width={32}
+						height={32}
+						className='size-8 rounded-full max-[1200px]:size-6'
+						onError={(e) => {
+							e.currentTarget.src = '/svg/coin-not-found.svg'
+						}}
+					/>
+
 					<span className='max-w-[6rem] truncate'>{coin.name}</span>
 				</div>
 			)

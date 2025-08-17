@@ -1,6 +1,11 @@
 // Do not change the path, made for seed.ts
+import {
+	deleteNonExistentCoinsListIDMap,
+	getCoinsList,
+	updateCoinsListIDMapFromAPI,
+	updateCoinsListIDMapImageFromAPI,
+} from './../src/actions/actions-seed'
 import { prisma } from './../src/lib/prisma'
-import { getCoinsList, updateCoinsListIDMapFromAPI } from './../src/actions/actions-seed'
 
 //! To run the command "npx prisma db seed" the server must be running
 
@@ -9,7 +14,13 @@ import { getCoinsList, updateCoinsListIDMapFromAPI } from './../src/actions/acti
 
 async function up() {
 	// Updating the list of cryptocurrencies ~20min
-	await updateCoinsListIDMapFromAPI()
+	// await updateCoinsListIDMapFromAPI()
+
+	// Updating the list of cryptocurrencies with images ~20min
+	// await updateCoinsListIDMapImageFromAPI()
+
+	// Delete non existent cryptocurrencies
+	await deleteNonExistentCoinsListIDMap()
 
 	// Get a list of cryptocurrencies TOP250
 	// await getCoinsList()

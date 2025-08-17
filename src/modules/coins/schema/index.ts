@@ -24,12 +24,12 @@ export const userCoinDataSchema = z.object({
 	coinId: z.string(),
 	name: z.string(),
 	symbol: z.string(),
+	image: z.string(),
 	current_price: z.number(),
 	total_quantity: z.number(),
 	total_cost: z.number(),
 	average_price: z.number(),
 	desired_sell_price: z.number().optional(),
-	image: z.string(),
 	sparkline_in_7d: z.object({
 		price: z.array(z.number()),
 	}),

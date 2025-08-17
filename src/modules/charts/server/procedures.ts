@@ -38,8 +38,8 @@ export const chartsRouter = createTRPCRouter({
 				coinId: userCoin.coin.id,
 				name: userCoin.coinsListIDMap.name,
 				symbol: userCoin.coinsListIDMap.symbol,
+				image: userCoin.coinsListIDMap.image || '/svg/coin-not-found.svg',
 				current_price: userCoin.coin.current_price as number,
-				image: userCoin.coin.image as string,
 				sparkline_in_7d: userCoin.coin.sparkline_in_7d as { price: number[] },
 				price_change_percentage_7d_in_currency: userCoin.coin
 					.price_change_percentage_7d_in_currency as number,

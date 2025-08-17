@@ -57,7 +57,6 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 				where: { id: coin.id },
 				update: {
 					current_price: coin.current_price,
-					image: coin.image,
 					sparkline_in_7d: coin.sparkline_in_7d,
 					updatedAt: currentTime,
 				},
@@ -66,7 +65,6 @@ export const updateUserCoinsList = async (userId: string): Promise<any> => {
 					coinsListIDMapId: coin.id,
 					current_price: coin.current_price,
 					sparkline_in_7d: coin.sparkline_in_7d,
-					image: coin.image,
 					updatedAt: currentTime,
 				},
 			}),
@@ -146,7 +144,7 @@ export const notifyUsersOnPriceTarget = async () => {
 		userMap[user.id].coins.push({
 			id: coin.id,
 			name: coinsListIDMap?.name ?? coin.id,
-			image: coin.image ?? '/svg/coin-not-found.svg',
+			image: coinsListIDMap.image ?? '/svg/coin-not-found.svg',
 			currentPrice: coin.current_price,
 			desiredPrice: desired_sell_price,
 		})

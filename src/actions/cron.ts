@@ -131,8 +131,8 @@ export const updateCoinsList = async (): Promise<any> => {
 			// Upsert for CoinsListIDMap
 			prisma.coinsListIDMap.upsert({
 				where: { id: coin.id },
-				update: { symbol: coin.symbol, name: coin.name },
-				create: { id: coin.id, symbol: coin.symbol, name: coin.name },
+				update: { symbol: coin.symbol, name: coin.name, image: coin.image },
+				create: { id: coin.id, symbol: coin.symbol, name: coin.name, image: coin.image },
 			}),
 
 			// Update for Coin
@@ -142,7 +142,6 @@ export const updateCoinsList = async (): Promise<any> => {
 					...pick(coin, [
 						'current_price',
 						'description',
-						'image',
 						'market_cap',
 						'market_cap_rank',
 						'total_volume',

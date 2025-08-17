@@ -25,6 +25,7 @@ export const dashboardRouter = createTRPCRouter({
 			...coin,
 			symbol: coin.coinsListIDMap.symbol,
 			name: coin.coinsListIDMap.name,
+			image: coin.coinsListIDMap.image ?? '/svg/coin-not-found.svg',
 		}))
 
 		return coinsListDataSchema.parse(coinsWithDefaults)
@@ -38,7 +39,7 @@ export const dashboardRouter = createTRPCRouter({
 				where: { categoryId: cate },
 				include: {
 					coinsListIDMap: {
-						select: { symbol: true, name: true },
+						select: { symbol: true, name: true, image: true },
 					},
 				},
 			})
@@ -46,7 +47,9 @@ export const dashboardRouter = createTRPCRouter({
 			if (cachedData.length > 0) {
 				const coinsWithDefaults = cachedData.map(({ coinsListIDMap, ...coin }) => ({
 					...coin,
-					...coinsListIDMap,
+					symbol: coinsListIDMap.symbol,
+					name: coinsListIDMap.name,
+					image: coinsListIDMap.image ?? '/svg/coin-not-found.svg',
 				}))
 
 				return coinsListDataSchema.parse(coinsWithDefaults)
@@ -61,7 +64,6 @@ export const dashboardRouter = createTRPCRouter({
 			const transformCoinData = (data: any, category: string) => ({
 				...pick(data, [
 					'description',
-					'image',
 					'current_price',
 					'market_cap',
 					'market_cap_rank',
@@ -80,8 +82,8 @@ export const dashboardRouter = createTRPCRouter({
 				response.flatMap((coinData) => [
 					prisma.coinsListIDMap.upsert({
 						where: { id: coinData.id },
-						update: { symbol: coinData.symbol, name: coinData.name },
-						create: { id: coinData.id, ...pick(coinData, ['symbol', 'name']) },
+						update: { symbol: coinData.symbol, name: coinData.name, image: coinData.image },
+						create: { id: coinData.id, ...pick(coinData, ['symbol', 'name', 'image']) },
 					}),
 					prisma.coin.upsert({
 						where: { id: coinData.id },
