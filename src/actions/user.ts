@@ -4,13 +4,13 @@ import { formatValue } from '@/lib'
 import { prisma } from '@/lib/prisma'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
-import { COINS_UPDATE_INTERVAL } from '@/constants/intervals'
+import { INTERVAL_COINS_UPDATE } from '@/constants/intervals'
 import { sendNotificationPriceEmail } from '@/lib/send-email'
 
 export const updateUserCoinsList = async (userId: string): Promise<any> => {
 	try {
 		const currentTime = new Date()
-		const updateTime = new Date(currentTime.getTime() - COINS_UPDATE_INTERVAL)
+		const updateTime = new Date(currentTime.getTime() - INTERVAL_COINS_UPDATE)
 
 		// Get a list of user coins
 		const coinsToUpdate = await prisma.userCoin.findMany({
@@ -143,7 +143,7 @@ export const notifyUsersOnPriceTarget = async () => {
 
 		userMap[user.id].coins.push({
 			id: coin.id,
-			name: coinsListIDMap?.name ?? coin.id,
+			name: coinsListIDMap.name ?? coin.id,
 			image: coinsListIDMap.image ?? '/svg/coin-not-found.svg',
 			currentPrice: coin.current_price,
 			desiredPrice: desired_sell_price,

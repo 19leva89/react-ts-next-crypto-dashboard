@@ -12,6 +12,7 @@ import { TExchangeRate } from '@/modules/helpers/schema'
 import { TMarketChartData } from '@/modules/coins/schema'
 import { PrismaTransactionClient } from '@/app/api/types'
 import { trendingDataSchema } from '@/modules/dashboard/schema'
+import { INTERVAL_EXPIRED_NOTIFICATIONS } from '@/constants/intervals'
 import { TCategoriesData, TTrendingData } from '@/modules/dashboard/schema'
 
 // General function for recalculating aggregated data
@@ -348,5 +349,28 @@ export const updateTrendingData = async (): Promise<TTrendingData> => {
 	} catch (error) {
 		handleError(error, 'UPDATE_TRENDING_DATA')
 		return { coins: [] }
+	}
+}
+
+// cron 24h
+export const deleteExpiredNotifications = async () => {
+	try {
+		const cutoff = new Date(Date.now() - INTERVAL_EXPIRED_NOTIFICATIONS)
+
+		console.log(`🧹 Deleting notifications older than ${cutoff.toISOString()}...`)
+
+		const result = await prisma.notification.deleteMany({
+			where: {
+				createdAt: { lt: cutoff },
+			},
+		})
+
+		console.log(`✅ Deleted ${result.count} expired notification(s)`)
+
+		return { deleted: result.count }
+	} catch (error) {
+		handleError(error, 'DELETE_EXPIRED_NOTIFICATIONS')
+
+		return { deleted: 0 }
 	}
 }

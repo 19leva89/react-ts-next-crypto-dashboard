@@ -4,11 +4,11 @@ import { prisma } from '@/lib/prisma'
 import { CoinData } from '@/app/api/types'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
-import { COINS_UPDATE_INTERVAL } from '@/constants/intervals'
+import { INTERVAL_COINS_UPDATE } from '@/constants/intervals'
 
 export const getCoinData = async (coinId: string): Promise<CoinData> => {
 	try {
-		const updateTime = new Date(Date.now() - COINS_UPDATE_INTERVAL)
+		const updateTime = new Date(Date.now() - INTERVAL_COINS_UPDATE)
 
 		// Checking the availability of data in the DB
 		const cachedData = await prisma.coin.findUnique({

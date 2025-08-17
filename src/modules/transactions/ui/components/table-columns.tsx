@@ -9,6 +9,7 @@ import { Button } from '@/components/ui'
 import { TWallet } from '@/modules/coins/schema'
 import { TTransaction } from '@/modules/transactions/schema'
 import { TableCell } from '@/modules/transactions/ui/components/table-cell'
+import { WalletIcon } from '@/modules/transactions/ui/components/wallet-icon'
 
 export const columns: ColumnDef<TTransaction>[] = [
 	// Coin name
@@ -40,10 +41,10 @@ export const columns: ColumnDef<TTransaction>[] = [
 						alt={coin.name}
 						width={24}
 						height={24}
-						className='size-6 rounded-full max-[500px]:size-5'
 						onError={(e) => {
 							e.currentTarget.src = '/svg/coin-not-found.svg'
 						}}
+						className='size-6 rounded-full max-[500px]:size-5'
 					/>
 
 					<span className='truncate'>
@@ -240,11 +241,13 @@ export const columns: ColumnDef<TTransaction>[] = [
 
 			return (
 				<div
-					className='flex min-w-46 items-center gap-2 px-3 py-2 text-base max-[1200px]:text-sm'
+					tabIndex={0}
 					role='textbox'
 					aria-label={`wallet: ${label}`}
-					tabIndex={0}
+					className='flex min-w-46 items-center gap-2 px-3 py-2 text-base max-[1200px]:text-sm'
 				>
+					<WalletIcon wallet={wallet} />
+
 					<span className='truncate capitalize'>{label}</span>
 				</div>
 			)
