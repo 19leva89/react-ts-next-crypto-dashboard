@@ -51,7 +51,7 @@
     "nextjs-toploader": "^3.8.16",
     "nodemailer": "^6.10.1",
     "react": "^19.1.1",
-    "react-day-picker": "^9.8.1",
+    "react-day-picker": "^9.9.0",
     "react-dom": "^19.1.1",
     "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.62.0",
