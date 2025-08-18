@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import useLocalStorageState from 'use-local-storage-state'
 import { LayoutGridIcon, ListIcon, SearchIcon, XIcon } from 'lucide-react'
 
@@ -32,11 +31,13 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 
 	const formatUSDPrice = useFormatUSDPrice()
 
-	const [searchQuery, setSearchQuery] = useState<string>('')
+	const [searchQuery, setSearchQuery] = useLocalStorageState<string>('searchQueryCoins', {
+		defaultValue: '',
+	})
 	const [viewMode, setViewMode] = useLocalStorageState<'list' | 'grid'>('viewMode', {
 		defaultValue: 'grid',
 	})
-	const [sortOption, setSortOption] = useState<
+	const [sortOption, setSortOption] = useLocalStorageState<
 		| 'total-asc'
 		| 'total-desc'
 		| 'profit-asc'
@@ -45,7 +46,9 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 		| 'name-desc'
 		| 'price-asc'
 		| 'price-desc'
-	>('total-desc')
+	>('sortOption', {
+		defaultValue: 'total-desc',
+	})
 
 	const sortedCoinData = [...coinData].sort((a, b) => {
 		switch (sortOption) {

@@ -43,10 +43,13 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 	const trpc = useTRPC()
 	const currentPath = usePathname()
 
-	const { open, isMobile } = useSidebar()
 	const { data: session, status } = useSession()
+	const { open, isMobile, setOpenMobile } = useSidebar()
 
 	const [openAuthModal, setOpenAuthModal] = useState<boolean>(false)
+
+	const user = session?.user
+	const isLoading = status === 'loading'
 
 	const addLogoutNotificationMutation = useMutation(
 		trpc.notifications.addLogoutNotification.mutationOptions(),
@@ -54,8 +57,14 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 
 	const { data: unreadPriceNotifications } = useQuery({
 		...trpc.notifications.getUnreadPriceNotifications.queryOptions(),
-		enabled: !!session?.user,
+		enabled: !!user,
 	})
+
+	const handleLinkClick = () => {
+		if (isMobile) {
+			setOpenMobile(false)
+		}
+	}
 
 	const renderMenuItems = (items: MenuItem[]) => {
 		return items.map((item) => {
@@ -66,14 +75,13 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 				Array.isArray(unreadPriceNotifications) &&
 				unreadPriceNotifications.length > 0
 
-			const isActive = currentPath
-				? currentPath === item.url || (item.url !== '/' && currentPath.startsWith(item.url + '/'))
-				: false
+			const isActive =
+				currentPath === item.url || (item.url !== '/' && currentPath.startsWith(`${item.url}/`))
 
 			return (
 				<SidebarMenuItem key={item.title}>
 					<SidebarMenuButton asChild isActive={isActive} tooltip={item.title} className='text-lg'>
-						<Link href={item.url} className='flex h-12 items-center gap-4'>
+						<Link href={item.url} className='flex h-12 items-center gap-4' onClick={handleLinkClick}>
 							<div className='relative'>
 								<Icon className={open ? 'size-5!' : 'size-4'} />
 
@@ -97,6 +105,8 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 	}
 
 	const handleLogout = async () => {
+		handleLinkClick()
+
 		try {
 			await addLogoutNotificationMutation.mutateAsync()
 
@@ -148,28 +158,28 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 									)}
 								>
 									<div className='flex grow items-center justify-between gap-2'>
-										{status === 'loading' ? (
+										{isLoading ? (
 											<Skeleton className='size-10 rounded-full' />
 										) : (
 											<Avatar>
 												<AvatarImage
-													src={session?.user.image || '/svg/profile-image.svg'}
-													alt={session?.user.name || 'User'}
+													src={user?.image || '/svg/profile-image.svg'}
+													alt={user?.name || 'User'}
 													className='object-contain'
 												/>
 											</Avatar>
 										)}
 
 										<div className='flex flex-col gap-1 text-xs'>
-											{status === 'loading' ? (
+											{isLoading ? (
 												<>
 													<Skeleton className='h-4 w-32' />
 													<Skeleton className='h-4 w-32' />
 												</>
 											) : (
 												<>
-													<span className='font-medium'>{session?.user.name || 'Guest'}</span>
-													<span className='text-gray-500'>{session?.user.email || 'Please login'}</span>
+													<span className='font-medium'>{user?.name || 'Guest'}</span>
+													<span className='text-gray-500'>{user?.email || 'Please login'}</span>
 												</>
 											)}
 										</div>
@@ -185,7 +195,7 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 								align='start'
 								className='z-100 flex w-(--radix-popper-anchor-width) flex-col gap-1 rounded-xl bg-white shadow-lg dark:bg-gray-900'
 							>
-								{!session?.user ? (
+								{!user ? (
 									<DropdownMenuItem className='h-10 w-full cursor-pointer' asChild>
 										<button
 											onClick={() => {
@@ -200,7 +210,11 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 								) : (
 									<>
 										<DropdownMenuItem className='h-10 w-full cursor-pointer' asChild>
-											<Link href='/settings' className='flex w-full items-center gap-2 rounded-xl p-3'>
+											<Link
+												href='/settings'
+												onClick={handleLinkClick}
+												className='flex w-full items-center gap-2 rounded-xl p-3'
+											>
 												<SettingsIcon size={16} />
 												Settings
 											</Link>

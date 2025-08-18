@@ -129,7 +129,7 @@ export const ProfileView = () => {
 							render={({ field }) => (
 								<FormItem className='mt-8 flex flex-row items-center justify-between rounded-lg border p-3 shadow-xs'>
 									<div className='space-y-0.5'>
-										<FormLabel>Two Factor Authentication</FormLabel>
+										<FormLabel className='cursor-pointer'>Two Factor Authentication</FormLabel>
 
 										<FormDescription>Enable two factor authentication for your account</FormDescription>
 									</div>
@@ -139,6 +139,7 @@ export const ProfileView = () => {
 											disabled={updateUserMutation.isPending}
 											checked={field.value}
 											onCheckedChange={handleTwoFactorToggle}
+											className='cursor-pointer'
 										/>
 									</FormControl>
 								</FormItem>

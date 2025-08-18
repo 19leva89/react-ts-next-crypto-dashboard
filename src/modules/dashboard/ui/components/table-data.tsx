@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
 		onRowSelectionChange: setRowSelection,
 	})
 
-	const filterValue = (table.getColumn('name')?.getFilterValue() as string) ?? ''
+	const searchQuery = (table.getColumn('name')?.getFilterValue() as string) ?? ''
 
 	const handleFilterChange = (value: string) => {
 		table.getColumn('name')?.setFilterValue(value)
@@ -106,7 +106,7 @@ export function DataTable<TData, TValue>({
 
 					<Input
 						placeholder='Filter coins...'
-						value={filterValue}
+						value={searchQuery}
 						onChange={(e) => handleFilterChange(e.target.value)}
 						className='rounded-xl px-10'
 					/>
@@ -117,7 +117,7 @@ export function DataTable<TData, TValue>({
 						onClick={() => table.getColumn('name')?.setFilterValue('')}
 						className={cn(
 							'absolute top-1/2 right-1 -translate-y-1/2 hover:bg-transparent hover:text-gray-400',
-							filterValue ? 'opacity-100' : 'pointer-events-none opacity-0',
+							searchQuery ? 'opacity-100' : 'pointer-events-none opacity-0',
 						)}
 					>
 						<XIcon size={16} />
