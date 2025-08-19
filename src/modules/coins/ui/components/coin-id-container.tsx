@@ -427,6 +427,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 						className='rounded-xl transition-colors duration-300 ease-in-out'
 					>
 						<PlusIcon className='size-4' />
+
 						<span>Transaction</span>
 					</Button>
 

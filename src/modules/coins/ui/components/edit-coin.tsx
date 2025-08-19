@@ -142,14 +142,14 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className='rounded-xl max-[450px]:px-1 sm:max-w-2xl'>
+			<DialogContent className='rounded-xl max-[450px]:px-1 sm:max-w-3xl'>
 				<DialogHeader className='px-4'>
 					<DialogTitle>Edit quantity, price or date</DialogTitle>
 
 					<DialogDescription>Update values of {coin.name} in your portfolio</DialogDescription>
 				</DialogHeader>
 
-				<div className='flex flex-col gap-4 py-4'>
+				<div className='flex flex-col gap-4 overflow-y-auto py-4'>
 					<div className='flex items-center justify-start gap-4 px-4'>
 						<Label htmlFor='sell-price' className='w-[20%]'>
 							Sell price
