@@ -4,7 +4,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
-import { ScrollArea } from '@/components/ui'
 import { TTransaction, TUserCoinData } from '@/modules/coins/schema'
 import { DataTable } from '@/components/shared/data-tables/transaction-table/data'
 import { getColumns } from '@/components/shared/data-tables/transaction-table/columns'
@@ -68,8 +67,8 @@ export const TableContainer = ({ editTransactions, onChange, className }: Props)
 	}
 
 	return (
-		<ScrollArea className={cn('h-[100vh] bg-background', className)}>
+		<div className={cn('h-[100vh] bg-background', className)}>
 			<DataTable columns={getColumns(onTransactionChange, handleTransactionDelete)} data={editTransactions} />
-		</ScrollArea>
+		</div>
 	)
 }

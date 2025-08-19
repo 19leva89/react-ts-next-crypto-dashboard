@@ -28,6 +28,7 @@ import {
 import { useTRPC } from '@/trpc/client'
 import { getWalletDisplayName } from '@/data/wallet'
 import { WALLETS, TWallet } from '@/modules/coins/schema'
+import { WalletIcon } from '@/modules/transactions/ui/components/wallet-icon'
 
 export const AddCoin = () => {
 	const trpc = useTRPC()
@@ -307,6 +308,8 @@ export const AddCoin = () => {
 										<SelectContent>
 											{Object.keys(WALLETS).map((walletKey) => (
 												<SelectItem key={walletKey} value={walletKey}>
+													<WalletIcon wallet={walletKey as keyof typeof WALLETS} />
+
 													{getWalletDisplayName(walletKey as keyof typeof WALLETS)}
 												</SelectItem>
 											))}
