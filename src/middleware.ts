@@ -1,7 +1,7 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { authRoutes, DEFAULT_LOGIN_REDIRECT, protectedRoutes } from './routes'
+import { authRoutes, DEFAULT_LOGIN_REDIRECT, protectedRoutes } from '@/routes'
 
 const secret = process.env.AUTH_SECRET
 

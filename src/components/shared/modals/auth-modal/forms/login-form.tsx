@@ -17,6 +17,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
+	Separator,
 } from '@/components/ui'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import { credentialsLoginUser, loginUser } from '@/actions/login'
@@ -103,15 +104,15 @@ export const LoginForm = ({ onClose }: Props) => {
 				onSubmit={form.handleSubmit(handleCredentialsLogin)}
 				className='flex h-full min-h-[450px] flex-col gap-5'
 			>
-				<Card className='flex grow flex-col items-stretch justify-between dark:bg-card'>
-					<div className='flex flex-col gap-5'>
-						<CardHeader>
+				<Card className='flex grow flex-col items-stretch justify-between py-3 md:py-6 dark:bg-card'>
+					<div className='flex flex-col gap-2 md:gap-4'>
+						<CardHeader className='px-3 md:px-6'>
 							<CardTitle>Login to your account</CardTitle>
 
 							<CardDescription>Enter your email to login to your account</CardDescription>
 						</CardHeader>
 
-						<CardContent className='flex flex-col gap-5'>
+						<CardContent className='flex flex-col gap-2 px-3 md:gap-4 md:px-6'>
 							<FormInput name='email' type='email' placeholder='Email' required />
 
 							<FormInput name='password' type='password' placeholder='Password' required />
@@ -132,7 +133,7 @@ export const LoginForm = ({ onClose }: Props) => {
 						</CardContent>
 					</div>
 
-					<CardFooter className='flex flex-col gap-4'>
+					<CardFooter className='flex flex-col gap-2 px-3 md:gap-4 md:px-6'>
 						<Button
 							variant='default'
 							size='lg'
@@ -142,6 +143,12 @@ export const LoginForm = ({ onClose }: Props) => {
 						>
 							{showTwoFactor ? 'Confirm' : 'Login'}
 						</Button>
+
+						<Separator className='relative my-4'>
+							<span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-sm text-muted-foreground'>
+								or
+							</span>
+						</Separator>
 
 						<div className='flex w-full gap-2'>
 							<Button

@@ -1,18 +1,14 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 
-import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { saltAndHashPassword } from '@/lib/salt'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 
 export const settingsRouter = createTRPCRouter({
-	getProfile: protectedProcedure.query(async () => {
-		const session = await auth()
-		if (!session?.user) return null
-
+	getProfile: protectedProcedure.query(async ({ ctx }) => {
 		const user = await prisma.user.findUnique({
-			where: { id: session.user.id },
+			where: { id: ctx.auth.user.id },
 			select: {
 				id: true,
 				name: true,
@@ -42,13 +38,9 @@ export const settingsRouter = createTRPCRouter({
 				isTwoFactorEnabled: z.boolean().optional(),
 			}),
 		)
-		.mutation(async ({ input }) => {
-			const session = await auth()
-
-			if (!session?.user) throw new TRPCError({ code: 'UNAUTHORIZED' })
-
+		.mutation(async ({ input, ctx }) => {
 			const existingUser = await prisma.user.findFirst({
-				where: { id: session.user.id },
+				where: { id: ctx.auth.user.id },
 				include: { accounts: true },
 			})
 
@@ -94,7 +86,7 @@ export const settingsRouter = createTRPCRouter({
 			}
 
 			const updatedUser = await prisma.user.update({
-				where: { id: session.user.id },
+				where: { id: ctx.auth.user.id },
 				data: updatedData,
 			})
 
@@ -104,13 +96,9 @@ export const settingsRouter = createTRPCRouter({
 			}
 		}),
 
-	deleteUser: protectedProcedure.mutation(async () => {
-		const session = await auth()
-
-		if (!session?.user) throw new TRPCError({ code: 'UNAUTHORIZED' })
-
+	deleteUser: protectedProcedure.mutation(async ({ ctx }) => {
 		return prisma.user.delete({
-			where: { id: session.user.id },
+			where: { id: ctx.auth.user.id },
 			include: {
 				accounts: true,
 				sessions: true,
