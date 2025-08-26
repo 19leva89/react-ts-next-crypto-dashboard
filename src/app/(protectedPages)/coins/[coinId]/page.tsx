@@ -30,7 +30,7 @@ const CoinIdPage = async ({ params }: Props) => {
 	const { coinId } = await params
 
 	if (!session) {
-		redirect('auth/not-auth')
+		redirect('/auth/not-auth')
 	}
 
 	if (!coinId) {

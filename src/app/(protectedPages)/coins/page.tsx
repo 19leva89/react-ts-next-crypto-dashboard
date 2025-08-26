@@ -14,7 +14,7 @@ const CoinsPage = async () => {
 	const session = await auth()
 
 	if (!session) {
-		redirect('auth/not-auth')
+		redirect('/auth/not-auth')
 	}
 
 	const queryClient = getQueryClient()
