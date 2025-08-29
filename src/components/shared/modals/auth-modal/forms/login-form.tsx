@@ -146,7 +146,7 @@ export const LoginForm = ({ onClose }: Props) => {
 
 						<Separator className='relative my-4'>
 							<span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-sm text-muted-foreground'>
-								or
+								or continue with
 							</span>
 						</Separator>
 
