@@ -5,10 +5,16 @@ import { revalidatePath } from 'next/cache'
 
 import { signIn } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import {
+	createNotificationSchema,
+	TCreateNotification,
+	TNotificationMetadata,
+} from '@/modules/notifications/schema'
 import { getUserByEmail } from '@/data/user'
 import { handleError } from '@/lib/handle-error'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import { getTwoFactorTokenByEmail } from '@/data/two-factor-token'
+import { formatLoginMessage, LoginContext } from '@/lib/browser-utils'
 import { generateTwoFactorToken, generateVerificationToken } from '@/lib/tokens'
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation'
 import { sendTwoFactorTokenEmail, sendVerificationEmail } from '@/lib/send-email'
@@ -119,16 +125,50 @@ export const credentialsLoginUser = async (values: TLoginValues) => {
 	}
 }
 
-export const createLoginNotification = async (userId: string) => {
+export const createLoginNotification = async (userId: string, context?: LoginContext) => {
 	try {
+		let message = 'You have successfully logged in'
+		let title = 'Login Successful'
+
+		const baseNotificationData: Partial<TCreateNotification> = {
+			userId,
+			type: 'LOGIN' as const,
+			title,
+			message,
+			isRead: false,
+		}
+
+		if (context) {
+			message = formatLoginMessage(context)
+			title = 'Login'
+
+			const metadata: TNotificationMetadata = {
+				device: context.browserInfo.device,
+				loginTime: new Date().toISOString(),
+				securityAlert: true,
+				browserDetails: {
+					name: context.browserInfo.browser,
+					os: context.browserInfo.os,
+					device: context.browserInfo.device,
+				},
+			}
+
+			baseNotificationData.title = title
+			baseNotificationData.message = message
+			baseNotificationData.ipAddress = context.ipAddress
+			baseNotificationData.browser = context.browserInfo.browser
+			baseNotificationData.os = context.browserInfo.os
+			baseNotificationData.userAgent = context.browserInfo.userAgent
+			baseNotificationData.metadata = metadata
+		}
+
+		const validatedData = createNotificationSchema.parse(baseNotificationData)
+
 		await prisma.notification.create({
-			data: {
-				userId,
-				type: 'LOGIN',
-				title: 'Login',
-				message: 'You have successfully login',
-			},
+			data: validatedData,
 		})
+
+		console.log(`Login notification created for user ${userId}`)
 	} catch (error) {
 		handleError(error, 'CREATE_LOGIN_NOTIFICATION')
 	}

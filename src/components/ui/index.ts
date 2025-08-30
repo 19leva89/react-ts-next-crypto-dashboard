@@ -10,6 +10,7 @@ export {
 	AlertDialogCancel,
 } from './alert-dialog'
 export { Avatar, AvatarImage } from './avatar'
+export { Badge, badgeVariants } from './badge'
 export { Button, buttonVariants } from './button'
 export { Calendar } from './calendar'
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card'

@@ -29,7 +29,7 @@ export function FormCheckbox({ name, label, required = false, disabled = false, 
 				control={control}
 				rules={{ required }}
 				render={({ field }) => (
-					<div className='flex items-center space-x-2'>
+					<div className='flex items-center gap-2'>
 						<Checkbox
 							id={name}
 							disabled={disabled}
