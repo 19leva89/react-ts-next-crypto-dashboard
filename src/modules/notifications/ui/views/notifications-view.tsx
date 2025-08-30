@@ -69,6 +69,10 @@ const formatNotificationMessage = (notification: TNotification) => {
 						<span className='flex items-center gap-1'>🌐 {notification.ipAddress}</span>
 					)}
 
+					{notification.location && (
+						<span className='flex items-center gap-1'>📍 {notification.location}</span>
+					)}
+
 					{notification.browser && <span className='flex items-center gap-1'>🖥️ {notification.browser}</span>}
 
 					{notification.os && <span className='flex items-center gap-1'>⚙️ {notification.os}</span>}

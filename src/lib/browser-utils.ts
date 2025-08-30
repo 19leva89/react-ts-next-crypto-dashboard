@@ -1,3 +1,4 @@
+import { isIP } from 'net'
 import { headers } from 'next/headers'
 import { UAParser } from 'ua-parser-js'
 
@@ -8,9 +9,14 @@ export interface BrowserInfo {
 	device: string
 }
 
+export interface LocationInfo {
+	city: string
+}
+
 export interface LoginContext {
 	ipAddress: string
 	browserInfo: BrowserInfo
+	locationInfo: LocationInfo
 }
 
 /**
@@ -26,16 +32,31 @@ export async function getClientIP(): Promise<string> {
 	const cfConnectingIP = headersList.get('cf-connecting-ip') // Cloudflare
 	const xOriginalForwardedFor = headersList.get('x-original-forwarded-for')
 
-	if (xForwardedFor) {
-		// x-forwarded-for can contain several IPs, take the first one
-		const ips = xForwardedFor.split(',').map((ip) => ip.trim())
-		return ips[0]
+	// Validate using Node.js built-in isIP function
+	function isValidIPAddress(ip: string): boolean {
+		return isIP(ip) !== 0 // Returns 4 for IPv4, 6 for IPv6, 0 for invalid
 	}
 
-	if (xRealIP) return xRealIP
-	if (xClientIP) return xClientIP
-	if (cfConnectingIP) return cfConnectingIP
-	if (xOriginalForwardedFor) return xOriginalForwardedFor
+	if (xForwardedFor) {
+		const ips = xForwardedFor
+			.split(',')
+			.map((ip) => ip.trim())
+			.filter((ip) => ip.length > 0 && ip.length <= 45)
+
+		for (const ip of ips) {
+			if (isValidIPAddress(ip)) {
+				return ip
+			}
+		}
+	}
+
+	const ipHeaderCandidates = [xRealIP, xClientIP, cfConnectingIP, xOriginalForwardedFor]
+
+	for (const header of ipHeaderCandidates) {
+		if (header && header.length <= 45 && isValidIPAddress(header.trim())) {
+			return header.trim()
+		}
+	}
 
 	return 'Unknown'
 }
@@ -89,14 +110,62 @@ export async function getAdvancedBrowserInfo(): Promise<BrowserInfo> {
 }
 
 /**
+ * Get location information based on IP address
+ */
+export async function getLocationInfo(ipAddress: string): Promise<LocationInfo> {
+	// Skip geolocation for unknown or local IPs
+	if (
+		ipAddress === 'Unknown' ||
+		ipAddress.startsWith('127.') ||
+		ipAddress.startsWith('192.168.') ||
+		ipAddress.startsWith('10.')
+	) {
+		return { city: 'Unknown' }
+	}
+
+	try {
+		const response = await fetch(`https://ipinfo.io/${ipAddress}/json`, {
+			// Add timeout to prevent hanging requests
+			signal: AbortSignal.timeout(5000),
+		})
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`)
+		}
+
+		const data = await response.json()
+
+		return {
+			city: data.city || 'Unknown',
+		}
+	} catch (error) {
+		console.warn('Failed to get location info:', error)
+
+		return { city: 'Unknown' }
+	}
+}
+
+/**
  * Get full context for login (IP + browser info)
  */
 export async function getLoginContext(): Promise<LoginContext> {
-	const [ipAddress, browserInfo] = await Promise.all([getClientIP(), getAdvancedBrowserInfo()])
+	const results = await Promise.allSettled([getClientIP(), getAdvancedBrowserInfo()])
+
+	const ipAddress = results[0].status === 'fulfilled' ? results[0].value : 'Unknown'
+	const browserInfo =
+		results[1].status === 'fulfilled'
+			? results[1].value
+			: { userAgent: '', browser: 'Unknown', os: 'Unknown', device: 'Unknown' }
+
+	// Get location info based on IP
+	const locationResult = await Promise.allSettled([getLocationInfo(ipAddress)])
+	const locationInfo =
+		locationResult[0].status === 'fulfilled' ? locationResult[0].value : { city: 'Unknown' }
 
 	return {
 		ipAddress,
 		browserInfo,
+		locationInfo,
 	}
 }
 
@@ -104,7 +173,7 @@ export async function getLoginContext(): Promise<LoginContext> {
  * Formatting the login notification message
  */
 export function formatLoginMessage(context: LoginContext): string {
-	const { ipAddress, browserInfo } = context
+	const { ipAddress, browserInfo, locationInfo } = context
 	const timestamp = new Date().toLocaleString('en-US', {
 		timeZone: 'UTC',
 		dateStyle: 'full',
@@ -112,11 +181,14 @@ export function formatLoginMessage(context: LoginContext): string {
 	})
 
 	let message =
-		`You have successfully login\n` +
-		`📅 Time: ${timestamp} (UTC)\n` +
-		`🌐 IP Address: ${ipAddress}\n` +
-		`🖥️  Browser: ${browserInfo.browser}\n` +
-		`⚙️  System: ${browserInfo.os}\n`
+		`You have successfully login\n` + `📅 Time: ${timestamp} (UTC)\n` + `🌐 IP Address: ${ipAddress}\n`
+
+	// Add location if available
+	if (locationInfo.city && locationInfo.city !== 'Unknown') {
+		message += `📍 Location: ${locationInfo.city}\n`
+	}
+
+	message += `🖥️  Browser: ${browserInfo.browser}\n` + `⚙️  System: ${browserInfo.os}\n`
 
 	if (browserInfo.device && browserInfo.device !== 'Desktop') {
 		message += `📱 Device: ${browserInfo.device}\n`
