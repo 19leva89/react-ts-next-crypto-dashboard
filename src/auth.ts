@@ -8,6 +8,7 @@ import { prisma } from '@/lib/prisma'
 import authConfig from '@/auth.config'
 import { getUserById } from '@/data/user'
 import { getAccountByUserId } from '@/data/account'
+import { getLoginContext } from '@/lib/browser-utils'
 import { createLoginNotification } from '@/actions/login'
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation'
 
@@ -125,7 +126,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 	events: {
 		async signIn({ user }: { user: User }) {
 			if (user.id) {
-				await createLoginNotification(user.id)
+				try {
+					// Get the login context (IP + browser data)
+					const loginContext = await getLoginContext()
+
+					// Create a notification with context
+					await createLoginNotification(user.id, loginContext)
+				} catch (error) {
+					// If couldn't get the context, create a basic notification
+					console.error('Failed to get login context:', error)
+
+					await createLoginNotification(user.id)
+				}
 			}
 		},
 	},

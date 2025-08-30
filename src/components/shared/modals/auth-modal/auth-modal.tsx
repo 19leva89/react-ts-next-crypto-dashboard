@@ -33,17 +33,17 @@ export const AuthModal = ({ open, onClose }: Props) => {
 				<DialogDescription className='hidden' />
 
 				<Tabs defaultValue='account' className='mt-2 w-100 max-[500px]:w-full'>
-					<TabsList className='grid w-full grid-cols-2 bg-gray-100 dark:bg-gray-900'>
+					<TabsList className='grid h-11 w-full grid-cols-2 rounded-xl bg-gray-100 dark:bg-gray-900'>
 						<TabsTrigger
 							value='login'
-							className='cursor-pointer data-[state=active]:border data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:text-primary'
+							className='h-9 cursor-pointer rounded-xl data-[state=active]:border data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:text-primary'
 						>
 							Login
 						</TabsTrigger>
 
 						<TabsTrigger
 							value='register'
-							className='cursor-pointer data-[state=active]:border data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:text-primary'
+							className='h-9 cursor-pointer rounded-xl data-[state=active]:border data-[state=active]:border-primary data-[state=active]:bg-white data-[state=active]:text-primary'
 						>
 							Register
 						</TabsTrigger>

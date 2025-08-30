@@ -1,15 +1,18 @@
 'use client'
 
 import {
+	AlertTriangleIcon,
 	BellRingIcon,
 	CheckIcon,
 	EllipsisVerticalIcon,
-	TrashIcon,
 	EyeIcon,
+	LoaderIcon,
 	LogInIcon,
 	LogOutIcon,
 	PiggyBankIcon,
-	LoaderIcon,
+	TrashIcon,
+	SettingsIcon,
+	ShieldIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { enUS } from 'date-fns/locale'
@@ -18,12 +21,13 @@ import { formatDistanceToNow } from 'date-fns'
 import { useMutation, useQueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query'
 
 import {
+	Badge,
+	Button,
 	Card,
 	CardHeader,
 	CardTitle,
 	CardContent,
 	CardFooter,
-	Button,
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
@@ -38,12 +42,42 @@ import { ErrorState, InfiniteScroll, LoadingState } from '@/components/shared'
 const getNotificationIcon = (type: TNotification['type']) => {
 	switch (type) {
 		case 'LOGIN':
-			return <LogInIcon />
+			return <LogInIcon className='text-green-500' />
 		case 'LOGOUT':
-			return <LogOutIcon />
+			return <LogOutIcon className='text-orange-500' />
 		case 'PRICE_ALERT':
-			return <PiggyBankIcon />
+			return <PiggyBankIcon className='text-blue-500' />
+		case 'SECURITY':
+			return <ShieldIcon className='text-red-500' />
+		case 'SYSTEM':
+			return <SettingsIcon className='text-gray-500' />
+		case 'COIN_NEWS':
+			return <AlertTriangleIcon className='text-purple-500' />
+		default:
+			return <BellRingIcon />
 	}
+}
+
+const formatNotificationMessage = (notification: TNotification) => {
+	if (notification.type === 'LOGIN' && notification.ipAddress && notification.browser) {
+		return (
+			<div className='mt-1 flex flex-col gap-1'>
+				<p className='text-xs text-muted-foreground'>{notification.message.split('\n')[0]}</p>
+
+				<div className='flex flex-wrap gap-2 text-xs text-muted-foreground'>
+					{notification.ipAddress && (
+						<span className='flex items-center gap-1'>🌐 {notification.ipAddress}</span>
+					)}
+
+					{notification.browser && <span className='flex items-center gap-1'>🖥️ {notification.browser}</span>}
+
+					{notification.os && <span className='flex items-center gap-1'>⚙️ {notification.os}</span>}
+				</div>
+			</div>
+		)
+	}
+
+	return <p className='mt-1 text-xs text-muted-foreground'>{notification.message}</p>
 }
 
 export const NotificationsView = () => {
@@ -62,7 +96,10 @@ export const NotificationsView = () => {
 	const { data: doNotDisturb } = useQuery(trpc.user.getDoNotDisturb.queryOptions())
 	const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isPending } = useInfiniteQuery(queryOptions)
 
-	const notifications = data?.pages.flatMap((page) => page.items) ?? []
+	// Narrow the inferred type to avoid excessively deep generic instantiation
+	type NotificationsInfinitePage = { items: TNotification[]; nextCursor?: string | null }
+	const pages = (data?.pages ?? []) as unknown as NotificationsInfinitePage[]
+	const notifications = pages.flatMap((page) => page.items)
 
 	const { mutate: markAsRead } = useMutation(
 		trpc.notifications.markAsRead.mutationOptions({
@@ -129,13 +166,19 @@ export const NotificationsView = () => {
 		<div className='container mx-auto max-w-2xl'>
 			<Card className='gap-0 overflow-hidden py-0'>
 				<CardHeader className='flex flex-row items-center justify-between border-b py-6'>
-					<div className='flex items-center space-x-2'>
-						<BellRingIcon className='size-5 text-primary' />
+					<div className='flex items-start gap-2 sm:flex-col'>
+						<div className='flex items-center gap-2'>
+							<BellRingIcon className='size-5 text-primary' />
 
-						<CardTitle className='hidden text-xl font-semibold sm:block'>Notifications</CardTitle>
+							<CardTitle className='hidden text-xl font-semibold sm:block'>Notifications</CardTitle>
+						</div>
+
+						{notifications.length > 0 && (
+							<Badge variant='secondary'>{notifications.filter((n) => !n.isRead).length} unread</Badge>
+						)}
 					</div>
 
-					<div className='flex items-center space-x-3'>
+					<div className='flex items-center gap-3'>
 						<label
 							htmlFor='dnd'
 							className='cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
@@ -175,7 +218,7 @@ export const NotificationsView = () => {
 											</p>
 										</div>
 
-										<p className='mt-1 text-xs text-muted-foreground'>{notification.message}</p>
+										{formatNotificationMessage(notification)}
 
 										<p className='mt-1 text-xs text-muted-foreground'>
 											{formatDistanceToNow(new Date(notification.createdAt), {

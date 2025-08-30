@@ -53,15 +53,15 @@ export const RegisterForm = ({ onClose }: Props) => {
 	return (
 		<FormProvider {...form}>
 			<form className='flex h-full min-h-[450px] flex-col gap-5' onSubmit={form.handleSubmit(onSubmit)}>
-				<Card className='flex grow flex-col items-stretch justify-between'>
-					<div className='flex flex-col gap-5'>
-						<CardHeader>
+				<Card className='flex grow flex-col items-stretch justify-between py-3 md:py-6'>
+					<div className='flex flex-col gap-2 md:gap-4'>
+						<CardHeader className='px-3 md:px-6'>
 							<CardTitle>Account registration</CardTitle>
 
 							<CardDescription>Enter your information to register an account</CardDescription>
 						</CardHeader>
 
-						<CardContent className='flex flex-col gap-5'>
+						<CardContent className='flex flex-col gap-2 px-3 md:gap-4 md:px-6'>
 							<FormInput name='email' type='email' placeholder='Email' required />
 
 							<FormInput name='name' type='text' placeholder='Full name' required />
@@ -72,7 +72,7 @@ export const RegisterForm = ({ onClose }: Props) => {
 						</CardContent>
 					</div>
 
-					<CardFooter className='flex flex-col gap-4'>
+					<CardFooter className='flex flex-col gap-2 px-3 md:gap-4 md:px-6'>
 						<Button
 							variant='default'
 							size='lg'

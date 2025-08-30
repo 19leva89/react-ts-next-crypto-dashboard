@@ -1,4 +1,5 @@
 # This project contains the following technologies
+UAParser.js ()
 
 Authentication and User Management:
 - Bcrypt-ts (password hashing)
