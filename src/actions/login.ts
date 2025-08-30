@@ -156,6 +156,7 @@ export const createLoginNotification = async (userId: string, context?: LoginCon
 			baseNotificationData.title = title
 			baseNotificationData.message = message
 			baseNotificationData.ipAddress = context.ipAddress
+			baseNotificationData.location = context.locationInfo.city
 			baseNotificationData.browser = context.browserInfo.browser
 			baseNotificationData.os = context.browserInfo.os
 			baseNotificationData.userAgent = context.browserInfo.userAgent

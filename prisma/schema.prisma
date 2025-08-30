@@ -157,6 +157,7 @@ model Notification {
   isRead    Boolean          @default(false)
   //
   ipAddress String?
+  location  String?
   browser   String?
   os        String?
   userAgent String?
