@@ -1,5 +1,4 @@
 # This project contains the following technologies
-UAParser.js ()
 
 Authentication and User Management:
 - Bcrypt-ts (password hashing)
@@ -42,6 +41,7 @@ Utilities and Libraries:
 - Date-fns (date/time manipulation)
 - Knip (code analyzer and declutter)
 - PostCSS (transforms CSS code to AST)
+- UAParser.js (user agent parser)
 
 
 # Project setup commands:
