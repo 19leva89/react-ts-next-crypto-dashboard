@@ -108,9 +108,13 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 		handleLinkClick()
 
 		try {
-			await addLogoutNotificationMutation.mutateAsync()
-
 			await signOut({ callbackUrl: '/' })
+
+			try {
+				await addLogoutNotificationMutation.mutateAsync()
+			} catch (error) {
+				console.error('Failed to send logout notification:', error)
+			}
 		} catch (error) {
 			console.error('Error during logout:', error)
 		}
