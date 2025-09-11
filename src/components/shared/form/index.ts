@@ -1,4 +1,7 @@
+export { FormCalendar } from './form-calendar'
 export { FormCheckbox } from './form-checkbox'
 export { FormCombobox } from './form-combobox'
+export { FormImage } from './form-image'
 export { FormInput } from './form-input'
+export { FormSwitch } from './form-switch'
 export { FormTextarea } from './form-textarea'

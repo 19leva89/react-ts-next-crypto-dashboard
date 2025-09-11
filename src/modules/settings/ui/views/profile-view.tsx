@@ -2,7 +2,6 @@
 
 import { toast } from 'sonner'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signOut, useSession } from 'next-auth/react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
@@ -32,7 +31,6 @@ import { TUpdateProfileValues, updateProfileSchema } from '@/modules/settings/sc
 
 export const ProfileView = () => {
 	const trpc = useTRPC()
-	const router = useRouter()
 	const deleteUserMutation = useMutation(trpc.settings.deleteUser.mutationOptions())
 	const updateUserMutation = useMutation(trpc.settings.updateUserInfo.mutationOptions())
 
@@ -94,8 +92,7 @@ export const ProfileView = () => {
 
 			toast.success('Your account has been deleted')
 
-			signOut()
-			router.push('/')
+			await signOut({ callbackUrl: '/' })
 		} catch (error) {
 			console.error('Error deleting account:', error)
 

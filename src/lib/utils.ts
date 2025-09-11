@@ -56,7 +56,15 @@ export function constructMetadata({
 			images: [absoluteUrl(image)],
 			creator: '@sobolev',
 		},
-		icons,
+		icons: {
+			icon: icons,
+			shortcut: icons,
+			apple: icons,
+			other: {
+				rel: 'icon',
+				url: icons,
+			},
+		},
 		metadataBase: new URL(absoluteUrl('')),
 		...(noIndex && {
 			robots: {
