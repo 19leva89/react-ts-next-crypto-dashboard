@@ -1,23 +1,27 @@
 import { PrismaClient } from '@prisma/client'
 
 const prismaClientSingleton = () => {
-	const databaseUrl =
-		process.env.NODE_ENV === 'production'
-			? `${process.env.DATABASE_URL}&connection_limit=10&pool_timeout=20&connect_timeout=60`
-			: process.env.DATABASE_URL
+	const isVercel = process.env.VERCEL === '1'
+	const isProduction = process.env.NODE_ENV === 'production'
 
-	return new PrismaClient({
+	let databaseUrl = process.env.DATABASE_URL
+
+	if (isProduction) {
+		// Use connection pool if available
+		const connectionLimit = isVercel ? 1 : 5 // Fewer connections for serverless
+		databaseUrl = `${process.env.DATABASE_URL}&connection_limit=${connectionLimit}&pool_timeout=10`
+	}
+
+	const prisma = new PrismaClient({
 		datasources: {
 			db: {
 				url: databaseUrl,
 			},
 		},
-
-		...(process.env.NODE_ENV === 'production' && {
-			log: ['error'],
-			errorFormat: 'minimal',
-		}),
+		log: isProduction ? ['warn', 'error'] : ['query', 'info', 'warn', 'error'],
 	})
+
+	return prisma
 }
 
 declare const globalThis: {
@@ -30,33 +34,43 @@ if (process.env.NODE_ENV !== 'production') {
 	globalThis.prismaGlobal = prisma
 }
 
-// Disconnect from database on exit
-if (process.env.NODE_ENV === 'production') {
-	// For Heroku
-	process.on('SIGINT', async () => {
-		console.log('Received SIGINT, disconnecting from database...')
+// Graceful shutdown handler
+const gracefulShutdown = async (signal: string) => {
+	console.log(`Received ${signal}, disconnecting from database...`)
 
-		await prisma.$disconnect()
-	})
-
-	// For serverless (Vercel) and Docker
-	process.on('SIGTERM', async () => {
-		console.log('Received SIGTERM, disconnecting from database...')
-
-		await prisma.$disconnect()
-	})
-
-	// For unhandled errors
-	process.on('beforeExit', async () => {
-		await prisma.$disconnect()
-	})
-
-	// For uncaught exceptions
-	process.on('uncaughtException', async (error) => {
-		console.error('Uncaught Exception:', error)
-
-		await prisma.$disconnect()
-
-		process.exit(1)
-	})
+	await prisma.$disconnect()
+	process.exit(0)
 }
+
+// Handle different shutdown signals
+process.on('SIGINT', () => gracefulShutdown('SIGINT'))
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
+
+// Serverless-specific handling (for Vercel, Netlify, etc.)
+if (process.env.VERCEL || process.env.NETLIFY) {
+	// Clean up connections after each request in serverless environments
+	const originalDisconnect = prisma.$disconnect
+
+	prisma.$disconnect = async () => {
+		// Add any cleanup logic here
+		await originalDisconnect.apply(prisma)
+	}
+}
+
+// Handle uncaught exceptions
+process.on('uncaughtException', async (error) => {
+	console.error('Uncaught Exception:', error)
+
+	await prisma.$disconnect()
+	process.exit(1)
+})
+
+// Handle unhandled rejections
+process.on('unhandledRejection', async (reason, promise) => {
+	console.error('Unhandled Rejection at:', promise, 'reason:', reason)
+
+	await prisma.$disconnect()
+	process.exit(1)
+})
+
+export default prisma
