@@ -54,7 +54,9 @@ if (process.env.NODE_ENV === 'production') {
 	// For uncaught exceptions
 	process.on('uncaughtException', async (error) => {
 		console.error('Uncaught Exception:', error)
+
 		await prisma.$disconnect()
+
 		process.exit(1)
 	})
 }
