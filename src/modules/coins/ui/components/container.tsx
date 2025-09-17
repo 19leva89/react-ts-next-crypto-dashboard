@@ -14,7 +14,6 @@ import {
 	useSidebar,
 } from '@/components/ui'
 import { cn } from '@/lib'
-import { ScrollToTop } from '@/components/shared'
 import { TUserCoinData } from '@/modules/coins/schema'
 import { AddCoin } from '@/modules/coins/ui/components/add-coin'
 import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
@@ -235,8 +234,6 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 						<CoinCard key={`${coin.coinId}-${coin.transactions.length}`} coin={coin} viewMode={viewMode} />
 					))}
 			</div>
-
-			<ScrollToTop className='size-12 bg-primary/95 font-bold text-white' />
 		</div>
 	)
 }

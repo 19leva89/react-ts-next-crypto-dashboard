@@ -18,7 +18,7 @@ const prismaClientSingleton = () => {
 				url: databaseUrl,
 			},
 		},
-		log: isProduction ? ['warn', 'error'] : ['query', 'info', 'warn', 'error'],
+		log: isProduction ? ['warn', 'error'] : ['info', 'warn', 'error'],
 	})
 
 	return prisma

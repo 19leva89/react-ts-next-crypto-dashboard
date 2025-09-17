@@ -5,7 +5,7 @@ import { auth } from '@/auth'
 import { getQueryClient, trpc } from '@/trpc/server'
 import { firstSection, secondSection } from '@/constants/menu'
 import { SidebarInset, SidebarProvider } from '@/components/ui'
-import { SidebarApp, Footer, Navbar } from '@/components/shared'
+import { SidebarApp, Footer, Navbar, ScrollToTop } from '@/components/shared'
 
 export const AppLayout = async ({ children }: PropsWithChildren) => {
 	const session = await auth()
@@ -27,6 +27,8 @@ export const AppLayout = async ({ children }: PropsWithChildren) => {
 					<Navbar />
 
 					<div className='container'>{children}</div>
+
+					<ScrollToTop className='size-12 bg-primary/95 font-bold text-white' />
 				</div>
 
 				<Footer />
