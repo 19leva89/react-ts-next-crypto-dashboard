@@ -8,9 +8,17 @@ import {
 	HomeIcon,
 	NewspaperIcon,
 	WalletIcon,
+	type LucideIcon,
 } from 'lucide-react'
 
-export const iconMap = {
+export type MenuItem = {
+	title: string
+	url: string
+	icon: string
+	private: boolean
+}
+
+export const iconMap: Record<string, LucideIcon> = {
 	HomeIcon,
 	NewspaperIcon,
 	HandCoinsIcon,
@@ -20,13 +28,6 @@ export const iconMap = {
 	WalletIcon,
 	BellIcon,
 	HelpCircleIcon,
-}
-
-export type MenuItem = {
-	title: string
-	url: string
-	icon: keyof typeof iconMap
-	private: boolean
 }
 
 export const firstSection: MenuItem[] = [

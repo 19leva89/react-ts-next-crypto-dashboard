@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 import { signOut } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
-import { ComponentProps, useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { ChevronDownIcon, LogOutIcon, SettingsIcon, UserIcon } from 'lucide-react'
 
@@ -34,7 +34,7 @@ import { Logo } from '@/components/shared'
 import { iconMap, MenuItem } from '@/constants/menu'
 import { AuthModal } from '@/components/shared/modals/auth-modal'
 
-interface Props extends ComponentProps<typeof Sidebar> {
+interface Props {
 	firstSection: MenuItem[]
 	secondSection: MenuItem[]
 }
