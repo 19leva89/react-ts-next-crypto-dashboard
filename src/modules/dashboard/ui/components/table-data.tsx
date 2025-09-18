@@ -22,8 +22,8 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table'
-import { useState } from 'react'
-import { FixedSizeList as List } from 'react-window'
+import { List } from 'react-window'
+import { CSSProperties, useCallback, useState } from 'react'
 
 import {
 	Button,
@@ -54,6 +54,12 @@ interface Props<TData, TValue> {
 	currentCategory: string
 	onRowClick: (rowData: TData) => void
 	onCategoryClick: (category: string, name?: string) => void
+}
+
+interface RowComponentProps {
+	index: number
+	style: CSSProperties
+	data: { category_id: string; name: string }[]
 }
 
 export function DataTable<TData, TValue>({
@@ -93,6 +99,25 @@ export function DataTable<TData, TValue>({
 	const handleFilterChange = (value: string) => {
 		table.getColumn('name')?.setFilterValue(value)
 	}
+
+	const RowComponent = useCallback(
+		({ index, style, data }: RowComponentProps) => {
+			const category = data[index]
+
+			return (
+				<DropdownMenuItem key={category.category_id} className='!w-[98.5%] rounded-xl' style={style}>
+					<button
+						className='w-full cursor-pointer rounded-xl p-2 text-start'
+						onClick={() => onCategoryClick(category.category_id, category.name)}
+					>
+						{category.name}
+					</button>
+				</DropdownMenuItem>
+			)
+		},
+
+		[onCategoryClick],
+	)
 
 	return (
 		<>
@@ -161,28 +186,29 @@ export function DataTable<TData, TValue>({
 									</DropdownMenuItem>
 
 									<List
-										height={200}
-										width={246}
-										itemSize={40} // Height of one element
-										itemCount={categories.length} // Quantity of elements
-									>
-										{({ index, style }) => (
-											<DropdownMenuItem
-												key={categories[index].category_id}
-												className='rounded-xl'
-												style={style}
-											>
-												<button
-													className='w-full cursor-pointer rounded-xl p-2 text-start'
-													onClick={() =>
-														onCategoryClick(categories[index].category_id, categories[index].name)
-													}
-												>
-													{categories[index].name}
-												</button>
-											</DropdownMenuItem>
+										rowComponent={({ index, style }) => (
+											<RowComponent index={index} style={style} data={categories} />
 										)}
-									</List>
+										rowCount={categories.length}
+										rowHeight={40}
+										rowProps={{
+											'aria-posinset': 1,
+											'aria-setsize': categories.length,
+											role: 'listitem',
+										}}
+										overscanCount={15}
+										className='h-50 w-62 cursor-pointer
+											[&::-webkit-scrollbar]:h-1.5
+											[&::-webkit-scrollbar]:w-1.5
+											[&::-webkit-scrollbar-thumb]:rounded-full
+											[&::-webkit-scrollbar-thumb]:bg-gray-400
+											dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
+											[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
+											dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
+											[&::-webkit-scrollbar-track]:rounded-full
+											[&::-webkit-scrollbar-track]:bg-gray-100
+											dark:[&::-webkit-scrollbar-track]:bg-slate-800'
+									/>
 								</DropdownMenuContent>
 							) : (
 								<p className='px-4 py-2 text-sm text-gray-500'>No categories available</p>

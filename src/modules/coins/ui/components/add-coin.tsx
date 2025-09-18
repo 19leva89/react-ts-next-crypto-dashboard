@@ -2,8 +2,8 @@
 
 import Image from 'next/image'
 import { toast } from 'sonner'
+import { List } from 'react-window'
 import { PlusIcon } from 'lucide-react'
-import { FixedSizeList as List } from 'react-window'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ChangeEvent, CSSProperties, useCallback, useMemo, useState, useRef, useEffect, useId } from 'react'
 
@@ -29,6 +29,12 @@ import { useTRPC } from '@/trpc/client'
 import { getWalletDisplayName } from '@/data/wallet'
 import { WALLETS, TWallet } from '@/modules/coins/schema'
 import { WalletIcon } from '@/modules/transactions/ui/components/wallet-icon'
+
+interface RowComponentProps {
+	index: number
+	style: CSSProperties
+	data: { id: string; name: string; symbol: string; image: string | null }[]
+}
 
 export const AddCoin = () => {
 	const trpc = useTRPC()
@@ -121,8 +127,8 @@ export const AddCoin = () => {
 		}
 	}
 
-	const Row = useCallback(
-		({ index, style }: { index: number; style: CSSProperties }) => {
+	const RowComponent = useCallback(
+		({ index, style }: RowComponentProps) => {
 			const coin = filteredCoins[index]
 
 			return (
@@ -130,7 +136,7 @@ export const AddCoin = () => {
 					key={coin.id}
 					value={coin.id}
 					style={style}
-					className='cursor-pointer truncate rounded-lg'
+					className='!w-[99%] cursor-pointer truncate rounded-lg'
 				>
 					<div className='flex h-5 items-center gap-2'>
 						<Image
@@ -150,6 +156,7 @@ export const AddCoin = () => {
 				</SelectItem>
 			)
 		},
+
 		[filteredCoins],
 	)
 
@@ -238,14 +245,29 @@ export const AddCoin = () => {
 											<Skeleton className='h-52 w-full' />
 										) : (
 											<List
-												height={200}
-												width={320}
-												itemSize={40}
-												itemCount={filteredCoins.length}
+												rowComponent={({ index, style }) => (
+													<RowComponent index={index} style={style} data={filteredCoins} />
+												)}
+												rowCount={filteredCoins.length}
+												rowHeight={40}
+												rowProps={{
+													'aria-posinset': 1,
+													'aria-setsize': filteredCoins.length,
+													role: 'listitem',
+												}}
 												overscanCount={15}
-											>
-												{Row}
-											</List>
+												className='h-50 w-80 cursor-pointer
+													[&::-webkit-scrollbar]:h-1.5
+													[&::-webkit-scrollbar]:w-1.5
+													[&::-webkit-scrollbar-thumb]:rounded-full
+													[&::-webkit-scrollbar-thumb]:bg-gray-400
+													dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
+													[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
+													dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
+													[&::-webkit-scrollbar-track]:rounded-full
+													[&::-webkit-scrollbar-track]:bg-gray-100
+													dark:[&::-webkit-scrollbar-track]:bg-slate-800'
+											/>
 										)}
 									</SelectContent>
 								</Select>

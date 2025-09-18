@@ -71,16 +71,16 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 
 	return (
 		<div
-			className='relative h-full overflow-y-auto 
-  [&::-webkit-scrollbar]:h-1.5
-	[&::-webkit-scrollbar]:w-1.5
-  [&::-webkit-scrollbar-thumb]:rounded-full
-  [&::-webkit-scrollbar-thumb]:bg-gray-400
-  dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
-  [&::-webkit-scrollbar-thumb:hover]:bg-gray-500
-  dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
-  [&::-webkit-scrollbar-track]:bg-gray-100
-  dark:[&::-webkit-scrollbar-track]:bg-slate-800'
+			className='relative h-full cursor-pointer overflow-y-auto
+				[&::-webkit-scrollbar]:h-1.5
+				[&::-webkit-scrollbar]:w-1.5
+				[&::-webkit-scrollbar-thumb]:rounded-full
+				[&::-webkit-scrollbar-thumb]:bg-gray-400
+				dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
+				[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
+				dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
+				[&::-webkit-scrollbar-track]:bg-gray-100
+				dark:[&::-webkit-scrollbar-track]:bg-slate-800'
 		>
 			<Table className='border-x'>
 				<TableHeader className='sticky top-0 z-20 bg-gray-100 text-left text-sm dark:border-gray-700 dark:bg-slate-800'>

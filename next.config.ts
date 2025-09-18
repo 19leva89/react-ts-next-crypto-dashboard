@@ -23,6 +23,15 @@ const nextConfig: NextConfig = withNextJsObfuscator({
 		],
 		unoptimized: true,
 	},
+	turbopack: {
+		rules: {
+			'*.svg': {
+				loaders: ['@svgr/webpack'],
+				as: '*.js',
+			},
+		},
+		resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
+	},
 	reactStrictMode: false,
 })
 
