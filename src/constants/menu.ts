@@ -14,7 +14,7 @@ import {
 export type MenuItem = {
 	title: string
 	url: string
-	icon: string
+	icon: keyof typeof iconMap
 	private: boolean
 }
 
