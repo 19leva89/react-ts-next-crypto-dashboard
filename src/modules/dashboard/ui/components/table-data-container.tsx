@@ -30,8 +30,8 @@ export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 	const [selectedCoinId, setSelectedCoinId] = useState<string>('')
-	const [currentCategory, setCurrentCategory] = useState<string>('All')
 	const [coinsList, setCoinsList] = useState<TCoinsListData>(initialCoins)
+	const [currentCategory, setCurrentCategory] = useState<string>('All categories')
 
 	// Handle category selection
 	const onCategoryClick = async (cate: string, name?: string) => {
@@ -41,7 +41,7 @@ export const DataTableContainer = ({ categories, initialCoins }: Props) => {
 			const data = await queryClient.fetchQuery(trpc.dashboard.getCoinsListByCate.queryOptions(cate))
 			if (data) setCoinsList(data)
 		} else {
-			setCurrentCategory('All')
+			setCurrentCategory('All categories')
 			if (allCoins) setCoinsList(allCoins)
 		}
 	}
