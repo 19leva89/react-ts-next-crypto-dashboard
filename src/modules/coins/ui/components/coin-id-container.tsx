@@ -246,7 +246,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					disabled={isLoading || isSaving || isAdding}
 					onClick={() => {
 						setIsNavigatingBack(true)
-						router.push('/coins')
+						router.back()
 					}}
 					className='transition-colors duration-300 ease-in-out'
 				>

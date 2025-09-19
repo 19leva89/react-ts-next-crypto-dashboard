@@ -151,7 +151,7 @@ export function DataTable<TData, TValue>({
 
 				<div className='flex items-center gap-2'>
 					{/* Filter by category */}
-					<div className='w-full sm:w-64'>
+					<div className='w-full'>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button
@@ -159,7 +159,7 @@ export function DataTable<TData, TValue>({
 									variant='outline'
 									size='lg'
 									disabled={!categories.length}
-									className='group h-10 w-full justify-between rounded-xl px-4 py-2 transition-colors duration-300 ease-in-out'
+									className='group h-10 w-58 justify-between rounded-xl px-4 py-2 transition-colors duration-300 ease-in-out'
 								>
 									<span className='truncate'>{currentCategory || 'Categories'}</span>
 

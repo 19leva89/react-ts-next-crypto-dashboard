@@ -149,7 +149,7 @@ export const AddCoin = () => {
 							}}
 						/>
 
-						<span className='truncate'>
+						<span className='w-60 truncate'>
 							{coin.name} ({coin.symbol.toUpperCase()})
 						</span>
 					</div>
@@ -215,7 +215,7 @@ export const AddCoin = () => {
 														e.currentTarget.src = '/svg/coin-not-found.svg'
 													}}
 												/>
-												<span>
+												<span className='truncate'>
 													{selectedCoinData.name} ({selectedCoinData.symbol.toUpperCase()})
 												</span>
 											</div>
