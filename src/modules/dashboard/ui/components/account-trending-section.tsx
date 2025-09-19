@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import { ChevronDownIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
+import { ChevronDownIcon, RotateCcwIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 
 import { cn } from '@/lib'
 import { useFormatValue } from '@/hooks/use-format-value'
@@ -64,7 +64,13 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 					}}
 				>
 					{dataIndex.end >= trendingData.coins.length ? (
-						<span>Reset</span>
+						<>
+							<span>Reset</span>
+
+							<div className='relative size-5 transition-transform duration-300 group-hover:-rotate-180'>
+								<RotateCcwIcon size={16} className='absolute inset-0 m-auto' />
+							</div>
+						</>
 					) : (
 						<>
 							<span>View more</span>

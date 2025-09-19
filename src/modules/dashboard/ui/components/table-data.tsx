@@ -121,9 +121,9 @@ export function DataTable<TData, TValue>({
 
 	return (
 		<>
-			<div className='flex items-center justify-between gap-8 py-4 max-[820px]:flex-wrap-reverse max-[820px]:justify-end max-[820px]:gap-2'>
+			<div className='flex flex-wrap items-center justify-end gap-2 py-4 min-[820px]:flex-nowrap min-[820px]:justify-between min-[820px]:gap-8'>
 				{/* Search */}
-				<div className='relative w-full'>
+				<div className='relative w-full min-[820px]:w-2/3'>
 					<SearchIcon
 						size={18}
 						className='absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400'
@@ -149,55 +149,54 @@ export function DataTable<TData, TValue>({
 					</Button>
 				</div>
 
-				<div className='flex items-center gap-2'>
+				<div className='flex w-full items-center justify-between gap-2 min-[820px]:w-max'>
 					{/* Filter by category */}
-					<div className='w-full'>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button
-									id='category-btn'
-									variant='outline'
-									size='lg'
-									disabled={!categories.length}
-									className='group h-10 w-58 justify-between rounded-xl px-4 py-2 transition-colors duration-300 ease-in-out'
-								>
-									<span className='truncate'>{currentCategory || 'Categories'}</span>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								id='category-btn'
+								variant='outline'
+								size='lg'
+								disabled={!categories.length}
+								className='group h-10 w-2/4 justify-between rounded-xl px-4 py-2 transition-colors duration-300 ease-in-out min-[820px]:w-fit'
+							>
+								<span className='truncate'>{currentCategory || 'Categories'}</span>
 
-									<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
-										<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
-									</div>
-								</Button>
-							</DropdownMenuTrigger>
+								<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
+									<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
+								</div>
+							</Button>
+						</DropdownMenuTrigger>
 
-							{categories.length ? (
-								<DropdownMenuContent
-									align='start'
-									className='mt-1 max-h-64 w-full overflow-y-hidden rounded-xl bg-white py-1 shadow-xl dark:bg-gray-900'
-								>
-									<DropdownMenuItem className='rounded-xl'>
-										<button
-											className='w-full cursor-pointer rounded-xl px-2 py-1 text-start'
-											onClick={() => {
-												onCategoryClick('')
-											}}
-										>
-											All categories
-										</button>
-									</DropdownMenuItem>
-
-									<List
-										rowComponent={({ index, style }) => (
-											<RowComponent index={index} style={style} data={categories} />
-										)}
-										rowCount={categories.length}
-										rowHeight={40}
-										rowProps={{
-											'aria-posinset': 1,
-											'aria-setsize': categories.length,
-											role: 'listitem',
+						{categories.length ? (
+							<DropdownMenuContent
+								align='start'
+								className='mt-1 max-h-64 w-full overflow-y-hidden rounded-xl bg-white py-1 shadow-xl dark:bg-gray-900'
+							>
+								<DropdownMenuItem className='rounded-xl'>
+									<button
+										className='w-full cursor-pointer rounded-xl px-2 py-1 text-start'
+										onClick={() => {
+											onCategoryClick('')
 										}}
-										overscanCount={15}
-										className='h-50 w-62 cursor-pointer
+									>
+										All categories
+									</button>
+								</DropdownMenuItem>
+
+								<List
+									rowComponent={({ index, style }) => (
+										<RowComponent index={index} style={style} data={categories} />
+									)}
+									rowCount={categories.length}
+									rowHeight={40}
+									rowProps={{
+										'aria-posinset': 1,
+										'aria-setsize': categories.length,
+										role: 'listitem',
+									}}
+									overscanCount={15}
+									className='h-50 w-62 cursor-pointer
 											[&::-webkit-scrollbar]:h-1.5
 											[&::-webkit-scrollbar]:w-1.5
 											[&::-webkit-scrollbar-thumb]:rounded-full
@@ -208,20 +207,19 @@ export function DataTable<TData, TValue>({
 											[&::-webkit-scrollbar-track]:rounded-full
 											[&::-webkit-scrollbar-track]:bg-gray-100
 											dark:[&::-webkit-scrollbar-track]:bg-slate-800'
-									/>
-								</DropdownMenuContent>
-							) : (
-								<p className='px-4 py-2 text-sm text-gray-500'>No categories available</p>
-							)}
-						</DropdownMenu>
-					</div>
+								/>
+							</DropdownMenuContent>
+						) : (
+							<p className='px-4 py-2 text-sm text-gray-500'>No categories available</p>
+						)}
+					</DropdownMenu>
 
 					{/* Visibility columns */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
 								variant='outline'
-								className='group ml-auto rounded-xl transition-colors duration-300 ease-in-out'
+								className='group w-min rounded-xl px-4 py-2 transition-colors duration-300 ease-in-out'
 							>
 								<span>Columns</span>
 
