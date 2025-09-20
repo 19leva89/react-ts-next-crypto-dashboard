@@ -30,13 +30,17 @@ import { getWalletDisplayName } from '@/data/wallet'
 import { WALLETS, TWallet } from '@/modules/coins/schema'
 import { WalletIcon } from '@/modules/transactions/ui/components/wallet-icon'
 
+interface Props {
+	className?: string
+}
+
 interface RowComponentProps {
 	index: number
 	style: CSSProperties
 	data: { id: string; name: string; symbol: string; image: string | null }[]
 }
 
-export const AddCoin = () => {
+export const AddCoin = ({ className }: Props) => {
 	const trpc = useTRPC()
 	const walletSelectId = useId()
 	const queryClient = useQueryClient()
@@ -136,7 +140,7 @@ export const AddCoin = () => {
 					key={coin.id}
 					value={coin.id}
 					style={style}
-					className='!w-[99%] cursor-pointer truncate rounded-lg'
+					className='!w-[99%] cursor-pointer truncate rounded-xl'
 				>
 					<div className='flex h-5 items-center gap-2'>
 						<Image
@@ -167,96 +171,97 @@ export const AddCoin = () => {
 	)
 
 	return (
-		<div className='mx-6 flex flex-col gap-4'>
-			<div className='flex justify-end'>
-				<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-					<DialogTrigger asChild>
-						<Button
-							variant='default'
-							size='default'
-							className='rounded-xl text-white transition-colors duration-300 ease-in-out'
-						>
-							<PlusIcon className='mr-2 size-4' />
-							Transaction
-						</Button>
-					</DialogTrigger>
+		<div className={className}>
+			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+				<DialogTrigger asChild>
+					<Button
+						variant='default'
+						size='default'
+						className='rounded-xl text-white transition-colors duration-300 ease-in-out'
+					>
+						<PlusIcon className='mr-2 size-4' />
+						Transaction
+					</Button>
+				</DialogTrigger>
 
-					<DialogContent className='rounded-xl px-8'>
-						<DialogHeader>
-							<DialogTitle>Add Transaction</DialogTitle>
+				<DialogContent className='rounded-xl px-8'>
+					<DialogHeader>
+						<DialogTitle>Add Transaction</DialogTitle>
 
-							<DialogDescription>Select a coin, enter quantity and price</DialogDescription>
-						</DialogHeader>
+						<DialogDescription>Select a coin, enter quantity and price</DialogDescription>
+					</DialogHeader>
 
-						<div className='grid gap-4 py-4'>
-							<div className='grid grid-cols-4 items-center gap-4'>
-								<Label htmlFor='coin' className='text-right'>
-									Coin
-								</Label>
+					<div className='grid gap-4 py-4'>
+						<div className='grid grid-cols-4 items-center gap-4'>
+							<Label htmlFor='coin' className='text-right'>
+								Coin
+							</Label>
 
-								<Select
-									value={selectedCoin}
-									onValueChange={(value) => setSelectedCoin(value)}
-									open={isSelectOpen}
-									onOpenChange={(open) => {
-										if (!open && isSearchFocused) return
-										setIsSelectOpen(open)
-									}}
-								>
-									<SelectTrigger className='col-span-3 w-full'>
-										{selectedCoinData ? (
-											<div className='flex items-center gap-2 truncate'>
-												<Image
-													src={selectedCoinData.image || '/svg/coin-not-found.svg'}
-													alt={selectedCoinData.name}
-													width={20}
-													height={20}
-													onError={(e) => {
-														e.currentTarget.src = '/svg/coin-not-found.svg'
-													}}
-												/>
-												<span className='truncate'>
-													{selectedCoinData.name} ({selectedCoinData.symbol.toUpperCase()})
-												</span>
-											</div>
-										) : (
-											<span>Select a coin currency</span>
-										)}
-									</SelectTrigger>
-
-									<SelectContent>
-										{/* Input for search filter */}
-										<div className='p-2'>
-											<Input
-												ref={searchInputRef}
-												type='text'
-												placeholder='Search coin...'
-												value={searchQuery}
-												onChange={(e) => {
-													setSearchQuery(e.target.value)
-													setSelectedCoin('')
+							<Select
+								value={selectedCoin}
+								onValueChange={(value) => setSelectedCoin(value)}
+								open={isSelectOpen}
+								onOpenChange={(open) => {
+									if (!open && isSearchFocused) return
+									setIsSelectOpen(open)
+								}}
+							>
+								<SelectTrigger className='col-span-3 w-full rounded-xl'>
+									{selectedCoinData ? (
+										<div className='flex items-center gap-2 truncate'>
+											<Image
+												src={selectedCoinData.image || '/svg/coin-not-found.svg'}
+												alt={selectedCoinData.name}
+												width={20}
+												height={20}
+												onError={(e) => {
+													e.currentTarget.src = '/svg/coin-not-found.svg'
 												}}
-												onFocus={() => setIsSearchFocused(true)}
-												onBlur={() => setIsSearchFocused(false)}
 											/>
-										</div>
 
-										{isLoading ? (
-											<Skeleton className='h-52 w-full' />
-										) : (
-											<List
-												rowComponent={({ index, style }) => (
-													<RowComponent index={index} style={style} data={filteredCoins} />
-												)}
-												rowCount={filteredCoins.length}
-												rowHeight={40}
-												rowProps={{
-													'aria-posinset': 1,
-													'aria-setsize': filteredCoins.length,
-													role: 'listitem',
-												}}
-												overscanCount={15}
-												className='h-50 w-80 cursor-pointer
+											<span className='truncate'>
+												{selectedCoinData.name} ({selectedCoinData.symbol.toUpperCase()})
+											</span>
+										</div>
+									) : (
+										<span>Select a coin currency</span>
+									)}
+								</SelectTrigger>
+
+								<SelectContent className='rounded-xl'>
+									{/* Input for search filter */}
+									<div className='p-2'>
+										<Input
+											ref={searchInputRef}
+											type='text'
+											placeholder='Search coin...'
+											value={searchQuery}
+											onChange={(e) => {
+												setSearchQuery(e.target.value)
+												setSelectedCoin('')
+											}}
+											onFocus={() => setIsSearchFocused(true)}
+											onBlur={() => setIsSearchFocused(false)}
+											className='rounded-xl'
+										/>
+									</div>
+
+									{isLoading ? (
+										<Skeleton className='h-52 w-full rounded-xl' />
+									) : (
+										<List
+											rowComponent={({ index, style }) => (
+												<RowComponent index={index} style={style} data={filteredCoins} />
+											)}
+											rowCount={filteredCoins.length}
+											rowHeight={40}
+											rowProps={{
+												'aria-posinset': 1,
+												'aria-setsize': filteredCoins.length,
+												role: 'listitem',
+											}}
+											overscanCount={15}
+											className='h-50 w-80 cursor-pointer
 													[&::-webkit-scrollbar]:h-1.5
 													[&::-webkit-scrollbar]:w-1.5
 													[&::-webkit-scrollbar-thumb]:rounded-full
@@ -267,95 +272,94 @@ export const AddCoin = () => {
 													[&::-webkit-scrollbar-track]:rounded-full
 													[&::-webkit-scrollbar-track]:bg-gray-100
 													dark:[&::-webkit-scrollbar-track]:bg-slate-800'
-											/>
-										)}
+										/>
+									)}
+								</SelectContent>
+							</Select>
+						</div>
+
+						<div className='grid grid-cols-4 items-center gap-4'>
+							<Label htmlFor='quantity' className='text-right'>
+								Quantity
+							</Label>
+
+							<Input
+								id='quantity'
+								type='number'
+								placeholder='Enter quantity'
+								min={0}
+								step={0.01}
+								value={editQuantity}
+								onChange={handleQuantityChange}
+								className='col-span-3 [appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+							/>
+						</div>
+
+						<div className='grid grid-cols-4 items-center gap-4'>
+							<Label htmlFor='price' className='text-right'>
+								Price
+							</Label>
+
+							<Input
+								id='price'
+								type='number'
+								placeholder='Enter price'
+								min={0}
+								step={0.01}
+								value={editPrice}
+								onChange={handlePriceChange}
+								className='col-span-3 [appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+							/>
+						</div>
+
+						<div className='grid grid-cols-4 items-center gap-4'>
+							<Label htmlFor={walletSelectId} className='text-right'>
+								Wallet
+							</Label>
+
+							<div className='col-span-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'>
+								<Select
+									value={selectedWallet}
+									onValueChange={(value) => {
+										setSelectedWallet(value as TWallet)
+									}}
+								>
+									<SelectTrigger
+										id={walletSelectId}
+										aria-label={`Current wallet: ${getWalletDisplayName(selectedWallet as keyof typeof WALLETS)}`}
+										className='w-full rounded-xl'
+									>
+										<SelectValue placeholder='Select wallet' />
+									</SelectTrigger>
+
+									<SelectContent className='rounded-xl'>
+										{Object.keys(WALLETS).map((walletKey) => (
+											<SelectItem key={walletKey} value={walletKey} className='rounded-xl'>
+												<WalletIcon wallet={walletKey as keyof typeof WALLETS} />
+
+												{getWalletDisplayName(walletKey as keyof typeof WALLETS)}
+											</SelectItem>
+										))}
 									</SelectContent>
 								</Select>
 							</div>
-
-							<div className='grid grid-cols-4 items-center gap-4'>
-								<Label htmlFor='quantity' className='text-right'>
-									Quantity
-								</Label>
-
-								<Input
-									id='quantity'
-									type='number'
-									placeholder='Enter quantity'
-									min={0}
-									step={0.01}
-									value={editQuantity}
-									onChange={handleQuantityChange}
-									className='col-span-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-								/>
-							</div>
-
-							<div className='grid grid-cols-4 items-center gap-4'>
-								<Label htmlFor='price' className='text-right'>
-									Price
-								</Label>
-
-								<Input
-									id='price'
-									type='number'
-									placeholder='Enter price'
-									min={0}
-									step={0.01}
-									value={editPrice}
-									onChange={handlePriceChange}
-									className='col-span-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-								/>
-							</div>
-
-							<div className='grid grid-cols-4 items-center gap-4'>
-								<Label htmlFor={walletSelectId} className='text-right'>
-									Wallet
-								</Label>
-
-								<div className='col-span-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'>
-									<Select
-										value={selectedWallet}
-										onValueChange={(value) => {
-											setSelectedWallet(value as TWallet)
-										}}
-									>
-										<SelectTrigger
-											id={walletSelectId}
-											aria-label={`Current wallet: ${getWalletDisplayName(selectedWallet as keyof typeof WALLETS)}`}
-											className='w-full'
-										>
-											<SelectValue placeholder='Select wallet' />
-										</SelectTrigger>
-
-										<SelectContent>
-											{Object.keys(WALLETS).map((walletKey) => (
-												<SelectItem key={walletKey} value={walletKey}>
-													<WalletIcon wallet={walletKey as keyof typeof WALLETS} />
-
-													{getWalletDisplayName(walletKey as keyof typeof WALLETS)}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								</div>
-							</div>
-
-							<DialogFooter>
-								<Button
-									variant='default'
-									size='default'
-									onClick={handleAddCoin}
-									disabled={isLoading || isAdding}
-									loading={isAdding}
-									className='rounded-xl text-white transition-colors duration-300 ease-in-out'
-								>
-									Submit
-								</Button>
-							</DialogFooter>
 						</div>
-					</DialogContent>
-				</Dialog>
-			</div>
+
+						<DialogFooter>
+							<Button
+								variant='default'
+								size='default'
+								onClick={handleAddCoin}
+								disabled={isLoading || isAdding}
+								loading={isAdding}
+								className='rounded-xl text-white transition-colors duration-300 ease-in-out'
+							>
+								Submit
+							</Button>
+						</DialogFooter>
+					</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	)
 }

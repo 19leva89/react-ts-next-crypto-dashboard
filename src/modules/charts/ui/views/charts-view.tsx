@@ -23,7 +23,7 @@ export const ChartsView = () => {
 				<p>Planned profit: {formatUSDPrice(data.plannedProfit, false)}</p>
 			</div>
 
-			<div className='flex flex-col items-center gap-4 xl:flex-row'>
+			<div className='flex flex-col items-center gap-4 xl:flex-row xl:items-stretch'>
 				<LineChartContainer chartData={data.lineChartData} />
 
 				<PieChartContainer chartData={data.pieChartData} />

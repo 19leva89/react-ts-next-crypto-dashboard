@@ -15,6 +15,7 @@ import {
 	SidebarTrigger,
 	Skeleton,
 } from '@/components/ui'
+import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
 import { ModeToggle } from '@/components/shared'
 import { useSelectedCurrency } from '@/hooks/use-selected-currency'
@@ -96,7 +97,10 @@ export const Navbar = () => {
 								<Button
 									variant='ghost'
 									size='sm'
-									className={`w-full rounded-xl ${currency === curr ? 'bg-accent text-accent-foreground' : ''}`}
+									className={cn(
+										'w-full rounded-xl',
+										currency === curr ? 'bg-accent text-accent-foreground' : '',
+									)}
 								>
 									{curr.toUpperCase()}
 								</Button>

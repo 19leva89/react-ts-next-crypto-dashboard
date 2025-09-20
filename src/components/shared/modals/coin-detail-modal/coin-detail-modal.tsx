@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { StarIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import DOMPurify from 'isomorphic-dompurify'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
 import {
@@ -318,7 +319,9 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 								<p
 									className='prose prose-sm mt-3 text-gray-600 duration-200 dark:text-gray-300 prose-a:text-blue-700 hover:prose-a:underline dark:prose-a:text-blue-700 dark:hover:prose-a:underline'
-									dangerouslySetInnerHTML={{ __html: coinData?.description.en as string }}
+									dangerouslySetInnerHTML={{
+										__html: DOMPurify.sanitize(String(coinData?.description.en)),
+									}}
 								/>
 							</div>
 						</>

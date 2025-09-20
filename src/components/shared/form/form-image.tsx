@@ -5,6 +5,7 @@ import { useFormContext } from 'react-hook-form'
 import { XIcon, ImageIcon, UploadIcon } from 'lucide-react'
 import { DragEvent, InputHTMLAttributes, useState, useCallback, ChangeEvent } from 'react'
 
+import { cn } from '@/lib'
 import { Input } from '@/components/ui'
 import { ErrorText, RequiredSymbol } from '@/components/shared'
 
@@ -154,11 +155,13 @@ export const FormImage = ({
 							document.getElementById(`file-input-${name}`)?.click()
 						}
 					}}
-					className={`
-						relative rounded-lg border-2 border-dashed p-6 text-center transition-colors
-						${isDragOver ? 'border-primary bg-primary/5' : 'border-gray-300'}
-						${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:border-primary hover:bg-gray-50'}
-					`}
+					className={cn(
+						'relative rounded-xl border-2 border-dashed p-6 text-center transition-colors duration-300 ease-in-out',
+						isDragOver ? 'border-primary bg-primary/5' : 'border-gray-300',
+						disabled
+							? 'cursor-not-allowed opacity-50'
+							: 'cursor-pointer hover:border-primary hover:bg-gray-50',
+					)}
 				>
 					<Input
 						id={`file-input-${name}`}

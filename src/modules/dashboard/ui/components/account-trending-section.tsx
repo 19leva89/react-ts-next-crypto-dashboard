@@ -67,7 +67,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 						<>
 							<span>Reset</span>
 
-							<div className='relative size-5 transition-transform duration-300 group-hover:-rotate-180'>
+							<div className='relative size-5 transition-transform duration-300 ease-in-out group-hover:-rotate-180'>
 								<RotateCcwIcon size={16} className='absolute inset-0 m-auto' />
 							</div>
 						</>
@@ -75,7 +75,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 						<>
 							<span>View more</span>
 
-							<div className='relative size-5 -rotate-90 transition-transform duration-300 group-hover:rotate-0'>
+							<div className='relative size-5 -rotate-90 transition-transform duration-300 ease-in-out group-hover:rotate-0'>
 								<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
 							</div>
 						</>

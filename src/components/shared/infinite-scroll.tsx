@@ -33,6 +33,7 @@ export const InfiniteScroll = ({ isManual, hasNextPage, isFetchingNextPage, fetc
 					variant='secondary'
 					disabled={!hasNextPage || isFetchingNextPage}
 					onClick={() => fetchNextPage()}
+					className='rounded-xl transition-colors duration-300 ease-in-out'
 				>
 					{isFetchingNextPage ? 'Loading...' : 'Load more'}
 				</Button>
