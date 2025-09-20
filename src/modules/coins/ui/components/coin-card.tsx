@@ -52,7 +52,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 				<div
 					className={cn(
 						'flex gap-1',
-						viewMode === 'grid' ? 'flex-col' : 'flex-row items-center gap-4 max-[550px]:flex-wrap',
+						viewMode === 'grid' ? 'flex-col' : 'flex-row flex-wrap items-center gap-4 sm:flex-nowrap',
 					)}
 				>
 					<CardTitle className='flex items-center gap-2'>
@@ -74,15 +74,13 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							{coin.name}
 						</Link>
 
-						<span className='text-sm text-muted-foreground max-[600px]:hidden'>
+						<span className='hidden text-sm text-muted-foreground sm:inline'>
 							({coin.symbol.toUpperCase()})
 						</span>
 					</CardTitle>
 
 					<CardDescription className='flex items-center gap-2'>
-						<div
-							className={cn('flex', viewMode === 'grid' ? 'flex-col' : 'flex-row gap-4 max-[1000px]:hidden')}
-						>
+						<div className={cn('flex', viewMode === 'grid' ? 'flex-col' : 'hidden flex-row gap-4 lg:flex')}>
 							<span>Buy: {formatUSDPrice(coin.average_price)}</span>
 
 							<span>Curr: {formatUSDPrice(coin.current_price)}</span>
@@ -93,7 +91,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 						<div
 							className={cn(
 								'flex h-8 items-center gap-2 rounded-full px-2 py-1 font-medium',
-								viewMode === 'grid' ? '' : 'max-[460px]:hidden',
+								viewMode === 'grid' ? '' : 'hidden sm:flex',
 								coin.current_price > coin.average_price
 									? 'bg-green-100 text-green-600 dark:bg-green-900/30'
 									: 'bg-red-100 text-red-600 dark:bg-red-900/30',

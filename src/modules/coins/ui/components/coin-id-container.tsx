@@ -238,8 +238,8 @@ export const CoinIdContainer = ({ coin }: Props) => {
 	}
 
 	return (
-		<div className='mx-72 flex flex-col gap-6 max-[1700px]:mx-40 max-[1500px]:mx-20 max-[1300px]:mx-10 max-[1200px]:mx-0'>
-			<div className='flex flex-row items-center justify-between gap-3 pr-4 max-[700px]:text-sm max-[600px]:items-start'>
+		<div className='mx-0 flex flex-col gap-6 xl:mx-20 2xl:mx-40'>
+			<div className='flex flex-row items-start justify-between gap-3 pr-4 text-sm sm:items-center md:text-base'>
 				<Button
 					variant='ghost'
 					size='icon'
@@ -253,7 +253,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					{isNavigatingBack ? <LoaderIcon className='size-5 animate-spin text-primary' /> : <ArrowLeftIcon />}
 				</Button>
 
-				<div className='flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1'>
+				<div className='flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3'>
 					<p>Quantity: {formatValue(coin.total_quantity)}</p>
 
 					<p>Total invested: {formatUSDPrice(coin.total_cost, false)}</p>
@@ -281,7 +281,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 			{/* Chart */}
 			<Card className='flex flex-col rounded-xl py-1'>
-				<CardHeader className='flex-row items-center justify-between gap-2 space-y-0 p-4 max-[600px]:p-3'>
+				<CardHeader className='flex-row items-center justify-between gap-2 space-y-0 p-3 sm:p-4'>
 					<div className='flex flex-row items-center justify-center gap-2'>
 						<Image
 							src={coin.image || '/svg/coin-not-found.svg'}
@@ -327,7 +327,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					</div>
 				</CardHeader>
 
-				<CardContent className='pb-4 max-[600px]:px-1 max-[600px]:py-3'>
+				<CardContent className='px-1 py-3 sm:px-6 sm:pb-4'>
 					<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
 						<LineChart
 							accessibilityLayer
@@ -378,7 +378,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 									const totalValue = payload[0].payload.TotalValue
 
 									return (
-										<div className='rounded-lg border bg-background p-4 shadow-xs max-[600px]:p-2'>
+										<div className='rounded-lg border bg-background p-2 shadow-xs sm:p-4'>
 											<div className='flex flex-col gap-1'>
 												<span className='text-xs'>{timeValue}</span>
 
@@ -407,7 +407,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 			{/* Section for displaying transactions and sales */}
 			<div className='mt-6'>
 				<div className='mb-1 flex items-center justify-between'>
-					<h3 className='px-4 text-lg font-semibold max-[400px]:text-sm'>Transaction History</h3>
+					<h3 className='px-4 text-sm font-semibold sm:text-lg'>Transaction History</h3>
 				</div>
 
 				<TableContainer

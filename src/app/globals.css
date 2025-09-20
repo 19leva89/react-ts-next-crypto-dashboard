@@ -6,6 +6,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
+	--breakpoint-xs: 400px;
+	--breakpoint-2md: 870px;
+
 	--color-border: hsl(var(--border));
 	--color-input: hsl(var(--input));
 	--color-ring: hsl(var(--ring));

@@ -120,14 +120,14 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 					<SheetTitle>
 						<div className='flex items-center justify-between'>
 							{isLoading ? (
-								<Skeleton className='h-6 w-3/4 max-[500px]:h-5' />
+								<Skeleton className='h-5 w-3/4 sm:h-6' />
 							) : (
 								<Link
 									href={`https://coingecko.com/en/coins/${coinData?.id}`}
 									target='_blank'
 									rel='noopener noreferrer'
 								>
-									<h4 className='text-md cursor-pointer font-semibold hover:text-[#397fee] max-[500px]:text-sm dark:hover:text-[#75a6f4]'>
+									<h4 className='cursor-pointer text-sm font-semibold hover:text-[#397fee] sm:text-base dark:hover:text-[#75a6f4]'>
 										{coinData?.name}
 									</h4>
 								</Link>
@@ -242,7 +242,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 						<Skeleton className='h-72 w-full' />
 					) : (
 						<>
-							<div className='flex items-center justify-between font-medium max-[500px]:text-sm'>
+							<div className='flex items-center justify-between text-sm font-medium sm:text-base'>
 								<Link
 									href={`https://coingecko.com/en/coins/${coinData?.id}`}
 									target='_blank'
@@ -254,7 +254,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 											alt={coinData?.name || 'Coin image'}
 											width={32}
 											height={32}
-											className='size-8 rounded-full max-[500px]:size-6'
+											className='size-6 rounded-full sm:size-8'
 											onError={(e) => {
 												e.currentTarget.src = '/svg/coin-not-found.svg'
 											}}
@@ -271,7 +271,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 								<div>{formatUSDPrice(coinData?.market_data.current_price.usd as number, true)}</div>
 							</div>
 
-							<div className='text-md mt-8 flex flex-col gap-2 max-[500px]:text-sm'>
+							<div className='mt-8 flex flex-col gap-2 text-sm sm:text-base'>
 								<div className='flex flex-wrap justify-between gap-2 capitalize'>
 									<span>Crypto market rank</span>
 
@@ -314,7 +314,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 							</div>
 
 							<div className='mt-8'>
-								<span className='font-medium max-[500px]:text-sm'>Description</span>
+								<span className='text-sm font-medium sm:text-base'>Description</span>
 
 								<p
 									className='prose prose-sm mt-3 text-gray-600 duration-200 dark:text-gray-300 prose-a:text-blue-700 hover:prose-a:underline dark:prose-a:text-blue-700 dark:hover:prose-a:underline'

@@ -44,7 +44,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 						onError={(e) => {
 							e.currentTarget.src = '/svg/coin-not-found.svg'
 						}}
-						className='size-6 rounded-full max-[500px]:size-5'
+						className='size-5 rounded-full sm:size-6'
 					/>
 
 					<span className='truncate'>
@@ -117,7 +117,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 		cell: ({ row }) => {
 			const amount = parseFloat(row.getValue('quantity')) || 0
 
-			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>{amount}</div>
+			return <div className='px-3 py-2 text-sm xl:text-base'>{amount}</div>
 		},
 	},
 
@@ -209,9 +209,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 			const date = row.getValue('date') as Date
 
 			return (
-				<div className='px-3 py-2 text-base max-[1200px]:text-sm'>
-					{format(new Date(date), 'dd.MM.yyyy, HH:mm')}
-				</div>
+				<div className='px-3 py-2 text-sm xl:text-base'>{format(new Date(date), 'dd.MM.yyyy, HH:mm')}</div>
 			)
 		},
 	},
@@ -244,7 +242,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 					tabIndex={0}
 					role='textbox'
 					aria-label={`wallet: ${label}`}
-					className='flex min-w-46 items-center gap-2 px-3 py-2 text-base max-[1200px]:text-sm'
+					className='flex min-w-46 items-center gap-2 px-3 py-2 text-sm xl:text-base'
 				>
 					<WalletIcon wallet={wallet} />
 

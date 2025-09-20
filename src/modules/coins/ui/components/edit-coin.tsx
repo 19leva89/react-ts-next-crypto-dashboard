@@ -142,7 +142,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className='rounded-xl max-[450px]:px-1 sm:max-w-3xl'>
+			<DialogContent className='rounded-xl px-1 sm:max-w-3xl sm:px-6'>
 				<DialogHeader className='px-4'>
 					<DialogTitle>Edit quantity, price or date</DialogTitle>
 
@@ -170,12 +170,12 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 					{/* Section for displaying transactions and sales */}
 					<div className='mt-2'>
 						<div className='mb-1 flex items-center justify-between'>
-							<h3 className='px-4 text-lg font-semibold max-[400px]:text-sm'>Transaction History</h3>
+							<h3 className='px-4 text-sm font-semibold sm:text-lg'>Transaction History</h3>
 
-							<div className='flex flex-col px-4 max-[600px]:text-sm'>
-								<p className=''>Total invested: {formatUSDPrice(coin.total_cost, false)}</p>
+							<div className='flex flex-col px-4 text-sm sm:text-base'>
+								<p>Total invested: {formatUSDPrice(coin.total_cost, false)}</p>
 
-								<p className=''>Total value: {formatUSDPrice(totalValue, false)}</p>
+								<p>Total value: {formatUSDPrice(totalValue, false)}</p>
 							</div>
 						</div>
 

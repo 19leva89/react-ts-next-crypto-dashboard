@@ -17,13 +17,13 @@ export const ChartsView = () => {
 
 	return (
 		<div className='3xl:mx-30 mx-0 flex flex-col gap-4 xl:mx-10 2xl:mx-20'>
-			<div className='flex flex-row items-center gap-3 max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-1'>
+			<div className='flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3'>
 				<p>Total invested: {formatUSDPrice(data.totalInvestedValue, false)}</p>
 				<p>Total value: {formatUSDPrice(data.totalPortfolioValue, false)}</p>
 				<p>Planned profit: {formatUSDPrice(data.plannedProfit, false)}</p>
 			</div>
 
-			<div className='flex flex-row gap-4 max-[1200px]:flex-col max-[1200px]:items-center'>
+			<div className='flex flex-col items-center gap-4 xl:flex-row'>
 				<LineChartContainer chartData={data.lineChartData} />
 
 				<PieChartContainer chartData={data.pieChartData} />
