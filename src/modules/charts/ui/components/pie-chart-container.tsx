@@ -49,7 +49,7 @@ export const PieChartContainer = ({ chartData }: Props) => {
 	}
 
 	return (
-		<Card className='flex w-full flex-col gap-0 rounded-xl py-1 sm:w-3/4 md:w-1/2 xl:w-1/3'>
+		<Card className='flex w-full flex-col gap-0 rounded-xl py-1 xl:w-1/3'>
 			<CardHeader className='items-center px-1 py-3 sm:p-4'>
 				<CardTitle>Coins distribution</CardTitle>
 			</CardHeader>

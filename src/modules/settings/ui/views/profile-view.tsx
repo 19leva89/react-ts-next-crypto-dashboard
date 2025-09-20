@@ -121,7 +121,7 @@ export const ProfileView = () => {
 							control={form.control}
 							name='isTwoFactorEnabled'
 							render={({ field }) => (
-								<FormItem className='mt-8 flex flex-row items-center justify-between rounded-lg border p-3 shadow-xs'>
+								<FormItem className='mt-8 flex flex-row items-center justify-between rounded-xl border p-3 shadow-xs'>
 									<div className='space-y-0.5'>
 										<FormLabel className='cursor-pointer'>Two Factor Authentication</FormLabel>
 

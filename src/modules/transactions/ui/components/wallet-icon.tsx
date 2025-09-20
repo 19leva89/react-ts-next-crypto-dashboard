@@ -1,5 +1,6 @@
 import Image from 'next/image'
 
+import { cn } from '@/lib'
 import { TWallet } from '@/modules/coins/schema'
 import { WALLET_DISPLAY_NAMES, WALLET_ICONS } from '@/constants/wallet'
 
@@ -23,7 +24,7 @@ export const WalletIcon = ({ wallet, className = 'size-5' }: Props) => {
 			onError={(e) => {
 				e.currentTarget.src = '/svg/coin-not-found.svg'
 			}}
-			className={`flex-shrink-0 ${className} ${isLedger ? 'dark:invert' : ''}`}
+			className={cn('flex-shrink-0', isLedger ? 'dark:invert' : '', className)}
 		/>
 	)
 }

@@ -34,6 +34,7 @@ import {
 	DropdownMenuTrigger,
 	Switch,
 } from '@/components/ui'
+import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
 import { TNotification } from '@/modules/notifications/schema'
 import { INFINITE_SCROLL_LIMIT } from '@/constants/infinite-scroll'
@@ -206,7 +207,7 @@ export const NotificationsView = () => {
 						{notifications.map((notification, i) => (
 							<div
 								key={`${notification.id}-${i}`}
-								className='relative cursor-pointer p-4 transition-colors hover:bg-muted/50'
+								className='relative cursor-pointer p-4 transition-colors duration-300 ease-in-out hover:bg-muted/50'
 							>
 								<div className='flex items-start'>
 									{!notification.isRead && <span className='absolute top-0 bottom-0 left-0 w-1 bg-primary' />}
@@ -216,7 +217,10 @@ export const NotificationsView = () => {
 									<div className='flex-1'>
 										<div className='flex items-center justify-between'>
 											<p
-												className={`text-sm ${notification.isRead ? 'text-muted-foreground' : 'font-medium'}`}
+												className={cn(
+													'text-sm',
+													notification.isRead ? 'text-muted-foreground' : 'font-medium',
+												)}
 											>
 												{notification.title}
 											</p>
@@ -235,7 +239,7 @@ export const NotificationsView = () => {
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>
 											<Button variant='ghost' size='icon' className='group mt-0! shrink-0'>
-												<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
+												<div className='relative size-5 transition-transform duration-300 ease-in-out group-hover:rotate-180'>
 													<EllipsisVerticalIcon size={16} className='absolute inset-0 m-auto' />
 												</div>
 
@@ -299,7 +303,7 @@ export const NotificationsView = () => {
 						))}
 
 						{isPending && (
-							<div className='flex flex-col items-center justify-center gap-y-6 rounded-lg bg-background p-10 shadow-sm'>
+							<div className='flex flex-col items-center justify-center gap-y-6 rounded-xl bg-background p-10 shadow-sm'>
 								<LoaderIcon className='size-6 animate-spin text-primary' />
 							</div>
 						)}
@@ -324,7 +328,7 @@ export const NotificationsView = () => {
 							className='group flex items-center gap-2 text-primary hover:bg-transparent hover:underline'
 							onClick={() => markAllAsRead()}
 						>
-							<CheckIcon className='size-4 transition-transform group-hover:scale-110' />
+							<CheckIcon className='size-4 transition-transform duration-300 ease-in-out group-hover:scale-110' />
 							Mark all as read
 						</Button>
 					</CardFooter>

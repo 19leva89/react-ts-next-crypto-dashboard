@@ -378,7 +378,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 									const totalValue = payload[0].payload.TotalValue
 
 									return (
-										<div className='rounded-lg border bg-background p-2 shadow-xs sm:p-4'>
+										<div className='rounded-xl border bg-background p-2 shadow-xs sm:p-4'>
 											<div className='flex flex-col gap-1'>
 												<span className='text-xs'>{timeValue}</span>
 

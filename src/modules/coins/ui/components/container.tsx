@@ -96,88 +96,87 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 	)
 
 	return (
-		<div className='flex w-full flex-col gap-6'>
-			<div className='flex flex-wrap items-center justify-between gap-1 lg:flex-nowrap'>
-				<div className='flex flex-col items-start gap-1 lg:flex-row'>
-					<div className='p-0 px-6 lg:p-2 lg:px-6'>
-						<h2 className='text-lg font-bold sm:text-xl'>
-							Total invested: {formatUSDPrice(totalInvestedValue, true)}
-						</h2>
-					</div>
-
-					<div className='p-0 px-6 lg:p-2 lg:px-6'>
-						<h2 className='text-lg font-bold sm:text-xl'>Total coin: {formatUSDPrice(totalValue, true)}</h2>
-					</div>
-
-					<div className='p-0 px-6 lg:p-2 lg:px-6'>
-						<h2 className='text-lg font-bold sm:text-xl'>
-							Planned profit: {formatUSDPrice(plannedProfit, true)}
-						</h2>
-					</div>
+		<div className='flex w-full flex-col gap-4'>
+			{/* Invested, total, planned profit */}
+			<div className='flex w-full flex-col items-start gap-1 lg:flex-row'>
+				<div className='p-0 px-6 lg:p-2 lg:px-6'>
+					<h2 className='text-lg font-bold sm:text-xl'>
+						Total invested: {formatUSDPrice(totalInvestedValue, true)}
+					</h2>
 				</div>
 
-				<div className='flex flex-col flex-wrap items-start gap-2 2md:flex-row-reverse sm:flex-row sm:items-center'>
-					<AddCoin />
+				<div className='p-0 px-6 lg:p-2 lg:px-6'>
+					<h2 className='text-lg font-bold sm:text-xl'>Total coin: {formatUSDPrice(totalValue, true)}</h2>
+				</div>
 
-					<div className='flex flex-row-reverse items-center 2md:flex-row'>
-						<div className='flex items-center gap-2'>
-							<Button
-								variant='ghost'
-								size='icon'
-								onClick={() => setViewMode('grid')}
-								className={cn('transition-colors duration-300 ease-in-out', {
-									'bg-accent': viewMode === 'grid',
-								})}
-							>
-								<LayoutGridIcon className='size-4' />
-							</Button>
+				<div className='p-0 px-6 lg:p-2 lg:px-6'>
+					<h2 className='text-lg font-bold sm:text-xl'>
+						Planned profit: {formatUSDPrice(plannedProfit, true)}
+					</h2>
+				</div>
+			</div>
 
-							<Button
-								variant='ghost'
-								size='icon'
-								onClick={() => setViewMode('list')}
-								className={cn('transition-colors duration-300 ease-in-out', {
-									'bg-accent': viewMode === 'list',
-								})}
-							>
-								<ListIcon className='size-4' />
-							</Button>
-						</div>
+			<div className='flex flex-wrap items-center justify-end gap-2 sm:flex-nowrap sm:justify-between'>
+				<AddCoin className='mx-6' />
 
-						{/* Sort coin */}
-						<div className='mx-6'>
-							<Select
-								value={sortOption}
-								onValueChange={(value) =>
-									setSortOption(
-										value as
-											| 'total-asc'
-											| 'total-desc'
-											| 'profit-asc'
-											| 'profit-desc'
-											| 'name-asc'
-											| 'name-desc'
-											| 'price-asc'
-											| 'price-desc',
-									)
-								}
-							>
-								<SelectTrigger className='w-45'>
-									<SelectValue placeholder='Sort' />
-								</SelectTrigger>
+				<div className='flex w-full items-center justify-between sm:justify-end'>
+					<div className='ml-6 flex items-center gap-2'>
+						<Button
+							variant='ghost'
+							size='icon'
+							onClick={() => setViewMode('grid')}
+							className={cn('rounded-xl transition-colors duration-300 ease-in-out', {
+								'bg-accent': viewMode === 'grid',
+							})}
+						>
+							<LayoutGridIcon className='size-4' />
+						</Button>
 
-								<SelectContent>
-									<SelectItem value='total-asc'>Total: Low - Hi</SelectItem>
-									<SelectItem value='total-desc'>Total: Hi - Low</SelectItem>
-									<SelectItem value='profit-asc'>Profit: Low - Hi</SelectItem>
-									<SelectItem value='profit-desc'>Profit: Hi - Low</SelectItem>
-									<SelectItem value='name-asc'>Name: A - Z</SelectItem>
-									<SelectItem value='name-desc'>Name: Z - A</SelectItem>
-									<SelectItem value='price-asc'>Price: Low - Hi</SelectItem>
-									<SelectItem value='price-desc'>Price: Hi - Low</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
+						<Button
+							variant='ghost'
+							size='icon'
+							onClick={() => setViewMode('list')}
+							className={cn('rounded-xl transition-colors duration-300 ease-in-out', {
+								'bg-accent': viewMode === 'list',
+							})}
+						>
+							<ListIcon className='size-4' />
+						</Button>
+					</div>
+
+					{/* Sort coin */}
+					<div className='mx-6'>
+						<Select
+							value={sortOption}
+							onValueChange={(value) =>
+								setSortOption(
+									value as
+										| 'total-asc'
+										| 'total-desc'
+										| 'profit-asc'
+										| 'profit-desc'
+										| 'name-asc'
+										| 'name-desc'
+										| 'price-asc'
+										| 'price-desc',
+								)
+							}
+						>
+							<SelectTrigger className='w-45 rounded-xl'>
+								<SelectValue placeholder='Sort' />
+							</SelectTrigger>
+
+							<SelectContent className='w-45 rounded-xl'>
+								<SelectItem value='total-asc'>Total: Low - Hi</SelectItem>
+								<SelectItem value='total-desc'>Total: Hi - Low</SelectItem>
+								<SelectItem value='profit-asc'>Profit: Low - Hi</SelectItem>
+								<SelectItem value='profit-desc'>Profit: Hi - Low</SelectItem>
+								<SelectItem value='name-asc'>Name: A - Z</SelectItem>
+								<SelectItem value='name-desc'>Name: Z - A</SelectItem>
+								<SelectItem value='price-asc'>Price: Low - Hi</SelectItem>
+								<SelectItem value='price-desc'>Price: Hi - Low</SelectItem>
+							</SelectContent>
+						</Select>
 					</div>
 				</div>
 			</div>
