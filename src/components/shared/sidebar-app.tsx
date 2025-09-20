@@ -80,7 +80,7 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 
 			return (
 				<SidebarMenuItem key={item.title}>
-					<SidebarMenuButton asChild isActive={isActive} tooltip={item.title} className='text-lg'>
+					<SidebarMenuButton asChild isActive={isActive} tooltip={item.title} className='rounded-xl text-lg'>
 						<Link href={item.url} className='flex h-12 items-center gap-4' onClick={handleLinkClick}>
 							<div className='relative'>
 								<Icon className={open ? 'size-5!' : 'size-4'} />

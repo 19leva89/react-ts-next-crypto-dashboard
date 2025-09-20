@@ -248,7 +248,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 						setIsNavigatingBack(true)
 						router.back()
 					}}
-					className='transition-colors duration-300 ease-in-out'
+					className='rounded-xl transition-colors duration-300 ease-in-out'
 				>
 					{isNavigatingBack ? <LoaderIcon className='size-5 animate-spin text-primary' /> : <ArrowLeftIcon />}
 				</Button>

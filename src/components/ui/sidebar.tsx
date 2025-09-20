@@ -530,7 +530,7 @@ function SidebarMenuButton({
 				side='right'
 				align='center'
 				hidden={state !== 'collapsed' || isMobile}
-				className='text-white'
+				className='rounded-xl text-white'
 				{...tooltip}
 			/>
 		</Tooltip>

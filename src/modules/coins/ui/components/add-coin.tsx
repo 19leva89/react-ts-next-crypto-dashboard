@@ -42,6 +42,7 @@ interface RowComponentProps {
 
 export const AddCoin = ({ className }: Props) => {
 	const trpc = useTRPC()
+	const coinSelectId = useId()
 	const walletSelectId = useId()
 	const queryClient = useQueryClient()
 	const searchInputRef = useRef<HTMLInputElement>(null)
@@ -193,7 +194,7 @@ export const AddCoin = ({ className }: Props) => {
 
 					<div className='grid gap-4 py-4'>
 						<div className='grid grid-cols-4 items-center gap-4'>
-							<Label htmlFor='coin' className='text-right'>
+							<Label htmlFor={coinSelectId} className='text-right'>
 								Coin
 							</Label>
 
@@ -206,7 +207,11 @@ export const AddCoin = ({ className }: Props) => {
 									setIsSelectOpen(open)
 								}}
 							>
-								<SelectTrigger className='col-span-3 w-full rounded-xl'>
+								<SelectTrigger
+									id={coinSelectId}
+									aria-label='Select coin'
+									className='col-span-3 w-full rounded-xl'
+								>
 									{selectedCoinData ? (
 										<div className='flex items-center gap-2 truncate'>
 											<Image

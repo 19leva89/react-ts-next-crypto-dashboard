@@ -147,9 +147,20 @@ export const FormImage = ({
 			<div className='space-y-3'>
 				{/* Drag & Drop zone */}
 				<div
+					role='button'
+					tabIndex={0}
+					aria-label={disabled ? 'Image upload disabled' : 'Upload image (click or drag and drop)'}
+					onDrop={handleDrop}
 					onDragOver={handleDragOver}
 					onDragLeave={handleDragLeave}
-					onDrop={handleDrop}
+					onKeyDown={(e) => {
+						if (disabled) return
+
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault()
+							document.getElementById(`file-input-${name}`)?.click()
+						}
+					}}
 					onClick={() => {
 						if (!disabled) {
 							document.getElementById(`file-input-${name}`)?.click()

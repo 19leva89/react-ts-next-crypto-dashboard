@@ -41,7 +41,7 @@ export const Navbar = () => {
 	return (
 		<header className='sticky inset-x-0 top-0 isolate z-40 flex shrink-0 items-center justify-between gap-2 border-b border-gray-700 bg-background px-4 py-3 text-sm sm:px-6 sm:text-base'>
 			<div className='flex items-center gap-4 sm:gap-14'>
-				<SidebarTrigger className='size-8' />
+				<SidebarTrigger size='lg' className='size-10 rounded-xl' />
 
 				<div className='hidden items-center gap-2 sm:gap-6 lg:flex'>
 					<div className='flex flex-col'>

@@ -18,8 +18,8 @@ import {
 import { getWalletDisplayName } from '@/data/wallet'
 import { TTransaction, WALLETS } from '@/modules/coins/schema'
 import { InputFormatPrice, InputFormatQuantity } from '@/components/shared'
-import { DeleteTransaction } from '@/modules/coins/ui/components/delete-transaction'
 import { WalletIcon } from '@/modules/transactions/ui/components/wallet-icon'
+import { DeleteTransaction } from '@/modules/coins/ui/components/delete-transaction'
 
 export const getColumns = (
 	onTransactionChange: (id: string, field: keyof TTransaction, value: string) => void,
@@ -114,7 +114,7 @@ export const getColumns = (
 						</Button>
 					</PopoverTrigger>
 
-					<PopoverContent className='w-auto p-0' autoFocus={true}>
+					<PopoverContent className='w-auto rounded-xl p-0' autoFocus={true}>
 						<Calendar
 							mode='single'
 							selected={dateValue}
@@ -164,9 +164,9 @@ export const getColumns = (
 					<SelectValue placeholder='Select wallet' />
 				</SelectTrigger>
 
-				<SelectContent>
+				<SelectContent className='rounded-xl'>
 					{Object.keys(WALLETS).map((walletKey) => (
-						<SelectItem key={walletKey} value={walletKey}>
+						<SelectItem key={walletKey} value={walletKey} className='rounded-xl'>
 							<WalletIcon wallet={walletKey as keyof typeof WALLETS} />
 
 							{getWalletDisplayName(walletKey as keyof typeof WALLETS)}

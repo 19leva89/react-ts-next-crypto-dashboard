@@ -25,7 +25,7 @@ export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
 				<Button
 					variant='ghost'
 					size='icon'
-					className='transition-colors duration-300 ease-in-out hover:bg-red-100 dark:hover:bg-red-900'
+					className='rounded-xl transition-colors duration-300 ease-in-out hover:bg-red-100 dark:hover:bg-red-900'
 				>
 					<TrashIcon className='size-4 text-red-600 dark:text-red-400' />
 				</Button>

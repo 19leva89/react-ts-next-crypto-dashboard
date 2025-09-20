@@ -22,7 +22,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 
 import {
 	Button,
@@ -57,6 +57,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const [sorting, setSorting] = useState<SortingState>([{ id: 'date', desc: true }])
 
+	const selectId = useId()
 	const table = useReactTable({
 		data,
 		columns,
@@ -128,7 +129,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 							</Button>
 						</DropdownMenuTrigger>
 
-						<DropdownMenuContent align='end'>
+						<DropdownMenuContent align='end' className='rounded-xl'>
 							{table
 								.getAllColumns()
 								.filter((column) => column.getCanHide())
@@ -138,7 +139,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 									return (
 										<DropdownMenuCheckboxItem
 											key={column.id}
-											className='capitalize'
+											className='rounded-xl capitalize'
 											checked={column.getIsVisible()}
 											onCheckedChange={(value) => column.toggleVisibility(!!value)}
 										>
@@ -218,7 +219,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 								table.setPageSize(Number(value))
 							}}
 						>
-							<SelectTrigger className='h-8 w-fit'>
+							<SelectTrigger id={selectId} className='h-8 w-fit'>
 								<SelectValue placeholder={table.getState().pagination.pageSize} />
 							</SelectTrigger>
 

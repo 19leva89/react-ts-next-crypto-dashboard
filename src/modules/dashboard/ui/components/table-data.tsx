@@ -23,7 +23,7 @@ import {
 	useReactTable,
 } from '@tanstack/react-table'
 import { List } from 'react-window'
-import { CSSProperties, useCallback, useState } from 'react'
+import { CSSProperties, useCallback, useId, useState } from 'react'
 
 import {
 	Button,
@@ -75,6 +75,7 @@ export function DataTable<TData, TValue>({
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const [sorting, setSorting] = useState<SortingState>([{ id: 'total_volume', desc: true }])
 
+	const selectId = useId()
 	const table = useReactTable({
 		data,
 		columns,
@@ -229,7 +230,7 @@ export function DataTable<TData, TValue>({
 							</Button>
 						</DropdownMenuTrigger>
 
-						<DropdownMenuContent align='end'>
+						<DropdownMenuContent align='end' className='rounded-xl'>
 							{table
 								.getAllColumns()
 								.filter((column) => column.getCanHide())
@@ -239,7 +240,7 @@ export function DataTable<TData, TValue>({
 									return (
 										<DropdownMenuCheckboxItem
 											key={column.id}
-											className='capitalize'
+											className='rounded-xl capitalize'
 											checked={column.getIsVisible()}
 											onCheckedChange={(value) => column.toggleVisibility(!!value)}
 										>
@@ -323,7 +324,7 @@ export function DataTable<TData, TValue>({
 								table.setPageSize(Number(value))
 							}}
 						>
-							<SelectTrigger className='h-8 w-fit'>
+							<SelectTrigger id={selectId} className='h-8 w-fit'>
 								<SelectValue placeholder={table.getState().pagination.pageSize} />
 							</SelectTrigger>
 

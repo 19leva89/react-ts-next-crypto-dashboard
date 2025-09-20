@@ -102,7 +102,7 @@ export const NewsView = () => {
 								aria-disabled={page === 1}
 								onClick={() => setPage((p) => Math.max(1, p - 1))}
 								className={cn(
-									'transition-colors duration-300 ease-in-out',
+									'rounded-xl transition-colors duration-300 ease-in-out',
 									page === 1 && 'pointer-events-auto cursor-not-allowed opacity-50',
 								)}
 							/>
@@ -113,7 +113,7 @@ export const NewsView = () => {
 								<PaginationLink
 									isActive={page === i + 1}
 									onClick={() => setPage(i + 1)}
-									className='transition-colors duration-300 ease-in-out'
+									className='rounded-xl transition-colors duration-300 ease-in-out'
 								>
 									{i + 1}
 								</PaginationLink>
@@ -125,7 +125,7 @@ export const NewsView = () => {
 								aria-disabled={page === totalPages}
 								onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 								className={cn(
-									'transition-colors duration-300 ease-in-out',
+									'rounded-xl transition-colors duration-300 ease-in-out',
 									page === totalPages && 'pointer-events-auto cursor-not-allowed opacity-50',
 								)}
 							/>
