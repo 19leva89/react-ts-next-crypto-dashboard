@@ -76,8 +76,8 @@ export const LineChartContainer = ({ chartData }: Props) => {
 	const maxValue = Math.max(...formattedData.map((h) => h.TotalValue))
 
 	return (
-		<Card className='flex w-2/3 flex-col rounded-xl py-1 max-[1200px]:w-full'>
-			<CardHeader className='items-center gap-2 space-y-0 p-4 max-[600px]:px-1 max-[600px]:py-3'>
+		<Card className='flex w-full flex-col rounded-xl py-1 xl:w-2/3'>
+			<CardHeader className='items-center gap-2 space-y-0 px-1 py-3 sm:p-4'>
 				<Button
 					variant='outline'
 					size='sm'
@@ -87,7 +87,7 @@ export const LineChartContainer = ({ chartData }: Props) => {
 				</Button>
 			</CardHeader>
 
-			<CardContent className='pb-4 max-[600px]:px-1 max-[600px]:py-3'>
+			<CardContent className='px-1 py-3 sm:px-6 sm:pb-4'>
 				<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
 					<LineChart
 						accessibilityLayer

@@ -99,11 +99,11 @@ export const NewsView = () => {
 					<PaginationContent>
 						<PaginationItem>
 							<PaginationPrevious
-								onClick={() => setPage((p) => Math.max(1, p - 1))}
 								aria-disabled={page === 1}
+								onClick={() => setPage((p) => Math.max(1, p - 1))}
 								className={cn(
 									'transition-colors duration-300 ease-in-out',
-									page === 1 ? 'pointer-events-auto cursor-not-allowed opacity-50' : '',
+									page === 1 && 'pointer-events-auto cursor-not-allowed opacity-50',
 								)}
 							/>
 						</PaginationItem>
@@ -122,11 +122,11 @@ export const NewsView = () => {
 
 						<PaginationItem>
 							<PaginationNext
-								onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 								aria-disabled={page === totalPages}
+								onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 								className={cn(
 									'transition-colors duration-300 ease-in-out',
-									page === totalPages ? 'pointer-events-auto cursor-not-allowed opacity-50' : '',
+									page === totalPages && 'pointer-events-auto cursor-not-allowed opacity-50',
 								)}
 							/>
 						</PaginationItem>

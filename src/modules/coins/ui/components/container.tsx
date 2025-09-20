@@ -97,31 +97,29 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 
 	return (
 		<div className='flex w-full flex-col gap-6'>
-			<div className='flex items-center justify-between gap-1 max-[900px]:flex-wrap'>
-				<div className='flex items-start gap-1 max-[1000px]:flex-col'>
-					<div className='p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6'>
-						<h2 className='text-xl font-bold max-[460px]:text-lg'>
+			<div className='flex flex-wrap items-center justify-between gap-1 lg:flex-nowrap'>
+				<div className='flex flex-col items-start gap-1 lg:flex-row'>
+					<div className='p-0 px-6 lg:p-2 lg:px-6'>
+						<h2 className='text-lg font-bold sm:text-xl'>
 							Total invested: {formatUSDPrice(totalInvestedValue, true)}
 						</h2>
 					</div>
 
-					<div className='p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6'>
-						<h2 className='text-xl font-bold max-[460px]:text-lg'>
-							Total coin: {formatUSDPrice(totalValue, true)}
-						</h2>
+					<div className='p-0 px-6 lg:p-2 lg:px-6'>
+						<h2 className='text-lg font-bold sm:text-xl'>Total coin: {formatUSDPrice(totalValue, true)}</h2>
 					</div>
 
-					<div className='p-2 px-6 max-[1000px]:p-0 max-[1000px]:px-6'>
-						<h2 className='text-xl font-bold max-[460px]:text-lg'>
+					<div className='p-0 px-6 lg:p-2 lg:px-6'>
+						<h2 className='text-lg font-bold sm:text-xl'>
 							Planned profit: {formatUSDPrice(plannedProfit, true)}
 						</h2>
 					</div>
 				</div>
 
-				<div className='flex items-center gap-2 max-[870px]:flex-row-reverse max-[550px]:flex-col max-[550px]:flex-wrap max-[550px]:items-start'>
+				<div className='flex flex-col flex-wrap items-start gap-2 2md:flex-row-reverse sm:flex-row sm:items-center'>
 					<AddCoin />
 
-					<div className='flex items-center max-[870px]:flex-row-reverse'>
+					<div className='flex flex-row-reverse items-center 2md:flex-row'>
 						<div className='flex items-center gap-2'>
 							<Button
 								variant='ghost'

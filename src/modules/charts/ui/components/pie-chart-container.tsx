@@ -49,12 +49,12 @@ export const PieChartContainer = ({ chartData }: Props) => {
 	}
 
 	return (
-		<Card className='flex w-1/3 flex-col gap-0 rounded-xl py-1 max-[1200px]:w-1/2 max-[700px]:w-3/4 max-[450px]:w-full'>
-			<CardHeader className='items-center p-4 max-[600px]:px-1 max-[600px]:py-3'>
+		<Card className='flex w-full flex-col gap-0 rounded-xl py-1 sm:w-3/4 md:w-1/2 xl:w-1/3'>
+			<CardHeader className='items-center px-1 py-3 sm:p-4'>
 				<CardTitle>Coins distribution</CardTitle>
 			</CardHeader>
 
-			<CardContent className='pb-4 max-[600px]:px-1 max-[600px]:py-3'>
+			<CardContent className='px-1 py-3 sm:px-6 sm:pb-4'>
 				<ChartContainer
 					config={chartConfig}
 					className='mx-auto aspect-square max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground'
@@ -79,7 +79,7 @@ export const PieChartContainer = ({ chartData }: Props) => {
 				</ChartContainer>
 			</CardContent>
 
-			<CardFooter className='flex-col gap-2 pb-4 text-sm max-[600px]:py-3'>
+			<CardFooter className='flex-col gap-2 py-3 text-sm sm:pb-4'>
 				<div className='mx-auto grid w-fit grid-cols-2 gap-2'>
 					{chartData.map((item) => (
 						<div key={item.name} className='flex items-center gap-2 truncate'>

@@ -107,10 +107,7 @@ export const ProfileView = () => {
 			<Title text='Personal information' size='md' className='font-bold' />
 
 			<FormProvider {...form}>
-				<form
-					className='mt-10 flex w-96 flex-col gap-5 max-[400px]:w-full'
-					onSubmit={form.handleSubmit(onSubmit)}
-				>
+				<form onSubmit={form.handleSubmit(onSubmit)} className='mt-10 flex w-full flex-col gap-5 sm:w-96'>
 					<FormInput name='email' label='Email' type='email' required />
 
 					<FormInput name='name' label='Full name' type='text' required />

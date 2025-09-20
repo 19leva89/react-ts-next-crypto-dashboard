@@ -84,7 +84,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 
 	return (
 		<>
-			<div className='flex items-center justify-between gap-8 py-4 max-[820px]:flex-wrap-reverse max-[820px]:justify-end max-[820px]:gap-2'>
+			<div className='flex items-center justify-between gap-2 py-4 md:gap-8'>
 				{/* Search */}
 				<div className='relative w-full'>
 					<SearchIcon
@@ -161,7 +161,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 										<TableHead
 											key={header.id}
 											className={cn(
-												'max-[1200px]:px-3 max-[1200px]:py-2 max-[600px]:px-2 max-[600px]:py-1 max-[400px]:px-1 max-[400px]:py-0',
+												'px-1 py-0 xs:px-2 xs:py-1 sm:px-3 sm:py-2 xl:px-4 xl:py-3',
 												i === 0 && 'sticky left-[0rem] bg-gray-100 dark:bg-slate-800',
 											)}
 										>
@@ -187,7 +187,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 										<TableCell
 											key={cell.id}
 											className={cn(
-												'group-hover:bg-gray-50 max-[1200px]:px-3 max-[1200px]:py-2 max-[600px]:px-2 max-[600px]:py-1 max-[400px]:px-1 max-[400px]:py-0 dark:group-hover:bg-gray-800',
+												'px-1 py-0 group-hover:bg-gray-50 xs:px-2 xs:py-1 sm:px-3 sm:py-2 xl:px-4 xl:py-3 dark:group-hover:bg-gray-800',
 												i === 0 && 'sticky left-[0rem] bg-background dark:bg-background',
 											)}
 										>
@@ -209,7 +209,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 
 			<div className='flex items-center justify-end px-2 pt-4'>
 				<div className='flex items-center gap-2'>
-					<div className='flex items-center gap-2 max-[420px]:hidden'>
+					<div className='hidden items-center gap-2 sm:flex'>
 						<p className='text-sm font-medium'>Rows per page</p>
 
 						<Select
@@ -218,7 +218,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 								table.setPageSize(Number(value))
 							}}
 						>
-							<SelectTrigger className='h-8 w-[70px]'>
+							<SelectTrigger className='h-8 w-fit'>
 								<SelectValue placeholder={table.getState().pagination.pageSize} />
 							</SelectTrigger>
 
@@ -232,16 +232,18 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 						</Select>
 					</div>
 
-					<div className='flex w-25 items-center justify-center text-sm font-medium'>
+					<div className='flex w-fit items-center justify-center text-sm font-medium'>
 						Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
 					</div>
 
 					<div className='flex items-center gap-2'>
 						<Button
 							variant='outline'
-							className='hidden size-8 p-0 transition-colors duration-300 ease-in-out lg:flex'
 							onClick={() => table.setPageIndex(0)}
-							disabled={!table.getCanPreviousPage()}
+							className={cn(
+								'hidden size-8 p-0 transition-colors duration-300 ease-in-out lg:flex',
+								!table.getCanPreviousPage() && 'pointer-events-auto cursor-not-allowed opacity-50',
+							)}
 						>
 							<span className='sr-only'>Go to first page</span>
 
@@ -250,9 +252,11 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 
 						<Button
 							variant='outline'
-							className='size-8 p-0 transition-colors duration-300 ease-in-out'
 							onClick={() => table.previousPage()}
-							disabled={!table.getCanPreviousPage()}
+							className={cn(
+								'size-8 p-0 transition-colors duration-300 ease-in-out',
+								!table.getCanPreviousPage() && 'pointer-events-auto cursor-not-allowed opacity-50',
+							)}
 						>
 							<span className='sr-only'>Go to previous page</span>
 
@@ -261,9 +265,11 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 
 						<Button
 							variant='outline'
-							className='size-8 p-0 transition-colors duration-300 ease-in-out'
 							onClick={() => table.nextPage()}
-							disabled={!table.getCanNextPage()}
+							className={cn(
+								'size-8 p-0 transition-colors duration-300 ease-in-out',
+								!table.getCanNextPage() && 'pointer-events-auto cursor-not-allowed opacity-50',
+							)}
 						>
 							<span className='sr-only'>Go to next page</span>
 
@@ -272,9 +278,11 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 
 						<Button
 							variant='outline'
-							className='hidden size-8 p-0 transition-colors duration-300 ease-in-out lg:flex'
 							onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-							disabled={!table.getCanNextPage()}
+							className={cn(
+								'hidden size-8 p-0 transition-colors duration-300 ease-in-out lg:flex',
+								!table.getCanNextPage() && 'pointer-events-auto cursor-not-allowed opacity-50',
+							)}
 						>
 							<span className='sr-only'>Go to last page</span>
 

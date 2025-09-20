@@ -38,7 +38,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 		cell: ({ row }) => {
 			const rank = (row.getValue('market_cap_rank') as number) || 0
 
-			return <div className='px-3 py-2 text-base max-[1200px]:text-sm'>{rank}</div>
+			return <div className='px-3 py-2 text-sm xl:text-base'>{rank}</div>
 		},
 		enableHiding: false,
 	},
@@ -66,13 +66,13 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 			const coin = row.original
 
 			return (
-				<div className='flex items-center gap-2 px-3 py-2 text-base max-[1200px]:text-sm'>
+				<div className='flex items-center gap-2 px-3 py-2 text-sm xl:text-base'>
 					<Image
 						src={coin.image || '/svg/coin-not-found.svg'}
 						alt={coin.name || 'Coin image'}
 						width={32}
 						height={32}
-						className='size-8 rounded-full max-[1200px]:size-6'
+						className='size-6 rounded-full xl:size-8'
 						onError={(e) => {
 							e.currentTarget.src = '/svg/coin-not-found.svg'
 						}}
@@ -134,7 +134,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 			const coin = row.original
 
 			return (
-				<div className='px-3 py-2 text-base max-[1200px]:text-sm'>
+				<div className='px-3 py-2 text-sm xl:text-base'>
 					{coin.price_change_percentage_24h ? (
 						<div
 							className={cn(

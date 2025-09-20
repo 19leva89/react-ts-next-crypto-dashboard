@@ -78,7 +78,7 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 			onChange={handleChange}
 			onBlur={handleBlur}
 			onFocus={handleFocus}
-			className='[appearance:textfield] rounded-xl max-[900px]:text-sm max-[600px]:px-2 max-[600px]:text-xs [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+			className='[appearance:textfield] rounded-xl px-2 text-xs sm:px-3 sm:text-sm lg:text-base [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
 		/>
 	)
 }
