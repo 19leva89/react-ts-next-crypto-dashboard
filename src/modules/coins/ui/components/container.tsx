@@ -1,5 +1,6 @@
 'use client'
 
+import { useId } from 'react'
 import useLocalStorageState from 'use-local-storage-state'
 import { LayoutGridIcon, ListIcon, SearchIcon, XIcon } from 'lucide-react'
 
@@ -29,6 +30,7 @@ interface Props {
 export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
 	const { open } = useSidebar()
 
+	const sortSelectId = useId()
 	const formatUSDPrice = useFormatUSDPrice()
 
 	const [searchQuery, setSearchQuery] = useLocalStorageState<string>('searchQueryCoins', {
@@ -162,7 +164,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 								)
 							}
 						>
-							<SelectTrigger className='w-45 rounded-xl'>
+							<SelectTrigger id={sortSelectId} className='w-45 rounded-xl'>
 								<SelectValue placeholder='Sort' />
 							</SelectTrigger>
 

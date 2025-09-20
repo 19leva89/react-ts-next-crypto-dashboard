@@ -100,7 +100,7 @@ function Calendar({
 	const _captionLabelClassName = cn('truncate text-sm font-medium', props.captionLabelClassName)
 	const buttonNavClassName = buttonVariants({
 		variant: 'outline',
-		className: 'absolute size-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+		className: 'absolute size-7 bg-transparent p-0 opacity-50 hover:opacity-100 rounded-xl',
 	})
 	const _buttonNextClassName = cn(buttonNavClassName, 'right-0', props.buttonNextClassName)
 	const _buttonPreviousClassName = cn(buttonNavClassName, 'left-0', props.buttonPreviousClassName)
@@ -110,26 +110,29 @@ function Calendar({
 	const _dayClassName = cn('flex size-8 flex-1 items-center justify-center p-0 text-sm', props.dayClassName)
 	const _dayButtonClassName = cn(
 		buttonVariants({ variant: 'ghost' }),
-		'size-8 rounded-md p-0 font-normal transition-none aria-selected:opacity-100',
+		'size-8 rounded-xl p-0 font-normal transition-none aria-selected:opacity-100',
 		props.dayButtonClassName,
 	)
 	const buttonRangeClassName =
 		'bg-accent [&>button]:bg-primary [&>button]:text-primary-foreground hover:[&>button]:bg-primary hover:[&>button]:text-primary-foreground'
 	const _rangeStartClassName = cn(
 		buttonRangeClassName,
-		'day-range-start rounded-s-md',
+		'day-range-start rounded-s-xl',
 		props.rangeStartClassName,
 	)
-	const _rangeEndClassName = cn(buttonRangeClassName, 'day-range-end rounded-e-md', props.rangeEndClassName)
+	const _rangeEndClassName = cn(buttonRangeClassName, 'day-range-end rounded-e-xl', props.rangeEndClassName)
 	const _rangeMiddleClassName = cn(
 		'bg-accent text-foreground! [&>button]:bg-transparent [&>button]:text-foreground! hover:[&>button]:bg-transparent hover:[&>button]:text-foreground!',
 		props.rangeMiddleClassName,
 	)
 	const _selectedClassName = cn(
-		'[&>button]:bg-primary [&>button]:text-primary-foreground hover:[&>button]:bg-primary hover:[&>button]:text-primary-foreground',
+		'[&>button]:rounded-xl [&>button]:bg-primary [&>button]:text-primary-foreground hover:[&>button]:bg-primary hover:[&>button]:text-primary-foreground',
 		props.selectedClassName,
 	)
-	const _todayClassName = cn('[&>button]:bg-accent [&>button]:text-accent-foreground', props.todayClassName)
+	const _todayClassName = cn(
+		'[&>button]:rounded-xl [&>button]:bg-accent [&>button]:text-accent-foreground',
+		props.todayClassName,
+	)
 	const _outsideClassName = cn(
 		'day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30',
 		props.outsideClassName,
@@ -286,7 +289,6 @@ function Nav({
 		<nav className={cn('flex items-center', className)}>
 			<Button
 				variant='outline'
-				className='absolute left-0 size-7 bg-transparent p-0 opacity-80 hover:opacity-100'
 				type='button'
 				tabIndex={isPreviousDisabled ? undefined : -1}
 				disabled={isPreviousDisabled}
@@ -296,13 +298,13 @@ function Nav({
 						: labelPrevious(previousMonth)
 				}
 				onClick={handlePreviousClick}
+				className='absolute left-0 size-7 rounded-xl bg-transparent p-0 opacity-80 hover:opacity-100'
 			>
 				<ChevronLeftIcon className='size-4' />
 			</Button>
 
 			<Button
 				variant='outline'
-				className='absolute right-0 size-7 bg-transparent p-0 opacity-80 hover:opacity-100'
 				type='button'
 				tabIndex={isNextDisabled ? undefined : -1}
 				disabled={isNextDisabled}
@@ -312,6 +314,7 @@ function Nav({
 						: labelNext(nextMonth)
 				}
 				onClick={handleNextClick}
+				className='absolute right-0 size-7 rounded-xl bg-transparent p-0 opacity-80 hover:opacity-100'
 			>
 				<ChevronRightIcon className='size-4' />
 			</Button>
@@ -335,10 +338,10 @@ function CaptionLabel({
 	if (!showYearSwitcher) return <span {...props}>{children}</span>
 	return (
 		<Button
-			className='h-7 w-full truncate text-sm font-medium'
 			variant='ghost'
 			size='sm'
 			onClick={() => setNavView((prev) => (prev === 'days' ? 'years' : 'days'))}
+			className='h-7 w-full truncate rounded-xl text-sm font-medium'
 		>
 			{navView === 'days' ? children : displayYears.from + ' - ' + displayYears.to}
 		</Button>
@@ -412,17 +415,17 @@ function YearGrid({
 				return (
 					<Button
 						key={i}
-						className={cn(
-							'h-7 w-full text-sm font-normal text-foreground',
-							displayYears.from + i === new Date().getFullYear() &&
-								'bg-accent font-medium text-accent-foreground',
-						)}
 						variant='ghost'
 						onClick={() => {
 							setNavView('days')
 							goToMonth(new Date(displayYears.from + i, (selected as Date | undefined)?.getMonth() ?? 0))
 						}}
 						disabled={navView === 'years' ? isDisabled : undefined}
+						className={cn(
+							'h-7 w-full rounded-xl text-sm font-normal text-foreground',
+							displayYears.from + i === new Date().getFullYear() &&
+								'bg-accent font-medium text-accent-foreground',
+						)}
 					>
 						{displayYears.from + i}
 					</Button>

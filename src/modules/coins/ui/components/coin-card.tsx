@@ -113,7 +113,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant='ghost' size='icon' className='group mt-0! shrink-0'>
+						<Button variant='ghost' size='icon' className='group mt-0! shrink-0 rounded-xl'>
 							<div className='relative size-5 transition-transform duration-300 ease-in-out group-hover:rotate-180'>
 								<EllipsisVerticalIcon size={16} className='absolute inset-0 m-auto' />
 							</div>

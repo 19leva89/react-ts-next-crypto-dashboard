@@ -58,7 +58,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 				<Button
 					variant='ghost'
 					size='sm'
-					className='group gap-1 transition-colors duration-300 ease-in-out'
+					className='group gap-1 rounded-xl transition-colors duration-300 ease-in-out'
 					onClick={() => {
 						onShowMoreBtnClick(dataIndex.end >= trendingData.coins.length)
 					}}
