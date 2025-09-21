@@ -71,7 +71,8 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 
 	return (
 		<div
-			className='relative h-full cursor-pointer overflow-y-auto
+			className={cn(
+				`relative h-auto cursor-pointer overflow-y-auto rounded-xl border bg-gray-100 dark:bg-slate-800
 				[&::-webkit-scrollbar]:h-1.5
 				[&::-webkit-scrollbar]:w-1.5
 				[&::-webkit-scrollbar-thumb]:rounded-full
@@ -79,10 +80,12 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 				dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
 				[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
 				dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
-				[&::-webkit-scrollbar-track]:bg-gray-100
-				dark:[&::-webkit-scrollbar-track]:bg-slate-800'
+				[&::-webkit-scrollbar-track]:m-1.5
+				[&::-webkit-scrollbar-track]:bg-transparent`,
+				table.getRowModel().rows.length > 5 && 'h-full',
+			)}
 		>
-			<Table className='border-x'>
+			<Table>
 				<TableHeader className='sticky top-0 z-20 bg-gray-100 text-left text-sm dark:border-gray-700 dark:bg-slate-800'>
 					{table.getHeaderGroups().map((headerGroup) => (
 						<TableRow key={headerGroup.id}>
@@ -105,7 +108,7 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 					))}
 				</TableHeader>
 
-				<TableBody>
+				<TableBody className='dark:bg-background'>
 					{table.getRowModel().rows?.length ? (
 						table.getRowModel().rows.map((row) => (
 							<TableRow key={row.id} className='group cursor-pointer duration-0'>

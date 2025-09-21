@@ -198,16 +198,17 @@ export function DataTable<TData, TValue>({
 									}}
 									overscanCount={15}
 									className='h-50 w-62 cursor-pointer
-											[&::-webkit-scrollbar]:h-1.5
-											[&::-webkit-scrollbar]:w-1.5
-											[&::-webkit-scrollbar-thumb]:rounded-full
-											[&::-webkit-scrollbar-thumb]:bg-gray-400
-											dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
-											[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
-											dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
-											[&::-webkit-scrollbar-track]:rounded-full
-											[&::-webkit-scrollbar-track]:bg-gray-100
-											dark:[&::-webkit-scrollbar-track]:bg-slate-800'
+										[&::-webkit-scrollbar]:h-1.5
+										[&::-webkit-scrollbar]:w-1.5
+										[&::-webkit-scrollbar-thumb]:rounded-full
+										[&::-webkit-scrollbar-thumb]:bg-gray-400
+										dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
+										[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
+										dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
+										[&::-webkit-scrollbar-track]:m-1.5
+										[&::-webkit-scrollbar-track]:rounded-full
+										[&::-webkit-scrollbar-track]:bg-gray-100
+										dark:[&::-webkit-scrollbar-track]:bg-slate-800'
 								/>
 							</DropdownMenuContent>
 						) : (
@@ -253,7 +254,19 @@ export function DataTable<TData, TValue>({
 				</div>
 			</div>
 
-			<div className='relative overflow-auto rounded-xl border'>
+			<div
+				className='relative cursor-pointer overflow-auto rounded-xl border
+					[&::-webkit-scrollbar]:h-1.5
+					[&::-webkit-scrollbar]:w-1.5
+					[&::-webkit-scrollbar-thumb]:rounded-full
+					[&::-webkit-scrollbar-thumb]:bg-gray-400
+					dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
+					[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
+					dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
+					[&::-webkit-scrollbar-track]:m-1.5
+					[&::-webkit-scrollbar-track]:rounded-full
+					[&::-webkit-scrollbar-track]:bg-transparent'
+			>
 				<Table>
 					<TableHeader className='border-b bg-gray-100 text-left text-sm dark:border-gray-700 dark:bg-slate-800'>
 						{table.getHeaderGroups().map((headerGroup) => (
@@ -324,13 +337,13 @@ export function DataTable<TData, TValue>({
 								table.setPageSize(Number(value))
 							}}
 						>
-							<SelectTrigger id={selectId} className='h-8 w-fit'>
+							<SelectTrigger id={selectId} className='h-8 w-fit rounded-xl'>
 								<SelectValue placeholder={table.getState().pagination.pageSize} />
 							</SelectTrigger>
 
-							<SelectContent side='top'>
+							<SelectContent side='top' className='rounded-xl'>
 								{[10, 20, 30, 40, 50].map((pageSize) => (
-									<SelectItem key={pageSize} value={`${pageSize}`}>
+									<SelectItem key={pageSize} value={`${pageSize}`} className='rounded-xl'>
 										{pageSize}
 									</SelectItem>
 								))}
@@ -347,7 +360,7 @@ export function DataTable<TData, TValue>({
 							variant='outline'
 							onClick={() => table.setPageIndex(0)}
 							className={cn(
-								'hidden size-8 p-0 transition-colors duration-300 ease-in-out lg:flex',
+								'hidden size-8 rounded-xl p-0 transition-colors duration-300 ease-in-out lg:flex',
 								!table.getCanPreviousPage() && 'pointer-events-auto cursor-not-allowed opacity-50',
 							)}
 						>
@@ -360,7 +373,7 @@ export function DataTable<TData, TValue>({
 							variant='outline'
 							onClick={() => table.previousPage()}
 							className={cn(
-								'size-8 p-0 transition-colors duration-300 ease-in-out',
+								'size-8 rounded-xl p-0 transition-colors duration-300 ease-in-out',
 								!table.getCanPreviousPage() && 'pointer-events-auto cursor-not-allowed opacity-50',
 							)}
 						>
@@ -373,7 +386,7 @@ export function DataTable<TData, TValue>({
 							variant='outline'
 							onClick={() => table.nextPage()}
 							className={cn(
-								'size-8 p-0 transition-colors duration-300 ease-in-out',
+								'size-8 rounded-xl p-0 transition-colors duration-300 ease-in-out',
 								!table.getCanNextPage() && 'pointer-events-auto cursor-not-allowed opacity-50',
 							)}
 						>
@@ -386,7 +399,7 @@ export function DataTable<TData, TValue>({
 							variant='outline'
 							onClick={() => table.setPageIndex(table.getPageCount() - 1)}
 							className={cn(
-								'hidden size-8 p-0 transition-colors duration-300 ease-in-out lg:flex',
+								'hidden size-8 rounded-xl p-0 transition-colors duration-300 ease-in-out lg:flex',
 								!table.getCanNextPage() && 'pointer-events-auto cursor-not-allowed opacity-50',
 							)}
 						>

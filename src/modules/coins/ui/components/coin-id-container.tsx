@@ -311,9 +311,10 @@ export const CoinIdContainer = ({ coin }: Props) => {
 								key={value}
 								variant='outline'
 								onClick={() => setDays(value)}
-								className={cn('h-6 rounded-xl px-2 py-1 transition-colors duration-300 ease-in-out', {
-									'bg-blue-500 hover:bg-blue-500': days === value,
-								})}
+								className={cn(
+									'h-6 rounded-xl px-2 py-1 transition-colors duration-300 ease-in-out',
+									days === value && 'bg-blue-500 hover:bg-blue-500',
+								)}
 							>
 								{/* Full text for screens > 640px */}
 								<span className='hidden sm:inline'>{label}</span>
