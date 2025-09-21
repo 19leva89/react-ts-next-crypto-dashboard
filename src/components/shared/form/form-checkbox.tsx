@@ -14,7 +14,7 @@ interface Props {
 	className?: string
 }
 
-export function FormCheckbox({ name, label, required = false, disabled = false, className }: Props) {
+export const FormCheckbox = ({ name, label, required = false, disabled = false, className }: Props) => {
 	const {
 		control,
 		formState: { errors },

@@ -16,6 +16,12 @@ export const { TRPCProvider, useTRPC } = createTRPCContext<AppRouter>()
 
 let browserQueryClient: QueryClient
 
+/**
+ * Gets or creates a QueryClient instance
+ * On server: always creates a new client
+ * On browser: reuses existing client or creates new one if none exists
+ * @returns QueryClient instance
+ */
 function getQueryClient() {
 	if (typeof window === 'undefined') {
 		// Server: always make a new query client
@@ -33,6 +39,11 @@ function getQueryClient() {
 
 const fullUrl = absoluteUrl('/api/trpc')
 
+/**
+ * TRPC React Provider component that wraps the application with TRPC and React Query providers
+ * @param props - Component props containing children
+ * @returns JSX element with TRPC and Query providers
+ */
 export function TRPCReactProvider(props: PropsWithChildren) {
 	// NOTE: Avoid useState when initializing the query client if you don't
 	//       have a suspense boundary between this and the code that may

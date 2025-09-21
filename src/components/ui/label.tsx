@@ -5,6 +5,14 @@ import * as LabelPrimitive from '@radix-ui/react-label'
 
 import { cn } from '@/lib'
 
+/**
+ * Label component with styled text and accessibility features for form fields
+ * Handles label presentation with disabled states and proper spacing for form associations
+ * @param props - Label component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to LabelPrimitive.Root
+ * @returns JSX element with accessible form label and disabled state handling
+ */
 function Label({ className, ...props }: ComponentProps<typeof LabelPrimitive.Root>) {
 	return (
 		<LabelPrimitive.Root

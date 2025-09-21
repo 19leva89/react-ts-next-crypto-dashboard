@@ -4,6 +4,14 @@ import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from 'lucide-re
 import { cn } from '@/lib'
 import { Button, buttonVariants } from '@/components/ui'
 
+/**
+ * Main pagination navigation wrapper component with accessibility attributes
+ * Handles pagination navigation structure with proper ARIA labeling and centered layout
+ * @param props - Pagination component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to nav element
+ * @returns JSX element with accessible pagination navigation container
+ */
 function Pagination({ className, ...props }: ComponentProps<'nav'>) {
 	return (
 		<nav
@@ -16,6 +24,14 @@ function Pagination({ className, ...props }: ComponentProps<'nav'>) {
 	)
 }
 
+/**
+ * Pagination content component that contains all pagination items in a list
+ * Handles horizontal layout for pagination links with proper spacing
+ * @param props - Pagination content component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to ul element
+ * @returns JSX element with pagination items list container
+ */
 function PaginationContent({ className, ...props }: ComponentProps<'ul'>) {
 	return (
 		<ul
@@ -26,6 +42,13 @@ function PaginationContent({ className, ...props }: ComponentProps<'ul'>) {
 	)
 }
 
+/**
+ * Pagination item wrapper component for individual pagination elements
+ * Handles list item structure for pagination links and controls
+ * @param props - Pagination item component props
+ * @param props....props - All other props passed to li element
+ * @returns JSX element with pagination list item wrapper
+ */
 function PaginationItem({ ...props }: ComponentProps<'li'>) {
 	return <li data-slot='pagination-item' {...props} />
 }
@@ -35,6 +58,16 @@ type PaginationLinkProps = {
 } & Pick<ComponentProps<typeof Button>, 'size'> &
 	ComponentProps<'a'>
 
+/**
+ * Pagination link component for navigating between pages
+ * Handles clickable page links with active state styling and accessibility attributes
+ * @param props - Pagination link component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.isActive - Whether this link represents the current active page
+ * @param props.size - Button size variant from Button component
+ * @param props....props - All other props passed to anchor element
+ * @returns JSX element with styled pagination link and current page indication
+ */
 function PaginationLink({ className, isActive, size = 'icon', ...props }: PaginationLinkProps) {
 	return (
 		<a
@@ -53,6 +86,14 @@ function PaginationLink({ className, isActive, size = 'icon', ...props }: Pagina
 	)
 }
 
+/**
+ * Pagination previous button component for navigating to previous page
+ * Handles previous page navigation with chevron icon and responsive text label
+ * @param props - Pagination previous component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to PaginationLink
+ * @returns JSX element with previous page navigation button
+ */
 function PaginationPrevious({ className, ...props }: ComponentProps<typeof PaginationLink>) {
 	return (
 		<PaginationLink
@@ -67,6 +108,14 @@ function PaginationPrevious({ className, ...props }: ComponentProps<typeof Pagin
 	)
 }
 
+/**
+ * Pagination next button component for navigating to next page
+ * Handles next page navigation with chevron icon and responsive text label
+ * @param props - Pagination next component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to PaginationLink
+ * @returns JSX element with next page navigation button
+ */
 function PaginationNext({ className, ...props }: ComponentProps<typeof PaginationLink>) {
 	return (
 		<PaginationLink
@@ -81,6 +130,14 @@ function PaginationNext({ className, ...props }: ComponentProps<typeof Paginatio
 	)
 }
 
+/**
+ * Pagination ellipsis component for indicating omitted pages
+ * Handles visual indicator for skipped pages with accessibility considerations
+ * @param props - Pagination ellipsis component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to span element
+ * @returns JSX element with ellipsis indicator and screen reader text
+ */
 function PaginationEllipsis({ className, ...props }: ComponentProps<'span'>) {
 	return (
 		<span

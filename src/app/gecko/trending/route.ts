@@ -3,6 +3,10 @@ import { NextResponse } from 'next/server'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgTrendingRoute } from '@/app/api/resources'
 
+/**
+ * Handles GET requests to fetch trending cryptocurrency data from CoinGecko API
+ * @returns JSON response containing trending coins and NFTs data or error message
+ */
 export async function GET() {
 	try {
 		const url = getCgTrendingRoute()

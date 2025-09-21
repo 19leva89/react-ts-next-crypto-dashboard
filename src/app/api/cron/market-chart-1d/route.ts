@@ -4,6 +4,13 @@ import { updateCoinsMarketChart } from '@/actions/cron'
 
 export const maxDuration = 10
 
+/**
+ * Handles GET requests for updating coins market chart data via cron job
+ * Updates market chart data for 1 day period
+ * Requires Bearer token authorization using CRON_SECRET environment variable
+ * @param req - The incoming Next.js request object
+ * @returns JSON response indicating success or error
+ */
 export async function GET(req: NextRequest) {
 	try {
 		// Checking authorization for cron requests

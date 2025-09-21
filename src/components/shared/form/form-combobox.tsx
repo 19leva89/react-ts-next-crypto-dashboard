@@ -35,7 +35,7 @@ interface Props {
 	className?: string
 }
 
-export function FormCombobox({
+export const FormCombobox = ({
 	name,
 	placeholder,
 	noResultsText,
@@ -43,7 +43,7 @@ export function FormCombobox({
 	mapTable,
 	onSelect,
 	className,
-}: Props) {
+}: Props) => {
 	const {
 		register,
 		formState: { errors },

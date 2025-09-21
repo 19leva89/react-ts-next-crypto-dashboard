@@ -3,6 +3,10 @@ import { NextResponse } from 'next/server'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgCoinsListIDMap } from '@/app/api/resources'
 
+/**
+ * Handles GET requests to fetch coins list ID mapping from CoinGecko API
+ * @returns JSON response containing coins ID mapping data or error message
+ */
 export async function GET() {
 	try {
 		const url = getCgCoinsListIDMap()

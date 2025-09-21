@@ -32,6 +32,19 @@ const buttonVariants = cva(
 	},
 )
 
+/**
+ * Button component with variant styling, loading states, and polymorphic rendering capabilities
+ * Supports different visual variants, sizes, loading indicators, and can render as child components
+ * @param props - Component props including styling, behavior, and polymorphic options
+ * @param props.className - Additional CSS classes to merge with variant styling
+ * @param props.variant - Button style variant (e.g., default, destructive, outline)
+ * @param props.size - Button size variant (e.g., sm, md, lg)
+ * @param props.asChild - If true, renders as Slot component for polymorphic behavior
+ * @param props.children - Button content, can include icons and text
+ * @param props.disabled - Whether the button is disabled
+ * @param props.loading - Whether to show loading spinner and disable interaction
+ * @returns JSX element with button or Slot component based on asChild prop
+ */
 function Button({
 	className,
 	variant,

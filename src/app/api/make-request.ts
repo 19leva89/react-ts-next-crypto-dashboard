@@ -3,6 +3,15 @@ import axios from 'axios'
 //! Do not change the path, made for seed.ts
 import { absoluteUrl } from './../../lib/utils'
 
+/**
+ * Makes an HTTP request using axios with automatic URL construction and error handling
+ * @param method - HTTP method (GET, POST, PUT, DELETE, etc.)
+ * @param url - The relative URL path that will be converted to absolute URL
+ * @param params - Request parameters (query params for GET, body data for other methods)
+ * @param headers - HTTP headers to include in the request
+ * @returns Promise resolving to the response data
+ * @throws Error with descriptive message if the request fails
+ */
 async function makeReq(
 	method: string,
 	url: string,
@@ -28,6 +37,14 @@ async function makeReq(
 	}
 }
 
+/**
+ * Makes server-side HTTP requests to external APIs with proper authentication
+ * Supports both CoinGecko and CoinMarketCap APIs
+ * @param url - The full URL to make the request to
+ * @param method - HTTP method (GET, POST, PUT, DELETE, etc.)
+ * @param useGecko - Whether to use CoinGecko API (true) or CoinMarketCap API (false)
+ * @returns Promise resolving to an object containing response data and status code
+ */
 async function makeServerReq(url: string, method: string, useGecko = true): Promise<any> {
 	const authHeader: Record<string, string> = useGecko
 		? { 'x-cg-demo-api-key': `${process.env.GECKO_API_KEY}` }

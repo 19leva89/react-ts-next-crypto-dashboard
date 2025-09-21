@@ -7,6 +7,14 @@ import { Command as CommandPrimitive } from 'cmdk'
 import { cn } from '@/lib'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui'
 
+/**
+ * Main command component wrapper with styled container layout
+ * Handles full-size flexible column layout with overflow management for command interfaces
+ * @param props - Command component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to CommandPrimitive
+ * @returns JSX element with command container layout
+ */
 function Command({ className, ...props }: ComponentProps<typeof CommandPrimitive>) {
 	return (
 		<CommandPrimitive
@@ -20,6 +28,16 @@ function Command({ className, ...props }: ComponentProps<typeof CommandPrimitive
 	)
 }
 
+/**
+ * Command dialog component that wraps command palette in a modal dialog
+ * Handles accessible dialog presentation with customizable title and description for screen readers
+ * @param props - Command dialog component props
+ * @param props.title - Dialog title for accessibility (hidden visually)
+ * @param props.description - Dialog description for accessibility (hidden visually)
+ * @param props.children - Command content to render inside dialog
+ * @param props....props - All other props passed to Dialog component
+ * @returns JSX element with modal dialog containing command palette
+ */
 function CommandDialog({
 	title = 'Command Palette',
 	description = 'Search for a command to run...',
@@ -46,6 +64,14 @@ function CommandDialog({
 	)
 }
 
+/**
+ * Command input component with search icon and styled text input
+ * Handles search functionality within command interface with visual search indicator
+ * @param props - Command input component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to CommandPrimitive.Input
+ * @returns JSX element with search input field and icon
+ */
 function CommandInput({ className, ...props }: ComponentProps<typeof CommandPrimitive.Input>) {
 	return (
 		<div data-slot='command-input-wrapper' className='flex h-9 items-center gap-2 border-b px-3'>
@@ -63,6 +89,14 @@ function CommandInput({ className, ...props }: ComponentProps<typeof CommandPrim
 	)
 }
 
+/**
+ * Command list component that contains scrollable command items
+ * Handles vertical scrolling with constrained height for command results display
+ * @param props - Command list component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to CommandPrimitive.List
+ * @returns JSX element with scrollable list container
+ */
 function CommandList({ className, ...props }: ComponentProps<typeof CommandPrimitive.List>) {
 	return (
 		<CommandPrimitive.List
@@ -73,10 +107,25 @@ function CommandList({ className, ...props }: ComponentProps<typeof CommandPrimi
 	)
 }
 
+/**
+ * Command empty state component displayed when no results found
+ * Handles empty state presentation with centered text layout
+ * @param props - Command empty component props
+ * @param props....props - All other props passed to CommandPrimitive.Empty
+ * @returns JSX element with empty state message
+ */
 function CommandEmpty({ ...props }: ComponentProps<typeof CommandPrimitive.Empty>) {
 	return <CommandPrimitive.Empty data-slot='command-empty' className='py-6 text-center text-sm' {...props} />
 }
 
+/**
+ * Command group component for organizing related command items
+ * Handles grouped command items with styled headings and proper spacing
+ * @param props - Command group component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to CommandPrimitive.Group
+ * @returns JSX element with grouped command items container
+ */
 function CommandGroup({ className, ...props }: ComponentProps<typeof CommandPrimitive.Group>) {
 	return (
 		<CommandPrimitive.Group
@@ -90,6 +139,14 @@ function CommandGroup({ className, ...props }: ComponentProps<typeof CommandPrim
 	)
 }
 
+/**
+ * Command separator component for visual division between command groups
+ * Handles horizontal line separation with consistent border styling
+ * @param props - Command separator component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to CommandPrimitive.Separator
+ * @returns JSX element with horizontal separator line
+ */
 function CommandSeparator({ className, ...props }: ComponentProps<typeof CommandPrimitive.Separator>) {
 	return (
 		<CommandPrimitive.Separator
@@ -100,6 +157,14 @@ function CommandSeparator({ className, ...props }: ComponentProps<typeof Command
 	)
 }
 
+/**
+ * Command item component for individual selectable command options
+ * Handles interactive command selection with hover states and keyboard navigation
+ * @param props - Command item component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to CommandPrimitive.Item
+ * @returns JSX element with selectable command item
+ */
 function CommandItem({ className, ...props }: ComponentProps<typeof CommandPrimitive.Item>) {
 	return (
 		<CommandPrimitive.Item
@@ -113,6 +178,14 @@ function CommandItem({ className, ...props }: ComponentProps<typeof CommandPrimi
 	)
 }
 
+/**
+ * Command shortcut component for displaying keyboard shortcuts
+ * Handles keyboard shortcut text with proper spacing and muted styling
+ * @param props - Command shortcut component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to span element
+ * @returns JSX element with keyboard shortcut text
+ */
 function CommandShortcut({ className, ...props }: ComponentProps<'span'>) {
 	return (
 		<span

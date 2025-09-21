@@ -17,7 +17,7 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
-import { newsSourceLogos } from '@/lib/newsapi'
+import { newsSourceLogos } from '@/lib/news-api'
 import { newsResponseSchema } from '@/modules/news/schema'
 import { ErrorState, LoadingState } from '@/components/shared'
 

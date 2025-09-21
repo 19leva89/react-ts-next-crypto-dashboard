@@ -12,6 +12,12 @@ interface Props {
 	params: Promise<{ coinId: string }>
 }
 
+/**
+ * Generates metadata for the coin page
+ * @param props - The props object
+ * @param props.params - Route parameters containing coinId
+ * @returns Metadata object with formatted coin name as title
+ */
 export async function generateMetadata({ params }: Props) {
 	const { coinId } = await params
 

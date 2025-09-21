@@ -51,6 +51,12 @@ type SidebarContext = {
 
 const SidebarContext = createContext<SidebarContext | null>(null)
 
+/**
+ * Hook for accessing sidebar context and state management
+ * Handles sidebar context retrieval with error boundary for proper usage
+ * @returns Sidebar context object with state, controls and mobile detection
+ * @throws Error when used outside of SidebarProvider
+ */
 function useSidebar() {
 	const context = useContext(SidebarContext)
 	if (!context) {
@@ -60,6 +66,19 @@ function useSidebar() {
 	return context
 }
 
+/**
+ * Sidebar provider component that manages sidebar state and context
+ * Handles sidebar state management with controlled/uncontrolled modes, mobile detection and keyboard shortcuts
+ * @param props - Sidebar provider component props
+ * @param props.defaultOpen - Default open state for uncontrolled usage
+ * @param props.open - Controlled open state from parent component
+ * @param props.onOpenChange - Callback for controlled state changes
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.style - Inline styles for the wrapper
+ * @param props.children - Content to render within sidebar provider
+ * @param props....props - All other props passed to div element
+ * @returns JSX element with sidebar context provider and tooltip support
+ */
 function SidebarProvider({
 	defaultOpen = true,
 	open: openProp,
@@ -155,6 +174,18 @@ function SidebarProvider({
 	)
 }
 
+/**
+ * Main sidebar component with responsive behavior and multiple variants
+ * Handles sidebar rendering with desktop/mobile modes, collapsible states and positioning variants
+ * @param props - Sidebar component props
+ * @param props.side - Side positioning of sidebar ('left' or 'right')
+ * @param props.variant - Visual variant ('sidebar', 'floating', 'inset')
+ * @param props.collapsible - Collapse behavior ('offcanvas', 'icon', 'none')
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.children - Content to render inside sidebar
+ * @param props....props - All other props passed to div element
+ * @returns JSX element with responsive sidebar or sheet modal on mobile
+ */
 function Sidebar({
 	side = 'left',
 	variant = 'sidebar',
@@ -255,6 +286,15 @@ function Sidebar({
 	)
 }
 
+/**
+ * Sidebar trigger button component for toggling sidebar visibility
+ * Handles sidebar toggle functionality with appropriate icon states and accessibility
+ * @param props - Sidebar trigger component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.onClick - Custom click handler called before toggle
+ * @param props....props - All other props passed to Button component
+ * @returns JSX element with toggle button and contextual icons
+ */
 function SidebarTrigger({ className, onClick, ...props }: ComponentProps<typeof Button>) {
 	const { open, toggleSidebar } = useSidebar()
 
@@ -278,6 +318,14 @@ function SidebarTrigger({ className, onClick, ...props }: ComponentProps<typeof 
 	)
 }
 
+/**
+ * Sidebar rail component for hover-based sidebar interaction
+ * Handles invisible rail area for sidebar toggle on hover with cursor indicators
+ * @param props - Sidebar rail component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to button element
+ * @returns JSX element with invisible rail button for sidebar interaction
+ */
 function SidebarRail({ className, ...props }: ComponentProps<'button'>) {
 	const { toggleSidebar } = useSidebar()
 
@@ -303,6 +351,14 @@ function SidebarRail({ className, ...props }: ComponentProps<'button'>) {
 	)
 }
 
+/**
+ * Sidebar inset component for main content area with responsive margins
+ * Handles main content positioning with adaptive margins for different sidebar variants
+ * @param props - Sidebar inset component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to main element
+ * @returns JSX element with responsive main content area
+ */
 function SidebarInset({ className, ...props }: ComponentProps<'main'>) {
 	return (
 		<main
@@ -317,6 +373,14 @@ function SidebarInset({ className, ...props }: ComponentProps<'main'>) {
 	)
 }
 
+/**
+ * Sidebar input component with sidebar-specific styling
+ * Handles input field with compact sizing and sidebar-appropriate background
+ * @param props - Sidebar input component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to Input component
+ * @returns JSX element with styled input for sidebar usage
+ */
 function SidebarInput({ className, ...props }: ComponentProps<typeof Input>) {
 	return (
 		<Input
@@ -328,6 +392,14 @@ function SidebarInput({ className, ...props }: ComponentProps<typeof Input>) {
 	)
 }
 
+/**
+ * Sidebar header component for top section content organization
+ * Handles header area with consistent spacing and flex column layout
+ * @param props - Sidebar header component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to div element
+ * @returns JSX element with sidebar header container
+ */
 function SidebarHeader({ className, ...props }: ComponentProps<'div'>) {
 	return (
 		<div
@@ -339,6 +411,14 @@ function SidebarHeader({ className, ...props }: ComponentProps<'div'>) {
 	)
 }
 
+/**
+ * Sidebar footer component for bottom section content organization
+ * Handles footer area with consistent spacing and flex column layout
+ * @param props - Sidebar footer component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to div element
+ * @returns JSX element with sidebar footer container
+ */
 function SidebarFooter({ className, ...props }: ComponentProps<'div'>) {
 	return (
 		<div
@@ -350,6 +430,14 @@ function SidebarFooter({ className, ...props }: ComponentProps<'div'>) {
 	)
 }
 
+/**
+ * Sidebar separator component for visual division between sections
+ * Handles horizontal line separation with sidebar-specific border styling
+ * @param props - Sidebar separator component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to Separator component
+ * @returns JSX element with sidebar-styled separator line
+ */
 function SidebarSeparator({ className, ...props }: ComponentProps<typeof Separator>) {
 	return (
 		<Separator
@@ -361,6 +449,14 @@ function SidebarSeparator({ className, ...props }: ComponentProps<typeof Separat
 	)
 }
 
+/**
+ * Sidebar content component for scrollable main content area
+ * Handles scrollable content area with overflow management and icon collapse behavior
+ * @param props - Sidebar content component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to div element
+ * @returns JSX element with scrollable sidebar content container
+ */
 function SidebarContent({ className, ...props }: ComponentProps<'div'>) {
 	return (
 		<div
@@ -375,6 +471,14 @@ function SidebarContent({ className, ...props }: ComponentProps<'div'>) {
 	)
 }
 
+/**
+ * Sidebar group component for organizing related sidebar items
+ * Handles content grouping with consistent padding and responsive width management
+ * @param props - Sidebar group component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to div element
+ * @returns JSX element with sidebar group container
+ */
 function SidebarGroup({ className, ...props }: ComponentProps<'div'>) {
 	return (
 		<div
@@ -386,6 +490,15 @@ function SidebarGroup({ className, ...props }: ComponentProps<'div'>) {
 	)
 }
 
+/**
+ * Sidebar group label component for section headings with icon collapse behavior
+ * Handles group labels with animated hiding when sidebar is collapsed to icon mode
+ * @param props - Sidebar group label component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.asChild - Whether to render as child component via Slot
+ * @param props....props - All other props passed to div or Slot component
+ * @returns JSX element with animated sidebar group label
+ */
 function SidebarGroupLabel({
 	className,
 	asChild = false,
@@ -407,6 +520,15 @@ function SidebarGroupLabel({
 	)
 }
 
+/**
+ * Sidebar group action component for interactive group controls
+ * Handles action buttons positioned in group headers with enhanced mobile hit area
+ * @param props - Sidebar group action component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.asChild - Whether to render as child component via Slot
+ * @param props....props - All other props passed to button or Slot component
+ * @returns JSX element with positioned sidebar group action button
+ */
 function SidebarGroupAction({
 	className,
 	asChild = false,
@@ -430,6 +552,14 @@ function SidebarGroupAction({
 	)
 }
 
+/**
+ * Sidebar group content component for wrapping group items
+ * Handles content container with appropriate text sizing for group items
+ * @param props - Sidebar group content component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to div element
+ * @returns JSX element with sidebar group content wrapper
+ */
 function SidebarGroupContent({ className, ...props }: ComponentProps<'div'>) {
 	return (
 		<div
@@ -441,6 +571,14 @@ function SidebarGroupContent({ className, ...props }: ComponentProps<'div'>) {
 	)
 }
 
+/**
+ * Sidebar menu component for navigation lists with consistent spacing
+ * Handles menu list container with flex column layout and item gaps
+ * @param props - Sidebar menu component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to ul element
+ * @returns JSX element with sidebar menu list container
+ */
 function SidebarMenu({ className, ...props }: ComponentProps<'ul'>) {
 	return (
 		<ul
@@ -452,6 +590,14 @@ function SidebarMenu({ className, ...props }: ComponentProps<'ul'>) {
 	)
 }
 
+/**
+ * Sidebar menu item component for individual menu entries
+ * Handles menu item wrapper with group context for child elements
+ * @param props - Sidebar menu item component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to li element
+ * @returns JSX element with sidebar menu item wrapper
+ */
 function SidebarMenuItem({ className, ...props }: ComponentProps<'li'>) {
 	return (
 		<li
@@ -485,6 +631,19 @@ const sidebarMenuButtonVariants = cva(
 	},
 )
 
+/**
+ * Sidebar menu button component for interactive menu items with tooltip support
+ * Handles clickable menu buttons with variants, sizes, active states and collapsible tooltips
+ * @param props - Sidebar menu button component props
+ * @param props.asChild - Whether to render as child component via Slot
+ * @param props.isActive - Whether this menu item is currently active
+ * @param props.variant - Button style variant ('default' or 'outline')
+ * @param props.size - Button size ('default', 'sm', 'lg')
+ * @param props.tooltip - Tooltip content (string or TooltipContent props)
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to button or Slot component
+ * @returns JSX element with interactive menu button and optional tooltip
+ */
 function SidebarMenuButton({
 	asChild = false,
 	isActive = false,
@@ -537,6 +696,16 @@ function SidebarMenuButton({
 	)
 }
 
+/**
+ * Sidebar menu action component for secondary actions within menu items
+ * Handles action buttons positioned within menu items with size-responsive positioning
+ * @param props - Sidebar menu action component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.asChild - Whether to render as child component via Slot
+ * @param props.showOnHover - Whether to show action only on hover/focus
+ * @param props....props - All other props passed to button or Slot component
+ * @returns JSX element with positioned menu action button
+ */
 function SidebarMenuAction({
 	className,
 	asChild = false,
@@ -569,6 +738,14 @@ function SidebarMenuAction({
 	)
 }
 
+/**
+ * Sidebar menu badge component for displaying counts or indicators
+ * Handles badge display positioned within menu items with size-responsive positioning
+ * @param props - Sidebar menu badge component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to div element
+ * @returns JSX element with positioned menu badge indicator
+ */
 function SidebarMenuBadge({ className, ...props }: ComponentProps<'div'>) {
 	return (
 		<div
@@ -588,6 +765,15 @@ function SidebarMenuBadge({ className, ...props }: ComponentProps<'div'>) {
 	)
 }
 
+/**
+ * Sidebar menu skeleton component for loading states with randomized width
+ * Handles skeleton placeholder with optional icon and dynamically sized text area
+ * @param props - Sidebar menu skeleton component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.showIcon - Whether to display skeleton icon placeholder
+ * @param props....props - All other props passed to div element
+ * @returns JSX element with animated skeleton placeholder
+ */
 function SidebarMenuSkeleton({
 	className,
 	showIcon = false,
@@ -621,6 +807,14 @@ function SidebarMenuSkeleton({
 	)
 }
 
+/**
+ * Sidebar menu sub component for nested menu items with indentation
+ * Handles submenu container with left border and proper spacing for nested navigation
+ * @param props - Sidebar menu sub component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to ul element
+ * @returns JSX element with indented submenu container
+ */
 function SidebarMenuSub({ className, ...props }: ComponentProps<'ul'>) {
 	return (
 		<ul
@@ -636,6 +830,14 @@ function SidebarMenuSub({ className, ...props }: ComponentProps<'ul'>) {
 	)
 }
 
+/**
+ * Sidebar menu sub item component for individual nested menu entries
+ * Handles submenu item wrapper with group context for child elements
+ * @param props - Sidebar menu sub item component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to li element
+ * @returns JSX element with submenu item wrapper
+ */
 function SidebarMenuSubItem({ className, ...props }: ComponentProps<'li'>) {
 	return (
 		<li
@@ -647,6 +849,17 @@ function SidebarMenuSubItem({ className, ...props }: ComponentProps<'li'>) {
 	)
 }
 
+/**
+ * Sidebar menu sub button component for nested menu entry buttons
+ * Handles button wrapper with size and active context for child elements
+ * @param props - Sidebar menu sub button component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.asChild - Whether to render as child component via Slot
+ * @param props.size - Button size variant (e.g., sm, md)
+ * @param props.isActive - Whether the button is active or not
+ * @param props....props - All other props passed to button or Slot component
+ * @returns JSX element with button or Slot component based on asChild prop
+ */
 function SidebarMenuSubButton({
 	asChild = false,
 	size = 'md',

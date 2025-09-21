@@ -3,7 +3,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgCoinsDataRoute } from '@/app/api/resources'
 
-export async function GET(req: NextRequest, context: { params: any }) {
+/**
+ * Handles GET requests to fetch detailed coin data from CoinGecko API
+ * @param _req - The incoming Next.js request object (unused)
+ * @param context - Route context containing dynamic route parameters
+ * @param context.params - Parameters object containing the coinId parameter
+ * @returns JSON response containing detailed coin data or error message
+ */
+export async function GET(_req: NextRequest, context: { params: any }) {
 	try {
 		const { coinId } = await context.params
 		const url = getCgCoinsDataRoute(coinId)

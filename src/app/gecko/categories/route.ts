@@ -3,6 +3,10 @@ import { NextResponse } from 'next/server'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgCategoriesRoute } from '@/app/api/resources'
 
+/**
+ * Handles GET requests to fetch cryptocurrency categories from CoinGecko API
+ * @returns JSON response containing categories data or error message
+ */
 export async function GET() {
 	try {
 		const url = getCgCategoriesRoute()

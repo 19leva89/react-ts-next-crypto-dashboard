@@ -6,22 +6,58 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 
 import { cn } from '@/lib'
 
+/**
+ * Main dialog component wrapper for modal functionality
+ * Handles dialog state management and accessibility features
+ * @param props - Dialog component props
+ * @param props....props - All other props passed to DialogPrimitive.Root
+ * @returns JSX element with dialog root container
+ */
 function Dialog({ ...props }: ComponentProps<typeof DialogPrimitive.Root>) {
 	return <DialogPrimitive.Root data-slot='dialog' {...props} />
 }
 
+/**
+ * Dialog trigger component that opens the modal when activated
+ * Handles click events to trigger dialog opening with proper accessibility
+ * @param props - Dialog trigger component props
+ * @param props....props - All other props passed to DialogPrimitive.Trigger
+ * @returns JSX element with dialog trigger button
+ */
 function DialogTrigger({ ...props }: ComponentProps<typeof DialogPrimitive.Trigger>) {
 	return <DialogPrimitive.Trigger data-slot='dialog-trigger' {...props} />
 }
 
+/**
+ * Dialog portal component for rendering dialog content outside DOM hierarchy
+ * Handles portal rendering to avoid z-index and overflow issues
+ * @param props - Dialog portal component props
+ * @param props....props - All other props passed to DialogPrimitive.Portal
+ * @returns JSX element with portal container
+ */
 function DialogPortal({ ...props }: ComponentProps<typeof DialogPrimitive.Portal>) {
 	return <DialogPrimitive.Portal data-slot='dialog-portal' {...props} />
 }
 
+/**
+ * Dialog close component for closing the modal dialog
+ * Handles dialog dismissal with proper accessibility and focus management
+ * @param props - Dialog close component props
+ * @param props....props - All other props passed to DialogPrimitive.Close
+ * @returns JSX element with dialog close button
+ */
 function DialogClose({ ...props }: ComponentProps<typeof DialogPrimitive.Close>) {
 	return <DialogPrimitive.Close data-slot='dialog-close' {...props} />
 }
 
+/**
+ * Dialog overlay component that provides backdrop for modal dialogs
+ * Handles backdrop styling with fade animations and click-to-close functionality
+ * @param props - Dialog overlay component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to DialogPrimitive.Overlay
+ * @returns JSX element with styled dialog backdrop
+ */
 function DialogOverlay({ className, ...props }: ComponentProps<typeof DialogPrimitive.Overlay>) {
 	return (
 		<DialogPrimitive.Overlay
@@ -35,6 +71,15 @@ function DialogOverlay({ className, ...props }: ComponentProps<typeof DialogPrim
 	)
 }
 
+/**
+ * Dialog content component that contains the main modal content
+ * Handles centered modal positioning with animations and built-in close button
+ * @param props - Dialog content component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.children - Content to render inside dialog
+ * @param props....props - All other props passed to DialogPrimitive.Content
+ * @returns JSX element with centered dialog content and close button
+ */
 function DialogContent({ className, children, ...props }: ComponentProps<typeof DialogPrimitive.Content>) {
 	return (
 		<DialogPortal data-slot='dialog-portal'>
@@ -59,6 +104,14 @@ function DialogContent({ className, children, ...props }: ComponentProps<typeof 
 	)
 }
 
+/**
+ * Dialog header component for organizing dialog title and description
+ * Handles responsive header layout with proper spacing and text alignment
+ * @param props - Dialog header component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to div element
+ * @returns JSX element with dialog header container
+ */
 function DialogHeader({ className, ...props }: ComponentProps<'div'>) {
 	return (
 		<div
@@ -69,6 +122,14 @@ function DialogHeader({ className, ...props }: ComponentProps<'div'>) {
 	)
 }
 
+/**
+ * Dialog footer component for action buttons and controls
+ * Handles responsive footer layout with proper button alignment and stacking
+ * @param props - Dialog footer component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to div element
+ * @returns JSX element with dialog footer container
+ */
 function DialogFooter({ className, ...props }: ComponentProps<'div'>) {
 	return (
 		<div
@@ -79,6 +140,14 @@ function DialogFooter({ className, ...props }: ComponentProps<'div'>) {
 	)
 }
 
+/**
+ * Dialog title component for accessible dialog heading
+ * Handles semantic dialog title with proper typography and accessibility attributes
+ * @param props - Dialog title component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to DialogPrimitive.Title
+ * @returns JSX element with dialog title heading
+ */
 function DialogTitle({ className, ...props }: ComponentProps<typeof DialogPrimitive.Title>) {
 	return (
 		<DialogPrimitive.Title
@@ -89,6 +158,14 @@ function DialogTitle({ className, ...props }: ComponentProps<typeof DialogPrimit
 	)
 }
 
+/**
+ * Dialog description component for additional dialog context
+ * Handles accessible dialog description with muted text styling
+ * @param props - Dialog description component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to DialogPrimitive.Description
+ * @returns JSX element with dialog description text
+ */
 function DialogDescription({ className, ...props }: ComponentProps<typeof DialogPrimitive.Description>) {
 	return (
 		<DialogPrimitive.Description
