@@ -9,7 +9,7 @@ import { cn } from '@/lib'
  * Main popover component wrapper for popover functionality
  * Handles popover state management and accessibility features
  * @param props - Popover component props
- * @param props....props - All other props passed to PopoverPrimitive.Root
+ * @param props....props - All other props forwarded to PopoverPrimitive.Root
  * @returns JSX element with popover root container
  */
 function Popover({ ...props }: ComponentProps<typeof PopoverPrimitive.Root>) {
@@ -20,7 +20,7 @@ function Popover({ ...props }: ComponentProps<typeof PopoverPrimitive.Root>) {
  * Popover trigger component that opens the popover when activated
  * Handles click events to trigger popover opening with proper accessibility
  * @param props - Popover trigger component props
- * @param props....props - All other props passed to PopoverPrimitive.Trigger
+ * @param props....props - All other props forwarded to PopoverPrimitive.Trigger
  * @returns JSX element with popover trigger button
  */
 function PopoverTrigger({ ...props }: ComponentProps<typeof PopoverPrimitive.Trigger>) {
@@ -34,7 +34,7 @@ function PopoverTrigger({ ...props }: ComponentProps<typeof PopoverPrimitive.Tri
  * @param props.className - Additional CSS classes for styling customization
  * @param props.align - Content alignment relative to trigger ('center', 'start', 'end')
  * @param props.sideOffset - Distance from trigger element in pixels
- * @param props....props - All other props passed to PopoverPrimitive.Content
+ * @param props....props - All other props forwarded to PopoverPrimitive.Content
  * @returns JSX element with styled popover content container and animations
  */
 function PopoverContent({
@@ -63,7 +63,7 @@ function PopoverContent({
  * Popover anchor component for custom positioning reference
  * Handles alternative positioning anchor point when trigger element is not the desired reference
  * @param props - Popover anchor component props
- * @param props....props - All other props passed to PopoverPrimitive.Anchor
+ * @param props....props - All other props forwarded to PopoverPrimitive.Anchor
  * @returns JSX element with popover positioning anchor
  */
 function PopoverAnchor({ ...props }: ComponentProps<typeof PopoverPrimitive.Anchor>) {

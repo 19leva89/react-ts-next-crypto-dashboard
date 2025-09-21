@@ -10,7 +10,7 @@ import { cn } from '@/lib'
  * Handles checked/unchecked states with focus management and validation styling
  * @param props - Switch component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props passed to SwitchPrimitive.Root component
+ * @param props....props - All other props forwarded to SwitchPrimitive.Root
  * @returns JSX element with switch root container and thumb indicator
  */
 function Switch({ className, ...props }: ComponentProps<typeof SwitchPrimitive.Root>) {
