@@ -11,7 +11,7 @@ import { cn } from '@/lib'
  * Handles checked/unchecked states with focus management and validation styling
  * @param props - Checkbox component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props passed to CheckboxPrimitive.Root
+ * @param props....props - All other props forwarded to CheckboxPrimitive.Root
  * @returns JSX element with checkbox input and check indicator
  */
 function Checkbox({ className, ...props }: ComponentProps<typeof CheckboxPrimitive.Root>) {

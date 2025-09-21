@@ -10,7 +10,7 @@ import { cn } from '@/lib'
  * Handles label presentation with disabled states and proper spacing for form associations
  * @param props - Label component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props passed to LabelPrimitive.Root
+ * @param props....props - All other props forwarded to LabelPrimitive.Root
  * @returns JSX element with accessible form label and disabled state handling
  */
 function Label({ className, ...props }: ComponentProps<typeof LabelPrimitive.Root>) {

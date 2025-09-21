@@ -20,7 +20,7 @@ interface Props<TData extends { quantity: number; price: number; date: string }>
 
 /**
  * Generic data table component for displaying transaction data with sorting, sticky columns, and calculated totals
- * Includes FIFO (First-In-First-Out) calculation for average price and total quantity
+ * Uses moving average (weighted‑average cost) to derive average price and total quantity
  * @param props - Component props
  * @param props.columns - Column definitions for the table
  * @param props.data - Array of transaction data to display
