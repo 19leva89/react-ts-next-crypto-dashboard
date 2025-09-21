@@ -116,7 +116,7 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 					))}
 				</TableHeader>
 
-				<TableBody className='dark:bg-background'>
+				<TableBody className='bg-background dark:bg-background'>
 					{table.getRowModel().rows?.length ? (
 						table.getRowModel().rows.map((row) => (
 							<TableRow key={row.id} className='group cursor-pointer duration-0'>
