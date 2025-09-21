@@ -66,7 +66,7 @@ function Button({
 
 	if (loading) {
 		if (childArray.length === 2 && isValidElement(childArray[0])) {
-			// If two parts are passed (icon + text), replace the first one with Loader2
+			// If two parts are passed (icon + text), replace the first one with Loader
 			content = (
 				<>
 					<LoaderIcon className='size-5 animate-spin text-white' />
@@ -74,7 +74,7 @@ function Button({
 				</>
 			)
 		} else {
-			// If there is no icon, just add Loader2 to the left
+			// If there is no icon, just add Loader to the left
 			content = (
 				<>
 					<LoaderIcon className='size-5 animate-spin text-white' />

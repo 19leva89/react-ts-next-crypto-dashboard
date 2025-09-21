@@ -162,7 +162,19 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 				</div>
 			</div>
 
-			<div className='relative overflow-auto rounded-xl border'>
+			<div
+				className='relative cursor-pointer overflow-auto rounded-xl border
+					[&::-webkit-scrollbar]:h-1.5
+					[&::-webkit-scrollbar]:w-1.5
+					[&::-webkit-scrollbar-thumb]:rounded-full
+					[&::-webkit-scrollbar-thumb]:bg-gray-400
+					dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
+					[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
+					dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
+					[&::-webkit-scrollbar-track]:m-1.5
+					[&::-webkit-scrollbar-track]:rounded-full
+					[&::-webkit-scrollbar-track]:bg-transparent'
+			>
 				<Table>
 					<TableHeader className='border-b bg-gray-100 text-left text-sm dark:border-gray-700 dark:bg-slate-800'>
 						{table.getHeaderGroups().map((headerGroup) => (

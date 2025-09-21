@@ -3,6 +3,7 @@ import { TRPCError } from '@trpc/server'
 
 import { prisma } from '@/lib/prisma'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
+import { INTERVAL_EXPIRED_NOTIFICATIONS } from '@/constants/intervals'
 
 export const notificationsRouter = createTRPCRouter({
 	addLogoutNotification: protectedProcedure.mutation(async ({ ctx }) => {
@@ -116,4 +117,15 @@ export const notificationsRouter = createTRPCRouter({
 				},
 			})
 		}),
+
+	deleteExpiredNotifications: protectedProcedure.mutation(async ({ ctx }) => {
+		const cutoff = new Date(Date.now() - INTERVAL_EXPIRED_NOTIFICATIONS)
+
+		await prisma.notification.deleteMany({
+			where: {
+				userId: ctx.auth.user.id,
+				createdAt: { lt: cutoff },
+			},
+		})
+	}),
 })

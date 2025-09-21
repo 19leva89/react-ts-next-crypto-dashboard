@@ -15,6 +15,7 @@ import {
 	ShieldIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useEffect } from 'react'
 import { enUS } from 'date-fns/locale'
 import { useRouter } from 'next/navigation'
 import { formatDistanceToNow } from 'date-fns'
@@ -149,6 +150,10 @@ export const NotificationsView = () => {
 		}),
 	)
 
+	const { mutate: deleteExpiredNotifications } = useMutation(
+		trpc.notifications.deleteExpiredNotifications.mutationOptions(),
+	)
+
 	const handleDoNotDisturbToggle = async (checked: boolean) => {
 		queryClient.setQueryData(trpc.user.getDoNotDisturb.queryKey(), checked)
 
@@ -166,6 +171,11 @@ export const NotificationsView = () => {
 			toast.error(error instanceof Error ? error.message : 'Failed to update')
 		}
 	}
+
+	useEffect(() => {
+		deleteExpiredNotifications()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return (
 		<div className='container mx-auto max-w-2xl'>
