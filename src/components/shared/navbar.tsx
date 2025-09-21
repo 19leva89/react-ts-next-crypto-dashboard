@@ -48,7 +48,7 @@ export const Navbar = () => {
 						<h1 className='font-medium capitalize'>{pathName.split('/').at(-1) || 'Dashboard'}</h1>
 
 						{status === 'loading' ? (
-							<Skeleton className='h-5 w-36' />
+							<Skeleton className='h-5 w-36 rounded-xl' />
 						) : (
 							<p className='hidden text-sm text-gray-600 lg:block dark:text-slate-300'>
 								Welcome back, {session?.user.name || 'Guest'}!
@@ -97,10 +97,7 @@ export const Navbar = () => {
 								<Button
 									variant='ghost'
 									size='sm'
-									className={cn(
-										'w-full rounded-xl',
-										currency === curr ? 'bg-accent text-accent-foreground' : '',
-									)}
+									className={cn('w-full rounded-xl', currency === curr && 'bg-accent text-accent-foreground')}
 								>
 									{curr.toUpperCase()}
 								</Button>

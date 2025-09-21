@@ -177,8 +177,8 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 										<div className='flex flex-col gap-1 text-xs'>
 											{isLoading ? (
 												<>
-													<Skeleton className='h-4 w-32' />
-													<Skeleton className='h-4 w-32' />
+													<Skeleton className='h-4 w-32 rounded-xl' />
+													<Skeleton className='h-4 w-32 rounded-xl' />
 												</>
 											) : (
 												<>

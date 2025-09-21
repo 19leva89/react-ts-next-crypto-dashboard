@@ -25,7 +25,7 @@ export const InfoBlock = ({ title, text, imageUrl, type, className }: Props) => 
 
 	return (
 		<>
-			<div className={cn(className, 'm-4 flex flex-wrap items-center justify-center gap-12')}>
+			<div className={cn('m-4 flex flex-wrap items-center justify-center gap-12', className)}>
 				<div className='flex flex-col'>
 					<div className='w-full'>
 						<Title size='lg' text={title} className='font-extrabold' />

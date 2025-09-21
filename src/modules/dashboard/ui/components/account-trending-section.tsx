@@ -96,8 +96,8 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 										<Skeleton className='size-8 rounded-full' />
 
 										<div className='flex flex-col gap-1'>
-											<Skeleton className='h-[18px] w-16' />
-											<Skeleton className='h-[14px] w-12' />
+											<Skeleton className='h-[18px] w-16 rounded-xl' />
+											<Skeleton className='h-[14px] w-12 rounded-xl' />
 										</div>
 									</div>
 
@@ -105,8 +105,8 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 								</div>
 
 								<div className='mt-3 flex flex-col gap-1'>
-									<Skeleton className='h-[14px] w-16' />
-									<Skeleton className='h-[14px] w-24' />
+									<Skeleton className='h-[14px] w-16 rounded-xl' />
+									<Skeleton className='h-[14px] w-24 rounded-xl' />
 								</div>
 							</div>
 						))}

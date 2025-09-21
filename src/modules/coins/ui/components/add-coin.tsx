@@ -267,16 +267,17 @@ export const AddCoin = ({ className }: Props) => {
 											}}
 											overscanCount={15}
 											className='h-50 w-80 cursor-pointer
-													[&::-webkit-scrollbar]:h-1.5
-													[&::-webkit-scrollbar]:w-1.5
-													[&::-webkit-scrollbar-thumb]:rounded-full
-													[&::-webkit-scrollbar-thumb]:bg-gray-400
-													dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
-													[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
-													dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
-													[&::-webkit-scrollbar-track]:rounded-full
-													[&::-webkit-scrollbar-track]:bg-gray-100
-													dark:[&::-webkit-scrollbar-track]:bg-slate-800'
+												[&::-webkit-scrollbar]:h-1.5
+												[&::-webkit-scrollbar]:w-1.5
+												[&::-webkit-scrollbar-thumb]:rounded-full
+												[&::-webkit-scrollbar-thumb]:bg-gray-400
+												dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
+												[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
+												dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
+												[&::-webkit-scrollbar-track]:m-1.5
+												[&::-webkit-scrollbar-track]:rounded-full
+												[&::-webkit-scrollbar-track]:bg-gray-100
+												dark:[&::-webkit-scrollbar-track]:bg-slate-800'
 										/>
 									)}
 								</SelectContent>

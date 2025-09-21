@@ -91,7 +91,6 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 						<div
 							className={cn(
 								'flex h-8 items-center gap-2 rounded-full px-2 py-1 font-medium',
-								viewMode === 'grid' ? '' : 'hidden sm:flex',
 								coin.current_price > coin.average_price
 									? 'bg-green-100 text-green-600 dark:bg-green-900/30'
 									: 'bg-red-100 text-red-600 dark:bg-red-900/30',
@@ -150,8 +149,8 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 			<CardContent
 				className={cn(
-					'flex gap-0 px-3 py-1 pt-0',
-					viewMode === 'grid' ? 'flex-col items-start' : 'flex-row items-center justify-between gap-8',
+					'flex flex-col items-start gap-0 px-3 py-1 pt-0',
+					viewMode === 'list' && 'sm:flex-row sm:gap-4',
 				)}
 			>
 				<p className='text-lg font-semibold'>Quantity: {formatValue(coin.total_quantity)}</p>

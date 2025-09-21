@@ -1,24 +1,15 @@
 'use client'
 
-import { useId } from 'react'
 import useLocalStorageState from 'use-local-storage-state'
 import { LayoutGridIcon, ListIcon, SearchIcon, XIcon } from 'lucide-react'
 
-import {
-	Button,
-	Input,
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-	useSidebar,
-} from '@/components/ui'
 import { cn } from '@/lib'
 import { TUserCoinData } from '@/modules/coins/schema'
+import { Button, Input, useSidebar } from '@/components/ui'
 import { AddCoin } from '@/modules/coins/ui/components/add-coin'
 import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
 import { CoinCard } from '@/modules/coins/ui/components/coin-card'
+import { SortSelect } from '@/modules/coins/ui/components/sort-select'
 
 interface Props {
 	coinData: TUserCoinData[]
@@ -30,7 +21,6 @@ interface Props {
 export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plannedProfit }: Props) => {
 	const { open } = useSidebar()
 
-	const sortSelectId = useId()
 	const formatUSDPrice = useFormatUSDPrice()
 
 	const [searchQuery, setSearchQuery] = useLocalStorageState<string>('searchQueryCoins', {
@@ -127,9 +117,10 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 							variant='ghost'
 							size='icon'
 							onClick={() => setViewMode('grid')}
-							className={cn('rounded-xl transition-colors duration-300 ease-in-out', {
-								'bg-accent': viewMode === 'grid',
-							})}
+							className={cn(
+								'rounded-xl transition-colors duration-300 ease-in-out',
+								viewMode === 'grid' && 'bg-accent',
+							)}
 						>
 							<LayoutGridIcon className='size-4' />
 						</Button>
@@ -138,9 +129,10 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 							variant='ghost'
 							size='icon'
 							onClick={() => setViewMode('list')}
-							className={cn('rounded-xl transition-colors duration-300 ease-in-out', {
-								'bg-accent': viewMode === 'list',
-							})}
+							className={cn(
+								'rounded-xl transition-colors duration-300 ease-in-out',
+								viewMode === 'list' && 'bg-accent',
+							)}
 						>
 							<ListIcon className='size-4' />
 						</Button>
@@ -148,37 +140,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 
 					{/* Sort coin */}
 					<div className='mx-6'>
-						<Select
-							value={sortOption}
-							onValueChange={(value) =>
-								setSortOption(
-									value as
-										| 'total-asc'
-										| 'total-desc'
-										| 'profit-asc'
-										| 'profit-desc'
-										| 'name-asc'
-										| 'name-desc'
-										| 'price-asc'
-										| 'price-desc',
-								)
-							}
-						>
-							<SelectTrigger id={sortSelectId} className='w-45 rounded-xl'>
-								<SelectValue placeholder='Sort' />
-							</SelectTrigger>
-
-							<SelectContent className='w-45 rounded-xl'>
-								<SelectItem value='total-asc'>Total: Low - Hi</SelectItem>
-								<SelectItem value='total-desc'>Total: Hi - Low</SelectItem>
-								<SelectItem value='profit-asc'>Profit: Low - Hi</SelectItem>
-								<SelectItem value='profit-desc'>Profit: Hi - Low</SelectItem>
-								<SelectItem value='name-asc'>Name: A - Z</SelectItem>
-								<SelectItem value='name-desc'>Name: Z - A</SelectItem>
-								<SelectItem value='price-asc'>Price: Low - Hi</SelectItem>
-								<SelectItem value='price-desc'>Price: Hi - Low</SelectItem>
-							</SelectContent>
-						</Select>
+						<SortSelect value={sortOption} onChange={setSortOption} />
 					</div>
 				</div>
 			</div>
@@ -210,14 +172,10 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 			<div
 				className={cn(
 					'w-full p-6',
-					viewMode === 'grid'
-						? cn(
-								'grid auto-rows-[1fr] gap-4',
-								open
-									? 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
-									: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4',
-							)
-						: 'flex flex-col gap-2',
+					viewMode === 'list' && 'flex flex-col gap-2',
+					viewMode === 'grid' && 'grid auto-rows-[1fr] gap-4',
+					viewMode === 'grid' && open && 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4',
+					viewMode === 'grid' && !open && 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4',
 				)}
 			>
 				{coinData.length === 0 && (

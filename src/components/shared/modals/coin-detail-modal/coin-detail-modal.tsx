@@ -121,7 +121,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 					<SheetTitle>
 						<div className='flex items-center justify-between'>
 							{isLoading ? (
-								<Skeleton className='h-5 w-3/4 sm:h-6' />
+								<Skeleton className='h-5 w-3/4 rounded-xl sm:h-6' />
 							) : (
 								<Link
 									href={`https://coingecko.com/en/coins/${coinData?.id}`}
@@ -141,9 +141,10 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									key={value}
 									variant='outline'
 									onClick={() => setDays(value)}
-									className={cn('h-6 rounded-xl px-2 py-1 transition-colors duration-300 ease-in-out', {
-										'bg-blue-500 hover:bg-blue-500': days === value,
-									})}
+									className={cn(
+										'h-6 rounded-xl px-2 py-1 transition-colors duration-300 ease-in-out',
+										days === value && 'bg-blue-500 hover:bg-blue-500',
+									)}
 								>
 									{/* Full text for screens > 640px */}
 									<span className='hidden sm:inline'>{label}</span>
@@ -162,7 +163,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 				<div className='flex justify-center px-4'>
 					{isLoading ? (
-						<Skeleton className='h-72 w-full' />
+						<Skeleton className='h-72 w-full rounded-xl' />
 					) : (
 						<div className='w-full'>
 							<ChartContainer config={chartConfig} style={{ overflow: 'hidden' }}>
@@ -240,7 +241,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 				<div className='mt-10 px-4'>
 					{isLoading ? (
-						<Skeleton className='h-72 w-full' />
+						<Skeleton className='h-72 w-full rounded-xl' />
 					) : (
 						<>
 							<div className='flex items-center justify-between text-sm font-medium sm:text-base'>
