@@ -35,6 +35,12 @@ type ChartContextProps = {
 
 const ChartContext = createContext<ChartContextProps | null>(null)
 
+/**
+ * Hook for accessing chart context data within chart components
+ * Must be used within a ChartContainer component to access chart configuration
+ * @throws Error if used outside of ChartContainer
+ * @returns Chart context containing configuration and other chart-related data
+ */
 function useChart() {
 	const context = useContext(ChartContext)
 
@@ -45,6 +51,16 @@ function useChart() {
 	return context
 }
 
+/**
+ * Chart container component that wraps Recharts ResponsiveContainer with custom styling and configuration
+ * Provides chart context and applies consistent styling for chart elements
+ * @param props - Component props including div props and chart-specific options
+ * @param props.id - Optional chart identifier for unique styling
+ * @param props.className - Additional CSS classes to merge with chart container styling
+ * @param props.children - Recharts components to render within the responsive container
+ * @param props.config - Chart configuration object containing styling and data mapping
+ * @returns JSX element with chart context provider and responsive container
+ */
 function ChartContainer({
 	id,
 	className,
@@ -131,6 +147,25 @@ type CustomTooltipProps = TooltipContentProps<ValueType, NameType> & {
 	color?: string
 }
 
+/**
+ * Chart tooltip content component that renders customizable tooltip with indicators and formatting
+ * Handles payload data display with configurable indicators, labels, and custom formatting options
+ * @param props - Chart tooltip content props
+ * @param props.active - Whether the tooltip is currently active/visible
+ * @param props.payload - Array of data objects for the tooltip
+ * @param props.label - The label for the tooltip
+ * @param props.className - Additional CSS classes to apply to the tooltip container
+ * @param props.indicator - Type of indicator to show for each data item ('dot', 'line', 'dashed')
+ * @param props.hideLabel - Whether to hide the tooltip label
+ * @param props.hideIndicator - Whether to hide the data indicators
+ * @param props.labelFormatter - Custom formatter function for the label
+ * @param props.formatter - Custom formatter function for individual data items
+ * @param props.labelClassName - Additional CSS classes for the label element
+ * @param props.color - Override color for indicators
+ * @param props.nameKey - Key to use for extracting item names from payload
+ * @param props.labelKey - Key to use for extracting label from payload
+ * @returns JSX element with formatted tooltip content or null if inactive
+ */
 function ChartTooltipContent({
 	active,
 	payload,
@@ -264,6 +299,17 @@ type ChartLegendContentProps = {
 	nameKey?: string
 }
 
+/**
+ * Chart legend content component that displays legend items with icons and labels
+ * Handles legend item rendering with configurable icons, colors, and vertical alignment
+ * @param props - Chart legend content props
+ * @param props.className - Additional CSS classes for styling the legend container
+ * @param props.hideIcon - Whether to hide icons for legend items
+ * @param props.payload - Array of legend data objects to display
+ * @param props.verticalAlign - Vertical alignment position ('top' or 'bottom')
+ * @param props.nameKey - Key to use for extracting item names from payload
+ * @returns JSX element with rendered legend items or null if no payload
+ */
 function ChartLegendContent({
 	className,
 	hideIcon = false,
@@ -312,7 +358,14 @@ function ChartLegendContent({
 	)
 }
 
-// Helper to extract item config from a payload.
+/**
+ * Extracts chart configuration for a payload item based on a given key
+ * Handles nested payload structures and fallback key resolution for chart config lookup
+ * @param config - Chart configuration object containing item definitions
+ * @param payload - Payload data object (potentially nested with payload property)
+ * @param key - Key string to use for configuration lookup
+ * @returns Chart config item for the payload or undefined if not found
+ */
 function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {
 	if (typeof payload !== 'object' || payload === null) {
 		return undefined

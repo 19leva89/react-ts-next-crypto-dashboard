@@ -4,6 +4,14 @@ import { ValidDays } from '@/constants/chart'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgCoinsMarketChartRoute } from '@/app/api/resources'
 
+/**
+ * Handles GET requests to fetch market chart data for a specific coin from CoinGecko API
+ * Supports optional 'days' query parameter for chart duration (1, 7, 30, 365 days)
+ * @param req - The incoming Next.js request object
+ * @param context - Route context containing dynamic route parameters
+ * @param context.params - Parameters object containing the coinId parameter
+ * @returns JSON response containing market chart data for the specified coin or error message
+ */
 export async function GET(req: NextRequest, context: { params: any }) {
 	try {
 		const { coinId } = await context.params

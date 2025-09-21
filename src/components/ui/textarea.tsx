@@ -2,6 +2,14 @@ import { ComponentProps } from 'react'
 
 import { cn } from '@/lib'
 
+/**
+ * Textarea component with responsive sizing and comprehensive interaction states
+ * Handles focus management, validation styling, disabled states, and responsive typography
+ * @param props - Textarea component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to textarea HTML element
+ * @returns JSX element with textarea field and data-slot attribute
+ */
 function Textarea({ className, ...props }: ComponentProps<'textarea'>) {
 	return (
 		<textarea

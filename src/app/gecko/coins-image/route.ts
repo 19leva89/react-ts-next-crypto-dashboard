@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgCoinsListIDMapImage } from '@/app/api/resources'
 
+/**
+ * Handles GET requests to fetch coins list with ID mapping and images from CoinGecko API
+ * Supports pagination via 'page' and 'per_page' query parameters
+ * @param req - The incoming Next.js request object containing query parameters
+ * @returns JSON response containing paginated coins data with images or error message
+ */
 export async function GET(req: NextRequest) {
 	try {
 		// Ensure non-null, valid values for query params

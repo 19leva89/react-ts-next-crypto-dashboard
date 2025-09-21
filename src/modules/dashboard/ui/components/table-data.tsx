@@ -62,6 +62,19 @@ interface RowComponentProps {
 	data: { category_id: string; name: string }[]
 }
 
+/**
+ * Comprehensive data table component with advanced features and responsive design
+ * Handles sorting, filtering, pagination, column visibility, category filtering, and virtualized row rendering
+ * Includes search functionality, sticky columns, custom scrollbars, and accessibility features
+ * @param props - DataTable component props
+ * @param props.columns - Column definitions for the table structure and rendering
+ * @param props.data - Array of data objects to display in the table
+ * @param props.categories - Available categories for filtering with virtualized dropdown
+ * @param props.currentCategory - Currently selected category filter name
+ * @param props.onRowClick - Callback function triggered when a table row is clicked
+ * @param props.onCategoryClick - Callback function triggered when a category filter is selected
+ * @returns JSX element with complete data table including controls, table content, and pagination
+ */
 export function DataTable<TData, TValue>({
 	columns,
 	data,

@@ -3,6 +3,10 @@ import { NextResponse } from 'next/server'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgExchangeRateRoute } from '@/app/api/resources'
 
+/**
+ * Handles GET requests to fetch current exchange rates from CoinGecko API
+ * @returns JSON response containing exchange rate data or error message
+ */
 export async function GET() {
 	try {
 		const url = getCgExchangeRateRoute()

@@ -51,6 +51,16 @@ interface Props<TData, TValue> {
 	onRowClick: (rowData: TData) => void
 }
 
+/**
+ * Transaction data table component with sorting, filtering, and pagination features
+ * Handles transaction display with coin name search, column visibility controls, and sticky first column
+ * Includes responsive design, hover effects, and accessibility features for transaction management
+ * @param props - DataTable component props
+ * @param props.columns - Column definitions for the transaction table structure and rendering
+ * @param props.data - Array of transaction data objects to display in the table
+ * @param props.onRowClick - Callback function triggered when a transaction row is clicked
+ * @returns JSX element with complete transaction table including search, controls, table content, and pagination
+ */
 export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TData, TValue>) {
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])

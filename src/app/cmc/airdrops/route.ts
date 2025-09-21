@@ -3,6 +3,11 @@ import { NextResponse } from 'next/server'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCmcOngoingAirdropsDataRoute, getCmcUpcomingAirdropsDataRoute } from '@/app/api/resources'
 
+/**
+ * Handles GET requests to fetch combined ongoing and upcoming airdrops data from CoinMarketCap API
+ * Combines data from both ongoing and upcoming airdrops endpoints
+ * @returns JSON response containing combined airdrops data or error response
+ */
 export async function GET() {
 	const ongoingUrl = getCmcOngoingAirdropsDataRoute()
 	const upcomingUrl = getCmcUpcomingAirdropsDataRoute()

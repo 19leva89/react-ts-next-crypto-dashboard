@@ -1,5 +1,12 @@
 import axios from 'axios'
 
+/**
+ * Fetches cryptocurrency news from NewsAPI with pagination support
+ * Searches for articles containing cryptocurrency-related keywords from trusted domains
+ * @param page - Page number for pagination (defaults to 1)
+ * @returns Promise resolving to object containing articles array and total results count
+ * @throws Error if the API request fails
+ */
 export async function getCryptoNews(page: number = 1) {
 	try {
 		const { data } = await axios.get('https://newsapi.org/v2/everything', {

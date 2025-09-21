@@ -5,10 +5,26 @@ import * as TabsPrimitive from '@radix-ui/react-tabs'
 
 import { cn } from '@/lib'
 
+/**
+ * Root tabs component with flexible layout and gap spacing
+ * Provides main tabs container with vertical flex layout and consistent gap
+ * @param props - Tabs component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to TabsPrimitive.Root component
+ * @returns JSX element with tabs root container and data-slot attribute
+ */
 function Tabs({ className, ...props }: ComponentProps<typeof TabsPrimitive.Root>) {
 	return <TabsPrimitive.Root data-slot='tabs' className={cn('flex flex-col gap-2', className)} {...props} />
 }
 
+/**
+ * Tabs list component with styled background and centered alignment
+ * Provides tab trigger container with rounded corners, muted background, and flexible width
+ * @param props - Tabs list component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to TabsPrimitive.List component
+ * @returns JSX element with tabs list container and data-slot attribute
+ */
 function TabsList({ className, ...props }: ComponentProps<typeof TabsPrimitive.List>) {
 	return (
 		<TabsPrimitive.List
@@ -22,6 +38,14 @@ function TabsList({ className, ...props }: ComponentProps<typeof TabsPrimitive.L
 	)
 }
 
+/**
+ * Tab trigger component with comprehensive styling and interaction states
+ * Handles active/inactive states, focus management, disabled states, and icon support
+ * @param props - Tabs trigger component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to TabsPrimitive.Trigger component
+ * @returns JSX element with tab trigger button and data-slot attribute
+ */
 function TabsTrigger({ className, ...props }: ComponentProps<typeof TabsPrimitive.Trigger>) {
 	return (
 		<TabsPrimitive.Trigger
@@ -35,6 +59,14 @@ function TabsTrigger({ className, ...props }: ComponentProps<typeof TabsPrimitiv
 	)
 }
 
+/**
+ * Tabs content component with flexible layout and focus management
+ * Provides content panel container with flexible height and accessible focus handling
+ * @param props - Tabs content component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to TabsPrimitive.Content component
+ * @returns JSX element with tabs content panel and data-slot attribute
+ */
 function TabsContent({ className, ...props }: ComponentProps<typeof TabsPrimitive.Content>) {
 	return (
 		<TabsPrimitive.Content

@@ -16,7 +16,14 @@ const nunito = Nunito({
 
 export const metadata = constructMetadata()
 
-export default async function RootLayout({ children }: PropsWithChildren) {
+/**
+ * Root layout component for the Next.js application
+ * Sets up global providers, theme configuration, and font styling
+ * @param props - Component props
+ * @param props.children - Child components to render within the layout
+ * @returns JSX element with HTML structure and global providers
+ */
+async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang='en' suppressHydrationWarning>
 			<body className={nunito.variable}>
@@ -36,3 +43,5 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 		</html>
 	)
 }
+
+export default RootLayout

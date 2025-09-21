@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getCryptoNews } from '@/lib/newsapi'
+import { getCryptoNews } from '@/lib/news-api'
 
+/**
+ * Handles GET requests for fetching cryptocurrency news articles
+ * Supports pagination via 'page' query parameter
+ * @param req - The incoming Next.js request object
+ * @returns JSON response containing articles and total results count, or error message
+ */
 export async function GET(req: NextRequest) {
 	const { searchParams } = new URL(req.url)
 	const page = Number(searchParams.get('page') || 1)

@@ -57,10 +57,15 @@ export type CalendarProps = DayPickerProps & {
 type NavView = 'days' | 'years'
 
 /**
- * A custom calendar component built on top of react-day-picker.
- * @param props The props for the calendar.
- * @default yearRange 12
- * @returns
+ * Calendar component with advanced navigation including year switching and month/year views
+ * Built on top of react-day-picker with custom styling and enhanced functionality
+ * @param props - Component props including styling, navigation, and display options
+ * @param props.className - Additional CSS classes to merge with calendar styling
+ * @param props.showOutsideDays - Whether to show days from adjacent months
+ * @param props.showYearSwitcher - Whether to enable year switching functionality
+ * @param props.yearRange - Number of years to display in year picker mode
+ * @param props.numberOfMonths - Number of months to display simultaneously
+ * @returns JSX element with fully-featured calendar component
  */
 function Calendar({
 	className,
@@ -217,6 +222,22 @@ function Calendar({
 }
 Calendar.displayName = 'Calendar'
 
+/**
+ * Navigation component for calendar with support for month and year navigation
+ * Handles navigation between months/years with proper boundary checking
+ * @param props - Navigation component props
+ * @param props.className - Additional CSS classes for styling
+ * @param props.navView - Current navigation view (days or years)
+ * @param props.startMonth - Minimum selectable month boundary
+ * @param props.endMonth - Maximum selectable month boundary
+ * @param props.displayYears - Range of years currently displayed
+ * @param props.displayYears.from - Starting year of displayed year range
+ * @param props.displayYears.to - Ending year of displayed year range
+ * @param props.setDisplayYears - Function to update displayed year range
+ * @param props.onPrevClick - Callback for previous navigation click
+ * @param props.onNextClick - Callback for next navigation click
+ * @returns JSX element with navigation controls
+ */
 function Nav({
 	className,
 	navView,
@@ -322,6 +343,17 @@ function Nav({
 	)
 }
 
+/**
+ * Caption label component that displays current month/year and enables view switching
+ * Shows month name in days view, year range in years view
+ * @param props - Caption label props
+ * @param props.children - Month/year text content to display
+ * @param props.showYearSwitcher - Whether year switching is enabled
+ * @param props.navView - Current navigation view mode
+ * @param props.setNavView - Function to toggle between days and years view
+ * @param props.displayYears - Current year range being displayed
+ * @returns JSX element with clickable caption label or plain span
+ */
 function CaptionLabel({
 	children,
 	showYearSwitcher,
@@ -348,6 +380,19 @@ function CaptionLabel({
 	)
 }
 
+/**
+ * Month grid component that renders either calendar days or year selection grid
+ * Switches between table layout for days and grid layout for years
+ * @param props - Month grid props
+ * @param props.className - Additional CSS classes for styling
+ * @param props.children - Child elements to render (calendar days)
+ * @param props.displayYears - Range of years for year selection mode
+ * @param props.startMonth - Minimum selectable month boundary
+ * @param props.endMonth - Maximum selectable month boundary
+ * @param props.navView - Current navigation view (days or years)
+ * @param props.setNavView - Function to change navigation view
+ * @returns JSX element with either table for days or YearGrid for years
+ */
 function MonthGrid({
 	className,
 	children,
@@ -386,6 +431,18 @@ function MonthGrid({
 	)
 }
 
+/**
+ * Year grid component that displays selectable years in a 4-column grid layout
+ * Handles year selection with boundary validation and current year highlighting
+ * @param props - Year grid props
+ * @param props.className - Additional CSS classes for styling
+ * @param props.displayYears - Range of years to display in the grid
+ * @param props.startMonth - Minimum selectable date boundary
+ * @param props.endMonth - Maximum selectable date boundary
+ * @param props.setNavView - Function to switch back to days view after year selection
+ * @param props.navView - Current navigation view mode
+ * @returns JSX element with grid of selectable year buttons
+ */
 function YearGrid({
 	className,
 	displayYears,

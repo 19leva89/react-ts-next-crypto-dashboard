@@ -20,7 +20,9 @@ export interface LoginContext {
 }
 
 /**
- * Get the client IP address from the request headers
+ * Extracts and validates the client's IP address from various HTTP headers
+ * Checks multiple header sources including proxy headers and CDN headers like Cloudflare
+ * @returns Promise resolving to a valid IP address string or 'Unknown' if no valid IP is found
  */
 export async function getClientIP(): Promise<string> {
 	const headersList = await headers()
@@ -32,7 +34,11 @@ export async function getClientIP(): Promise<string> {
 	const cfConnectingIP = headersList.get('cf-connecting-ip') // Cloudflare
 	const xOriginalForwardedFor = headersList.get('x-original-forwarded-for')
 
-	// Validate using Node.js built-in isIP function
+	/**
+	 * Validates if a string is a valid IP address using Node.js built-in isIP function
+	 * @param ip - The IP address string to validate
+	 * @returns True if the IP is valid (IPv4 or IPv6), false otherwise
+	 */
 	function isValidIPAddress(ip: string): boolean {
 		return isIP(ip) !== 0 // Returns 4 for IPv4, 6 for IPv6, 0 for invalid
 	}
@@ -62,7 +68,9 @@ export async function getClientIP(): Promise<string> {
 }
 
 /**
- * Get detailed information about the browser, OS and device
+ * Extracts detailed browser information from user agent string including browser, OS, and device details
+ * Uses UAParser to parse the user-agent header and formats the information into readable strings
+ * @returns Promise resolving to BrowserInfo object containing userAgent, browser, OS, and device information
  */
 export async function getAdvancedBrowserInfo(): Promise<BrowserInfo> {
 	const headersList = await headers()
@@ -110,7 +118,10 @@ export async function getAdvancedBrowserInfo(): Promise<BrowserInfo> {
 }
 
 /**
- * Get location information based on IP address
+ * Retrieves location information for a given IP address using the ipinfo.io API
+ * Skips geolocation for unknown, localhost, or private network IP addresses
+ * @param ipAddress - The IP address to get location information for
+ * @returns Promise resolving to LocationInfo object containing city information
  */
 export async function getLocationInfo(ipAddress: string): Promise<LocationInfo> {
 	// Skip geolocation for unknown or local IPs
@@ -146,7 +157,9 @@ export async function getLocationInfo(ipAddress: string): Promise<LocationInfo> 
 }
 
 /**
- * Get full context for login (IP + browser info)
+ * Gathers comprehensive login context information including IP address, browser details, and location
+ * Uses Promise.allSettled to handle potential failures gracefully and return partial data if needed
+ * @returns Promise resolving to LoginContext object containing IP address, browser info, and location info
  */
 export async function getLoginContext(): Promise<LoginContext> {
 	const results = await Promise.allSettled([getClientIP(), getAdvancedBrowserInfo()])
@@ -170,7 +183,10 @@ export async function getLoginContext(): Promise<LoginContext> {
 }
 
 /**
- * Formatting the login notification message
+ * Formats login context information into a human-readable notification message
+ * Creates a security notification with timestamp, IP, location, browser, and device details
+ * @param context - LoginContext object containing IP address, browser info, and location info
+ * @returns Formatted string message for login notification with security warning
  */
 export function formatLoginMessage(context: LoginContext): string {
 	const { ipAddress, browserInfo, locationInfo } = context

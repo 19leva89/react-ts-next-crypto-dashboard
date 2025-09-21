@@ -5,6 +5,15 @@ import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area'
 
 import { cn } from '@/lib'
 
+/**
+ * Scroll area component with custom styled scrollbars and viewport management
+ * Handles scrollable content with focus states and built-in scrollbar styling
+ * @param props - Scroll area component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.children - Content to render inside scrollable viewport
+ * @param props....props - All other props passed to ScrollAreaPrimitive.Root
+ * @returns JSX element with scrollable area containing viewport, scrollbar and corner
+ */
 function ScrollArea({ className, children, ...props }: ComponentProps<typeof ScrollAreaPrimitive.Root>) {
 	return (
 		<ScrollAreaPrimitive.Root data-slot='scroll-area' className={cn('relative', className)} {...props}>
@@ -20,6 +29,15 @@ function ScrollArea({ className, children, ...props }: ComponentProps<typeof Scr
 	)
 }
 
+/**
+ * Scroll bar component with customizable orientation and thumb styling
+ * Handles vertical and horizontal scrollbar presentation with touch-friendly interactions
+ * @param props - Scroll bar component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props.orientation - Scrollbar orientation ('vertical' or 'horizontal')
+ * @param props....props - All other props passed to ScrollAreaPrimitive.ScrollAreaScrollbar
+ * @returns JSX element with styled scrollbar track and thumb
+ */
 function ScrollBar({
 	className,
 	orientation = 'vertical',

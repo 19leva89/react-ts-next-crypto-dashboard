@@ -3,6 +3,10 @@ import { NextResponse } from 'next/server'
 import { makeServerReq } from '@/app/api/make-request'
 import { getCgCoinsListRoute } from '@/app/api/resources'
 
+/**
+ * Handles GET requests to fetch the complete coins list from CoinGecko API
+ * @returns JSON response containing coins list data or error message
+ */
 export async function GET() {
 	try {
 		const url = getCgCoinsListRoute()

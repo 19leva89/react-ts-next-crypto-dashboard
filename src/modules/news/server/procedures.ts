@@ -1,6 +1,6 @@
 import z from 'zod'
 
-import { getCryptoNews } from '@/lib/newsapi'
+import { getCryptoNews } from '@/lib/news-api'
 import { createTRPCRouter, baseProcedure } from '@/trpc/init'
 
 export const newsRouter = createTRPCRouter({

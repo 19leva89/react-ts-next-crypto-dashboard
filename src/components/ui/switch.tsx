@@ -5,6 +5,14 @@ import * as SwitchPrimitive from '@radix-ui/react-switch'
 
 import { cn } from '@/lib'
 
+/**
+ * Switch component with styled appearance and accessibility features
+ * Handles checked/unchecked states with focus management and validation styling
+ * @param props - Switch component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to SwitchPrimitive.Root component
+ * @returns JSX element with switch root container and thumb indicator
+ */
 function Switch({ className, ...props }: ComponentProps<typeof SwitchPrimitive.Root>) {
 	return (
 		<SwitchPrimitive.Root

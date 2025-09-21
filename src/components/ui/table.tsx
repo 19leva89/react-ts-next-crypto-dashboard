@@ -2,18 +2,50 @@ import { ComponentProps } from 'react'
 
 import { cn } from '@/lib'
 
+/**
+ * Root table component with styled appearance and responsive layout
+ * Provides base table structure with full width and consistent text styling
+ * @param props - Table component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to table HTML element
+ * @returns JSX element with table container and data-slot attribute
+ */
 function Table({ className, ...props }: ComponentProps<'table'>) {
 	return <table data-slot='table' className={cn('w-full caption-bottom text-sm', className)} {...props} />
 }
 
+/**
+ * Table header component with border styling and semantic structure
+ * Provides header container with bottom border for visual separation
+ * @param props - Table header component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to thead HTML element
+ * @returns JSX element with table header container and data-slot attribute
+ */
 function TableHeader({ className, ...props }: ComponentProps<'thead'>) {
 	return <thead data-slot='table-header' className={cn('[&_tr]:border-b', className)} {...props} />
 }
 
+/**
+ * Table body component with row border management
+ * Provides body container with conditional borders on rows for clean appearance
+ * @param props - Table body component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to tbody HTML element
+ * @returns JSX element with table body container and data-slot attribute
+ */
 function TableBody({ className, ...props }: ComponentProps<'tbody'>) {
 	return <tbody data-slot='table-body' className={cn('[&_tr:last-child]:border-0', className)} {...props} />
 }
 
+/**
+ * Table footer component with background and typography styling
+ * Provides footer container with muted background and medium font weight
+ * @param props - Table footer component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to tfoot HTML element
+ * @returns JSX element with table footer container and data-slot attribute
+ */
 function TableFooter({ className, ...props }: ComponentProps<'tfoot'>) {
 	return (
 		<tfoot
@@ -24,6 +56,14 @@ function TableFooter({ className, ...props }: ComponentProps<'tfoot'>) {
 	)
 }
 
+/**
+ * Table row component with hover effects and selection states
+ * Handles interactive states with hover highlighting and selection styling
+ * @param props - Table row component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to tr HTML element
+ * @returns JSX element with table row container and data-slot attribute
+ */
 function TableRow({ className, ...props }: ComponentProps<'tr'>) {
 	return (
 		<tr
@@ -34,6 +74,14 @@ function TableRow({ className, ...props }: ComponentProps<'tr'>) {
 	)
 }
 
+/**
+ * Table header cell component with typography and alignment styling
+ * Provides header cell with left alignment, medium font weight, and checkbox support
+ * @param props - Table head component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to th HTML element
+ * @returns JSX element with table header cell and data-slot attribute
+ */
 function TableHead({ className, ...props }: ComponentProps<'th'>) {
 	return (
 		<th
@@ -47,6 +95,14 @@ function TableHead({ className, ...props }: ComponentProps<'th'>) {
 	)
 }
 
+/**
+ * Table data cell component with padding and alignment styling
+ * Provides data cell with consistent padding, alignment, and checkbox support
+ * @param props - Table cell component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to td HTML element
+ * @returns JSX element with table data cell and data-slot attribute
+ */
 function TableCell({ className, ...props }: ComponentProps<'td'>) {
 	return (
 		<td
@@ -60,6 +116,14 @@ function TableCell({ className, ...props }: ComponentProps<'td'>) {
 	)
 }
 
+/**
+ * Table caption component with muted styling for accessibility
+ * Provides table caption with subtle text styling and proper positioning
+ * @param props - Table caption component props
+ * @param props.className - Additional CSS classes for styling customization
+ * @param props....props - All other props passed to caption HTML element
+ * @returns JSX element with table caption and data-slot attribute
+ */
 function TableCaption({ className, ...props }: ComponentProps<'caption'>) {
 	return (
 		<caption
