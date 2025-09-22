@@ -1,6 +1,6 @@
 'use client'
 
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 
 import { Input } from '@/components/ui'
 import { useFormatValue } from '@/hooks/use-format-value'
@@ -14,11 +14,12 @@ export const InputFormatQuantity = ({ value, onChange }: Props) => {
 	const formatValue = useFormatValue()
 
 	const [isEditing, setIsEditing] = useState<boolean>(false)
+	const [internalValue, setInternalValue] = useState<number>(value)
 	const [displayValue, setDisplayValue] = useState<string>(value.toString())
 
 	const handleFocus = () => {
 		setIsEditing(true)
-		setDisplayValue(value.toString())
+		setDisplayValue(internalValue.toString())
 	}
 
 	const handleBlur = () => {
@@ -33,6 +34,7 @@ export const InputFormatQuantity = ({ value, onChange }: Props) => {
 
 		onChange(numericValue)
 		setDisplayValue(numericValue.toString())
+		setInternalValue(numericValue)
 	}
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +56,15 @@ export const InputFormatQuantity = ({ value, onChange }: Props) => {
 
 		return formatValue(value)
 	}
+
+	// Sync displayValue with value when not editing
+	useEffect(() => {
+		if (!isEditing) {
+			setDisplayValue(value.toString())
+
+			setInternalValue(value)
+		}
+	}, [value, isEditing])
 
 	return (
 		<Input

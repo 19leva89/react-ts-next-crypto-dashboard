@@ -25,11 +25,12 @@ export const InfiniteScroll = ({ isManual, hasNextPage, isFetchingNextPage, fetc
 	}, [isIntersecting, hasNextPage, isFetchingNextPage, isManual, fetchNextPage])
 
 	return (
-		<div className='flex items-center px-4 py-2'>
+		<div data-testid='infinite-scroll' className='flex items-center px-4 py-2'>
 			<div ref={targetRef} className='h-1' />
 
 			{hasNextPage ? (
 				<Button
+					data-testid='infinite-scroll-button'
 					variant='secondary'
 					disabled={!hasNextPage || isFetchingNextPage}
 					onClick={() => fetchNextPage()}
@@ -38,7 +39,9 @@ export const InfiniteScroll = ({ isManual, hasNextPage, isFetchingNextPage, fetc
 					{isFetchingNextPage ? 'Loading...' : 'Load more'}
 				</Button>
 			) : (
-				<p className='text-sm text-muted-foreground'>You have reached the end of the list</p>
+				<p data-testid='infinite-scroll-end' className='text-sm text-muted-foreground'>
+					You have reached the end of the list
+				</p>
 			)}
 		</div>
 	)
