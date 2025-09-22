@@ -1,6 +1,6 @@
 {
   "name": "crypto-dashboard",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -9,6 +9,10 @@
     "lint": "next lint",
     "types": "tsc --noEmit --project ./tsconfig.json",
     "knip": "knip",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "postinstall": "npx prisma generate && npm rebuild sharp",
     "all": "concurrently \"npm run dev\" \"npx prisma studio\""
   },
@@ -73,16 +77,24 @@
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4.1.13",
     "@tailwindcss/typography": "^0.5.17",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/lodash": "^4.17.20",
     "@types/node": "^24.5.2",
     "@types/nodemailer": "^7.0.1",
     "@types/react": "19.1.13",
     "@types/react-dom": "19.1.9",
+    "@vitejs/plugin-react": "^5.0.3",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
     "concurrently": "^9.2.1",
     "eslint-config-next": "15.5.3",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsdoc": "^60.0.0",
     "javascript-obfuscator": "^4.1.1",
+    "jsdom": "^27.0.0",
     "knip": "^5.63.1",
     "nextjs-obfuscator": "^3.1.0",
     "prettier": "^3.6.2",
@@ -91,7 +103,8 @@
     "tailwindcss": "^4.1.13",
     "tailwindcss-animate": "^1.0.7",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

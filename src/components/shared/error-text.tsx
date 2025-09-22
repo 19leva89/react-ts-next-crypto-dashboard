@@ -6,5 +6,9 @@ interface Props {
 }
 
 export const ErrorText = ({ text, className }: Props) => {
-	return <p className={cn('text-sm text-red-500', className)}>{text}</p>
+	return (
+		<p data-testid='error-text' className={cn('text-sm text-red-500', className)}>
+			{text}
+		</p>
+	)
 }
