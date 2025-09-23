@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-export const useIntersectionObserver = <T extends Element>(options?: IntersectionObserverInit) => {
+export const useIntersectionObserver = <T extends Element = Element>(options?: IntersectionObserverInit) => {
 	const [isIntersecting, setIsIntersecting] = useState<boolean>(false)
 
 	const targetRef = useRef<T | null>(null)
@@ -10,7 +10,7 @@ export const useIntersectionObserver = <T extends Element>(options?: Intersectio
 		if (!element) return
 
 		const observer = new IntersectionObserver(([entry]) => {
-			setIsIntersecting(entry.isIntersecting)
+			setIsIntersecting(entry?.isIntersecting ?? false)
 		}, options)
 
 		observer.observe(element)
@@ -18,5 +18,5 @@ export const useIntersectionObserver = <T extends Element>(options?: Intersectio
 		return () => observer.disconnect()
 	}, [options])
 
-	return { targetRef, isIntersecting } as const
+	return { targetRef, isIntersecting }
 }

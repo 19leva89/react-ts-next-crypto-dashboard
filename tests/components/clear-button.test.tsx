@@ -74,22 +74,38 @@ describe('ClearButton', () => {
 		await expect(user.click(button)).resolves.not.toThrow()
 	})
 
-	it('is accessible via keyboard', async () => {
+	it('is accessible via Enter key', async () => {
 		const handleClick = vi.fn()
 		const user = userEvent.setup()
 
 		render(<ClearButton onClick={handleClick} />)
 
 		const button = screen.getByRole('button')
+
+		// Focus the button
 		button.focus()
+		expect(button).toHaveFocus()
 
 		// Press Enter
 		await user.keyboard('{Enter}')
 		expect(handleClick).toHaveBeenCalledTimes(1)
+	})
+
+	it('is accessible via Space key', async () => {
+		const handleClick = vi.fn()
+		const user = userEvent.setup()
+
+		render(<ClearButton onClick={handleClick} />)
+
+		const button = screen.getByRole('button')
+
+		// Focus the button
+		button.focus()
+		expect(button).toHaveFocus()
 
 		// Press Space
 		await user.keyboard(' ')
-		expect(handleClick).toHaveBeenCalledTimes(2)
+		expect(handleClick).toHaveBeenCalledTimes(1)
 	})
 
 	it('has correct structure for screen readers', () => {
