@@ -138,7 +138,7 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 					) : (
 						<TableRow>
 							<TableCell colSpan={columns.length} className='h-24 text-center'>
-								No transactions found
+								No transactions found. Add your first transaction!
 							</TableCell>
 						</TableRow>
 					)}

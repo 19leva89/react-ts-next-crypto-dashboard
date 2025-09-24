@@ -165,23 +165,25 @@ export const ProfileView = () => {
 			</FormProvider>
 
 			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-				<AlertDialogContent>
+				<AlertDialogContent className='rounded-xl'>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 
 						<AlertDialogDescription>
 							This action cannot be undone. This will permanently delete your account and remove your data
-							from our servers.
+							from our servers!
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 
 					<AlertDialogFooter>
-						<AlertDialogCancel disabled={deleteUserMutation.isPending}>Cancel</AlertDialogCancel>
+						<AlertDialogCancel disabled={deleteUserMutation.isPending} className='rounded-xl'>
+							Cancel
+						</AlertDialogCancel>
 
 						<AlertDialogAction
 							onClick={handleDeleteAccount}
 							disabled={deleteUserMutation.isPending || updateUserMutation.isPending}
-							className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+							className='rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90'
 						>
 							{deleteUserMutation.isPending || updateUserMutation.isPending
 								? 'Deleting...'

@@ -70,6 +70,7 @@ export const PieChartContainer = ({ chartData }: Props) => {
 									accessibilityLayer={true}
 									formatter={formatTooltipValue}
 									hideLabel
+									className='rounded-xl'
 								/>
 							)}
 						/>

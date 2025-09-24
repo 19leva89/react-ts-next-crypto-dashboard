@@ -221,6 +221,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 													return [name, numericValue]
 												}}
+												className='rounded-xl'
 											/>
 										)}
 									/>
