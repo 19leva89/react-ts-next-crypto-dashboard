@@ -143,6 +143,7 @@ export const LineChartContainer = ({ chartData }: Props) => {
 
 										return [name, numericValue]
 									}}
+									className='rounded-xl'
 								/>
 							)}
 						/>

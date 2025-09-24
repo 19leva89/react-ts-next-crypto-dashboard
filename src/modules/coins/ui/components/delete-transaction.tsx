@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { TrashIcon } from 'lucide-react'
 
 import {
@@ -19,6 +20,18 @@ interface Props {
 }
 
 export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
+	const [isDeleting, setIsDeleting] = useState<boolean>(false)
+
+	const handleDelete = async () => {
+		setIsDeleting(true)
+
+		try {
+			onDelete(transactionId)
+		} finally {
+			setIsDeleting(false)
+		}
+	}
+
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
@@ -41,10 +54,12 @@ export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
 				</AlertDialogHeader>
 
 				<AlertDialogFooter className='gap-3'>
-					<AlertDialogCancel className='rounded-xl'>Cancel</AlertDialogCancel>
+					<AlertDialogCancel disabled={isDeleting} className='rounded-xl'>
+						Cancel
+					</AlertDialogCancel>
 
-					<AlertDialogAction onClick={() => onDelete(transactionId)} className='rounded-xl'>
-						Delete
+					<AlertDialogAction onClick={handleDelete} disabled={isDeleting} className='rounded-xl'>
+						{isDeleting ? 'Deleting...' : 'Delete'}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

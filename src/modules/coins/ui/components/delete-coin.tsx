@@ -51,19 +51,21 @@ export const DeleteCoin = ({ coin, isOpen, onClose }: Props) => {
 					<AlertDialogTitle>Delete {coin.name}?</AlertDialogTitle>
 
 					<AlertDialogDescription>
-						Are you sure you want to delete this coin from your portfolio? This action cannot be undone.
+						This action cannot be undone. Are you sure you want to delete this coin from your portfolio?
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 
 				<AlertDialogFooter className='gap-3'>
-					<AlertDialogCancel className='rounded-xl'>Cancel</AlertDialogCancel>
+					<AlertDialogCancel disabled={deleteCoinMutation.isPending} className='rounded-xl'>
+						Cancel
+					</AlertDialogCancel>
 
 					<AlertDialogAction
 						onClick={handleDelete}
 						disabled={deleteCoinMutation.isPending}
 						className='rounded-xl'
 					>
-						Delete
+						{deleteCoinMutation.isPending ? 'Deleting...' : 'Delete'}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
