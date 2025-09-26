@@ -1,6 +1,6 @@
 import useLocalStorageState from 'use-local-storage-state'
 
-const CURRENCY_KEY = 'selectedCurrency'
+export const CURRENCY_KEY = 'selectedCurrency'
 
 type Currency = 'usd' | 'eur' | 'uah'
 

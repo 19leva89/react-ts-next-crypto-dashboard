@@ -1,4 +1,14 @@
-import React from 'react'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import {
+	Children,
+	cloneElement,
+	MouseEvent,
+	MouseEventHandler,
+	ReactElement,
+	ReactNode,
+	useEffect,
+} from 'react'
 import { format } from 'date-fns'
 import userEvent from '@testing-library/user-event'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -19,9 +29,9 @@ vi.mock('lucide-react', () => ({
 
 // Mock the UI components
 const TriggerWrapper = ({ children, onOpenChange }: any) => {
-	const child = React.Children.only(children) as React.ReactElement<{ onClick?: React.MouseEventHandler }>
-	return React.cloneElement(child, {
-		onClick: (e: React.MouseEvent) => {
+	const child = Children.only(children) as ReactElement<{ onClick?: MouseEventHandler }>
+	return cloneElement(child, {
+		onClick: (e: MouseEvent) => {
 			e.stopPropagation()
 			onOpenChange(true)
 		},
@@ -46,7 +56,10 @@ vi.mock('@/components/ui', () => ({
 		</div>
 	)),
 	PopoverContent: vi.fn(({ children, className }) => <div className={className}>{children}</div>),
-	PopoverTrigger: vi.fn(({ children, ...props }) => React.cloneElement(React.Children.only(children), props)),
+	PopoverTrigger: vi.fn(({ children, ...props }) => {
+		const { asChild, ...cleanProps } = props
+		return cloneElement(Children.only(children), cleanProps)
+	}),
 }))
 
 // Mock the shared components
@@ -75,7 +88,7 @@ const TestWrapper = ({
 	defaultValues = {},
 	validationRules = {},
 }: {
-	children: React.ReactNode
+	children: ReactNode
 	defaultValues?: Record<string, any>
 	validationRules?: Record<string, any>
 }) => {
@@ -305,7 +318,7 @@ describe('FormCalendar', () => {
 					defaultValues: { dateField: null },
 				})
 
-				React.useEffect(() => {
+				useEffect(() => {
 					const validate = async () => {
 						methods.register('dateField', { required: 'Date is required' })
 						await methods.trigger('dateField')
@@ -416,7 +429,7 @@ describe('FormCalendar', () => {
 					mode: 'onChange',
 				})
 
-				React.useEffect(() => {
+				useEffect(() => {
 					const validate = async () => {
 						methods.register('dateField', { required: 'Date is required' })
 						await methods.trigger('dateField')
@@ -444,7 +457,7 @@ describe('FormCalendar', () => {
 					mode: 'onChange',
 				})
 
-				React.useEffect(() => {
+				useEffect(() => {
 					const validate = async () => {
 						methods.register('dateField', { required: 'Date is required' })
 						await methods.trigger('dateField')
@@ -473,7 +486,7 @@ describe('FormCalendar', () => {
 					mode: 'onChange',
 				})
 
-				React.useEffect(() => {
+				useEffect(() => {
 					const validate = async () => {
 						methods.register('dateField', { required: 'Date is required' })
 						await methods.trigger('dateField')

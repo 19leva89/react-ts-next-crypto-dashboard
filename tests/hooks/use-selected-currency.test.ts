@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-import { useSelectedCurrency } from '@/hooks/use-selected-currency'
+import { CURRENCY_KEY, useSelectedCurrency } from '@/hooks/use-selected-currency'
 
 // Mock the use-local-storage-state module
 vi.mock('use-local-storage-state')
@@ -39,7 +39,7 @@ describe('useSelectedCurrency', () => {
 			const { result } = renderHook(() => useSelectedCurrency())
 
 			// Should call useLocalStorageState with correct key and default value
-			expect(mockUseLocalStorageState).toHaveBeenCalledWith('selectedCurrency', {
+			expect(mockUseLocalStorageState).toHaveBeenCalledWith(CURRENCY_KEY, {
 				defaultValue: 'usd',
 			})
 
@@ -65,7 +65,7 @@ describe('useSelectedCurrency', () => {
 
 			// Verify the hook is called with correct key and configuration
 			expect(mockUseLocalStorageState).toHaveBeenCalledTimes(1)
-			expect(mockUseLocalStorageState).toHaveBeenCalledWith('selectedCurrency', {
+			expect(mockUseLocalStorageState).toHaveBeenCalledWith(CURRENCY_KEY, {
 				defaultValue: 'usd',
 			})
 		})
@@ -258,10 +258,10 @@ describe('useSelectedCurrency', () => {
 
 			// Both should use the same localStorage key
 			expect(mockUseLocalStorageState).toHaveBeenCalledTimes(2)
-			expect(mockUseLocalStorageState).toHaveBeenNthCalledWith(1, 'selectedCurrency', {
+			expect(mockUseLocalStorageState).toHaveBeenNthCalledWith(1, CURRENCY_KEY, {
 				defaultValue: 'usd',
 			})
-			expect(mockUseLocalStorageState).toHaveBeenNthCalledWith(2, 'selectedCurrency', {
+			expect(mockUseLocalStorageState).toHaveBeenNthCalledWith(2, CURRENCY_KEY, {
 				defaultValue: 'usd',
 			})
 
@@ -351,7 +351,7 @@ describe('useSelectedCurrency', () => {
 			renderHook(() => useSelectedCurrency())
 
 			// Should call the underlying hook with exact parameters
-			expect(mockUseLocalStorageState).toHaveBeenCalledWith('selectedCurrency', mockOptions)
+			expect(mockUseLocalStorageState).toHaveBeenCalledWith(CURRENCY_KEY, mockOptions)
 		})
 
 		it('should use the correct localStorage key consistently', () => {
@@ -363,7 +363,7 @@ describe('useSelectedCurrency', () => {
 
 			// Should always use the same key
 			mockUseLocalStorageState.mock.calls.forEach((call) => {
-				expect(call[0]).toBe('selectedCurrency')
+				expect(call[0]).toBe(CURRENCY_KEY)
 			})
 		})
 

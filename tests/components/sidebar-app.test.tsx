@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
+import { ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -33,46 +34,40 @@ vi.mock('@tanstack/react-query', () => ({
 }))
 
 vi.mock('@/components/ui', () => ({
-	Avatar: ({ children }: { children: React.ReactNode }) => <div data-testid='avatar'>{children}</div>,
+	Avatar: ({ children }: { children: ReactNode }) => <div data-testid='avatar'>{children}</div>,
 	AvatarImage: ({ src, alt }: { src: string; alt: string }) => (
 		<img src={src} alt={alt} data-testid='avatar-image' />
 	),
-	DropdownMenu: ({ children }: { children: React.ReactNode }) => (
-		<div data-testid='dropdown-menu'>{children}</div>
-	),
-	DropdownMenuContent: ({ children }: { children: React.ReactNode }) => (
+	DropdownMenu: ({ children }: { children: ReactNode }) => <div data-testid='dropdown-menu'>{children}</div>,
+	DropdownMenuContent: ({ children }: { children: ReactNode }) => (
 		<div data-testid='dropdown-content'>{children}</div>
 	),
-	DropdownMenuItem: ({ children, asChild }: { children: React.ReactNode; asChild?: boolean }) =>
+	DropdownMenuItem: ({ children, asChild }: { children: ReactNode; asChild?: boolean }) =>
 		asChild ? <>{children}</> : <div data-testid='dropdown-item'>{children}</div>,
-	DropdownMenuTrigger: ({ children, asChild }: { children: React.ReactNode; asChild?: boolean }) =>
+	DropdownMenuTrigger: ({ children, asChild }: { children: ReactNode; asChild?: boolean }) =>
 		asChild ? <>{children}</> : <div data-testid='dropdown-trigger'>{children}</div>,
-	Sidebar: ({ children }: { children: React.ReactNode }) => <aside data-testid='sidebar'>{children}</aside>,
-	SidebarContent: ({ children }: { children: React.ReactNode }) => (
+	Sidebar: ({ children }: { children: ReactNode }) => <aside data-testid='sidebar'>{children}</aside>,
+	SidebarContent: ({ children }: { children: ReactNode }) => (
 		<div data-testid='sidebar-content'>{children}</div>
 	),
-	SidebarFooter: ({ children }: { children: React.ReactNode }) => (
+	SidebarFooter: ({ children }: { children: ReactNode }) => (
 		<footer data-testid='sidebar-footer'>{children}</footer>
 	),
-	SidebarGroup: ({ children }: { children: React.ReactNode }) => (
-		<div data-testid='sidebar-group'>{children}</div>
-	),
-	SidebarGroupContent: ({ children }: { children: React.ReactNode }) => (
+	SidebarGroup: ({ children }: { children: ReactNode }) => <div data-testid='sidebar-group'>{children}</div>,
+	SidebarGroupContent: ({ children }: { children: ReactNode }) => (
 		<div data-testid='sidebar-group-content'>{children}</div>
 	),
-	SidebarHeader: ({ children }: { children: React.ReactNode }) => (
+	SidebarHeader: ({ children }: { children: ReactNode }) => (
 		<header data-testid='sidebar-header'>{children}</header>
 	),
-	SidebarMenu: ({ children }: { children: React.ReactNode }) => (
-		<nav data-testid='sidebar-menu'>{children}</nav>
-	),
+	SidebarMenu: ({ children }: { children: ReactNode }) => <nav data-testid='sidebar-menu'>{children}</nav>,
 	SidebarMenuButton: ({
 		children,
 		isActive,
 		asChild,
 		...props
 	}: {
-		children: React.ReactNode
+		children: ReactNode
 		isActive?: boolean
 		asChild?: boolean
 		[key: string]: any
@@ -86,7 +81,7 @@ vi.mock('@/components/ui', () => ({
 				{children}
 			</button>
 		),
-	SidebarMenuItem: ({ children }: { children: React.ReactNode }) => (
+	SidebarMenuItem: ({ children }: { children: ReactNode }) => (
 		<div data-testid='sidebar-menu-item'>{children}</div>
 	),
 	SidebarSeparator: () => <hr data-testid='sidebar-separator' />,
@@ -129,7 +124,7 @@ vi.mock('next/link', () => ({
 		...props
 	}: {
 		href: string
-		children: React.ReactNode
+		children: ReactNode
 		onClick?: () => void
 		[key: string]: any
 	}) => (

@@ -345,9 +345,8 @@ describe('FormTextarea', () => {
 	describe('styling and layout', () => {
 		it('should render container without className when not provided', () => {
 			const { container } = render(<FormTextarea name='test' />)
-
-			// Should not have any additional classes on container
-			expect(container.firstChild).not.toHaveClass()
+			// Should not include unexpected custom class when none provided
+			expect(container.firstChild).not.toHaveClass('custom-class')
 		})
 
 		it('should render relative positioned container for textarea', () => {

@@ -318,7 +318,8 @@ describe('FormSwitch', () => {
 		it('should not render label when not provided', () => {
 			render(<FormSwitch name='testSwitch' />)
 
-			expect(screen.queryByRole('label')).not.toBeInTheDocument()
+			const { container } = render(<FormSwitch name='testSwitch' />)
+			expect(container.querySelector('label')).toBeNull()
 		})
 
 		it('should render required symbol when required is true', () => {
