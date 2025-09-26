@@ -3,6 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { render, screen, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
+import { ReactNode } from 'react'
 import { FormCombobox } from '@/components/shared/form/form-combobox'
 
 // Mock the UI components
@@ -43,7 +44,7 @@ const TestWrapper = ({
 	defaultValues = {},
 	validationRules = {},
 }: {
-	children: React.ReactNode
+	children: ReactNode
 	defaultValues?: Record<string, any>
 	validationRules?: Record<string, any>
 }) => {

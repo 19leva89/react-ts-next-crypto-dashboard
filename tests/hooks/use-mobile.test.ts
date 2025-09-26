@@ -293,29 +293,19 @@ describe('useIsMobile', () => {
 	})
 
 	describe('return value type coercion', () => {
-		it('should return boolean false when isMobile state is undefined', () => {
-			// Create a mock that simulates useState returning undefined initially
-			const mockUseState = vi
-				.fn()
-				.mockReturnValueOnce([undefined, vi.fn()]) // First call returns undefined
-				.mockReturnValue([false, vi.fn()]) // Subsequent calls return false
-
-			// Mock React's useState for this test
+		it('should coerce undefined state to boolean false', async () => {
+			vi.resetModules()
 			vi.doMock('react', async () => {
-				const actual = await vi.importActual('react')
-				return {
-					...actual,
-					useState: mockUseState,
-				}
+				const actual = await vi.importActual<typeof import('react')>('react')
+				return { ...actual, useState: vi.fn().mockReturnValueOnce([undefined, vi.fn()]) }
 			})
 
-			const { result } = renderHook(() => useIsMobile())
+			const { useIsMobile: useIsMobilePatched } = await import('@/hooks/use-mobile')
+			const { result } = renderHook(() => useIsMobilePatched())
 
-			// The hook should coerce undefined to false using !!
 			expect(result.current).toBe(false)
 			expect(typeof result.current).toBe('boolean')
 
-			// Clean up the mock
 			vi.doUnmock('react')
 		})
 

@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import React from 'react'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
@@ -269,7 +269,7 @@ describe('FormImage', () => {
 			const methods = useForm()
 
 			// Use useEffect to set error after initial render to avoid infinite loop
-			React.useEffect(() => {
+			useEffect(() => {
 				methods.setError('avatar', { type: 'required', message: 'This field is required' })
 			}, [methods])
 

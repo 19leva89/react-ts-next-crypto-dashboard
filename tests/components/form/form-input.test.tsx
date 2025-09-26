@@ -12,11 +12,7 @@ vi.mock('react-hook-form', () => ({
 
 // Mock UI components
 vi.mock('@/components/ui', () => ({
-	Input: ({ children, ...props }: any) => (
-		<input data-testid='form-input' {...props}>
-			{children}
-		</input>
-	),
+	Input: ({ ...props }) => <input data-testid='form-input' {...props} />,
 }))
 
 // Mock shared components
@@ -160,8 +156,8 @@ describe('FormInput', () => {
 
 			const input = screen.getByTestId('form-input')
 			expect(input).toBeDisabled()
-			expect(input).toHaveAttribute('maxLength', '10')
-			expect(input).toHaveAttribute('autoComplete', 'off')
+			expect((input as HTMLInputElement).maxLength).toBe(10)
+			expect((input as HTMLInputElement).autocomplete).toBe('off')
 		})
 	})
 

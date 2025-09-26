@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode, useEffect } from 'react'
 import userEvent from '@testing-library/user-event'
 import { FormProvider, useForm } from 'react-hook-form'
 import { render, screen, waitFor } from '@testing-library/react'
@@ -48,7 +48,7 @@ const TestWrapper = ({
 	defaultValues = {},
 	validationRules = {},
 }: {
-	children: React.ReactNode
+	children: ReactNode
 	defaultValues?: Record<string, any>
 	validationRules?: Record<string, any>
 }) => {
@@ -157,7 +157,7 @@ describe('FormCheckbox', () => {
 					mode: 'onChange',
 				})
 
-				React.useEffect(() => {
+				useEffect(() => {
 					methods.register('testField', { required: 'This is required.' })
 					methods.trigger('testField')
 				}, [methods])
@@ -183,7 +183,7 @@ describe('FormCheckbox', () => {
 					mode: 'onChange',
 				})
 
-				React.useEffect(() => {
+				useEffect(() => {
 					methods.register('testField', { required: 'This is required.' })
 					methods.trigger('testField')
 				}, [methods])
@@ -209,7 +209,7 @@ describe('FormCheckbox', () => {
 					mode: 'onChange',
 				})
 
-				React.useEffect(() => {
+				useEffect(() => {
 					methods.register('testField', { required: 'This is required.' })
 					methods.trigger('testField')
 				}, [methods])
