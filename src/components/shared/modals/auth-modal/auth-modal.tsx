@@ -55,11 +55,11 @@ export const AuthModal = ({ open, onClose }: Props) => {
 						</TabsTrigger>
 					</TabsList>
 
-					<TabsContent value='login' data-testid='tabs-content-login' data-active='true'>
+					<TabsContent value='login' data-testid='tabs-content-login'>
 						<LoginForm onClose={handleClose} data-testid='login-form' />
 					</TabsContent>
 
-					<TabsContent value='register' data-testid='tabs-content-register' data-active='false'>
+					<TabsContent value='register' data-testid='tabs-content-register'>
 						<RegisterForm onClose={handleClose} />
 					</TabsContent>
 				</Tabs>
