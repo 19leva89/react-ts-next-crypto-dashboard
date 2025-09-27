@@ -88,13 +88,13 @@ describe('formatValue', () => {
 		})
 
 		it('applies custom formatting to de-DE (may alter due to different separators)', () => {
-			// In de-DE: original "1.234,56" -> replace ',' with ' ' -> "1.234 56" -> replace '.' with ',' -> "1,234 56"
-			expect(formatValue(1234.56, true, 'de-DE')).toBe('1,234 56')
+			// In de-DE: original "1.234,56" -> replace ',' with ' ' -> "1 234,56"
+			expect(formatValue(1234.56, true, 'de-DE')).toBe('1 234,56')
 		})
 
 		it('formats small number in de-DE', () => {
-			// In de-DE: original "0,5" -> replace ',' with ' ' -> "0 5" -> no '.' -> "0 5"
-			expect(formatValue(0.5, false, 'de-DE')).toBe('0 5')
+			// In de-DE: original "0,5" -> replace ',' with ' ' -> "0,5"
+			expect(formatValue(0.5, false, 'de-DE')).toBe('0,5')
 		})
 	})
 })

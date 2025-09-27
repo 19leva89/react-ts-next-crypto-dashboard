@@ -10,17 +10,6 @@ import {
 	sendNotificationPriceEmail,
 } from '@/lib/send-email'
 
-// Mock nodemailer partially
-vi.mock('nodemailer', async (importOriginal: () => Promise<nodemailer.Transporter>) => {
-	const actual = await importOriginal()
-
-	return Object.assign({}, actual, {
-		_defaults: Object.assign({}, actual._defaults, {
-			createTransport: vi.fn(),
-		}),
-	})
-})
-
 // Mock React Email render function
 vi.mock('@react-email/render', () => ({
 	render: vi.fn(),
