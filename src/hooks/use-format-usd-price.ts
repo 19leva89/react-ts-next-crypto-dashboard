@@ -8,7 +8,7 @@ export const useFormatUSDPrice = () => {
 	const { fromUSD, selectedCurrency } = useCurrencyConverter()
 
 	return useCallback(
-		(usdPrice: number, useGrouping?: boolean, locale: string = 'en-US'): string => {
+		(usdPrice: number | null | undefined, useGrouping?: boolean, locale: string = 'en-US'): string => {
 			if (usdPrice === undefined || usdPrice === null) {
 				return ''
 			}
@@ -27,10 +27,15 @@ export const useFormatUSDPrice = () => {
 				notation: 'standard',
 			})
 
-			const customFormatted = formatted
+			let customFormatted = formatted
 				.replace(/\u00A0/g, ' ') // If there is a non-breaking space
+				.replace(/\u202f/g, ' ') // Narrow no-break space for some locales like fr-FR
 				.replace(/,/g, ' ') // Thousands separator
 				.replace(/\./g, ',') // Fraction separator
+
+			if (isLargeNumber && locale.startsWith('fr-')) {
+				customFormatted = customFormatted.replace(/ (\d{2})$/, ',$1')
+			}
 
 			return customFormatted
 		},
