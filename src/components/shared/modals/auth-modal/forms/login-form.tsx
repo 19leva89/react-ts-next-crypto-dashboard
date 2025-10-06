@@ -18,6 +18,7 @@ import {
 	CardHeader,
 	CardTitle,
 	Separator,
+	Spinner,
 } from '@/components/ui'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import { credentialsLoginUser, loginUser } from '@/actions/login'
@@ -138,9 +139,10 @@ export const LoginForm = ({ onClose }: Props) => {
 							variant='default'
 							size='lg'
 							type='submit'
-							loading={isLoading || form.formState.isSubmitting}
+							disabled={isLoading || form.formState.isSubmitting}
 							className='w-full rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 						>
+							{(isLoading || form.formState.isSubmitting) && <Spinner className='size-5 text-white' />}
 							{showTwoFactor ? 'Confirm' : 'Login'}
 						</Button>
 

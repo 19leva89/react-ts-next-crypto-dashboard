@@ -12,7 +12,7 @@ import { cn } from '@/lib'
  * @param props.className - Additional CSS classes for styling customization
  * @param props.orientation - Line orientation ('horizontal' or 'vertical')
  * @param props.decorative - Whether separator is purely decorative for accessibility
- * @param props....props - All other props forwarded to SeparatorPrimitive.Root
+ * @param props.props - All other props forwarded to SeparatorPrimitive.Root
  * @returns JSX element with separator line based on orientation
  */
 function Separator({

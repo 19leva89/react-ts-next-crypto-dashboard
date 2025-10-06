@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { ArrowLeftIcon, LoaderIcon, PlusIcon } from 'lucide-react'
+import { ArrowLeftIcon, PlusIcon, SaveIcon } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
@@ -19,6 +19,7 @@ import {
 	ChartTooltip,
 	Input,
 	Label,
+	Spinner,
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
@@ -242,7 +243,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 			<div className='flex flex-row items-start justify-between gap-3 pr-4 text-sm sm:items-center md:text-base'>
 				<Button
 					variant='ghost'
-					size='icon'
+					size='icon-lg'
 					disabled={isLoading || isSaving || isAdding}
 					onClick={() => {
 						setIsNavigatingBack(true)
@@ -250,7 +251,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					}}
 					className='rounded-xl transition-colors duration-300 ease-in-out'
 				>
-					{isNavigatingBack ? <LoaderIcon className='size-5 animate-spin text-primary' /> : <ArrowLeftIcon />}
+					{isNavigatingBack ? <Spinner className='size-5' /> : <ArrowLeftIcon />}
 				</Button>
 
 				<div className='flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3'>
@@ -424,11 +425,9 @@ export const CoinIdContainer = ({ coin }: Props) => {
 						size='default'
 						onClick={handleAddTransaction}
 						disabled={isAdding || isSaving}
-						loading={isAdding}
 						className='rounded-xl transition-colors duration-300 ease-in-out'
 					>
-						<PlusIcon className='size-4' />
-
+						{isAdding ? <Spinner className='text-black dark:text-white' /> : <PlusIcon className='size-4' />}
 						<span>Transaction</span>
 					</Button>
 
@@ -437,9 +436,9 @@ export const CoinIdContainer = ({ coin }: Props) => {
 						size='default'
 						onClick={() => handleUpdate(editSellPrice)}
 						disabled={isSaving || isAdding}
-						loading={isSaving}
 						className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 					>
+						{isSaving ? <Spinner className='text-white' /> : <SaveIcon className='size-4' />}
 						<span>Save changes</span>
 					</Button>
 				</div>

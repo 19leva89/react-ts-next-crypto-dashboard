@@ -1,6 +1,5 @@
-import { LoaderIcon } from 'lucide-react'
+import { ComponentProps } from 'react'
 import { Slot } from '@radix-ui/react-slot'
-import { Children, ComponentProps, isValidElement } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib'
@@ -22,7 +21,9 @@ const buttonVariants = cva(
 				default: 'h-10 px-4 py-2 has-[>svg]:px-3',
 				sm: 'h-9 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5',
 				lg: 'h-11 rounded-md px-6 has-[>svg]:px-4',
-				icon: 'size-10',
+				icon: 'size-9',
+				'icon-sm': 'size-8',
+				'icon-lg': 'size-10',
 			},
 		},
 		defaultVariants: {
@@ -40,9 +41,6 @@ const buttonVariants = cva(
  * @param props.variant - Button style variant (e.g., default, destructive, outline)
  * @param props.size - Button size variant (e.g., sm, md, lg)
  * @param props.asChild - If true, renders as Slot component for polymorphic behavior
- * @param props.children - Button content, can include icons and text
- * @param props.disabled - Whether the button is disabled
- * @param props.loading - Whether to show loading spinner and disable interaction
  * @returns JSX element with button or Slot component based on asChild prop
  */
 function Button({
@@ -50,52 +48,14 @@ function Button({
 	variant,
 	size,
 	asChild = false,
-	children,
-	disabled,
-	loading,
 	...props
 }: ComponentProps<'button'> &
 	VariantProps<typeof buttonVariants> & {
 		asChild?: boolean
-		loading?: boolean
 	}) {
 	const Comp = asChild ? Slot : 'button'
-	const childArray = Children.toArray(children)
 
-	let content
-
-	if (loading) {
-		if (childArray.length === 2 && isValidElement(childArray[0])) {
-			// If two parts are passed (icon + text), replace the first one with Loader
-			content = (
-				<>
-					<LoaderIcon className='size-5 animate-spin text-white' />
-					{childArray[1]}
-				</>
-			)
-		} else {
-			// If there is no icon, just add Loader to the left
-			content = (
-				<>
-					<LoaderIcon className='size-5 animate-spin text-white' />
-					{children}
-				</>
-			)
-		}
-	} else {
-		content = children
-	}
-
-	return (
-		<Comp
-			data-slot='button'
-			disabled={disabled || loading}
-			className={cn(buttonVariants({ variant, size, className }))}
-			{...props}
-		>
-			{content}
-		</Comp>
-	)
+	return <Comp data-slot='button' className={cn(buttonVariants({ variant, size, className }))} {...props} />
 }
 
 export { Button, buttonVariants }

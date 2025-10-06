@@ -22,6 +22,7 @@ import {
 	FormField,
 	FormItem,
 	FormLabel,
+	Spinner,
 	Switch,
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
@@ -145,10 +146,15 @@ export const ProfileView = () => {
 						variant='default'
 						size='lg'
 						type='submit'
-						disabled={form.formState.isSubmitting || updateUserMutation.isPending}
+						disabled={
+							form.formState.isSubmitting || updateUserMutation.isPending || deleteUserMutation.isPending
+						}
 						className='mt-10 rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 					>
-						Save
+						{(form.formState.isSubmitting || updateUserMutation.isPending) && (
+							<Spinner className='size-5 text-white' />
+						)}
+						{form.formState.isSubmitting || updateUserMutation.isPending ? 'Saving...' : 'Save'}
 					</Button>
 
 					<Button
@@ -156,9 +162,14 @@ export const ProfileView = () => {
 						size='lg'
 						type='button'
 						onClick={() => setShowDeleteDialog(true)}
-						disabled={deleteUserMutation.isPending || updateUserMutation.isPending}
+						disabled={
+							form.formState.isSubmitting || updateUserMutation.isPending || deleteUserMutation.isPending
+						}
 						className='rounded-xl text-base transition-colors duration-300 ease-in-out'
 					>
+						{deleteUserMutation.isPending && (
+							<Spinner className='size-5 text-destructive-foreground dark:text-white' />
+						)}
 						{deleteUserMutation.isPending ? 'Deleting...' : 'Delete account'}
 					</Button>
 				</form>
@@ -185,8 +196,11 @@ export const ProfileView = () => {
 							disabled={deleteUserMutation.isPending || updateUserMutation.isPending}
 							className='rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90'
 						>
+							{(deleteUserMutation.isPending || updateUserMutation.isPending) && (
+								<Spinner className='size-5 text-destructive-foreground dark:text-white' />
+							)}
 							{deleteUserMutation.isPending || updateUserMutation.isPending
-								? 'Deleting...'
+								? 'Deleting account...'
 								: 'Delete account'}
 						</AlertDialogAction>
 					</AlertDialogFooter>

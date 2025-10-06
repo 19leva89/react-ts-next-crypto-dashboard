@@ -7,7 +7,7 @@ import { cn } from '@/lib'
  * Handles focus management, validation styling, disabled states, and responsive typography
  * @param props - Textarea component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to textarea HTML element
+ * @param props.props - All other props forwarded to textarea HTML element
  * @returns JSX element with textarea field and data-slot attribute
  */
 function Textarea({ className, ...props }: ComponentProps<'textarea'>) {

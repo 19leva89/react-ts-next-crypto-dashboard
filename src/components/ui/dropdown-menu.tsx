@@ -10,7 +10,7 @@ import { cn } from '@/lib'
  * Main dropdown menu component wrapper for dropdown functionality
  * Handles dropdown state management and accessibility features
  * @param props - Dropdown menu component props
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.Root
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.Root
  * @returns JSX element with dropdown menu root container
  */
 function DropdownMenu({ ...props }: ComponentProps<typeof DropdownMenuPrimitive.Root>) {
@@ -21,7 +21,7 @@ function DropdownMenu({ ...props }: ComponentProps<typeof DropdownMenuPrimitive.
  * Dropdown menu portal component for rendering content outside DOM hierarchy
  * Handles portal rendering to avoid z-index and overflow issues
  * @param props - Dropdown menu portal component props
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.Portal
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.Portal
  * @returns JSX element with portal container
  */
 function DropdownMenuPortal({ ...props }: ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
@@ -32,7 +32,7 @@ function DropdownMenuPortal({ ...props }: ComponentProps<typeof DropdownMenuPrim
  * Dropdown menu trigger component that opens the dropdown when activated
  * Handles click events to trigger dropdown opening with proper accessibility
  * @param props - Dropdown menu trigger component props
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.Trigger
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.Trigger
  * @returns JSX element with dropdown trigger button
  */
 function DropdownMenuTrigger({ ...props }: ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
@@ -45,7 +45,7 @@ function DropdownMenuTrigger({ ...props }: ComponentProps<typeof DropdownMenuPri
  * @param props - Dropdown menu content component props
  * @param props.className - Additional CSS classes for styling customization
  * @param props.sideOffset - Distance from trigger element in pixels
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.Content
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.Content
  * @returns JSX element with styled dropdown content container
  */
 function DropdownMenuContent({
@@ -72,7 +72,7 @@ function DropdownMenuContent({
  * Dropdown menu group component for organizing related menu items
  * Handles grouped dropdown items with proper semantic structure
  * @param props - Dropdown menu group component props
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.Group
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.Group
  * @returns JSX element with grouped menu items container
  */
 function DropdownMenuGroup({ ...props }: ComponentProps<typeof DropdownMenuPrimitive.Group>) {
@@ -86,7 +86,7 @@ function DropdownMenuGroup({ ...props }: ComponentProps<typeof DropdownMenuPrimi
  * @param props.className - Additional CSS classes for styling customization
  * @param props.inset - Whether to add left indentation for nested appearance
  * @param props.variant - Visual variant style ('default' or 'destructive')
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.Item
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.Item
  * @returns JSX element with selectable menu item
  */
 function DropdownMenuItem({
@@ -119,7 +119,7 @@ function DropdownMenuItem({
  * @param props.className - Additional CSS classes for styling customization
  * @param props.children - Content to render inside checkbox item
  * @param props.checked - Current checked state of checkbox
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.CheckboxItem
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.CheckboxItem
  * @returns JSX element with checkbox menu item and check indicator
  */
 function DropdownMenuCheckboxItem({
@@ -152,7 +152,7 @@ function DropdownMenuCheckboxItem({
  * Dropdown menu radio group component for mutually exclusive options
  * Handles radio button group functionality with single selection enforcement
  * @param props - Dropdown menu radio group component props
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.RadioGroup
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.RadioGroup
  * @returns JSX element with radio group container
  */
 function DropdownMenuRadioGroup({ ...props }: ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>) {
@@ -165,7 +165,7 @@ function DropdownMenuRadioGroup({ ...props }: ComponentProps<typeof DropdownMenu
  * @param props - Dropdown menu radio item component props
  * @param props.className - Additional CSS classes for styling customization
  * @param props.children - Content to render inside radio item
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.RadioItem
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.RadioItem
  * @returns JSX element with radio menu item and selection indicator
  */
 function DropdownMenuRadioItem({
@@ -198,7 +198,7 @@ function DropdownMenuRadioItem({
  * @param props - Dropdown menu label component props
  * @param props.className - Additional CSS classes for styling customization
  * @param props.inset - Whether to add left indentation to match nested items
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.Label
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.Label
  * @returns JSX element with menu section label
  */
 function DropdownMenuLabel({
@@ -223,7 +223,7 @@ function DropdownMenuLabel({
  * Handles horizontal line separation with consistent border styling
  * @param props - Dropdown menu separator component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.Separator
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.Separator
  * @returns JSX element with horizontal separator line
  */
 function DropdownMenuSeparator({
@@ -244,7 +244,7 @@ function DropdownMenuSeparator({
  * Handles keyboard shortcut text with proper spacing and muted styling
  * @param props - Dropdown menu shortcut component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to span element
+ * @param props.props - All other props forwarded to span element
  * @returns JSX element with keyboard shortcut text
  */
 function DropdownMenuShortcut({ className, ...props }: ComponentProps<'span'>) {
@@ -261,7 +261,7 @@ function DropdownMenuShortcut({ className, ...props }: ComponentProps<'span'>) {
  * Dropdown menu sub component for nested submenu functionality
  * Handles nested dropdown menu state and positioning management
  * @param props - Dropdown menu sub component props
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.Sub
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.Sub
  * @returns JSX element with submenu container
  */
 function DropdownMenuSub({ ...props }: ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
@@ -275,7 +275,7 @@ function DropdownMenuSub({ ...props }: ComponentProps<typeof DropdownMenuPrimiti
  * @param props.className - Additional CSS classes for styling customization
  * @param props.inset - Whether to add left indentation for nested appearance
  * @param props.children - Content to render inside sub trigger
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.SubTrigger
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.SubTrigger
  * @returns JSX element with submenu trigger and chevron icon
  */
 function DropdownMenuSubTrigger({
@@ -307,7 +307,7 @@ function DropdownMenuSubTrigger({
  * Handles positioned submenu content with animations and proper z-index layering
  * @param props - Dropdown menu sub content component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to DropdownMenuPrimitive.SubContent
+ * @param props.props - All other props forwarded to DropdownMenuPrimitive.SubContent
  * @returns JSX element with styled submenu content container
  */
 function DropdownMenuSubContent({
