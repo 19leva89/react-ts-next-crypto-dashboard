@@ -152,7 +152,7 @@ export function DataTable<TData, TValue>({
 
 					<Button
 						variant='ghost'
-						size='icon'
+						size='icon-lg'
 						onClick={() => table.getColumn('name')?.setFilterValue('')}
 						className={cn(
 							'absolute top-1/2 right-1 -translate-y-1/2 hover:bg-transparent hover:text-gray-400',

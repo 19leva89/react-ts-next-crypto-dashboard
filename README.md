@@ -56,6 +56,7 @@ terminal powershell -> `npm run all`
 terminal powershell -> `npm run lint` (loading ESLint checker)
 terminal powershell -> `npm run types` (loading TypeScript checker)
 terminal powershell -> `npm run knip` (loading Knip checker)
+terminal powershell -> `npm run test` (loading Vitest checker)
 
 # Database commands:
 terminal powershell -> `npx prisma generate`

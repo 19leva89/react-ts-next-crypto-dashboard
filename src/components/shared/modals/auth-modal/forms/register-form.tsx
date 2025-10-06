@@ -12,6 +12,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
+	Spinner,
 } from '@/components/ui'
 import { registerUser } from '@/actions/register'
 import { FormInput } from '@/components/shared/form'
@@ -77,10 +78,11 @@ export const RegisterForm = ({ onClose }: Props) => {
 							variant='default'
 							size='lg'
 							type='submit'
-							loading={form.formState.isSubmitting}
+							disabled={form.formState.isSubmitting}
 							className='w-full rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 						>
-							Register
+							{form.formState.isSubmitting && <Spinner className='size-5 text-white' />}
+							{form.formState.isSubmitting ? 'Registering' : 'Register'}
 						</Button>
 					</CardFooter>
 				</Card>

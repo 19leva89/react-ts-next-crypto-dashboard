@@ -19,8 +19,8 @@ export const columns: ColumnDef<TTransaction>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					Coin
 					{column.getIsSorted() === 'asc' ? (
@@ -63,8 +63,8 @@ export const columns: ColumnDef<TTransaction>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					Type
 					{column.getIsSorted() === 'asc' ? (
@@ -102,8 +102,8 @@ export const columns: ColumnDef<TTransaction>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					Quantity
 					{column.getIsSorted() === 'asc' ? (
@@ -128,8 +128,8 @@ export const columns: ColumnDef<TTransaction>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					Price
 					{column.getIsSorted() === 'asc' ? (
@@ -154,8 +154,8 @@ export const columns: ColumnDef<TTransaction>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					Total
 					{column.getIsSorted() === 'asc' ? (
@@ -193,8 +193,8 @@ export const columns: ColumnDef<TTransaction>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					Date
 					{column.getIsSorted() === 'asc' ? (
@@ -221,8 +221,8 @@ export const columns: ColumnDef<TTransaction>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					Wallet
 					{column.getIsSorted() === 'asc' ? (

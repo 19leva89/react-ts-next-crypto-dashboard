@@ -1,5 +1,5 @@
 import { toast } from 'sonner'
-import { PlusIcon } from 'lucide-react'
+import { PlusIcon, SaveIcon } from 'lucide-react'
 import { ChangeEvent, useState, useEffect } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -13,6 +13,7 @@ import {
 	DialogTitle,
 	Input,
 	Label,
+	Spinner,
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
 import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
@@ -193,10 +194,9 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 						size='default'
 						onClick={handleAddTransaction}
 						disabled={isAdding || isSaving}
-						loading={isAdding}
 						className='rounded-xl transition-colors duration-300 ease-in-out'
 					>
-						<PlusIcon className='size-4' />
+						{isAdding ? <Spinner className='text-black dark:text-white' /> : <PlusIcon className='size-4' />}
 						<span>Transaction</span>
 					</Button>
 
@@ -205,9 +205,9 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 						size='default'
 						onClick={() => handleUpdate(editSellPrice)}
 						disabled={isSaving || isAdding}
-						loading={isSaving}
 						className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 					>
+						{isSaving ? <Spinner className='text-white' /> : <SaveIcon className='size-4' />}
 						<span>Save changes</span>
 					</Button>
 				</DialogFooter>

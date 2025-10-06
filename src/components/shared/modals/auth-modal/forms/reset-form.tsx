@@ -15,6 +15,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
+	Spinner,
 } from '@/components/ui'
 import { FormInput } from '@/components/shared/form'
 import { resetPassword } from '@/actions/reset-password'
@@ -89,10 +90,11 @@ export const ResetForm = ({ onClose }: Props) => {
 							variant='default'
 							size='lg'
 							type='submit'
-							loading={isLoading || form.formState.isSubmitting}
+							disabled={isLoading || form.formState.isSubmitting}
 							className='w-full rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 						>
-							Send reset email
+							{(isLoading || form.formState.isSubmitting) && <Spinner className='size-5 text-white' />}
+							{isLoading || form.formState.isSubmitting ? 'Sending reset email' : 'Send reset email'}
 						</Button>
 					</CardFooter>
 				</Card>

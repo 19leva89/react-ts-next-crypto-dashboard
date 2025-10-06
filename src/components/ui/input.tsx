@@ -8,7 +8,7 @@ import { cn } from '@/lib'
  * @param props - Input component props
  * @param props.className - Additional CSS classes for styling customization
  * @param props.type - HTML input type attribute for different input modes
- * @param props....props - All other props forwarded to input element
+ * @param props.props - All other props forwarded to input element
  * @returns JSX element with styled input field and accessibility features
  */
 function Input({ className, type, ...props }: ComponentProps<'input'>) {

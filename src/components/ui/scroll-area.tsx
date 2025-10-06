@@ -11,7 +11,7 @@ import { cn } from '@/lib'
  * @param props - Scroll area component props
  * @param props.className - Additional CSS classes for styling customization
  * @param props.children - Content to render inside scrollable viewport
- * @param props....props - All other props forwarded to ScrollAreaPrimitive.Root
+ * @param props.props - All other props forwarded to ScrollAreaPrimitive.Root
  * @returns JSX element with scrollable area containing viewport, scrollbar and corner
  */
 function ScrollArea({ className, children, ...props }: ComponentProps<typeof ScrollAreaPrimitive.Root>) {
@@ -35,7 +35,7 @@ function ScrollArea({ className, children, ...props }: ComponentProps<typeof Scr
  * @param props - Scroll bar component props
  * @param props.className - Additional CSS classes for styling customization
  * @param props.orientation - Scrollbar orientation ('vertical' or 'horizontal')
- * @param props....props - All other props forwarded to ScrollAreaPrimitive.ScrollAreaScrollbar
+ * @param props.props - All other props forwarded to ScrollAreaPrimitive.ScrollAreaScrollbar
  * @returns JSX element with styled scrollbar track and thumb
  */
 function ScrollBar({

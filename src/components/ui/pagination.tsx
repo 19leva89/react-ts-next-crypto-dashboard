@@ -9,7 +9,7 @@ import { Button, buttonVariants } from '@/components/ui'
  * Handles pagination navigation structure with proper ARIA labeling and centered layout
  * @param props - Pagination component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to nav element
+ * @param props.props - All other props forwarded to nav element
  * @returns JSX element with accessible pagination navigation container
  */
 function Pagination({ className, ...props }: ComponentProps<'nav'>) {
@@ -29,7 +29,7 @@ function Pagination({ className, ...props }: ComponentProps<'nav'>) {
  * Handles horizontal layout for pagination links with proper spacing
  * @param props - Pagination content component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to ul element
+ * @param props.props - All other props forwarded to ul element
  * @returns JSX element with pagination items list container
  */
 function PaginationContent({ className, ...props }: ComponentProps<'ul'>) {
@@ -46,7 +46,7 @@ function PaginationContent({ className, ...props }: ComponentProps<'ul'>) {
  * Pagination item wrapper component for individual pagination elements
  * Handles list item structure for pagination links and controls
  * @param props - Pagination item component props
- * @param props....props - All other props forwarded to li element
+ * @param props.props - All other props forwarded to li element
  * @returns JSX element with pagination list item wrapper
  */
 function PaginationItem({ ...props }: ComponentProps<'li'>) {
@@ -65,7 +65,7 @@ type PaginationLinkProps = {
  * @param props.className - Additional CSS classes for styling customization
  * @param props.isActive - Whether this link represents the current active page
  * @param props.size - Button size variant from Button component
- * @param props....props - All other props forwarded to anchor element
+ * @param props.props - All other props forwarded to anchor element
  * @returns JSX element with styled pagination link and current page indication
  */
 function PaginationLink({ className, isActive, size = 'icon', ...props }: PaginationLinkProps) {
@@ -91,7 +91,7 @@ function PaginationLink({ className, isActive, size = 'icon', ...props }: Pagina
  * Handles previous page navigation with chevron icon and responsive text label
  * @param props - Pagination previous component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to PaginationLink
+ * @param props.props - All other props forwarded to PaginationLink
  * @returns JSX element with previous page navigation button
  */
 function PaginationPrevious({ className, ...props }: ComponentProps<typeof PaginationLink>) {
@@ -113,7 +113,7 @@ function PaginationPrevious({ className, ...props }: ComponentProps<typeof Pagin
  * Handles next page navigation with chevron icon and responsive text label
  * @param props - Pagination next component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to PaginationLink
+ * @param props.props - All other props forwarded to PaginationLink
  * @returns JSX element with next page navigation button
  */
 function PaginationNext({ className, ...props }: ComponentProps<typeof PaginationLink>) {
@@ -135,7 +135,7 @@ function PaginationNext({ className, ...props }: ComponentProps<typeof Paginatio
  * Handles visual indicator for skipped pages with accessibility considerations
  * @param props - Pagination ellipsis component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to span element
+ * @param props.props - All other props forwarded to span element
  * @returns JSX element with ellipsis indicator and screen reader text
  */
 function PaginationEllipsis({ className, ...props }: ComponentProps<'span'>) {

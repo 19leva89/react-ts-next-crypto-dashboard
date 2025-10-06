@@ -6,7 +6,6 @@ import {
 	CheckIcon,
 	EllipsisVerticalIcon,
 	EyeIcon,
-	LoaderIcon,
 	LogInIcon,
 	LogOutIcon,
 	PiggyBankIcon,
@@ -34,6 +33,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 	Switch,
+	Spinner,
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
@@ -107,7 +107,7 @@ export const NotificationsView = () => {
 	const pages = (data?.pages ?? []) as unknown as NotificationsInfinitePage[]
 	const notifications = pages.flatMap((page) => page.items)
 
-	const { mutate: markAsRead } = useMutation(
+	const { mutate: markAsRead, isPending: isMarkingAsRead } = useMutation(
 		trpc.notifications.markAsRead.mutationOptions({
 			onSuccess: () => {
 				// Invalidate both the notifications list and unread count
@@ -121,7 +121,7 @@ export const NotificationsView = () => {
 		}),
 	)
 
-	const { mutate: markAllAsRead } = useMutation(
+	const { mutate: markAllAsRead, isPending: isMarkingAllAsRead } = useMutation(
 		trpc.notifications.markAllAsRead.mutationOptions({
 			onSuccess: () => {
 				// Invalidate both the notifications list and unread count
@@ -137,7 +137,7 @@ export const NotificationsView = () => {
 		}),
 	)
 
-	const { mutate: deleteNotification } = useMutation(
+	const { mutate: deleteNotification, isPending: isDeleting } = useMutation(
 		trpc.notifications.deleteNotification.mutationOptions({
 			onSuccess: () => {
 				// Optimistic cache update
@@ -248,7 +248,7 @@ export const NotificationsView = () => {
 
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>
-											<Button variant='ghost' size='icon' className='group mt-0! shrink-0 rounded-xl'>
+											<Button variant='ghost' size='icon-lg' className='group mt-0! shrink-0 rounded-xl'>
 												<div className='relative size-5 transition-transform duration-300 ease-in-out group-hover:rotate-180'>
 													<EllipsisVerticalIcon size={16} className='absolute inset-0 m-auto' />
 												</div>
@@ -265,7 +265,8 @@ export const NotificationsView = () => {
 												>
 													<Button
 														variant='ghost'
-														size='icon'
+														size='icon-lg'
+														disabled={isMarkingAsRead}
 														className='mx-2 flex items-center justify-start gap-3'
 													>
 														<CheckIcon size={16} />
@@ -282,7 +283,7 @@ export const NotificationsView = () => {
 												>
 													<Button
 														variant='ghost'
-														size='icon'
+														size='icon-lg'
 														className='mx-2 flex items-center justify-start gap-3'
 													>
 														<EyeIcon size={16} />
@@ -298,7 +299,8 @@ export const NotificationsView = () => {
 											>
 												<Button
 													variant='ghost'
-													size='icon'
+													size='icon-lg'
+													disabled={isDeleting}
 													className='mx-2 flex items-center justify-start gap-3'
 												>
 													<TrashIcon size={16} />
@@ -314,7 +316,7 @@ export const NotificationsView = () => {
 
 						{isPending && (
 							<div className='flex flex-col items-center justify-center gap-y-6 rounded-xl bg-background p-10 shadow-sm'>
-								<LoaderIcon className='size-6 animate-spin text-primary' />
+								<Spinner className='size-6' />
 							</div>
 						)}
 
@@ -335,11 +337,16 @@ export const NotificationsView = () => {
 
 						<Button
 							variant='ghost'
-							className='group flex items-center gap-2 text-primary hover:bg-transparent hover:underline'
 							onClick={() => markAllAsRead()}
+							disabled={isMarkingAllAsRead}
+							className='group flex items-center gap-2 text-primary hover:bg-transparent hover:underline'
 						>
-							<CheckIcon className='size-4 transition-transform duration-300 ease-in-out group-hover:scale-110' />
-							Mark all as read
+							{isMarkingAllAsRead ? (
+								<Spinner />
+							) : (
+								<CheckIcon className='size-4 transition-transform duration-300 ease-in-out group-hover:scale-110' />
+							)}
+							{isMarkingAllAsRead ? 'Marking all as read' : 'Mark all as read'}
 						</Button>
 					</CardFooter>
 				)}

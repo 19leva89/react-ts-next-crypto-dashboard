@@ -32,8 +32,8 @@ export const getColumns = (
 			return (
 				<Button
 					variant='ghost'
-					className='px-0 has-[>svg]:px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0 has-[>svg]:px-0'
 				>
 					Quantity
 					{column.getIsSorted() === 'asc' ? (
@@ -59,8 +59,8 @@ export const getColumns = (
 			return (
 				<Button
 					variant='ghost'
-					className='px-0 has-[>svg]:px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0 has-[>svg]:px-0'
 				>
 					Price
 					{column.getIsSorted() === 'asc' ? (
@@ -86,8 +86,8 @@ export const getColumns = (
 			return (
 				<Button
 					variant='ghost'
-					className='px-0 has-[>svg]:px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0 has-[>svg]:px-0'
 				>
 					Date
 					{column.getIsSorted() === 'asc' ? (
@@ -137,8 +137,8 @@ export const getColumns = (
 			return (
 				<Button
 					variant='ghost'
-					className='px-0 has-[>svg]:px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0 has-[>svg]:px-0'
 				>
 					Wallet
 					{column.getIsSorted() === 'asc' ? (

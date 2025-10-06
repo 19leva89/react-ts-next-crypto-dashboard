@@ -24,6 +24,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 	Skeleton,
+	Spinner,
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
 import { getWalletDisplayName } from '@/data/wallet'
@@ -181,7 +182,7 @@ export const AddCoin = ({ className }: Props) => {
 						className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 					>
 						<PlusIcon className='mr-2 size-4' />
-						Transaction
+						<span>Transaction</span>
 					</Button>
 				</DialogTrigger>
 
@@ -357,10 +358,10 @@ export const AddCoin = ({ className }: Props) => {
 								size='default'
 								onClick={handleAddCoin}
 								disabled={isLoading || isAdding}
-								loading={isAdding}
 								className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 							>
-								Submit
+								{(isLoading || isAdding) && <Spinner className='size-5 text-white' />}
+								{isLoading || isAdding ? 'Submitting' : 'Submit'}
 							</Button>
 						</DialogFooter>
 					</div>

@@ -23,8 +23,8 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					#
 					{column.getIsSorted() === 'asc' ? (
@@ -50,8 +50,8 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					Name
 					{column.getIsSorted() === 'asc' ? (
@@ -92,8 +92,8 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					Price
 					{column.getIsSorted() === 'asc' ? (
@@ -118,8 +118,8 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					24h
 					{column.getIsSorted() === 'asc' ? (
@@ -164,8 +164,8 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					24h Volume
 					{column.getIsSorted() === 'asc' ? (
@@ -190,8 +190,8 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 			return (
 				<Button
 					variant='ghost'
-					className='px-0'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='px-0'
 				>
 					Market Cap
 					{column.getIsSorted() === 'asc' ? (

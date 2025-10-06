@@ -10,7 +10,7 @@ import { cn } from '@/lib'
  * Provides global tooltip context with configurable delay duration for hover activation
  * @param props - Tooltip provider component props
  * @param props.delayDuration - Delay in milliseconds before tooltip appears (defaults to 0)
- * @param props....props - All other props forwarded to TooltipPrimitive.Provider
+ * @param props.props - All other props forwarded to TooltipPrimitive.Provider
  * @returns JSX element with tooltip provider context and data-slot attribute
  */
 function TooltipProvider({ delayDuration = 0, ...props }: ComponentProps<typeof TooltipPrimitive.Provider>) {
@@ -21,7 +21,7 @@ function TooltipProvider({ delayDuration = 0, ...props }: ComponentProps<typeof 
  * Root tooltip component with integrated provider for standalone usage
  * Provides complete tooltip functionality with automatic provider wrapping
  * @param props - Tooltip component props
- * @param props....props - All other props forwarded to TooltipPrimitive.Root
+ * @param props.props - All other props forwarded to TooltipPrimitive.Root
  * @returns JSX element with tooltip root wrapped in provider and data-slot attribute
  */
 function Tooltip({ ...props }: ComponentProps<typeof TooltipPrimitive.Root>) {
@@ -36,7 +36,7 @@ function Tooltip({ ...props }: ComponentProps<typeof TooltipPrimitive.Root>) {
  * Tooltip trigger component for hover and focus activation
  * Provides trigger element that activates tooltip on hover and keyboard focus
  * @param props - Tooltip trigger component props
- * @param props....props - All other props forwarded to TooltipPrimitive.Trigger
+ * @param props.props - All other props forwarded to TooltipPrimitive.Trigger
  * @returns JSX element with tooltip trigger and data-slot attribute
  */
 function TooltipTrigger({ ...props }: ComponentProps<typeof TooltipPrimitive.Trigger>) {
@@ -50,7 +50,7 @@ function TooltipTrigger({ ...props }: ComponentProps<typeof TooltipPrimitive.Tri
  * @param props.className - Additional CSS classes for styling customization
  * @param props.sideOffset - Distance in pixels from trigger element (defaults to 0)
  * @param props.children - Content to display inside the tooltip
- * @param props....props - All other props forwarded to TooltipPrimitive.Content
+ * @param props.props - All other props forwarded to TooltipPrimitive.Content
  * @returns JSX element with tooltip content portal, animations, and arrow indicator
  */
 function TooltipContent({

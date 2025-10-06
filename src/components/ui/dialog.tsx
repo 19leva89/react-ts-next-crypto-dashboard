@@ -10,7 +10,7 @@ import { cn } from '@/lib'
  * Main dialog component wrapper for modal functionality
  * Handles dialog state management and accessibility features
  * @param props - Dialog component props
- * @param props....props - All other props forwarded to DialogPrimitive.Root
+ * @param props.props - All other props forwarded to DialogPrimitive.Root
  * @returns JSX element with dialog root container
  */
 function Dialog({ ...props }: ComponentProps<typeof DialogPrimitive.Root>) {
@@ -21,7 +21,7 @@ function Dialog({ ...props }: ComponentProps<typeof DialogPrimitive.Root>) {
  * Dialog trigger component that opens the modal when activated
  * Handles click events to trigger dialog opening with proper accessibility
  * @param props - Dialog trigger component props
- * @param props....props - All other props forwarded to DialogPrimitive.Trigger
+ * @param props.props - All other props forwarded to DialogPrimitive.Trigger
  * @returns JSX element with dialog trigger button
  */
 function DialogTrigger({ ...props }: ComponentProps<typeof DialogPrimitive.Trigger>) {
@@ -32,7 +32,7 @@ function DialogTrigger({ ...props }: ComponentProps<typeof DialogPrimitive.Trigg
  * Dialog portal component for rendering dialog content outside DOM hierarchy
  * Handles portal rendering to avoid z-index and overflow issues
  * @param props - Dialog portal component props
- * @param props....props - All other props forwarded to DialogPrimitive.Portal
+ * @param props.props - All other props forwarded to DialogPrimitive.Portal
  * @returns JSX element with portal container
  */
 function DialogPortal({ ...props }: ComponentProps<typeof DialogPrimitive.Portal>) {
@@ -43,7 +43,7 @@ function DialogPortal({ ...props }: ComponentProps<typeof DialogPrimitive.Portal
  * Dialog close component for closing the modal dialog
  * Handles dialog dismissal with proper accessibility and focus management
  * @param props - Dialog close component props
- * @param props....props - All other props forwarded to DialogPrimitive.Close
+ * @param props.props - All other props forwarded to DialogPrimitive.Close
  * @returns JSX element with dialog close button
  */
 function DialogClose({ ...props }: ComponentProps<typeof DialogPrimitive.Close>) {
@@ -55,7 +55,7 @@ function DialogClose({ ...props }: ComponentProps<typeof DialogPrimitive.Close>)
  * Handles backdrop styling with fade animations and click-to-close functionality
  * @param props - Dialog overlay component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to DialogPrimitive.Overlay
+ * @param props.props - All other props forwarded to DialogPrimitive.Overlay
  * @returns JSX element with styled dialog backdrop
  */
 function DialogOverlay({ className, ...props }: ComponentProps<typeof DialogPrimitive.Overlay>) {
@@ -77,7 +77,7 @@ function DialogOverlay({ className, ...props }: ComponentProps<typeof DialogPrim
  * @param props - Dialog content component props
  * @param props.className - Additional CSS classes for styling customization
  * @param props.children - Content to render inside dialog
- * @param props....props - All other props forwarded to DialogPrimitive.Content
+ * @param props.props - All other props forwarded to DialogPrimitive.Content
  * @returns JSX element with centered dialog content and close button
  */
 function DialogContent({ className, children, ...props }: ComponentProps<typeof DialogPrimitive.Content>) {
@@ -109,7 +109,7 @@ function DialogContent({ className, children, ...props }: ComponentProps<typeof 
  * Handles responsive header layout with proper spacing and text alignment
  * @param props - Dialog header component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to div element
+ * @param props.props - All other props forwarded to div element
  * @returns JSX element with dialog header container
  */
 function DialogHeader({ className, ...props }: ComponentProps<'div'>) {
@@ -127,7 +127,7 @@ function DialogHeader({ className, ...props }: ComponentProps<'div'>) {
  * Handles responsive footer layout with proper button alignment and stacking
  * @param props - Dialog footer component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to div element
+ * @param props.props - All other props forwarded to div element
  * @returns JSX element with dialog footer container
  */
 function DialogFooter({ className, ...props }: ComponentProps<'div'>) {
@@ -145,7 +145,7 @@ function DialogFooter({ className, ...props }: ComponentProps<'div'>) {
  * Handles semantic dialog title with proper typography and accessibility attributes
  * @param props - Dialog title component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to DialogPrimitive.Title
+ * @param props.props - All other props forwarded to DialogPrimitive.Title
  * @returns JSX element with dialog title heading
  */
 function DialogTitle({ className, ...props }: ComponentProps<typeof DialogPrimitive.Title>) {
@@ -163,7 +163,7 @@ function DialogTitle({ className, ...props }: ComponentProps<typeof DialogPrimit
  * Handles accessible dialog description with muted text styling
  * @param props - Dialog description component props
  * @param props.className - Additional CSS classes for styling customization
- * @param props....props - All other props forwarded to DialogPrimitive.Description
+ * @param props.props - All other props forwarded to DialogPrimitive.Description
  * @returns JSX element with dialog description text
  */
 function DialogDescription({ className, ...props }: ComponentProps<typeof DialogPrimitive.Description>) {

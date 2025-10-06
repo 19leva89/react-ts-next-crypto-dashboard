@@ -112,7 +112,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant='ghost' size='icon' className='group mt-0! shrink-0 rounded-xl'>
+						<Button variant='ghost' size='icon-lg' className='group mt-0! shrink-0 rounded-xl'>
 							<div className='relative size-5 transition-transform duration-300 ease-in-out group-hover:rotate-180'>
 								<EllipsisVerticalIcon size={16} className='absolute inset-0 m-auto' />
 							</div>
@@ -126,7 +126,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							onSelect={() => setIsDialogOpen(true)}
 							className='cursor-pointer rounded-xl p-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden'
 						>
-							<Button variant='ghost' size='icon' className='mx-2 flex items-center justify-start gap-3'>
+							<Button variant='ghost' size='icon-lg' className='mx-2 flex items-center justify-start gap-3'>
 								<PencilIcon size={16} />
 
 								<span>Edit</span>
@@ -137,7 +137,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							onSelect={() => setIsDeleteDialogOpen(true)}
 							className='cursor-pointer rounded-xl p-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden'
 						>
-							<Button variant='ghost' size='icon' className='mx-2 flex items-center justify-start gap-3'>
+							<Button variant='ghost' size='icon-lg' className='mx-2 flex items-center justify-start gap-3'>
 								<TrashIcon size={16} />
 
 								<span>Delete</span>

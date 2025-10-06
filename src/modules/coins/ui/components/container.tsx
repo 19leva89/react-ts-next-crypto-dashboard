@@ -115,7 +115,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 					<div className='ml-6 flex items-center gap-2'>
 						<Button
 							variant='ghost'
-							size='icon'
+							size='icon-lg'
 							onClick={() => setViewMode('grid')}
 							className={cn(
 								'rounded-xl transition-colors duration-300 ease-in-out',
@@ -127,7 +127,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 
 						<Button
 							variant='ghost'
-							size='icon'
+							size='icon-lg'
 							onClick={() => setViewMode('list')}
 							className={cn(
 								'rounded-xl transition-colors duration-300 ease-in-out',
@@ -158,7 +158,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 
 				<Button
 					variant='ghost'
-					size='icon'
+					size='icon-lg'
 					onClick={() => setSearchQuery('')}
 					className={cn(
 						'absolute top-1/2 right-6 -translate-y-1/2 hover:bg-transparent hover:text-gray-400',

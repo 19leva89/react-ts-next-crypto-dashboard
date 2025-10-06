@@ -1,12 +1,20 @@
 'use client'
 
+import { TriangleAlertIcon } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useCallback, useEffect, useState } from 'react'
-import { LoaderIcon, TriangleAlertIcon } from 'lucide-react'
 
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+	Spinner,
+} from '@/components/ui'
 import { newVerification } from '@/actions/new-verification'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui'
 
 export const NewVerificationForm = () => {
 	const searchParams = useSearchParams()
@@ -59,7 +67,7 @@ export const NewVerificationForm = () => {
 						</CardHeader>
 
 						<CardContent className='flex flex-col items-center gap-5'>
-							{isLoading && <LoaderIcon className='size-6 animate-spin text-primary' />}
+							{isLoading && <Spinner className='size-6' />}
 
 							{!isLoading && error && (
 								<div className='flex items-center gap-x-2 rounded-xl bg-amber-200 p-3 text-sm dark:text-destructive'>

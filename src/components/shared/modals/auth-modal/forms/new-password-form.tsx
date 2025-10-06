@@ -14,6 +14,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
+	Spinner,
 } from '@/components/ui'
 import { FormInput } from '@/components/shared/form'
 import { newPassword } from '@/actions/new-password'
@@ -96,10 +97,11 @@ export const NewPasswordForm = () => {
 							variant='default'
 							size='lg'
 							type='submit'
-							loading={isLoading || form.formState.isSubmitting}
+							disabled={isLoading || form.formState.isSubmitting}
 							className='w-full rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 						>
-							Reset password
+							{(isLoading || form.formState.isSubmitting) && <Spinner className='size-5 text-white' />}
+							{isLoading || form.formState.isSubmitting ? 'Resetting password' : 'Reset password'}
 						</Button>
 					</CardFooter>
 				</Card>

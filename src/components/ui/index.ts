@@ -75,6 +75,7 @@ export {
 	useSidebar,
 } from './sidebar'
 export { Skeleton } from './skeleton'
+export { Spinner } from './spinner'
 export { Switch } from './switch'
 export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell } from './table'
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs'

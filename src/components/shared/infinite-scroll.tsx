@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 
-import { Button } from '@/components/ui'
+import { Button, Spinner } from '@/components/ui'
 import { useIntersectionObserver } from '@/hooks'
 
 interface Props {
@@ -36,6 +36,7 @@ export const InfiniteScroll = ({ isManual, hasNextPage, isFetchingNextPage, fetc
 					onClick={() => fetchNextPage()}
 					className='rounded-xl transition-colors duration-300 ease-in-out'
 				>
+					{isFetchingNextPage && <Spinner className='size-5 text-white' />}
 					{isFetchingNextPage ? 'Loading...' : 'Load more'}
 				</Button>
 			) : (
