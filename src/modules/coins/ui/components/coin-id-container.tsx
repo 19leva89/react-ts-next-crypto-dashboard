@@ -5,9 +5,9 @@ import Image from 'next/image'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { ArrowLeftIcon, PlusIcon, SaveIcon } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
+import { ArrowLeftIcon, BanknoteIcon, PlusIcon, SaveIcon } from 'lucide-react'
 
 import {
 	Button,
@@ -17,7 +17,9 @@ import {
 	ChartConfig,
 	ChartContainer,
 	ChartTooltip,
-	Input,
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
 	Label,
 	Spinner,
 } from '@/components/ui'
@@ -268,16 +270,23 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					Sell price
 				</Label>
 
-				<Input
-					id='sell-price'
-					type='number'
-					min={0}
-					step={0.01}
-					value={editSellPrice}
-					autoFocus={false}
-					onChange={handleSellPriceChange}
-					className='w-[80%] [appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-				/>
+				<InputGroup className='h-10 w-[80%] rounded-xl dark:bg-transparent'>
+					<InputGroupAddon align='inline-start'>
+						<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
+					</InputGroupAddon>
+
+					<InputGroupInput
+						id='sell-price'
+						type='number'
+						placeholder='Enter desired sell price'
+						min={0}
+						step={0.01}
+						value={editSellPrice}
+						autoFocus={false}
+						onChange={handleSellPriceChange}
+						className='[appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+					/>
+				</InputGroup>
 			</div>
 
 			{/* Chart */}

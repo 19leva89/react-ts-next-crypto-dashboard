@@ -3,8 +3,8 @@
 import Image from 'next/image'
 import { toast } from 'sonner'
 import { List } from 'react-window'
-import { PlusIcon } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { ActivityIcon, BanknoteIcon, PlusIcon, SearchIcon, XIcon } from 'lucide-react'
 import { ChangeEvent, CSSProperties, useCallback, useMemo, useState, useRef, useEffect, useId } from 'react'
 
 import {
@@ -16,7 +16,10 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-	Input,
+	InputGroup,
+	InputGroupAddon,
+	InputGroupButton,
+	InputGroupInput,
 	Label,
 	Select,
 	SelectContent,
@@ -25,7 +28,11 @@ import {
 	SelectValue,
 	Skeleton,
 	Spinner,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from '@/components/ui'
+import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
 import { getWalletDisplayName } from '@/data/wallet'
 import { WALLETS, TWallet } from '@/modules/coins/schema'
@@ -237,19 +244,47 @@ export const AddCoin = ({ className }: Props) => {
 								<SelectContent className='rounded-xl'>
 									{/* Input for search filter */}
 									<div className='p-2'>
-										<Input
-											ref={searchInputRef}
-											type='text'
-											placeholder='Search coin...'
-											value={searchQuery}
-											onChange={(e) => {
-												setSearchQuery(e.target.value)
-												setSelectedCoin('')
-											}}
-											onFocus={() => setIsSearchFocused(true)}
-											onBlur={() => setIsSearchFocused(false)}
-											className='rounded-xl'
-										/>
+										<InputGroup className='h-10 overflow-hidden rounded-xl dark:bg-transparent'>
+											<InputGroupAddon align='inline-start'>
+												<SearchIcon className='size-4.5' />
+											</InputGroupAddon>
+
+											<InputGroupInput
+												id='coin-search'
+												type='text'
+												placeholder='Search coin...'
+												ref={searchInputRef}
+												value={searchQuery}
+												onChange={(e) => {
+													setSearchQuery(e.target.value)
+													setSelectedCoin('')
+												}}
+												onFocus={() => setIsSearchFocused(true)}
+												onBlur={() => setIsSearchFocused(false)}
+											/>
+
+											<InputGroupAddon align='inline-end'>
+												<Tooltip>
+													<TooltipTrigger asChild>
+														<InputGroupButton
+															variant='ghost'
+															size='icon-sm'
+															onClick={() => setSearchQuery('')}
+															className={cn(
+																'hover:bg-transparent dark:hover:text-gray-200',
+																searchQuery ? 'opacity-100' : 'pointer-events-none opacity-0',
+															)}
+														>
+															<XIcon />
+														</InputGroupButton>
+													</TooltipTrigger>
+
+													<TooltipContent className='rounded-xl text-white'>
+														<p>Clear</p>
+													</TooltipContent>
+												</Tooltip>
+											</InputGroupAddon>
+										</InputGroup>
 									</div>
 
 									{isLoading ? (
@@ -290,16 +325,22 @@ export const AddCoin = ({ className }: Props) => {
 								Quantity
 							</Label>
 
-							<Input
-								id='quantity'
-								type='number'
-								placeholder='Enter quantity'
-								min={0}
-								step={0.01}
-								value={editQuantity}
-								onChange={handleQuantityChange}
-								className='col-span-3 [appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-							/>
+							<InputGroup className='col-span-3 h-10 rounded-xl dark:bg-transparent'>
+								<InputGroupAddon align='inline-start'>
+									<ActivityIcon className='size-3 sm:size-3.5 lg:size-4' />
+								</InputGroupAddon>
+
+								<InputGroupInput
+									id='quantity'
+									type='number'
+									placeholder='Enter quantity'
+									min={0}
+									step={0.01}
+									value={editQuantity}
+									onChange={handleQuantityChange}
+									className='[appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+								/>
+							</InputGroup>
 						</div>
 
 						<div className='grid grid-cols-4 items-center gap-4'>
@@ -307,16 +348,22 @@ export const AddCoin = ({ className }: Props) => {
 								Price
 							</Label>
 
-							<Input
-								id='price'
-								type='number'
-								placeholder='Enter price'
-								min={0}
-								step={0.01}
-								value={editPrice}
-								onChange={handlePriceChange}
-								className='col-span-3 [appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-							/>
+							<InputGroup className='col-span-3 h-10 rounded-xl dark:bg-transparent'>
+								<InputGroupAddon align='inline-start'>
+									<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
+								</InputGroupAddon>
+
+								<InputGroupInput
+									id='price'
+									type='number'
+									placeholder='Enter price'
+									min={0}
+									step={0.01}
+									value={editPrice}
+									onChange={handlePriceChange}
+									className='[appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+								/>
+							</InputGroup>
 						</div>
 
 						<div className='grid grid-cols-4 items-center gap-4'>

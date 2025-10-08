@@ -1,9 +1,10 @@
 'use client'
 
+import { ActivityIcon } from 'lucide-react'
 import { ChangeEvent, useEffect, useState } from 'react'
 
-import { Input } from '@/components/ui'
 import { useFormatValue } from '@/hooks/use-format-value'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui'
 
 interface Props {
 	value: number
@@ -67,13 +68,20 @@ export const InputFormatQuantity = ({ value, onChange }: Props) => {
 	}, [value, isEditing])
 
 	return (
-		<Input
-			type='text'
-			value={getDisplayValue()}
-			onChange={handleChange}
-			onBlur={handleBlur}
-			onFocus={handleFocus}
-			className='[appearance:textfield] rounded-xl px-2 text-xs sm:text-sm lg:px-3 lg:text-base [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-		/>
+		<InputGroup className='h-10 rounded-xl dark:bg-transparent'>
+			<InputGroupAddon align='inline-start'>
+				<ActivityIcon className='size-3 sm:size-3.5 lg:size-4' />
+			</InputGroupAddon>
+
+			<InputGroupInput
+				type='text'
+				placeholder='Enter quantity'
+				value={getDisplayValue()}
+				onChange={handleChange}
+				onFocus={handleFocus}
+				onBlur={handleBlur}
+				className='[appearance:textfield] px-2 text-xs sm:text-sm lg:px-3 lg:text-base [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+			/>
+		</InputGroup>
 	)
 }

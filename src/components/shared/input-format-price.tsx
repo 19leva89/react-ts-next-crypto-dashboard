@@ -1,10 +1,11 @@
 'use client'
 
+import { BanknoteIcon } from 'lucide-react'
 import { ChangeEvent, useState } from 'react'
 
-import { Input } from '@/components/ui'
 import { useFormatValue } from '@/hooks/use-format-value'
 import { useCurrencyConverter } from '@/hooks/use-currency-converter'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui'
 
 interface Props {
 	value: number // USD value from DB
@@ -72,13 +73,20 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 	}
 
 	return (
-		<Input
-			type='text'
-			value={getDisplayValue()}
-			onChange={handleChange}
-			onBlur={handleBlur}
-			onFocus={handleFocus}
-			className='[appearance:textfield] rounded-xl px-2 text-xs sm:px-3 sm:text-sm lg:text-base [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-		/>
+		<InputGroup className='h-10 rounded-xl dark:bg-transparent'>
+			<InputGroupAddon align='inline-start'>
+				<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
+			</InputGroupAddon>
+
+			<InputGroupInput
+				type='text'
+				placeholder='Enter price'
+				value={getDisplayValue()}
+				onChange={handleChange}
+				onFocus={handleFocus}
+				onBlur={handleBlur}
+				className='[appearance:textfield] px-2 text-xs sm:text-sm lg:px-3 lg:text-base [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+			/>
+		</InputGroup>
 	)
 }

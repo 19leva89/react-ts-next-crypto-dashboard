@@ -1,6 +1,6 @@
 import { toast } from 'sonner'
-import { PlusIcon, SaveIcon } from 'lucide-react'
 import { ChangeEvent, useState, useEffect } from 'react'
+import { BanknoteIcon, PlusIcon, SaveIcon } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import {
@@ -11,7 +11,9 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	Input,
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
 	Label,
 	Spinner,
 } from '@/components/ui'
@@ -156,16 +158,22 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 							Sell price
 						</Label>
 
-						<Input
-							id='sell-price'
-							type='number'
-							placeholder='Enter desired sell price'
-							min={0}
-							step={0.01}
-							value={editSellPrice}
-							onChange={handleSellPriceChange}
-							className='w-[80%] [appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-						/>
+						<InputGroup className='h-10 w-[80%] rounded-xl dark:bg-transparent'>
+							<InputGroupAddon align='inline-start'>
+								<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
+							</InputGroupAddon>
+
+							<InputGroupInput
+								id='sell-price'
+								type='number'
+								placeholder='Enter desired sell price'
+								min={0}
+								step={0.01}
+								value={editSellPrice}
+								onChange={handleSellPriceChange}
+								className='[appearance:textfield] rounded-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+							/>
+						</InputGroup>
 					</div>
 
 					{/* Section for displaying transactions and sales */}
