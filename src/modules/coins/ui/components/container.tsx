@@ -3,9 +3,16 @@
 import useLocalStorageState from 'use-local-storage-state'
 import { LayoutGridIcon, ListIcon, SearchIcon, XIcon } from 'lucide-react'
 
+import {
+	Button,
+	InputGroup,
+	InputGroupAddon,
+	InputGroupButton,
+	InputGroupInput,
+	useSidebar,
+} from '@/components/ui'
 import { cn } from '@/lib'
 import { TUserCoinData } from '@/modules/coins/schema'
-import { Button, Input, useSidebar } from '@/components/ui'
 import { AddCoin } from '@/modules/coins/ui/components/add-coin'
 import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
 import { CoinCard } from '@/modules/coins/ui/components/coin-card'
@@ -146,27 +153,32 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 			</div>
 
 			{/* Search */}
-			<div className='relative w-full px-6'>
-				<SearchIcon size={18} className='absolute top-1/2 left-9 -translate-y-1/2 transform text-gray-400' />
+			<div className='w-full px-6'>
+				<InputGroup className='h-10 overflow-hidden rounded-xl dark:bg-transparent'>
+					<InputGroupAddon align='inline-start'>
+						<SearchIcon className='size-4.5' />
+					</InputGroupAddon>
 
-				<Input
-					placeholder='Filter coins...'
-					value={searchQuery}
-					onChange={(e) => setSearchQuery(e.target.value)}
-					className='rounded-xl px-10'
-				/>
+					<InputGroupInput
+						placeholder='Filter coins...'
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+					/>
 
-				<Button
-					variant='ghost'
-					size='icon-lg'
-					onClick={() => setSearchQuery('')}
-					className={cn(
-						'absolute top-1/2 right-6 -translate-y-1/2 hover:bg-transparent hover:text-gray-400',
-						searchQuery ? 'opacity-100' : 'pointer-events-none opacity-0',
-					)}
-				>
-					<XIcon size={16} />
-				</Button>
+					<InputGroupAddon align='inline-end'>
+						<InputGroupButton
+							variant='ghost'
+							size='icon-sm'
+							onClick={() => setSearchQuery('')}
+							className={cn(
+								'text-white hover:bg-transparent hover:text-gray-400',
+								searchQuery ? 'opacity-100' : 'pointer-events-none opacity-0',
+							)}
+						>
+							<XIcon />
+						</InputGroupButton>
+					</InputGroupAddon>
+				</InputGroup>
 			</div>
 
 			<div

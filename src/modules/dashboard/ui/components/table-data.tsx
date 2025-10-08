@@ -32,7 +32,10 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-	Input,
+	InputGroup,
+	InputGroupAddon,
+	InputGroupButton,
+	InputGroupInput,
 	Select,
 	SelectContent,
 	SelectItem,
@@ -137,30 +140,32 @@ export function DataTable<TData, TValue>({
 		<>
 			<div className='flex flex-wrap items-center justify-end gap-2 py-4 md:flex-nowrap md:justify-between md:gap-8'>
 				{/* Search */}
-				<div className='relative w-full md:w-2/3'>
-					<SearchIcon
-						size={18}
-						className='absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400'
-					/>
+				<div className='w-full md:w-2/3'>
+					<InputGroup className='h-10 overflow-hidden rounded-xl dark:bg-transparent'>
+						<InputGroupAddon align='inline-start'>
+							<SearchIcon className='size-4.5' />
+						</InputGroupAddon>
 
-					<Input
-						placeholder='Filter coins...'
-						value={searchQuery}
-						onChange={(e) => handleFilterChange(e.target.value)}
-						className='rounded-xl px-10'
-					/>
+						<InputGroupInput
+							placeholder='Filter coins...'
+							value={searchQuery}
+							onChange={(e) => handleFilterChange(e.target.value)}
+						/>
 
-					<Button
-						variant='ghost'
-						size='icon-lg'
-						onClick={() => table.getColumn('name')?.setFilterValue('')}
-						className={cn(
-							'absolute top-1/2 right-1 -translate-y-1/2 hover:bg-transparent hover:text-gray-400',
-							searchQuery ? 'opacity-100' : 'pointer-events-none opacity-0',
-						)}
-					>
-						<XIcon size={16} />
-					</Button>
+						<InputGroupAddon align='inline-end'>
+							<InputGroupButton
+								variant='ghost'
+								size='icon-sm'
+								onClick={() => table.getColumn('name')?.setFilterValue('')}
+								className={cn(
+									'text-white hover:bg-transparent hover:text-gray-400',
+									searchQuery ? 'opacity-100' : 'pointer-events-none opacity-0',
+								)}
+							>
+								<XIcon />
+							</InputGroupButton>
+						</InputGroupAddon>
+					</InputGroup>
 				</div>
 
 				<div className='flex w-full items-center justify-between gap-2 md:w-max'>
