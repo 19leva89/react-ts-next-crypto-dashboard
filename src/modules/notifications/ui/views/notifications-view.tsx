@@ -315,7 +315,7 @@ export const NotificationsView = () => {
 						))}
 
 						{isPending && (
-							<div className='flex flex-col items-center justify-center gap-y-6 rounded-xl bg-background p-10 shadow-sm'>
+							<div className='flex items-center justify-center p-10'>
 								<Spinner className='size-6' />
 							</div>
 						)}

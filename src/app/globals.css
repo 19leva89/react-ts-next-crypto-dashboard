@@ -242,20 +242,20 @@
 /* for fix Shadcn Input autofill background color */
 /* @supports selector(:has(*)) */
 @supports selector(:has(*)) {
-	.input-group:has(> input:-webkit-autofill) {
+	[data-slot='input-group']:has(> [data-slot='input-group-control']:-webkit-autofill) {
 		background-color: #e8f0fe;
 	}
 
-	.dark .input-group:has(> input:-webkit-autofill) {
+	.dark [data-slot='input-group']:has(> [data-slot='input-group-control']:-webkit-autofill) {
 		background-color: #1d2940;
 	}
 }
 
 /* Fallback for browsers without :has() */
-.input-group input:-webkit-autofill {
+[data-slot='input-group'] [data-slot='input-group-control']:-webkit-autofill {
 	box-shadow: 0 0 0 1000px #e8f0fe inset !important;
 }
 
-.dark .input-group input:-webkit-autofill {
+.dark [data-slot='input-group'] [data-slot='input-group-control']:-webkit-autofill {
 	box-shadow: 0 0 0 1000px #1d2940 inset !important;
 }

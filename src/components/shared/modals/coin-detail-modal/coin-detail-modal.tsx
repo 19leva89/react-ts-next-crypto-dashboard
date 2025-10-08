@@ -38,9 +38,9 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 	const formatUSDPrice = useFormatUSDPrice()
 
 	const [days, setDays] = useState<number>(1)
+	const [coinData, setCoinData] = useState<CoinData>()
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [coinMarketChartData, setCoinMarketChartData] = useState<TMarketChartData>()
-	const [coinData, setCoinData] = useState<CoinData>()
 
 	useEffect(() => {
 		if (!showDetailModal) return
@@ -50,11 +50,11 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 
 		const fetchData = async () => {
 			try {
-				const marketChart = await getCoinsMarketChart(coinId, days)
 				const coinData = await getCoinData(coinId)
+				const marketChart = await getCoinsMarketChart(coinId, days)
 
-				setCoinMarketChartData(marketChart)
 				setCoinData(coinData)
+				setCoinMarketChartData(marketChart)
 			} catch (error) {
 				console.error('Error fetching coin details:', error)
 			} finally {
@@ -119,9 +119,9 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 			<SheetContent className='overflow-y-auto sm:max-w-xl' aria-describedby={undefined}>
 				<SheetHeader>
 					<SheetTitle>
-						<div className='flex items-center justify-between'>
+						<div className='flex items-center justify-center'>
 							{isLoading ? (
-								<Skeleton className='h-5 w-3/4 rounded-xl sm:h-6' />
+								<Skeleton className='h-5 w-2/4 rounded-xl sm:h-6' />
 							) : (
 								<Link
 									href={`https://coingecko.com/en/coins/${coinData?.id}`}
@@ -316,14 +316,14 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 								</div>
 							</div>
 
-							<div className='mt-8'>
+							<div className='mt-8 text-center'>
 								<span className='text-sm font-medium sm:text-base'>Description</span>
 
 								<p
-									className='prose prose-sm mt-3 text-gray-600 duration-200 dark:text-gray-300 prose-a:text-blue-700 hover:prose-a:underline dark:prose-a:text-blue-700 dark:hover:prose-a:underline'
 									dangerouslySetInnerHTML={{
 										__html: DOMPurify.sanitize(String(coinData?.description.en)),
 									}}
+									className='prose prose-sm mt-3 text-justify indent-4 text-gray-600 duration-200 dark:text-gray-300 prose-a:text-blue-700 hover:prose-a:underline dark:prose-a:text-blue-700 dark:hover:prose-a:underline'
 								/>
 							</div>
 						</>

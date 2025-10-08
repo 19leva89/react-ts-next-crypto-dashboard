@@ -73,7 +73,7 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 	}
 
 	return (
-		<InputGroup className='h-10 rounded-xl dark:bg-transparent'>
+		<InputGroup className='h-10 rounded-xl hover:bg-accent dark:bg-transparent'>
 			<InputGroupAddon align='inline-start'>
 				<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
 			</InputGroupAddon>
