@@ -52,7 +52,7 @@ export const FormInput = ({ className, name, label, type, placeholder, required,
 				</p>
 			)}
 
-			<InputGroup className='input-group h-11 overflow-hidden rounded-xl dark:bg-transparent'>
+			<InputGroup className='h-11 overflow-hidden rounded-xl dark:bg-transparent'>
 				<InputGroupInput
 					type={type === 'password' ? (isPasswordVisible ? 'text' : 'password') : type}
 					placeholder={placeholder}
@@ -61,45 +61,43 @@ export const FormInput = ({ className, name, label, type, placeholder, required,
 				/>
 
 				<InputGroupAddon align='inline-end'>
-					<Tooltip>
-						{type === 'password' && (
-							<>
-								<TooltipTrigger asChild>
-									<InputGroupButton
-										variant='ghost'
-										size='icon-sm'
-										onClick={togglePasswordVisibility}
-										className='opacity-30 transition-opacity duration-300 ease-in-out hover:bg-transparent hover:opacity-100'
-									>
-										{isPasswordVisible ? <EyeOffIcon className='size-5' /> : <EyeIcon className='size-5' />}
-									</InputGroupButton>
-								</TooltipTrigger>
+					{type === 'password' && (
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<InputGroupButton
+									variant='ghost'
+									size='icon-sm'
+									onClick={togglePasswordVisibility}
+									className='opacity-30 transition-opacity duration-300 ease-in-out hover:bg-transparent hover:opacity-100'
+								>
+									{isPasswordVisible ? <EyeOffIcon className='size-5' /> : <EyeIcon className='size-5' />}
+								</InputGroupButton>
+							</TooltipTrigger>
 
-								<TooltipContent className='rounded-xl text-white'>
-									{isPasswordVisible ? 'Hide password' : 'Show password'}
-								</TooltipContent>
-							</>
-						)}
+							<TooltipContent className='rounded-xl text-white'>
+								{isPasswordVisible ? 'Hide password' : 'Show password'}
+							</TooltipContent>
+						</Tooltip>
+					)}
 
-						{value && type !== 'password' && (
-							<>
-								<TooltipTrigger asChild>
-									<InputGroupButton
-										variant='ghost'
-										size='icon-sm'
-										onClick={onClickClear}
-										className='opacity-30 transition-opacity duration-300 ease-in-out hover:bg-transparent hover:opacity-100'
-									>
-										<DeleteIcon className='size-5' />
-									</InputGroupButton>
-								</TooltipTrigger>
+					{value && type !== 'password' && (
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<InputGroupButton
+									variant='ghost'
+									size='icon-sm'
+									onClick={onClickClear}
+									className='opacity-30 transition-opacity duration-300 ease-in-out hover:bg-transparent hover:opacity-100'
+								>
+									<DeleteIcon className='size-5' />
+								</InputGroupButton>
+							</TooltipTrigger>
 
-								<TooltipContent className='rounded-xl text-white'>
-									<p>Clear</p>
-								</TooltipContent>
-							</>
-						)}
-					</Tooltip>
+							<TooltipContent className='rounded-xl text-white'>
+								<p>Clear</p>
+							</TooltipContent>
+						</Tooltip>
+					)}
 				</InputGroupAddon>
 			</InputGroup>
 

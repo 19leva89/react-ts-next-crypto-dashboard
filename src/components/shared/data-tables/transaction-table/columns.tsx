@@ -106,7 +106,7 @@ export const getColumns = (
 					<PopoverTrigger asChild>
 						<Button
 							variant='outline'
-							className='w-full justify-start rounded-xl p-2 px-2 text-left text-xs font-normal has-[>svg]:px-2 sm:text-sm lg:p-4 lg:text-base'
+							className='w-full justify-start rounded-xl bg-transparent p-2 px-2 text-left text-xs font-normal has-[>svg]:px-2 sm:text-sm lg:p-4 lg:text-base'
 						>
 							<CalendarIcon className='mr-0 size-4 sm:mr-1 lg:mr-2' />
 
@@ -159,7 +159,7 @@ export const getColumns = (
 				<SelectTrigger
 					id={`wallet-${row.original.id}`}
 					aria-label={`Current wallet: ${getWalletDisplayName(row.original.wallet as keyof typeof WALLETS)}`}
-					className='w-full rounded-xl text-xs sm:text-sm lg:text-base'
+					className='w-full rounded-xl text-xs hover:bg-accent sm:text-sm lg:text-base'
 				>
 					<SelectValue placeholder='Select wallet' />
 				</SelectTrigger>
