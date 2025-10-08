@@ -1,11 +1,11 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { InputHTMLAttributes, useState } from 'react'
+import { DeleteIcon, EyeIcon, EyeOffIcon } from 'lucide-react'
 
-import { Input } from '@/components/ui'
-import { ClearButton, ErrorText, RequiredSymbol } from '@/components/shared'
+import { ErrorText, RequiredSymbol } from '@/components/shared'
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui'
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
 	name: string
@@ -16,7 +16,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
 	className?: string
 }
 
-export const FormInput = ({ className, name, label, type, placeholder, required, ...props }: Props) => {
+export const FormInput = ({ className, name, label, type, placeholder, required }: Props) => {
 	const {
 		register,
 		formState: { errors },
@@ -44,27 +44,37 @@ export const FormInput = ({ className, name, label, type, placeholder, required,
 				</p>
 			)}
 
-			<div className='relative'>
-				<Input
+			<InputGroup className='h-11 overflow-hidden rounded-xl dark:bg-transparent'>
+				<InputGroupInput
 					type={type === 'password' && !isPasswordVisible ? 'password' : 'text'}
 					placeholder={placeholder}
-					className='h-11 rounded-xl pr-20 text-base'
 					{...register(name)}
-					{...props}
 				/>
 
-				{type === 'password' && (
-					<button
-						type='button'
-						onClick={togglePasswordVisibility}
-						className='absolute top-1/2 right-4 -translate-y-1/2 transform cursor-pointer opacity-30 transition-opacity duration-300 ease-in-out hover:opacity-100'
-					>
-						{isPasswordVisible ? <EyeOffIcon className='size-5' /> : <EyeIcon className='size-5' />}
-					</button>
-				)}
+				<InputGroupAddon align='inline-end'>
+					{type === 'password' && (
+						<InputGroupButton
+							variant='ghost'
+							size='icon-sm'
+							onClick={togglePasswordVisibility}
+							className='opacity-30 transition-opacity duration-300 ease-in-out hover:bg-transparent hover:opacity-100'
+						>
+							{isPasswordVisible ? <EyeOffIcon className='size-5' /> : <EyeIcon className='size-5' />}
+						</InputGroupButton>
+					)}
 
-				{value && type !== 'password' && <ClearButton onClick={onClickClear} />}
-			</div>
+					{value && type !== 'password' && (
+						<InputGroupButton
+							variant='ghost'
+							size='icon-sm'
+							onClick={onClickClear}
+							className='opacity-30 transition-opacity duration-300 ease-in-out hover:bg-transparent hover:opacity-100'
+						>
+							<DeleteIcon className='size-5' />
+						</InputGroupButton>
+					)}
+				</InputGroupAddon>
+			</InputGroup>
 
 			{errorText && <ErrorText text={errorText} className='mt-2 ml-4' />}
 		</div>

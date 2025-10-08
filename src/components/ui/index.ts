@@ -35,6 +35,14 @@ export {
 	DropdownMenuTrigger,
 } from './dropdown-menu'
 export { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from './form'
+export {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupButton,
+	InputGroupText,
+	InputGroupInput,
+	InputGroupTextarea,
+} from './input-group'
 export { Input } from './input'
 export { Label } from './label'
 export {
