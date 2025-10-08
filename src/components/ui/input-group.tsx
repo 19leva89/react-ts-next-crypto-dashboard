@@ -18,8 +18,8 @@ import { Button, Input, Textarea } from '@/components/ui'
 function InputGroup({ className, ...props }: ComponentProps<'div'>) {
 	return (
 		<div
-			data-slot='input-group'
 			role='group'
+			data-slot='input-group'
 			className={cn(
 				'group/input-group relative flex w-full items-center rounded-md border border-input shadow-xs transition-[color,box-shadow] outline-none dark:bg-input/30',
 				'h-9 has-[>textarea]:h-auto',
@@ -86,7 +86,6 @@ function InputGroupAddon({
 }: ComponentProps<'div'> & VariantProps<typeof inputGroupAddonVariants>) {
 	return (
 		<div
-			role='group'
 			data-slot='input-group-addon'
 			data-align={align}
 			className={cn(inputGroupAddonVariants({ align }), className)}
@@ -94,7 +93,12 @@ function InputGroupAddon({
 				if ((e.target as HTMLElement).closest('button')) {
 					return
 				}
-				e.currentTarget.parentElement?.querySelector('input')?.focus()
+
+				const control = e.currentTarget.parentElement?.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+					'input, textarea',
+				)
+
+				control?.focus()
 			}}
 			{...props}
 		/>

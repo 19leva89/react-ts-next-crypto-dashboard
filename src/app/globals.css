@@ -225,20 +225,6 @@
 	body {
 		@apply bg-background text-foreground;
 	}
-	/* for fix Shadcn Input autofill background color */
-	input:-webkit-autofill,
-	input:-webkit-autofill:hover,
-	input:-webkit-autofill:focus,
-	input:-webkit-autofill:active,
-	textarea:-webkit-autofill,
-	textarea:-webkit-autofill:hover,
-	textarea:-webkit-autofill:focus,
-	textarea:-webkit-autofill:active {
-		-webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
-		box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
-		-webkit-text-fill-color: hsl(var(--foreground)) !important;
-		border-radius: inherit !important;
-	}
 }
 
 #nprogress .bar {
@@ -251,4 +237,25 @@
 
 #nprogress .spinner-icon {
 	@apply border-t-primary! border-l-primary!;
+}
+
+/* for fix Shadcn Input autofill background color */
+/* @supports selector(:has(*)) */
+@supports selector(:has(*)) {
+	.input-group:has(> input:-webkit-autofill) {
+		background-color: #e8f0fe;
+	}
+
+	.dark .input-group:has(> input:-webkit-autofill) {
+		background-color: #1d2940;
+	}
+}
+
+/* Fallback for browsers without :has() */
+.input-group input:-webkit-autofill {
+	box-shadow: 0 0 0 1000px #e8f0fe inset !important;
+}
+
+.dark .input-group input:-webkit-autofill {
+	box-shadow: 0 0 0 1000px #1d2940 inset !important;
 }

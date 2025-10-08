@@ -47,6 +47,9 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from '@/components/ui'
 import { cn } from '@/lib'
 
@@ -153,17 +156,25 @@ export function DataTable<TData, TValue>({
 						/>
 
 						<InputGroupAddon align='inline-end'>
-							<InputGroupButton
-								variant='ghost'
-								size='icon-sm'
-								onClick={() => table.getColumn('name')?.setFilterValue('')}
-								className={cn(
-									'text-white hover:bg-transparent hover:text-gray-400',
-									searchQuery ? 'opacity-100' : 'pointer-events-none opacity-0',
-								)}
-							>
-								<XIcon />
-							</InputGroupButton>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<InputGroupButton
+										variant='ghost'
+										size='icon-sm'
+										onClick={() => table.getColumn('name')?.setFilterValue('')}
+										className={cn(
+											'hover:bg-transparent dark:hover:text-gray-200',
+											searchQuery ? 'opacity-100' : 'pointer-events-none opacity-0',
+										)}
+									>
+										<XIcon />
+									</InputGroupButton>
+								</TooltipTrigger>
+
+								<TooltipContent className='rounded-xl text-white'>
+									<p>Clear</p>
+								</TooltipContent>
+							</Tooltip>
 						</InputGroupAddon>
 					</InputGroup>
 				</div>
