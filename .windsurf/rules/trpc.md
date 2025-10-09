@@ -124,7 +124,7 @@ import { PropsWithChildren, useState } from 'react'
 import type { QueryClient } from '@tanstack/react-query'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { createTRPCContext } from '@trpc/tanstack-react-query'
-import { createTRPCClient, httpBatchLink, loggerLink, TRPCClient } from '@trpc/client'
+import { createTRPCClient, httpBatchLink, TRPCClient } from '@trpc/client'
 
 import { absoluteUrl } from '@/lib/utils'
 import type { AppRouter } from '@/trpc/routers/_app'
