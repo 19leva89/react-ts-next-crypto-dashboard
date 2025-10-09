@@ -270,7 +270,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					Sell price
 				</Label>
 
-				<InputGroup className='h-10 w-[80%] rounded-xl dark:bg-transparent'>
+				<InputGroup className='h-10 w-[80%] rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 					<InputGroupAddon align='inline-start'>
 						<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
 					</InputGroupAddon>
@@ -298,10 +298,8 @@ export const CoinIdContainer = ({ coin }: Props) => {
 							alt={coin.name || 'Coin image'}
 							width={24}
 							height={24}
+							onError={(e) => (e.currentTarget.src = '/svg/coin-not-found.svg')}
 							className='rounded-full'
-							onError={(e) => {
-								e.currentTarget.src = '/svg/coin-not-found.svg'
-							}}
 						/>
 
 						<Link

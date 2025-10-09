@@ -27,7 +27,13 @@ export const SortSelect = ({ value, onChange, className }: Props) => {
 
 	return (
 		<Select value={value} onValueChange={onChange}>
-			<SelectTrigger id={sortSelectId} className={cn('w-45 rounded-xl', className)}>
+			<SelectTrigger
+				id={sortSelectId}
+				className={cn(
+					'w-45 rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent',
+					className,
+				)}
+			>
 				<SelectValue placeholder='Sort' />
 			</SelectTrigger>
 

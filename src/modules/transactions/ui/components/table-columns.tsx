@@ -41,9 +41,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 						alt={coin.name}
 						width={24}
 						height={24}
-						onError={(e) => {
-							e.currentTarget.src = '/svg/coin-not-found.svg'
-						}}
+						onError={(e) => (e.currentTarget.src = '/svg/coin-not-found.svg')}
 						className='size-5 rounded-full sm:size-6'
 					/>
 

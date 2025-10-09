@@ -56,6 +56,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 
 		if (coin.desired_sell_price) {
 			const convertedPrice = fromUSD(coin.desired_sell_price)
+
 			setEditSellPrice(String(convertedPrice))
 		} else {
 			setEditSellPrice('')
@@ -158,7 +159,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 							Sell price
 						</Label>
 
-						<InputGroup className='h-10 w-[80%] rounded-xl dark:bg-transparent'>
+						<InputGroup className='h-10 w-[80%] rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 							<InputGroupAddon align='inline-start'>
 								<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
 							</InputGroupAddon>

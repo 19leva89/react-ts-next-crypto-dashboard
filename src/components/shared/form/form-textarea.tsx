@@ -31,14 +31,14 @@ export const FormTextarea = ({ className, name, label, required, ...props }: Pro
 	return (
 		<Field className={className}>
 			{label && (
-				<FieldLabel>
+				<FieldLabel htmlFor={name}>
 					{label} {required && <RequiredSymbol />}
 				</FieldLabel>
 			)}
 
 			<FieldContent>
 				<div className='relative'>
-					<Textarea className='h-11 text-base' {...register(name)} {...props} />
+					<Textarea id={name} className='h-11 text-base' {...register(name)} {...props} />
 
 					{value && <ClearButton onClick={onClickClear} />}
 				</div>

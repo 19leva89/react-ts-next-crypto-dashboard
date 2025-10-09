@@ -104,7 +104,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 			<div className='flex items-center justify-between gap-2 py-4 md:gap-8'>
 				{/* Search */}
 				<div className='w-full'>
-					<InputGroup className='h-10 overflow-hidden rounded-xl dark:bg-transparent'>
+					<InputGroup className='h-10 overflow-hidden rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 						<InputGroupAddon align='inline-start'>
 							<SearchIcon className='size-4.5' />
 						</InputGroupAddon>
@@ -257,7 +257,10 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 								table.setPageSize(Number(value))
 							}}
 						>
-							<SelectTrigger id={selectId} className='h-8 w-fit rounded-xl'>
+							<SelectTrigger
+								id={selectId}
+								className='h-8 w-fit rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent'
+							>
 								<SelectValue placeholder={table.getState().pagination.pageSize} />
 							</SelectTrigger>
 

@@ -72,10 +72,8 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 						alt={coin.name || 'Coin image'}
 						width={32}
 						height={32}
+						onError={(e) => (e.currentTarget.src = '/svg/coin-not-found.svg')}
 						className='size-6 rounded-full xl:size-8'
-						onError={(e) => {
-							e.currentTarget.src = '/svg/coin-not-found.svg'
-						}}
 					/>
 
 					<span className='max-w-[6rem] truncate'>{coin.name}</span>

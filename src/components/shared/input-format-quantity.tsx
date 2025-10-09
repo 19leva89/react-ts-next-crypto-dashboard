@@ -68,7 +68,7 @@ export const InputFormatQuantity = ({ value, onChange }: Props) => {
 	}, [value, isEditing])
 
 	return (
-		<InputGroup className='h-10 rounded-xl hover:bg-accent dark:bg-transparent'>
+		<InputGroup className='h-10 rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 			<InputGroupAddon align='inline-start'>
 				<ActivityIcon className='size-3 sm:size-3.5 lg:size-4' />
 			</InputGroupAddon>

@@ -42,7 +42,7 @@ export const FormCheckbox = ({ name, label, required = false, disabled = false, 
 						/>
 
 						{label && (
-							<Label>
+							<Label htmlFor={name}>
 								{label} {required && <RequiredSymbol />}
 							</Label>
 						)}

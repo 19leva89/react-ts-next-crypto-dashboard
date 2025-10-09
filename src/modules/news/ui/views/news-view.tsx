@@ -44,16 +44,18 @@ export const NewsView = () => {
 						href={news.url}
 						target='_blank'
 						rel='noopener noreferrer'
-						className='mx-auto flex w-full max-w-[450px] flex-col justify-between gap-2 rounded-xl border bg-white p-2 text-sm sm:w-r1/2 md:w-r1/3 xl:w-r1/4 dark:border-gray-700 dark:bg-slate-800'
+						className='mx-auto flex w-full max-w-[450px] flex-col justify-between gap-2 rounded-xl border bg-white p-2 text-sm transition-all duration-300 ease-in-out hover:scale-[1.02] hover:border-gray-300 hover:shadow-lg sm:w-r1/2 md:w-r1/3 xl:w-r1/4 dark:border-gray-700 dark:bg-slate-800 dark:hover:border-gray-600 dark:hover:shadow-xl'
 					>
 						<div className='flex flex-col gap-2'>
 							<div className='flex items-center gap-2 '>
-								<div className='rounded-full border border-gray-200 p-2'>
+								<div className='flex size-10 items-center justify-center overflow-hidden rounded-full border border-gray-200 p-2'>
 									<Image
 										alt={`${news.source.name} logo`}
 										src={newsSourceLogos[news.source.name] ?? '/svg/coin-not-found.svg'}
 										width={24}
 										height={24}
+										onError={(e) => (e.currentTarget.src = '/svg/coin-not-found.svg')}
+										className='object-cover'
 									/>
 								</div>
 

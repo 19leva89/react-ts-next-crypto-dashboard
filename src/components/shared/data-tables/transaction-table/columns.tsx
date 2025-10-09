@@ -159,7 +159,7 @@ export const getColumns = (
 				<SelectTrigger
 					id={`wallet-${row.original.id}`}
 					aria-label={`Current wallet: ${getWalletDisplayName(row.original.wallet as keyof typeof WALLETS)}`}
-					className='w-full rounded-xl text-xs hover:bg-accent sm:text-sm lg:text-base'
+					className='w-full rounded-xl text-xs transition-colors duration-300 ease-in-out hover:bg-accent sm:text-sm lg:text-base'
 				>
 					<SelectValue placeholder='Select wallet' />
 				</SelectTrigger>

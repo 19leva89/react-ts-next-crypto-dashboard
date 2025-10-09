@@ -157,9 +157,7 @@ export const AddCoin = ({ className }: Props) => {
 							alt={coin.name || 'Coin image'}
 							width={20}
 							height={20}
-							onError={(e) => {
-								e.currentTarget.src = '/svg/coin-not-found.svg'
-							}}
+							onError={(e) => (e.currentTarget.src = '/svg/coin-not-found.svg')}
 						/>
 
 						<span className='w-60 truncate'>
@@ -218,7 +216,7 @@ export const AddCoin = ({ className }: Props) => {
 								<SelectTrigger
 									id={coinSelectId}
 									aria-label='Select coin'
-									className='col-span-3 w-full rounded-xl'
+									className='col-span-3 w-full rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent'
 								>
 									{selectedCoinData ? (
 										<div className='flex items-center gap-2 truncate'>
@@ -227,9 +225,7 @@ export const AddCoin = ({ className }: Props) => {
 												alt={selectedCoinData.name}
 												width={20}
 												height={20}
-												onError={(e) => {
-													e.currentTarget.src = '/svg/coin-not-found.svg'
-												}}
+												onError={(e) => (e.currentTarget.src = '/svg/coin-not-found.svg')}
 											/>
 
 											<span className='truncate'>
@@ -244,7 +240,7 @@ export const AddCoin = ({ className }: Props) => {
 								<SelectContent className='rounded-xl'>
 									{/* Input for search filter */}
 									<div className='p-2'>
-										<InputGroup className='h-10 overflow-hidden rounded-xl dark:bg-transparent'>
+										<InputGroup className='h-10 overflow-hidden rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 											<InputGroupAddon align='inline-start'>
 												<SearchIcon className='size-4.5' />
 											</InputGroupAddon>
@@ -325,7 +321,7 @@ export const AddCoin = ({ className }: Props) => {
 								Quantity
 							</Label>
 
-							<InputGroup className='col-span-3 h-10 rounded-xl dark:bg-transparent'>
+							<InputGroup className='col-span-3 h-10 rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 								<InputGroupAddon align='inline-start'>
 									<ActivityIcon className='size-3 sm:size-3.5 lg:size-4' />
 								</InputGroupAddon>
@@ -348,7 +344,7 @@ export const AddCoin = ({ className }: Props) => {
 								Price
 							</Label>
 
-							<InputGroup className='col-span-3 h-10 rounded-xl dark:bg-transparent'>
+							<InputGroup className='col-span-3 h-10 rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 								<InputGroupAddon align='inline-start'>
 									<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
 								</InputGroupAddon>
@@ -381,7 +377,7 @@ export const AddCoin = ({ className }: Props) => {
 									<SelectTrigger
 										id={walletSelectId}
 										aria-label={`Current wallet: ${getWalletDisplayName(selectedWallet as keyof typeof WALLETS)}`}
-										className='w-full rounded-xl'
+										className='w-full rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent'
 									>
 										<SelectValue placeholder='Select wallet' />
 									</SelectTrigger>

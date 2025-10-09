@@ -157,7 +157,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 
 			{/* Search */}
 			<div className='w-full px-6'>
-				<InputGroup className='h-10 overflow-hidden rounded-xl dark:bg-transparent'>
+				<InputGroup className='h-10 overflow-hidden rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 					<InputGroupAddon align='inline-start'>
 						<SearchIcon className='size-4.5' />
 					</InputGroupAddon>
