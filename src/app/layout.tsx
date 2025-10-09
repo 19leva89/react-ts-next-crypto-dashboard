@@ -1,5 +1,6 @@
 import { Nunito } from 'next/font/google'
 import { PropsWithChildren } from 'react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import { Toaster } from '@/components/ui'
 import { constructMetadata } from '@/lib'
@@ -37,8 +38,10 @@ async function RootLayout({ children }: PropsWithChildren) {
 						<AppLayout>{children}</AppLayout>
 					</ThemeProvider>
 				</AppProvider>
-
 				<Toaster position='bottom-right' expand={false} richColors />
+
+				{/* Automatically tracks web vitals and other performance metrics for Vercel */}
+				<SpeedInsights />
 			</body>
 		</html>
 	)

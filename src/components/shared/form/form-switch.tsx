@@ -3,8 +3,8 @@
 import { useFormContext } from 'react-hook-form'
 
 import { cn } from '@/lib'
-import { Switch } from '@/components/ui'
-import { ErrorText, RequiredSymbol } from '@/components/shared'
+import { RequiredSymbol } from '@/components/shared'
+import { Field, FieldContent, FieldError, Switch } from '@/components/ui'
 
 interface Props {
 	name: string
@@ -40,35 +40,37 @@ export const FormSwitch = ({
 	}
 
 	return (
-		<div className={cn('space-y-2', className)}>
-			<div className='flex items-center gap-5 rounded-md border border-input p-3 shadow-xs'>
-				<Switch
-					id={name}
-					checked={value || false}
-					onCheckedChange={handleChange}
-					disabled={disabled}
-					className={cn(errorText && 'border-red-500')}
-					{...props}
-				/>
+		<Field className={cn('space-y-2', className)}>
+			<FieldContent>
+				<div className='flex items-center gap-5 rounded-md border border-input p-3 shadow-xs'>
+					<Switch
+						id={name}
+						checked={value || false}
+						onCheckedChange={handleChange}
+						disabled={disabled}
+						className={cn(errorText && 'border-red-500')}
+						{...props}
+					/>
 
-				<div className='flex flex-col gap-1'>
-					{label && (
-						<label
-							htmlFor={name}
-							className={cn(
-								'cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
-								disabled && 'cursor-not-allowed opacity-70',
-							)}
-						>
-							{label} {required && <RequiredSymbol />}
-						</label>
-					)}
+					<div className='flex flex-col gap-1'>
+						{label && (
+							<label
+								htmlFor={name}
+								className={cn(
+									'cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+									disabled && 'cursor-not-allowed opacity-70',
+								)}
+							>
+								{label} {required && <RequiredSymbol />}
+							</label>
+						)}
 
-					{description && <p className='text-sm text-muted-foreground'>{description}</p>}
+						{description && <p className='text-sm text-muted-foreground'>{description}</p>}
+					</div>
 				</div>
-			</div>
+			</FieldContent>
 
-			{errorText && <ErrorText text={errorText} className='ml-4' />}
-		</div>
+			{errorText && <FieldError>{errorText}</FieldError>}
+		</Field>
 	)
 }

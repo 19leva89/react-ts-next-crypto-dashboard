@@ -6,8 +6,8 @@ import { XIcon, ImageIcon, UploadIcon } from 'lucide-react'
 import { DragEvent, InputHTMLAttributes, useState, useCallback, ChangeEvent } from 'react'
 
 import { cn } from '@/lib'
-import { Input } from '@/components/ui'
-import { ErrorText, RequiredSymbol } from '@/components/shared'
+import { RequiredSymbol } from '@/components/shared'
+import { Field, FieldContent, FieldError, FieldLabel, Input } from '@/components/ui'
 
 interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange'> {
 	name: string
@@ -137,102 +137,106 @@ export const FormImage = ({
 	}
 
 	return (
-		<div className={className}>
+		<Field className={className}>
 			{label && (
-				<p className='mb-2 font-medium'>
+				<FieldLabel>
 					{label} {required && <RequiredSymbol />}
-				</p>
+				</FieldLabel>
 			)}
 
-			<div className='space-y-3'>
-				{/* Drag & Drop zone */}
-				<div
-					role='button'
-					tabIndex={0}
-					aria-label={disabled ? 'Image upload disabled' : 'Upload image (click or drag and drop)'}
-					onDrop={handleDrop}
-					onDragOver={handleDragOver}
-					onDragLeave={handleDragLeave}
-					onKeyDown={(e) => {
-						if (disabled) return
+			<FieldContent>
+				<div className='space-y-3'>
+					{/* Drag & Drop zone */}
+					<div
+						role='button'
+						tabIndex={0}
+						aria-label={disabled ? 'Image upload disabled' : 'Upload image (click or drag and drop)'}
+						onDrop={handleDrop}
+						onDragOver={handleDragOver}
+						onDragLeave={handleDragLeave}
+						onKeyDown={(e) => {
+							if (disabled) return
 
-						if (e.key === 'Enter' || e.key === ' ') {
-							e.preventDefault()
-							document.getElementById(`file-input-${name}`)?.click()
-						}
-					}}
-					onClick={() => {
-						if (!disabled) {
-							document.getElementById(`file-input-${name}`)?.click()
-						}
-					}}
-					className={cn(
-						'relative rounded-xl border-2 border-dashed p-6 text-center transition-colors duration-300 ease-in-out',
-						isDragOver ? 'border-primary bg-primary/5' : 'border-gray-300',
-						disabled
-							? 'cursor-not-allowed opacity-50'
-							: 'cursor-pointer hover:border-primary hover:bg-gray-50',
-					)}
-				>
-					<Input
-						id={`file-input-${name}`}
-						type='file'
-						accept={accept}
-						disabled={disabled}
-						className='hidden'
-						{...register(name, {
-							onChange: onInputChange,
-						})}
-						{...props}
-					/>
+							if (e.key === 'Enter' || e.key === ' ') {
+								e.preventDefault()
+								document.getElementById(`file-input-${name}`)?.click()
+							}
+						}}
+						onClick={() => {
+							if (!disabled) {
+								document.getElementById(`file-input-${name}`)?.click()
+							}
+						}}
+						className={cn(
+							'relative rounded-xl border-2 border-dashed p-6 text-center transition-colors duration-300 ease-in-out',
+							isDragOver ? 'border-primary bg-primary/5' : 'border-gray-300',
+							disabled
+								? 'cursor-not-allowed opacity-50'
+								: 'cursor-pointer hover:border-primary hover:bg-gray-50',
+						)}
+					>
+						<Input
+							id={`file-input-${name}`}
+							type='file'
+							accept={accept}
+							disabled={disabled}
+							className='hidden'
+							{...register(name, {
+								onChange: onInputChange,
+							})}
+							{...props}
+						/>
 
-					{preview ? (
-						<div className='relative'>
-							<Image
-								src={preview}
-								alt='Preview'
-								width={128}
-								height={128}
-								className='mx-auto max-h-32 max-w-full rounded object-cover'
-								unoptimized
-							/>
+						{preview ? (
+							<div className='relative'>
+								<Image
+									src={preview}
+									alt='Preview'
+									width={128}
+									height={128}
+									className='mx-auto max-h-32 max-w-full rounded object-cover'
+									unoptimized
+								/>
 
-							<button
-								type='button'
-								onClick={(e) => {
-									e.stopPropagation()
-									onClickClear()
-								}}
-								disabled={disabled}
-								className='absolute top-2 right-2 rounded-full bg-red-500 p-1 text-white transition-colors hover:bg-red-600'
-							>
-								<XIcon className='size-4' />
-							</button>
-						</div>
-					) : (
-						<div className='space-y-2'>
-							<div className='mx-auto size-12 text-gray-400'>
-								<ImageIcon className='size-full' />
+								<button
+									type='button'
+									onClick={(e) => {
+										e.stopPropagation()
+										onClickClear()
+									}}
+									disabled={disabled}
+									className='absolute top-2 right-2 rounded-full bg-red-500 p-1 text-white transition-colors hover:bg-red-600'
+								>
+									<XIcon className='size-4' />
+								</button>
 							</div>
+						) : (
+							<div className='space-y-2'>
+								<div className='mx-auto size-12 text-gray-400'>
+									<ImageIcon className='size-full' />
+								</div>
 
-							<div className='space-y-1'>
-								<p className='text-sm font-medium'>{placeholder}</p>
+								<div className='space-y-1'>
+									<p className='text-sm font-medium'>{placeholder}</p>
 
-								<p className='text-xs text-gray-500'>
-									{'Supported formats: JPG, PNG, GIF (max. ' + (maxSize / (1024 * 1024)).toFixed(0) + ' MB)'}
-								</p>
+									<p className='text-xs text-gray-500'>
+										{'Supported formats: JPG, PNG, GIF (max. ' +
+											(maxSize / (1024 * 1024)).toFixed(0) +
+											' MB)'}
+									</p>
+								</div>
+
+								<UploadIcon className='mx-auto size-6 text-gray-400' />
 							</div>
+						)}
+					</div>
 
-							<UploadIcon className='mx-auto size-6 text-gray-400' />
-						</div>
-					)}
+					{/* Hidden input for form submission */}
+					<Input type='hidden' {...register(name)} />
 				</div>
+			</FieldContent>
 
-				{/* Hidden input for form submission */}
-				<Input type='hidden' {...register(name)} />
-			</div>
-
-			{errorText && <ErrorText text={errorText} className='mt-2 ml-4' />}
-		</div>
+			{errorText && <FieldError>{errorText}</FieldError>}
+		</Field>
 	)
 }

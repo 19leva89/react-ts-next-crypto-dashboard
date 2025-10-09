@@ -1,7 +1,6 @@
 export { ClearButton } from './clear-button'
 export { Container } from './container'
 export { ErrorState } from './error-state'
-export { ErrorText } from './error-text'
 export { Footer } from './footer'
 export { InfiniteScroll } from './infinite-scroll'
 export { InfoBlock } from './info-block'

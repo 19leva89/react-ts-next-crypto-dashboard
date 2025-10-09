@@ -5,9 +5,19 @@ import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
 
+import {
+	Button,
+	Calendar,
+	Field,
+	FieldContent,
+	FieldError,
+	FieldLabel,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from '@/components/ui'
 import { cn } from '@/lib'
-import { ClearButton, ErrorText, RequiredSymbol } from '@/components/shared'
-import { Button, Calendar, Popover, PopoverContent, PopoverTrigger } from '@/components/ui'
+import { ClearButton, RequiredSymbol } from '@/components/shared'
 
 interface Props {
 	name: string
@@ -52,40 +62,42 @@ export const FormCalendar = ({
 	}
 
 	return (
-		<div className={className}>
+		<Field className={className}>
 			{label && (
-				<p className='mb-2 font-medium'>
+				<FieldLabel>
 					{label} {required && <RequiredSymbol />}
-				</p>
+				</FieldLabel>
 			)}
 
-			<div className='relative'>
-				<Popover open={open} onOpenChange={setOpen}>
-					<PopoverTrigger asChild>
-						<Button
-							type='button'
-							variant='outline'
-							disabled={disabled}
-							className={cn(
-								'h-11 w-full justify-start border-[#e5e7eb] text-left font-normal hover:bg-transparent',
-								!value && 'text-muted-foreground',
-								errorText && 'border-red-500',
-							)}
-						>
-							<CalendarIcon className='mr-2 size-4' />
-							{value ? format(value, dateFormat) : placeholder}
-						</Button>
-					</PopoverTrigger>
+			<FieldContent>
+				<div className='relative'>
+					<Popover open={open} onOpenChange={setOpen}>
+						<PopoverTrigger asChild>
+							<Button
+								type='button'
+								variant='outline'
+								disabled={disabled}
+								className={cn(
+									'h-11 w-full justify-start border-[#e5e7eb] text-left font-normal hover:bg-transparent',
+									!value && 'text-muted-foreground',
+									errorText && 'border-red-500',
+								)}
+							>
+								<CalendarIcon className='mr-2 size-4' />
+								{value ? format(value, dateFormat) : placeholder}
+							</Button>
+						</PopoverTrigger>
 
-					<PopoverContent className='w-auto p-0' align='start'>
-						<Calendar mode='single' selected={value} onSelect={handleSelect} autoFocus />
-					</PopoverContent>
-				</Popover>
+						<PopoverContent className='w-auto p-0' align='start'>
+							<Calendar mode='single' selected={value} onSelect={handleSelect} autoFocus />
+						</PopoverContent>
+					</Popover>
 
-				{value && <ClearButton onClick={onClickClear} />}
-			</div>
+					{value && <ClearButton onClick={onClickClear} />}
+				</div>
+			</FieldContent>
 
-			{errorText && <ErrorText text={errorText} className='mt-2 ml-4' />}
-		</div>
+			{errorText && <FieldError>{errorText}</FieldError>}
+		</Field>
 	)
 }

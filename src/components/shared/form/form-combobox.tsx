@@ -12,12 +12,13 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
+	Field,
+	FieldError,
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui'
 import { cn } from '@/lib'
-import { ErrorText } from '@/components/shared'
 
 interface Item {
 	id: number
@@ -73,7 +74,7 @@ export const FormCombobox = ({
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<div>
+			<Field>
 				<PopoverTrigger asChild>
 					<Button
 						variant='outline'
@@ -89,8 +90,8 @@ export const FormCombobox = ({
 					</Button>
 				</PopoverTrigger>
 
-				{errorText && <ErrorText text={errorText} className='mt-2 ml-4' />}
-			</div>
+				{errorText && <FieldError>{errorText}</FieldError>}
+			</Field>
 
 			<PopoverContent className='w-50 p-0'>
 				<Command>
