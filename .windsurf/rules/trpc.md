@@ -123,8 +123,8 @@ export type AppRouter = typeof appRouter
 import { PropsWithChildren, useState } from 'react'
 import type { QueryClient } from '@tanstack/react-query'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { createTRPCClient, httpBatchLink } from '@trpc/client'
 import { createTRPCContext } from '@trpc/tanstack-react-query'
+import { createTRPCClient, httpBatchLink, loggerLink, TRPCClient } from '@trpc/client'
 
 import { absoluteUrl } from '@/lib/utils'
 import type { AppRouter } from '@/trpc/routers/_app'
@@ -158,7 +158,7 @@ export function TRPCReactProvider(props: PropsWithChildren) {
 	//       render if it suspends and there is no boundary
 	const queryClient = getQueryClient()
 
-	const [trpcClient] = useState(() =>
+	const [trpcClient] = useState<TRPCClient<AppRouter>>(() =>
 		createTRPCClient<AppRouter>({
 			links: [
 				httpBatchLink({
@@ -353,7 +353,3 @@ This guide is for tRPC v11, which requires:
 - @Official Documentation
 - @GitHub Repository
 - @Example Apps
-
-
-
-

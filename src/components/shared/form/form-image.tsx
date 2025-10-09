@@ -102,10 +102,10 @@ export const FormImage = ({
 	}
 
 	const onClickClear = () => {
-		setValue(name, null)
 		setPreview(null)
-		onFileChange?.(null)
 		clearErrors(name)
+		setValue(name, null)
+		onFileChange?.(null)
 
 		// Clear the file input
 		const input = document.querySelector(`input[name="${name}"]`) as HTMLInputElement
@@ -159,12 +159,12 @@ export const FormImage = ({
 
 							if (e.key === 'Enter' || e.key === ' ') {
 								e.preventDefault()
-								document.getElementById(`file-input-${name}`)?.click()
+								document.getElementById(name)?.click()
 							}
 						}}
 						onClick={() => {
 							if (!disabled) {
-								document.getElementById(`file-input-${name}`)?.click()
+								document.getElementById(name)?.click()
 							}
 						}}
 						className={cn(
