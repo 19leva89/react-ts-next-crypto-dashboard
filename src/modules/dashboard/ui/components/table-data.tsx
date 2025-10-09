@@ -144,7 +144,7 @@ export function DataTable<TData, TValue>({
 			<div className='flex flex-wrap items-center justify-end gap-2 py-4 md:flex-nowrap md:justify-between md:gap-8'>
 				{/* Search */}
 				<div className='w-full md:w-2/3'>
-					<InputGroup className='h-10 overflow-hidden rounded-xl dark:bg-transparent'>
+					<InputGroup className='h-10 overflow-hidden rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 						<InputGroupAddon align='inline-start'>
 							<SearchIcon className='size-4.5' />
 						</InputGroupAddon>
@@ -201,7 +201,7 @@ export function DataTable<TData, TValue>({
 						{categories.length ? (
 							<DropdownMenuContent
 								align='start'
-								className='mt-1 max-h-64 w-full overflow-y-hidden rounded-xl bg-white py-1 shadow-xl dark:bg-gray-900'
+								className='mt-1 max-h-64 w-full overflow-y-hidden rounded-xl py-1 shadow-xl'
 							>
 								<DropdownMenuItem className='rounded-xl'>
 									<button
@@ -366,7 +366,10 @@ export function DataTable<TData, TValue>({
 								table.setPageSize(Number(value))
 							}}
 						>
-							<SelectTrigger id={selectId} className='h-8 w-fit rounded-xl'>
+							<SelectTrigger
+								id={selectId}
+								className='h-8 w-fit rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent'
+							>
 								<SelectValue placeholder={table.getState().pagination.pageSize} />
 							</SelectTrigger>
 

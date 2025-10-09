@@ -61,10 +61,8 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 							alt={coin.name || 'Coin image'}
 							width={24}
 							height={24}
+							onError={(e) => (e.currentTarget.src = '/svg/coin-not-found.svg')}
 							className='rounded-full'
-							onError={(e) => {
-								e.currentTarget.src = '/svg/coin-not-found.svg'
-							}}
 						/>
 
 						<Link

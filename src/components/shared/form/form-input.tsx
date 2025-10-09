@@ -51,14 +51,15 @@ export const FormInput = ({ className, name, label, type, placeholder, required,
 	return (
 		<Field className={className}>
 			{label && (
-				<FieldLabel>
+				<FieldLabel htmlFor={name}>
 					{label} {required && <RequiredSymbol />}
 				</FieldLabel>
 			)}
 
 			<FieldContent>
-				<InputGroup className='h-11 overflow-hidden rounded-xl dark:bg-transparent'>
+				<InputGroup className='h-11 overflow-hidden rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 					<InputGroupInput
+						id={name}
 						type={type === 'password' ? (isPasswordVisible ? 'text' : 'password') : type}
 						placeholder={placeholder}
 						{...register(name)}
@@ -79,7 +80,7 @@ export const FormInput = ({ className, name, label, type, placeholder, required,
 									</InputGroupButton>
 								</TooltipTrigger>
 
-								<TooltipContent className='rounded-xl text-white'>
+								<TooltipContent className='rounded-xl text-white transition-transform duration-300 ease-in-out'>
 									{isPasswordVisible ? 'Hide password' : 'Show password'}
 								</TooltipContent>
 							</Tooltip>
@@ -98,7 +99,7 @@ export const FormInput = ({ className, name, label, type, placeholder, required,
 									</InputGroupButton>
 								</TooltipTrigger>
 
-								<TooltipContent className='rounded-xl text-white'>
+								<TooltipContent className='rounded-xl text-white transition-transform duration-300 ease-in-out'>
 									<p>Clear</p>
 								</TooltipContent>
 							</Tooltip>

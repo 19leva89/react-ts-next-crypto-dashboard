@@ -139,7 +139,7 @@ export const FormImage = ({
 	return (
 		<Field className={className}>
 			{label && (
-				<FieldLabel>
+				<FieldLabel htmlFor={name}>
 					{label} {required && <RequiredSymbol />}
 				</FieldLabel>
 			)}
@@ -176,7 +176,7 @@ export const FormImage = ({
 						)}
 					>
 						<Input
-							id={`file-input-${name}`}
+							id={name}
 							type='file'
 							accept={accept}
 							disabled={disabled}
@@ -232,7 +232,7 @@ export const FormImage = ({
 					</div>
 
 					{/* Hidden input for form submission */}
-					<Input type='hidden' {...register(name)} />
+					<Input type='hidden' name={`${name}-placeholder`} />
 				</div>
 			</FieldContent>
 

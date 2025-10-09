@@ -99,6 +99,7 @@ export const notifyUsersOnPriceTarget = async () => {
 		where: {
 			desired_sell_price: {
 				not: null,
+				gt: 0,
 			},
 			coin: {
 				current_price: {

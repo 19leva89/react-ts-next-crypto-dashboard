@@ -21,9 +21,7 @@ export const WalletIcon = ({ wallet, className = 'size-5' }: Props) => {
 			alt={`${displayName} icon`}
 			width={24}
 			height={24}
-			onError={(e) => {
-				e.currentTarget.src = '/svg/coin-not-found.svg'
-			}}
+			onError={(e) => (e.currentTarget.src = '/svg/coin-not-found.svg')}
 			className={cn('flex-shrink-0', isLedger && 'dark:invert', className)}
 		/>
 	)

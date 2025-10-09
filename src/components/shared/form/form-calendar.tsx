@@ -64,7 +64,7 @@ export const FormCalendar = ({
 	return (
 		<Field className={className}>
 			{label && (
-				<FieldLabel>
+				<FieldLabel htmlFor={name}>
 					{label} {required && <RequiredSymbol />}
 				</FieldLabel>
 			)}
@@ -72,7 +72,7 @@ export const FormCalendar = ({
 			<FieldContent>
 				<div className='relative'>
 					<Popover open={open} onOpenChange={setOpen}>
-						<PopoverTrigger asChild>
+						<PopoverTrigger id={name} asChild>
 							<Button
 								type='button'
 								variant='outline'
