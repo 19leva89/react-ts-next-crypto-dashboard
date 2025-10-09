@@ -47,7 +47,7 @@ vi.mock('@/components/ui', () => {
 	}
 
 	const MockTabs = ({ defaultValue, className, children }: MockTabsProps) => {
-		const [activeValue, setActiveValue] = useState(defaultValue)
+		const [activeValue, setActiveValue] = useState<string>(defaultValue)
 
 		// Type for child elements
 		type TabChild = ReactElement<{ value?: string }>
