@@ -1,5 +1,6 @@
 import { Nunito } from 'next/font/google'
 import { PropsWithChildren } from 'react'
+import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import { Toaster } from '@/components/ui'
@@ -39,6 +40,9 @@ async function RootLayout({ children }: PropsWithChildren) {
 					</ThemeProvider>
 				</AppProvider>
 				<Toaster position='bottom-right' expand={false} richColors />
+
+				{/* Allow track page views for Vercel */}
+				<Analytics />
 
 				{/* Automatically tracks web vitals and other performance metrics for Vercel */}
 				<SpeedInsights />
