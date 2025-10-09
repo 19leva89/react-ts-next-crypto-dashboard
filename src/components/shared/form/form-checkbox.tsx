@@ -3,12 +3,12 @@
 import { useFormContext, Controller } from 'react-hook-form'
 
 import { cn } from '@/lib'
-import { Checkbox, Label } from '@/components/ui'
-import { ErrorText, RequiredSymbol } from '@/components/shared'
+import { RequiredSymbol } from '@/components/shared'
+import { Checkbox, Field, FieldError, Label } from '@/components/ui'
 
 interface Props {
 	name: string
-	label: string
+	label?: string
 	required?: boolean
 	disabled?: boolean
 	className?: string
@@ -23,7 +23,7 @@ export const FormCheckbox = ({ name, label, required = false, disabled = false, 
 	const errorText = errors[name]?.message as string
 
 	return (
-		<div className={cn('space-y-2', className)}>
+		<Field className={cn('space-y-2', className)}>
 			<Controller
 				name={name}
 				control={control}
@@ -41,14 +41,16 @@ export const FormCheckbox = ({ name, label, required = false, disabled = false, 
 							)}
 						/>
 
-						<Label htmlFor={name} className='cursor-pointer text-sm font-medium text-gray-700'>
-							{label} {required && <RequiredSymbol />}
-						</Label>
+						{label && (
+							<Label>
+								{label} {required && <RequiredSymbol />}
+							</Label>
+						)}
 					</div>
 				)}
 			/>
 
-			{errorText && <ErrorText text={errorText} className='mt-2 ml-4' />}
-		</div>
+			{errorText && <FieldError>{errorText}</FieldError>}
+		</Field>
 	)
 }

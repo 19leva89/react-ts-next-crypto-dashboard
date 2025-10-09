@@ -48,7 +48,7 @@ export function constructMetadata({
 	title = 'Crypto',
 	description = 'Track crypto trends, analyze data, and manage investments with ease.',
 	image = '/img/thumbnail.webp',
-	icons = '/favicon.ico',
+	icons = '/favicon.svg',
 	noIndex = false,
 }: {
 	title?: string

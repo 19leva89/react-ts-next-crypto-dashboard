@@ -3,8 +3,8 @@
 import { TextareaHTMLAttributes } from 'react'
 import { useFormContext } from 'react-hook-form'
 
-import { Textarea } from '@/components/ui'
-import { ClearButton, ErrorText, RequiredSymbol } from '@/components/shared'
+import { ClearButton, RequiredSymbol } from '@/components/shared'
+import { Field, FieldContent, FieldError, FieldLabel, Textarea } from '@/components/ui'
 
 interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 	name: string
@@ -29,18 +29,22 @@ export const FormTextarea = ({ className, name, label, required, ...props }: Pro
 	}
 
 	return (
-		<div className={className}>
-			<p className='mb-2 font-medium'>
-				{label} {required && <RequiredSymbol />}
-			</p>
+		<Field className={className}>
+			{label && (
+				<FieldLabel>
+					{label} {required && <RequiredSymbol />}
+				</FieldLabel>
+			)}
 
-			<div className='relative'>
-				<Textarea className='h-11 text-base' {...register(name)} {...props} />
+			<FieldContent>
+				<div className='relative'>
+					<Textarea className='h-11 text-base' {...register(name)} {...props} />
 
-				{value && <ClearButton onClick={onClickClear} />}
-			</div>
+					{value && <ClearButton onClick={onClickClear} />}
+				</div>
+			</FieldContent>
 
-			{errorText && <ErrorText text={errorText} className='mt-2 ml-4' />}
-		</div>
+			{errorText && <FieldError>{errorText}</FieldError>}
+		</Field>
 	)
 }

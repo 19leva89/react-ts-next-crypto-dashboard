@@ -5,6 +5,10 @@ import { InputHTMLAttributes, useState } from 'react'
 import { DeleteIcon, EyeIcon, EyeOffIcon } from 'lucide-react'
 
 import {
+	Field,
+	FieldContent,
+	FieldError,
+	FieldLabel,
 	InputGroup,
 	InputGroupAddon,
 	InputGroupButton,
@@ -13,7 +17,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@/components/ui'
-import { ErrorText, RequiredSymbol } from '@/components/shared'
+import { RequiredSymbol } from '@/components/shared'
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
 	name: string
@@ -45,63 +49,65 @@ export const FormInput = ({ className, name, label, type, placeholder, required,
 	}
 
 	return (
-		<div className={className}>
+		<Field className={className}>
 			{label && (
-				<p className='mb-2 font-medium'>
+				<FieldLabel>
 					{label} {required && <RequiredSymbol />}
-				</p>
+				</FieldLabel>
 			)}
 
-			<InputGroup className='h-11 overflow-hidden rounded-xl dark:bg-transparent'>
-				<InputGroupInput
-					type={type === 'password' ? (isPasswordVisible ? 'text' : 'password') : type}
-					placeholder={placeholder}
-					{...register(name)}
-					{...rest}
-				/>
+			<FieldContent>
+				<InputGroup className='h-11 overflow-hidden rounded-xl dark:bg-transparent'>
+					<InputGroupInput
+						type={type === 'password' ? (isPasswordVisible ? 'text' : 'password') : type}
+						placeholder={placeholder}
+						{...register(name)}
+						{...rest}
+					/>
 
-				<InputGroupAddon align='inline-end'>
-					{type === 'password' && (
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<InputGroupButton
-									variant='ghost'
-									size='icon-sm'
-									onClick={togglePasswordVisibility}
-									className='opacity-30 transition-opacity duration-300 ease-in-out hover:bg-transparent hover:opacity-100'
-								>
-									{isPasswordVisible ? <EyeOffIcon className='size-5' /> : <EyeIcon className='size-5' />}
-								</InputGroupButton>
-							</TooltipTrigger>
+					<InputGroupAddon align='inline-end'>
+						{type === 'password' && (
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<InputGroupButton
+										variant='ghost'
+										size='icon-sm'
+										onClick={togglePasswordVisibility}
+										className='opacity-30 transition-opacity duration-300 ease-in-out hover:bg-transparent hover:opacity-100'
+									>
+										{isPasswordVisible ? <EyeOffIcon className='size-5' /> : <EyeIcon className='size-5' />}
+									</InputGroupButton>
+								</TooltipTrigger>
 
-							<TooltipContent className='rounded-xl text-white'>
-								{isPasswordVisible ? 'Hide password' : 'Show password'}
-							</TooltipContent>
-						</Tooltip>
-					)}
+								<TooltipContent className='rounded-xl text-white'>
+									{isPasswordVisible ? 'Hide password' : 'Show password'}
+								</TooltipContent>
+							</Tooltip>
+						)}
 
-					{value && type !== 'password' && (
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<InputGroupButton
-									variant='ghost'
-									size='icon-sm'
-									onClick={onClickClear}
-									className='opacity-30 transition-opacity duration-300 ease-in-out hover:bg-transparent hover:opacity-100'
-								>
-									<DeleteIcon className='size-5' />
-								</InputGroupButton>
-							</TooltipTrigger>
+						{value && type !== 'password' && (
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<InputGroupButton
+										variant='ghost'
+										size='icon-sm'
+										onClick={onClickClear}
+										className='opacity-30 transition-opacity duration-300 ease-in-out hover:bg-transparent hover:opacity-100'
+									>
+										<DeleteIcon className='size-5' />
+									</InputGroupButton>
+								</TooltipTrigger>
 
-							<TooltipContent className='rounded-xl text-white'>
-								<p>Clear</p>
-							</TooltipContent>
-						</Tooltip>
-					)}
-				</InputGroupAddon>
-			</InputGroup>
+								<TooltipContent className='rounded-xl text-white'>
+									<p>Clear</p>
+								</TooltipContent>
+							</Tooltip>
+						)}
+					</InputGroupAddon>
+				</InputGroup>
+			</FieldContent>
 
-			{errorText && <ErrorText text={errorText} className='mt-2 ml-4' />}
-		</div>
+			{errorText && <FieldError>{errorText}</FieldError>}
+		</Field>
 	)
 }
