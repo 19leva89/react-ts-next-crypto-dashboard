@@ -1,9 +1,8 @@
 'use client'
 
-import { BanknoteIcon } from 'lucide-react'
 import { ChangeEvent, useState } from 'react'
-
 import { useFormatValue } from '@/hooks/use-format-value'
+import { useSelectedCurrency } from '@/hooks/use-selected-currency'
 import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui'
 
@@ -14,6 +13,7 @@ interface Props {
 
 export const InputFormatPrice = ({ value, onChange }: Props) => {
 	const formatValue = useFormatValue()
+	const { CurrencyIcon } = useSelectedCurrency()
 	const { fromUSD, toUSD } = useCurrencyConverter()
 
 	const [isEditing, setIsEditing] = useState<boolean>(false)
@@ -75,7 +75,7 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 	return (
 		<InputGroup className='h-10 rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 			<InputGroupAddon align='inline-start'>
-				<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
+				<CurrencyIcon className='size-3 sm:size-3.5 lg:size-4' />
 			</InputGroupAddon>
 
 			<InputGroupInput

@@ -273,7 +273,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 							</div>
 
 							<div className='mt-8 flex flex-col gap-2 text-sm sm:text-base'>
-								<div className='flex flex-wrap justify-between gap-2 capitalize'>
+								<div className='flex flex-wrap justify-between gap-2'>
 									<span>Crypto market rank</span>
 
 									<span className='flex items-center rounded-full bg-slate-100 px-2 text-sm dark:bg-gray-600'>
@@ -298,7 +298,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 								</div>
 
 								<div className='flex flex-wrap justify-between gap-2'>
-									<span className='capitalize'>24 hour high</span>
+									<span>24 hour high</span>
 
 									<span className='text-gray-600 dark:text-gray-300'>
 										{formatUSDPrice(coinData?.market_data.high_24h.usd as number, true)}
@@ -306,7 +306,7 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 								</div>
 
 								<div className='flex flex-wrap justify-between gap-2'>
-									<span className='capitalize'>24 hour low</span>
+									<span>24 hour low</span>
 
 									<span className='text-gray-600 dark:text-gray-300'>
 										{formatUSDPrice(coinData?.market_data.low_24h.usd as number, true)}

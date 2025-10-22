@@ -47,7 +47,7 @@ export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
 
 			<AlertDialogContent className='rounded-xl px-8'>
 				<AlertDialogHeader>
-					<AlertDialogTitle>Delete Transaction?</AlertDialogTitle>
+					<AlertDialogTitle>Delete transaction?</AlertDialogTitle>
 
 					<AlertDialogDescription>
 						This action cannot be undone. Are you sure you want to delete this transaction?

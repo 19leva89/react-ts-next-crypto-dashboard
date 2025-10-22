@@ -165,7 +165,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 					className='px-0'
 				>
-					24h Volume
+					24h volume
 					{column.getIsSorted() === 'asc' ? (
 						<ArrowUpIcon className='size-4' />
 					) : (
@@ -191,7 +191,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 					className='px-0'
 				>
-					Market Cap
+					Market cap
 					{column.getIsSorted() === 'asc' ? (
 						<ArrowUpIcon className='size-4' />
 					) : (
@@ -210,7 +210,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 	// Last 7 Days
 	{
 		accessorKey: 'price_change_percentage_7d_in_currency',
-		header: () => <div>Last 7 Days</div>,
+		header: () => <div>Last 7 days</div>,
 		cell: ({ row }) => {
 			const coin = row.original
 			const priceChange = coin.price_change_percentage_7d_in_currency as number
