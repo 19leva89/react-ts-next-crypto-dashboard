@@ -1,6 +1,6 @@
 import { toast } from 'sonner'
+import { PlusIcon, SaveIcon } from 'lucide-react'
 import { ChangeEvent, useState, useEffect } from 'react'
-import { BanknoteIcon, PlusIcon, SaveIcon } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import {
@@ -19,6 +19,7 @@ import {
 } from '@/components/ui'
 import { useTRPC } from '@/trpc/client'
 import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
+import { useSelectedCurrency } from '@/hooks/use-selected-currency'
 import { TTransaction, TUserCoinData } from '@/modules/coins/schema'
 import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
@@ -35,6 +36,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 	const totalValue = coin.current_price * coin.total_quantity
 
 	const formatUSDPrice = useFormatUSDPrice()
+	const { CurrencyIcon } = useSelectedCurrency()
 	const { fromUSD, toUSD, selectedCurrency } = useCurrencyConverter()
 
 	const [isSaving, setIsSaving] = useState<boolean>(false)
@@ -161,7 +163,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 
 						<InputGroup className='h-10 w-[80%] rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 							<InputGroupAddon align='inline-start'>
-								<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
+								<CurrencyIcon className='size-3 sm:size-3.5 lg:size-4' />
 							</InputGroupAddon>
 
 							<InputGroupInput
@@ -180,7 +182,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 					{/* Section for displaying transactions and sales */}
 					<div className='mt-2'>
 						<div className='mb-1 flex items-center justify-between'>
-							<h3 className='px-4 text-sm font-semibold sm:text-lg'>Transaction History</h3>
+							<h3 className='px-4 text-sm font-semibold sm:text-lg'>Transaction history</h3>
 
 							<div className='flex flex-col px-4 text-sm sm:text-base'>
 								<p>Total invested: {formatUSDPrice(coin.total_cost, false)}</p>
@@ -197,7 +199,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 					</div>
 				</div>
 
-				<DialogFooter className='flex-row justify-end gap-3 px-4'>
+				<DialogFooter className='flex-row justify-center gap-3 px-4 xs:justify-end'>
 					<Button
 						variant='outline'
 						size='default'

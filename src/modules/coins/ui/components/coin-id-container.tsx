@@ -5,9 +5,9 @@ import Image from 'next/image'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
+import { ArrowLeftIcon, PlusIcon, SaveIcon } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
-import { ArrowLeftIcon, BanknoteIcon, PlusIcon, SaveIcon } from 'lucide-react'
 
 import {
 	Button,
@@ -29,6 +29,7 @@ import { useFormatValue } from '@/hooks/use-format-value'
 import { getCoinsMarketChart } from '@/data/market-chart'
 import { DAY_OPTIONS, MONTH_OPTIONS } from '@/constants/chart'
 import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
+import { useSelectedCurrency } from '@/hooks/use-selected-currency'
 import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 import { TMarketChartData, TTransaction, TUserCoinData } from '@/modules/coins/schema'
@@ -44,6 +45,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 	const formatValue = useFormatValue()
 	const formatUSDPrice = useFormatUSDPrice()
+	const { CurrencyIcon } = useSelectedCurrency()
 	const { fromUSD, toUSD, selectedCurrency } = useCurrencyConverter()
 
 	const [days, setDays] = useState<number>(1)
@@ -272,7 +274,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 
 				<InputGroup className='h-10 w-[80%] rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 					<InputGroupAddon align='inline-start'>
-						<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
+						<CurrencyIcon className='size-3 sm:size-3.5 lg:size-4' />
 					</InputGroupAddon>
 
 					<InputGroupInput
@@ -416,7 +418,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 			{/* Section for displaying transactions and sales */}
 			<div className='mt-6'>
 				<div className='mb-1 flex items-center justify-between'>
-					<h3 className='px-4 text-sm font-semibold sm:text-lg'>Transaction History</h3>
+					<h3 className='px-4 text-sm font-semibold sm:text-lg'>Transaction history</h3>
 				</div>
 
 				<TableContainer
@@ -426,7 +428,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 					className='h-auto'
 				/>
 
-				<div className='mt-4 flex flex-row items-center justify-end gap-3 px-4'>
+				<div className='mt-4 flex flex-row items-center justify-center gap-3 px-4 xs:justify-end'>
 					<Button
 						variant='outline'
 						size='default'

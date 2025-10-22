@@ -118,11 +118,11 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 				</div>
 			</div>
 
-			<div className='flex flex-wrap items-center justify-end gap-2 sm:flex-nowrap sm:justify-between'>
-				<AddCoin className='mx-6' />
+			<div className='flex flex-nowrap items-center justify-between gap-2'>
+				<AddCoin className='ml-6' />
 
-				<div className='flex w-full items-center justify-between sm:justify-end'>
-					<div className='ml-6 flex items-center gap-2'>
+				<div className='flex w-full items-center justify-between sm:justify-end sm:gap-2'>
+					<div className='flex items-center gap-2'>
 						<Button
 							variant='ghost'
 							size='icon-lg'
@@ -149,8 +149,8 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 					</div>
 
 					{/* Sort coin */}
-					<div className='mx-6'>
-						<SortSelect value={sortOption} onChange={setSortOption} />
+					<div className='mr-6'>
+						<SortSelect value={sortOption} onChange={setSortOption} className='w-full' />
 					</div>
 				</div>
 			</div>

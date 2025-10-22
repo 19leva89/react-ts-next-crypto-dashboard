@@ -3,8 +3,8 @@
 import Image from 'next/image'
 import { toast } from 'sonner'
 import { List } from 'react-window'
+import { ActivityIcon, PlusIcon, SearchIcon, XIcon } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ActivityIcon, BanknoteIcon, PlusIcon, SearchIcon, XIcon } from 'lucide-react'
 import { ChangeEvent, CSSProperties, useCallback, useMemo, useState, useRef, useEffect, useId } from 'react'
 
 import {
@@ -36,6 +36,7 @@ import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
 import { getWalletDisplayName } from '@/data/wallet'
 import { WALLETS, TWallet } from '@/modules/coins/schema'
+import { useSelectedCurrency } from '@/hooks/use-selected-currency'
 import { WalletIcon } from '@/modules/transactions/ui/components/wallet-icon'
 
 interface Props {
@@ -55,6 +56,7 @@ export const AddCoin = ({ className }: Props) => {
 	const queryClient = useQueryClient()
 	const searchInputRef = useRef<HTMLInputElement>(null)
 
+	const { CurrencyIcon } = useSelectedCurrency()
 	const { data: coinsListIDMapData = [], isLoading } = useQuery(trpc.coins.getCoinsListIDMap.queryOptions())
 
 	const [editPrice, setEditPrice] = useState<string>('')
@@ -186,14 +188,14 @@ export const AddCoin = ({ className }: Props) => {
 						size='default'
 						className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 					>
-						<PlusIcon className='mr-2 size-4' />
-						<span>Transaction</span>
+						<PlusIcon className='size-4' />
+						<span className='hidden sm:block'>Transaction</span>
 					</Button>
 				</DialogTrigger>
 
 				<DialogContent className='rounded-xl px-8'>
 					<DialogHeader>
-						<DialogTitle>Add Transaction</DialogTitle>
+						<DialogTitle>Add transaction</DialogTitle>
 
 						<DialogDescription>Select a coin, enter quantity and price</DialogDescription>
 					</DialogHeader>
@@ -346,7 +348,7 @@ export const AddCoin = ({ className }: Props) => {
 
 							<InputGroup className='col-span-3 h-10 rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
 								<InputGroupAddon align='inline-start'>
-									<BanknoteIcon className='size-3 sm:size-3.5 lg:size-4' />
+									<CurrencyIcon className='size-3 sm:size-3.5 lg:size-4' />
 								</InputGroupAddon>
 
 								<InputGroupInput

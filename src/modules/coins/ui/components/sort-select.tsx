@@ -30,7 +30,7 @@ export const SortSelect = ({ value, onChange, className }: Props) => {
 			<SelectTrigger
 				id={sortSelectId}
 				className={cn(
-					'w-45 rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent',
+					'rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent sm:w-45',
 					className,
 				)}
 			>

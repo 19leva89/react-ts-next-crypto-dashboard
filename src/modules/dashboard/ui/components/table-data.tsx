@@ -265,12 +265,14 @@ export function DataTable<TData, TValue>({
 								.getAllColumns()
 								.filter((column) => column.getCanHide())
 								.map((column) => {
-									const readableName = column.id.replace(/_/g, ' ') // Replace '_' with ' '
+									let readableName = column.id.replace(/_/g, ' ') // Replace '_' with ' '
+
+									readableName = readableName.charAt(0).toUpperCase() + readableName.slice(1)
 
 									return (
 										<DropdownMenuCheckboxItem
 											key={column.id}
-											className='rounded-xl capitalize'
+											className='rounded-xl'
 											checked={column.getIsVisible()}
 											onCheckedChange={(value) => column.toggleVisibility(!!value)}
 										>
