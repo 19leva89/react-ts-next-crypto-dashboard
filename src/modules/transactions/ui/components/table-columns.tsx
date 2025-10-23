@@ -23,11 +23,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Coin
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -65,11 +61,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Type
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -79,7 +71,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 			return (
 				<div className='inline-flex items-center gap-2'>
 					<div className={amount > 0 ? 'text-green-500' : 'text-red-500'}>
-						{amount > 0 ? <ArrowDownToLine size={16} /> : <ArrowUpFromLine size={16} />}
+						{amount > 0 ? <ArrowDownToLine className='size-4' /> : <ArrowUpFromLine className='size-4' />}
 					</div>
 
 					<span className='-mb-1'>{amount > 0 ? 'Buy' : 'Sell'}</span>
@@ -104,11 +96,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Quantity
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -130,11 +118,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Price
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -156,11 +140,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Total
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -195,11 +175,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Date
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -223,11 +199,7 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Wallet
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},

@@ -41,7 +41,7 @@ export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
 					size='icon-lg'
 					className='rounded-xl transition-colors duration-300 ease-in-out hover:bg-red-100 dark:hover:bg-red-900'
 				>
-					<TrashIcon className='size-4 text-red-600 dark:text-red-400' />
+					<TrashIcon className='text-red-600 dark:text-red-400' />
 				</Button>
 			</AlertDialogTrigger>
 
@@ -61,7 +61,7 @@ export const DeleteTransaction = ({ transactionId, onDelete }: Props) => {
 
 					<AlertDialogAction onClick={handleDelete} disabled={isDeleting} className='rounded-xl'>
 						{isDeleting && <Spinner className='size-5 text-destructive-foreground dark:text-white' />}
-						{isDeleting ? 'Deleting...' : 'Delete'}
+						{isDeleting ? 'Deleting' : 'Delete'}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

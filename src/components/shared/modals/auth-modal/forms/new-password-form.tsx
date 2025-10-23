@@ -101,6 +101,7 @@ export const NewPasswordForm = () => {
 							className='w-full rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 						>
 							{(isLoading || form.formState.isSubmitting) && <Spinner className='size-5 text-white' />}
+
 							{isLoading || form.formState.isSubmitting ? 'Resetting password' : 'Reset password'}
 						</Button>
 					</CardFooter>

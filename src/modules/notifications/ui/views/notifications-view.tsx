@@ -250,7 +250,7 @@ export const NotificationsView = () => {
 										<DropdownMenuTrigger asChild>
 											<Button variant='ghost' size='icon-lg' className='group mt-0! shrink-0 rounded-xl'>
 												<div className='relative size-5 transition-transform duration-300 ease-in-out group-hover:rotate-180'>
-													<EllipsisVerticalIcon size={16} className='absolute inset-0 m-auto' />
+													<EllipsisVerticalIcon className='absolute inset-0 m-auto' />
 												</div>
 
 												<span className='sr-only'>More</span>
@@ -269,7 +269,7 @@ export const NotificationsView = () => {
 														disabled={isMarkingAsRead}
 														className='mx-2 flex items-center justify-start gap-3'
 													>
-														<CheckIcon size={16} />
+														<CheckIcon />
 
 														<span>Mark read</span>
 													</Button>
@@ -286,7 +286,7 @@ export const NotificationsView = () => {
 														size='icon-lg'
 														className='mx-2 flex items-center justify-start gap-3'
 													>
-														<EyeIcon size={16} />
+														<EyeIcon />
 
 														<span>View</span>
 													</Button>
@@ -303,7 +303,7 @@ export const NotificationsView = () => {
 													disabled={isDeleting}
 													className='mx-2 flex items-center justify-start gap-3'
 												>
-													<TrashIcon size={16} />
+													<TrashIcon />
 
 													<span>Delete</span>
 												</Button>
@@ -344,7 +344,7 @@ export const NotificationsView = () => {
 							{isMarkingAllAsRead ? (
 								<Spinner />
 							) : (
-								<CheckIcon className='size-4 transition-transform duration-300 ease-in-out group-hover:scale-110' />
+								<CheckIcon className='transition-transform duration-300 ease-in-out group-hover:scale-110' />
 							)}
 							{isMarkingAllAsRead ? 'Marking all as read' : 'Mark all as read'}
 						</Button>

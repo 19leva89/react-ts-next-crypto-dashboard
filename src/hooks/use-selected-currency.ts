@@ -1,9 +1,9 @@
 import useLocalStorageState from 'use-local-storage-state'
 import { DollarSignIcon, EuroIcon, BanknoteIcon } from 'lucide-react'
 
-export const CURRENCY_KEY = 'selectedCurrency'
+import { Currency } from '@/constants/currency'
 
-type Currency = 'usd' | 'eur' | 'uah'
+export const CURRENCY_KEY = 'selectedCurrency'
 
 /**
  * Custom hook for managing selected currency with persistent localStorage storage

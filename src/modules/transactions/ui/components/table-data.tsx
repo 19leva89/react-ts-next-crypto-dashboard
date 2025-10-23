@@ -150,7 +150,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 								<span>Columns</span>
 
 								<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
-									<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
+									<ChevronDownIcon className='absolute inset-0 m-auto' />
 								</div>
 							</Button>
 						</DropdownMenuTrigger>

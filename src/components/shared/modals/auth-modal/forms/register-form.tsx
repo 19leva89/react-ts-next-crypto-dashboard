@@ -82,6 +82,7 @@ export const RegisterForm = ({ onClose }: Props) => {
 							className='w-full rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 						>
 							{form.formState.isSubmitting && <Spinner className='size-5 text-white' />}
+
 							{form.formState.isSubmitting ? 'Registering' : 'Register'}
 						</Button>
 					</CardFooter>

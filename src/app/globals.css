@@ -5,6 +5,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+button {
+	cursor: pointer;
+}
+
 @theme {
 	--breakpoint-xs: 400px;
 	--breakpoint-2md: 870px;
@@ -76,6 +80,7 @@
 			height: 0;
 		}
 	}
+
 	@keyframes accordion-down {
 		from {
 			height: 0;
@@ -91,19 +96,15 @@
 	padding-inline: 0.5rem;
 }
 
-@layer utilities {
-	html {
-		scroll-behavior: smooth;
-	}
-
-	@media screen and (prefers-reduced-motion: reduce) {
-		html {
-			scroll-behavior: auto;
-		}
-	}
-}
-
 @layer base {
+	* {
+		@apply border-border;
+	}
+
+	body {
+		@apply bg-background text-foreground;
+	}
+
 	:root {
 		--background: 0 0% 100%;
 		--foreground: 222.2 84% 4.9%;
@@ -199,6 +200,10 @@
 		font-family: var(--font-nunito), sans-serif;
 	}
 
+	html {
+		scroll-behavior: smooth;
+	}
+
 	.scrollbar::-webkit-scrollbar {
 		width: 4px;
 	}
@@ -216,14 +221,11 @@
 	.scrollbar::-webkit-scrollbar-thumb:hover {
 		background: #dbdadd;
 	}
-}
 
-@layer base {
-	* {
-		@apply border-border;
-	}
-	body {
-		@apply bg-background text-foreground;
+	@media screen and (prefers-reduced-motion: reduce) {
+		html {
+			scroll-behavior: auto;
+		}
 	}
 }
 

@@ -84,7 +84,7 @@ export const PieChartContainer = ({ chartData }: Props) => {
 				<div className='mx-auto grid w-fit grid-cols-2 gap-2'>
 					{chartData.map((item) => (
 						<div key={item.name} className='flex items-center gap-2 truncate'>
-							<div className='size-3 shrink-0 rounded-full' style={{ backgroundColor: item.fill }} />
+							<div style={{ backgroundColor: item.fill }} className='size-3 shrink-0 rounded-full' />
 
 							<span className='truncate uppercase'>{item.symbol || item.name}</span>
 

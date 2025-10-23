@@ -36,11 +36,7 @@ export const getColumns = (
 					className='px-0 has-[>svg]:px-0'
 				>
 					Quantity
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -63,11 +59,7 @@ export const getColumns = (
 					className='px-0 has-[>svg]:px-0'
 				>
 					Price
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -90,11 +82,7 @@ export const getColumns = (
 					className='px-0 has-[>svg]:px-0'
 				>
 					Date
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -108,7 +96,7 @@ export const getColumns = (
 							variant='outline'
 							className='w-full justify-start rounded-xl bg-transparent p-2 px-2 text-left text-xs font-normal has-[>svg]:px-2 sm:text-sm lg:p-4 lg:text-base'
 						>
-							<CalendarIcon className='mr-0 size-4 sm:mr-1 lg:mr-2' />
+							<CalendarIcon className='mr-0 sm:mr-1 lg:mr-2' />
 
 							{dateValue ? format(dateValue, 'dd-MM-yyyy') : <span>Pick a date</span>}
 						</Button>
@@ -141,11 +129,7 @@ export const getColumns = (
 					className='px-0 has-[>svg]:px-0'
 				>
 					Wallet
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
