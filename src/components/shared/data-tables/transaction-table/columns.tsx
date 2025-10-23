@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowDownIcon, ArrowUpIcon, CalendarIcon } from 'lucide-react'
+import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, CalendarIcon } from 'lucide-react'
 
 import {
 	Button,
@@ -36,7 +36,13 @@ export const getColumns = (
 					className='px-0 has-[>svg]:px-0'
 				>
 					Quantity
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -59,7 +65,13 @@ export const getColumns = (
 					className='px-0 has-[>svg]:px-0'
 				>
 					Price
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -82,7 +94,13 @@ export const getColumns = (
 					className='px-0 has-[>svg]:px-0'
 				>
 					Date
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -129,7 +147,13 @@ export const getColumns = (
 					className='px-0 has-[>svg]:px-0'
 				>
 					Wallet
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
