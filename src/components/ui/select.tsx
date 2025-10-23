@@ -62,7 +62,7 @@ function SelectTrigger({ className, children, ...props }: ComponentProps<typeof 
 
 			<SelectPrimitive.Icon asChild>
 				<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
-					<ChevronDownIcon size={16} className='absolute inset-0 m-auto size-4' />
+					<ChevronDownIcon className='absolute inset-0 m-auto size-4' />
 				</div>
 			</SelectPrimitive.Icon>
 		</SelectPrimitive.Trigger>

@@ -40,7 +40,7 @@ export const InfoBlock = ({ title, text, imageUrl, type, className }: Props) => 
 							onClick={() => router.push('/')}
 							className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 						>
-							<ArrowLeftIcon size={16} />
+							<ArrowLeftIcon />
 							Back
 						</Button>
 
@@ -53,7 +53,7 @@ export const InfoBlock = ({ title, text, imageUrl, type, className }: Props) => 
 								}}
 								className='rounded-xl transition-colors duration-300 ease-in-out'
 							>
-								<UserIcon size={16} />
+								<UserIcon />
 								Sign In
 							</Button>
 						) : (
@@ -63,7 +63,7 @@ export const InfoBlock = ({ title, text, imageUrl, type, className }: Props) => 
 								onClick={() => router.refresh()}
 								className='rounded-xl transition-colors duration-300 ease-in-out'
 							>
-								<RefreshCcwIcon size={16} />
+								<RefreshCcwIcon />
 								Refresh
 							</Button>
 						)}

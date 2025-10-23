@@ -188,7 +188,7 @@ export const AddCoin = ({ className }: Props) => {
 						size='default'
 						className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 					>
-						<PlusIcon className='size-4' />
+						<PlusIcon />
 						<span className='hidden sm:block'>Transaction</span>
 					</Button>
 				</DialogTrigger>
@@ -406,6 +406,7 @@ export const AddCoin = ({ className }: Props) => {
 								className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 							>
 								{(isLoading || isAdding) && <Spinner className='size-5 text-white' />}
+
 								{isLoading || isAdding ? 'Submitting' : 'Submit'}
 							</Button>
 						</DialogFooter>

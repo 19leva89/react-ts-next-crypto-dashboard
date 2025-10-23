@@ -10,10 +10,10 @@ interface Props {
 export const ClearButton = ({ onClick, className }: Props) => {
 	return (
 		<button
-			onClick={onClick}
 			type='button'
+			onClick={onClick}
 			className={cn(
-				'absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer opacity-30 transition-opacity duration-300 ease-in-out hover:opacity-100',
+				'absolute top-1/2 right-4 -translate-y-1/2 opacity-30 transition-opacity duration-300 ease-in-out hover:opacity-100',
 				className,
 			)}
 		>

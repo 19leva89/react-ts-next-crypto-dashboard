@@ -132,7 +132,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 								viewMode === 'grid' && 'bg-accent',
 							)}
 						>
-							<LayoutGridIcon className='size-4' />
+							<LayoutGridIcon />
 						</Button>
 
 						<Button
@@ -144,7 +144,7 @@ export const CoinsContainer = ({ coinData, totalInvestedValue, totalValue, plann
 								viewMode === 'list' && 'bg-accent',
 							)}
 						>
-							<ListIcon className='size-4' />
+							<ListIcon />
 						</Button>
 					</div>
 

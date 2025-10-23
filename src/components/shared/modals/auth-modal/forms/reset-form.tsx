@@ -94,6 +94,7 @@ export const ResetForm = ({ onClose }: Props) => {
 							className='w-full rounded-xl text-base text-white transition-colors duration-300 ease-in-out'
 						>
 							{(isLoading || form.formState.isSubmitting) && <Spinner className='size-5 text-white' />}
+
 							{isLoading || form.formState.isSubmitting ? 'Sending reset email' : 'Send reset email'}
 						</Button>
 					</CardFooter>

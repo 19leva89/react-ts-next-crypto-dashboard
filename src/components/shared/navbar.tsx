@@ -17,6 +17,7 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
+import { Currency } from '@/constants/currency'
 import { ModeToggle } from '@/components/shared'
 import { useSelectedCurrency } from '@/hooks/use-selected-currency'
 
@@ -26,12 +27,11 @@ export const Navbar = () => {
 
 	const { data: session, status } = useSession()
 	const { currency, changeCurrency } = useSelectedCurrency()
-
 	const { data: exchangeRate } = useQuery(trpc.helpers.getExchangeRate.queryOptions())
 
 	const [mounted, setMounted] = useState<boolean>(false)
 
-	const handleUpdateExchangeRate = async (newCurrency: 'usd' | 'eur' | 'uah') => {
+	const handleUpdateExchangeRate = async (newCurrency: Currency) => {
 		changeCurrency(newCurrency)
 	}
 
@@ -86,12 +86,12 @@ export const Navbar = () => {
 
 					<DropdownMenuContent
 						align='start'
-						className='flex w-23 min-w-[5rem] flex-col gap-2 rounded-xl shadow-lg'
+						className='flex w-23 min-w-[5rem] flex-col gap-1 rounded-xl shadow-lg'
 					>
 						{Object.entries(exchangeRate?.vsCurrencies || {}).map(([curr]) => (
 							<DropdownMenuItem
 								key={curr}
-								onClick={() => handleUpdateExchangeRate(curr as 'usd' | 'eur' | 'uah')}
+								onClick={() => handleUpdateExchangeRate(curr as Currency)}
 								className='rounded-xl p-0'
 							>
 								<Button

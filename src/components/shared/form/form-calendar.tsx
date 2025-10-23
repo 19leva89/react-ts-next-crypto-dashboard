@@ -83,7 +83,8 @@ export const FormCalendar = ({
 									errorText && 'border-red-500',
 								)}
 							>
-								<CalendarIcon className='mr-2 size-4' />
+								<CalendarIcon className='mr-2' />
+
 								{value ? format(value, dateFormat) : placeholder}
 							</Button>
 						</PopoverTrigger>

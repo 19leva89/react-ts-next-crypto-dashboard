@@ -120,7 +120,7 @@ export const LoginForm = ({ onClose }: Props) => {
 
 							{showTwoFactor && <FormInput name='code' type='password' placeholder='2FA code' required />}
 
-							<FormCheckbox name='rememberMe' label='Remember me' className='mt-2' required={false} />
+							<FormCheckbox name='rememberMe' label='Remember me' required={false} className='mt-2' />
 
 							<Button
 								asChild

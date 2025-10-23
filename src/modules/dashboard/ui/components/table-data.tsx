@@ -127,8 +127,8 @@ export function DataTable<TData, TValue>({
 			return (
 				<DropdownMenuItem key={category.category_id} className='!w-[98.5%] rounded-xl' style={style}>
 					<button
-						className='w-full cursor-pointer rounded-xl p-2 text-start'
 						onClick={() => onCategoryClick(category.category_id, category.name)}
+						className='w-full rounded-xl p-2 text-start'
 					>
 						{category.name}
 					</button>
@@ -193,7 +193,7 @@ export function DataTable<TData, TValue>({
 								<span className='truncate'>{currentCategory || 'Categories'}</span>
 
 								<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
-									<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
+									<ChevronDownIcon className='absolute inset-0 m-auto' />
 								</div>
 							</Button>
 						</DropdownMenuTrigger>
@@ -205,10 +205,10 @@ export function DataTable<TData, TValue>({
 							>
 								<DropdownMenuItem className='rounded-xl'>
 									<button
-										className='w-full cursor-pointer rounded-xl px-2 py-1 text-start'
 										onClick={() => {
 											onCategoryClick('')
 										}}
+										className='w-full rounded-xl px-2 py-1 text-start'
 									>
 										All categories
 									</button>
@@ -255,7 +255,7 @@ export function DataTable<TData, TValue>({
 								<span>Columns</span>
 
 								<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
-									<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
+									<ChevronDownIcon className='absolute inset-0 m-auto' />
 								</div>
 							</Button>
 						</DropdownMenuTrigger>

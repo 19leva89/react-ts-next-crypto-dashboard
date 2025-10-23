@@ -26,12 +26,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 					className='px-0'
 				>
-					#
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					#{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -54,11 +49,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					className='px-0'
 				>
 					Name
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -94,11 +85,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					className='px-0'
 				>
 					Price
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -120,11 +107,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					className='px-0'
 				>
 					24h
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -166,11 +149,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					className='px-0'
 				>
 					24h volume
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},
@@ -192,11 +171,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					className='px-0'
 				>
 					Market cap
-					{column.getIsSorted() === 'asc' ? (
-						<ArrowUpIcon className='size-4' />
-					) : (
-						<ArrowDownIcon className='size-4' />
-					)}
+					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
 				</Button>
 			)
 		},

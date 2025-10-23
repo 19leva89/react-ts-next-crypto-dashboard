@@ -189,7 +189,7 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 										</div>
 
 										<div className='relative size-5 transition-transform duration-300 group-hover:rotate-180'>
-											<ChevronDownIcon size={16} className='absolute inset-0 m-auto' />
+											<ChevronDownIcon className='absolute inset-0 m-auto size-4' />
 										</div>
 									</div>
 								</SidebarMenuButton>
@@ -207,7 +207,7 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 											}}
 											className='flex w-full items-center gap-2 rounded-xl p-3'
 										>
-											<UserIcon size={16} />
+											<UserIcon />
 											Login
 										</button>
 									</DropdownMenuItem>
@@ -219,7 +219,7 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 												onClick={handleLinkClick}
 												className='flex w-full items-center gap-2 rounded-xl p-3'
 											>
-												<SettingsIcon size={16} />
+												<SettingsIcon />
 												Settings
 											</Link>
 										</DropdownMenuItem>
@@ -229,7 +229,7 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 												onClick={handleLogout}
 												className='flex w-full items-center gap-2 rounded-xl p-3'
 											>
-												<LogOutIcon size={16} />
+												<LogOutIcon />
 												Logout
 											</button>
 										</DropdownMenuItem>

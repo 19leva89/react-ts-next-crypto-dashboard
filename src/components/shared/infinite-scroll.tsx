@@ -37,7 +37,7 @@ export const InfiniteScroll = ({ isManual, hasNextPage, isFetchingNextPage, fetc
 					className='rounded-xl transition-colors duration-300 ease-in-out'
 				>
 					{isFetchingNextPage && <Spinner className='size-5 text-white' />}
-					{isFetchingNextPage ? 'Loading...' : 'Load more'}
+					{isFetchingNextPage ? 'Loading' : 'Load more'}
 				</Button>
 			) : (
 				<p data-testid='infinite-scroll-end' className='text-sm text-muted-foreground'>

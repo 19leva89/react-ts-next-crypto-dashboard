@@ -109,13 +109,18 @@ export const ProfileView = () => {
 
 			<FormProvider {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className='mt-10 flex w-full flex-col gap-5 sm:w-96'>
-					<FormInput name='email' label='Email' type='email' required />
+					<FormInput name='email' label='Email' type='email' placeholder='email@address.com' required />
 
-					<FormInput name='name' label='Full name' type='text' required />
+					<FormInput name='name' label='Full name' type='text' placeholder='John Doe' required />
 
-					<FormInput name='password' label='New password' type='password' />
+					<FormInput name='password' label='New password' type='password' placeholder='Password123' />
 
-					<FormInput name='confirmPassword' label='Repeat password' type='password' />
+					<FormInput
+						name='confirmPassword'
+						label='Repeat password'
+						type='password'
+						placeholder='Password123'
+					/>
 
 					{profile?.isOAuth === false && (
 						<FormField
@@ -124,7 +129,7 @@ export const ProfileView = () => {
 							render={({ field }) => (
 								<FormItem className='mt-8 flex flex-row items-center justify-between rounded-xl border p-3 shadow-xs'>
 									<div className='space-y-0.5'>
-										<FormLabel className='cursor-pointer'>Two Factor Authentication</FormLabel>
+										<FormLabel className='cursor-pointer'>Two factor authentication</FormLabel>
 
 										<FormDescription>Enable two factor authentication for your account</FormDescription>
 									</div>
@@ -154,7 +159,7 @@ export const ProfileView = () => {
 						{(form.formState.isSubmitting || updateUserMutation.isPending) && (
 							<Spinner className='size-5 text-white' />
 						)}
-						{form.formState.isSubmitting || updateUserMutation.isPending ? 'Saving...' : 'Save'}
+						{form.formState.isSubmitting || updateUserMutation.isPending ? 'Saving' : 'Save'}
 					</Button>
 
 					<Button
@@ -170,7 +175,7 @@ export const ProfileView = () => {
 						{deleteUserMutation.isPending && (
 							<Spinner className='size-5 text-destructive-foreground dark:text-white' />
 						)}
-						{deleteUserMutation.isPending ? 'Deleting...' : 'Delete account'}
+						{deleteUserMutation.isPending ? 'Deleting' : 'Delete account'}
 					</Button>
 				</form>
 			</FormProvider>
@@ -200,7 +205,7 @@ export const ProfileView = () => {
 								<Spinner className='size-5 text-destructive-foreground dark:text-white' />
 							)}
 							{deleteUserMutation.isPending || updateUserMutation.isPending
-								? 'Deleting account...'
+								? 'Deleting account'
 								: 'Delete account'}
 						</AlertDialogAction>
 					</AlertDialogFooter>

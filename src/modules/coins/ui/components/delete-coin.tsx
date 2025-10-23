@@ -65,7 +65,7 @@ export const DeleteCoin = ({ coin, isOpen, onClose }: Props) => {
 						disabled={deleteCoinMutation.isPending}
 						className='rounded-xl'
 					>
-						{deleteCoinMutation.isPending ? 'Deleting...' : 'Delete'}
+						{deleteCoinMutation.isPending ? 'Deleting' : 'Delete'}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

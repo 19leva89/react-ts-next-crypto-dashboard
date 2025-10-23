@@ -24,7 +24,7 @@ vi.mock('date-fns', () => ({
 
 // Mock lucide-react
 vi.mock('lucide-react', () => ({
-	CalendarIcon: vi.fn(() => <svg data-testid='calendar-icon' className='mr-2 size-4' />),
+	CalendarIcon: vi.fn(() => <svg data-testid='calendar-icon' className='mr-2' />),
 }))
 
 // Mock the UI components

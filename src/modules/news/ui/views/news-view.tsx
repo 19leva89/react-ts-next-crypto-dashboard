@@ -37,14 +37,14 @@ export const NewsView = () => {
 				<h1 className='text-xl font-medium'>Last crypto news</h1>
 			</div>
 
-			<div className='mb-6 flex flex-wrap gap-3 '>
+			<div className='mb-6 flex flex-wrap gap-3'>
 				{validatedData.map((news, i) => (
 					<Link
 						key={i}
 						href={news.url}
 						target='_blank'
 						rel='noopener noreferrer'
-						className='mx-auto flex w-full max-w-[450px] flex-col justify-between gap-2 rounded-xl border bg-white p-2 text-sm transition-all duration-300 ease-in-out hover:scale-[1.02] hover:border-gray-300 hover:shadow-lg sm:w-r1/2 md:w-r1/3 xl:w-r1/4 dark:border-gray-700 dark:bg-slate-800 dark:hover:border-gray-600 dark:hover:shadow-xl'
+						className='mx-auto flex w-full max-w-[450px] flex-col justify-between gap-2 rounded-xl border bg-white p-2 text-sm transition-all duration-300 ease-in-out hover:scale-[1.02] hover:border-gray-300 hover:shadow-lg sm:w-r1/2 md:w-r1/3 xl:w-r1/4 dark:border-gray-700 dark:bg-slate-800 dark:hover:border-gray-600'
 					>
 						<div className='flex flex-col gap-2'>
 							<div className='flex items-center gap-2 '>

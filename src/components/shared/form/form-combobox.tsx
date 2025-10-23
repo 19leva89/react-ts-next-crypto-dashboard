@@ -86,7 +86,7 @@ export const FormCombobox = ({
 					>
 						{selectedItem ? selectedItem.name : placeholder}
 
-						<ChevronsUpDownIcon className='ml-2 size-4 shrink-0 opacity-50' />
+						<ChevronsUpDownIcon className='ml-2 shrink-0 opacity-50' />
 					</Button>
 				</PopoverTrigger>
 
@@ -103,9 +103,7 @@ export const FormCombobox = ({
 						<CommandGroup>
 							{mapTable.map((item) => (
 								<CommandItem key={item.id} value={item.name} onSelect={() => handleSelect(item.id)}>
-									<CheckIcon
-										className={cn('mr-2 size-4', value === item.name ? 'opacity-100' : 'opacity-0')}
-									/>
+									<CheckIcon className={cn('mr-2', value === item.name ? 'opacity-100' : 'opacity-0')} />
 									{item.name}
 								</CommandItem>
 							))}

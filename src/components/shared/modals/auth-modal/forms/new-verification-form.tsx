@@ -83,6 +83,7 @@ export const NewVerificationForm = () => {
 
 					<CardFooter className='flex flex-col gap-4'>
 						{!isLoading && error && 'Please Login again'}
+
 						{success && 'Please Login'}
 					</CardFooter>
 				</Card>

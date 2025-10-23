@@ -436,7 +436,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 						disabled={isAdding || isSaving}
 						className='rounded-xl transition-colors duration-300 ease-in-out'
 					>
-						{isAdding ? <Spinner className='text-black dark:text-white' /> : <PlusIcon className='size-4' />}
+						{isAdding ? <Spinner className='text-black dark:text-white' /> : <PlusIcon />}
 						<span>Transaction</span>
 					</Button>
 
@@ -447,7 +447,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 						disabled={isSaving || isAdding}
 						className='rounded-xl text-white transition-colors duration-300 ease-in-out'
 					>
-						{isSaving ? <Spinner className='text-white' /> : <SaveIcon className='size-4' />}
+						{isSaving ? <Spinner className='text-white' /> : <SaveIcon />}
 						<span>Save changes</span>
 					</Button>
 				</div>
