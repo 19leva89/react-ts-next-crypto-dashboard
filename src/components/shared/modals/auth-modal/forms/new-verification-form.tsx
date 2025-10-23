@@ -82,9 +82,9 @@ export const NewVerificationForm = () => {
 					</div>
 
 					<CardFooter className='flex flex-col gap-4'>
-						{!isLoading && error && <p>Please Login again</p>}
+						{!isLoading && error && <p>Please login again</p>}
 
-						{success && <p>Please Login</p>}
+						{success && <p>Please login</p>}
 					</CardFooter>
 				</Card>
 			</form>

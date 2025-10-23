@@ -90,7 +90,7 @@ describe('NewVerificationForm', () => {
 			expect(screen.getByText('Invalid token')).toBeInTheDocument()
 		})
 
-		expect(screen.getByText('Please Login again')).toBeInTheDocument()
+		expect(screen.getByText('Please login again')).toBeInTheDocument()
 	})
 
 	it('shows error when token is missing', async () => {
@@ -105,7 +105,7 @@ describe('NewVerificationForm', () => {
 		})
 
 		expect(newVerification).not.toHaveBeenCalled()
-		expect(screen.getByText('Please Login again')).toBeInTheDocument()
+		expect(screen.getByText('Please login again')).toBeInTheDocument()
 	})
 
 	it('shows loading state on submit', async () => {
@@ -139,6 +139,6 @@ describe('NewVerificationForm', () => {
 			expect(screen.getByText('An error occurred during verification')).toBeInTheDocument()
 		})
 
-		expect(screen.getByText('Please Login again')).toBeInTheDocument()
+		expect(screen.getByText('Please login again')).toBeInTheDocument()
 	})
 })
