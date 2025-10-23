@@ -33,6 +33,7 @@ const nextConfig: NextConfig = withNextJsObfuscator({
 		resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
 	},
 	reactStrictMode: false,
+	// cacheComponents: true,
 })
 
 export default nextConfig

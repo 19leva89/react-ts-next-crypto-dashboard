@@ -6,11 +6,11 @@ import { authRoutes, DEFAULT_LOGIN_REDIRECT, protectedRoutes } from '@/routes'
 const secret = process.env.AUTH_SECRET
 
 /**
- * Middleware function that handles authentication and route protection
+ * Proxy function that handles authentication and route protection
  * @param req - The incoming Next.js request object
  * @returns NextResponse object for redirecting or continuing the request
  */
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
 	const { nextUrl } = req
 	const { origin, pathname, protocol, search } = req.nextUrl
 
