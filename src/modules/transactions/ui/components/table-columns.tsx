@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { format } from 'date-fns'
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowDownIcon, ArrowDownToLine, ArrowUpFromLine, ArrowUpIcon } from 'lucide-react'
+import { ArrowDownIcon, ArrowDownToLine, ArrowUpDownIcon, ArrowUpFromLine, ArrowUpIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui'
 import { TWallet } from '@/modules/coins/schema'
@@ -23,7 +23,13 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Coin
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -61,7 +67,13 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Type
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -96,7 +108,13 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Quantity
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -118,7 +136,13 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Price
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -140,7 +164,13 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Total
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -175,7 +205,13 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Date
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -199,7 +235,13 @@ export const columns: ColumnDef<TTransaction>[] = [
 					className='px-0'
 				>
 					Wallet
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},

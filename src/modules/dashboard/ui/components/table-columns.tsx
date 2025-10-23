@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { ColumnDef } from '@tanstack/react-table'
 import { Line, LineChart, YAxis } from 'recharts'
-import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
+import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon } from 'lucide-react'
 
 import { cn } from '@/lib'
 import { TCoinsListData } from '@/modules/dashboard/schema'
@@ -26,7 +26,14 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 					className='px-0'
 				>
-					#{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					#
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -49,7 +56,13 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					className='px-0'
 				>
 					Name
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -85,7 +98,13 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					className='px-0'
 				>
 					Price
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -107,7 +126,13 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					className='px-0'
 				>
 					24h
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -149,7 +174,13 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					className='px-0'
 				>
 					24h volume
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},
@@ -171,7 +202,13 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 					className='px-0'
 				>
 					Market cap
-					{column.getIsSorted() === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
+					{column.getIsSorted() === 'asc' ? (
+						<ArrowUpIcon />
+					) : column.getIsSorted() === 'desc' ? (
+						<ArrowDownIcon />
+					) : (
+						<ArrowUpDownIcon />
+					)}
 				</Button>
 			)
 		},

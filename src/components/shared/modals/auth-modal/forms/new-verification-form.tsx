@@ -61,7 +61,7 @@ export const NewVerificationForm = () => {
 				<Card className='w-full max-w-md dark:bg-card'>
 					<div className='flex flex-col gap-5'>
 						<CardHeader className='flex items-center'>
-							<CardTitle>Email Verification</CardTitle>
+							<CardTitle>Email verification</CardTitle>
 
 							<CardDescription>Confirming your verification</CardDescription>
 						</CardHeader>
@@ -82,9 +82,9 @@ export const NewVerificationForm = () => {
 					</div>
 
 					<CardFooter className='flex flex-col gap-4'>
-						{!isLoading && error && 'Please Login again'}
+						{!isLoading && error && <p>Please Login again</p>}
 
-						{success && 'Please Login'}
+						{success && <p>Please Login</p>}
 					</CardFooter>
 				</Card>
 			</form>
