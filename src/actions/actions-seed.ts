@@ -1,10 +1,10 @@
 import axios from 'axios'
 import { chunk, pick } from 'lodash'
-import { Prisma } from '@prisma/client'
 
 // Do not change the path, made for seed.ts
 
 import { prisma } from './../lib/prisma'
+import { Prisma } from '../../prisma/generated'
 import { makeReq } from './../app/api/make-request'
 import { TCoinsListData } from './../modules/dashboard/schema'
 
@@ -206,7 +206,6 @@ export const getCoinsList = async (): Promise<TCoinsListData> => {
 
 		const transformCoinData = (coin: any) => ({
 			description: coin.description,
-			image: coin.image,
 			current_price: coin.current_price,
 			market_cap: coin.market_cap,
 			market_cap_rank: coin.market_cap_rank,
@@ -216,11 +215,7 @@ export const getCoinsList = async (): Promise<TCoinsListData> => {
 			price_change_percentage_24h: coin.price_change_percentage_24h,
 			circulating_supply: coin.circulating_supply,
 			sparkline_in_7d: coin.sparkline_in_7d,
-			price_change_percentage_1h_in_currency: coin.price_change_percentage_1h_in_currency,
-			price_change_percentage_24h_in_currency: coin.price_change_percentage_24h_in_currency,
 			price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
-			price_change_percentage_30d_in_currency: coin.price_change_percentage_30d_in_currency,
-			price_change_percentage_1y_in_currency: coin.price_change_percentage_1y_in_currency,
 		})
 
 		// Breaking data into chunks

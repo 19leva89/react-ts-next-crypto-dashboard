@@ -1,12 +1,12 @@
 'use server'
 
 import { pick } from 'lodash'
-import { MarketChart } from '@prisma/client'
 
 import { prisma } from '@/lib/prisma'
 import { ValidDays } from '@/constants/chart'
 import { makeReq } from '@/app/api/make-request'
 import { handleError } from '@/lib/handle-error'
+import { MarketChart } from '../../prisma/generated'
 import { getFieldForDays } from '@/data/field-for-days'
 import { TExchangeRate } from '@/modules/helpers/schema'
 import { TMarketChartData } from '@/modules/coins/schema'

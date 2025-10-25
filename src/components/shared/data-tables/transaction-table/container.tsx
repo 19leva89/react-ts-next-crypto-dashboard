@@ -67,7 +67,7 @@ export const TableContainer = ({ editTransactions, onChange, className }: Props)
 	}
 
 	return (
-		<div className={cn('h-[100vh] bg-background', className)}>
+		<div className={cn('h-screen bg-background', className)}>
 			<DataTable columns={getColumns(onTransactionChange, handleTransactionDelete)} data={editTransactions} />
 		</div>
 	)

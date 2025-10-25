@@ -201,7 +201,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 											key={header.id}
 											className={cn(
 												'px-1 py-0 xs:px-2 xs:py-1 sm:px-3 sm:py-2 xl:px-4 xl:py-3',
-												i === 0 && 'sticky left-[0rem] bg-gray-100 dark:bg-slate-800',
+												i === 0 && 'sticky left-0 bg-gray-100 dark:bg-slate-800',
 											)}
 										>
 											{header.isPlaceholder
@@ -227,7 +227,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 											key={cell.id}
 											className={cn(
 												'px-1 py-0 group-hover:bg-gray-50 xs:px-2 xs:py-1 sm:px-3 sm:py-2 xl:px-4 xl:py-3 dark:group-hover:bg-gray-800',
-												i === 0 && 'sticky left-[0rem] bg-background dark:bg-background',
+												i === 0 && 'sticky left-0 bg-background dark:bg-background',
 											)}
 										>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}

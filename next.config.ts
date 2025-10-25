@@ -6,6 +6,7 @@ import { obfuscatorOptions, pluginOptions } from './obfuscator-options'
 const withNextJsObfuscator = createNextJsObfuscator(obfuscatorOptions, pluginOptions)
 
 const nextConfig: NextConfig = withNextJsObfuscator({
+	turbopack: {},
 	images: {
 		remotePatterns: [
 			{
@@ -23,16 +24,8 @@ const nextConfig: NextConfig = withNextJsObfuscator({
 		],
 		unoptimized: true,
 	},
-	turbopack: {
-		rules: {
-			'*.svg': {
-				loaders: ['@svgr/webpack'],
-				as: '*.js',
-			},
-		},
-		resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
-	},
 	reactStrictMode: false,
+	// cacheComponents: true,
 })
 
 export default nextConfig

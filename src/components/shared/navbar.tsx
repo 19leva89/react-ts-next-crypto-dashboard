@@ -76,7 +76,7 @@ export const Navbar = () => {
 							size='lg'
 							className='group flex gap-3 rounded-xl px-4 text-sm transition-colors duration-300 ease-in-out'
 						>
-							<span className='relative top-[1px] text-sm'>{currency.toUpperCase()}</span>
+							<span className='relative top-px text-sm'>{currency.toUpperCase()}</span>
 
 							<div className='relative hidden size-6 transition-transform duration-300 group-hover:rotate-180 sm:block'>
 								<ChevronsUpDownIcon size={18} className='absolute inset-0 m-auto size-4.5!' />
@@ -86,7 +86,7 @@ export const Navbar = () => {
 
 					<DropdownMenuContent
 						align='start'
-						className='flex w-23 min-w-[5rem] flex-col gap-1 rounded-xl shadow-lg'
+						className='flex w-23 min-w-20 flex-col gap-1 rounded-xl shadow-lg'
 					>
 						{Object.entries(exchangeRate?.vsCurrencies || {}).map(([curr]) => (
 							<DropdownMenuItem
