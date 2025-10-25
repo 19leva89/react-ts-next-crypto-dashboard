@@ -14,7 +14,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui'
-
 import { getWalletDisplayName } from '@/data/wallet'
 import { TTransaction, WALLETS } from '@/modules/coins/schema'
 import { InputFormatPrice, InputFormatQuantity } from '@/components/shared'

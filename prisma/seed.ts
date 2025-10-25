@@ -7,7 +7,7 @@ import {
 } from './../src/actions/actions-seed'
 import { prisma } from './../src/lib/prisma'
 
-//! To run the command "npx prisma db seed" the server must be running
+//! To run the command "npm run db:seed" the server must be running
 
 // User ID
 // export const userId = 'cm736nm3z0000o80c4valc9jp'
@@ -15,16 +15,12 @@ import { prisma } from './../src/lib/prisma'
 async function up() {
 	// Updating the list of cryptocurrencies ~20min
 	// await updateCoinsListIDMapFromAPI()
-
 	// Updating the list of cryptocurrencies with images ~20min
 	// await updateCoinsListIDMapImageFromAPI()
-
 	// Delete non existent cryptocurrencies
-	await deleteNonExistentCoinsListIDMap()
-
+	// await deleteNonExistentCoinsListIDMap()
 	// Get a list of cryptocurrencies TOP250
 	// await getCoinsList()
-
 	// Create a record in Coin and UserCoin
 	// #1 1INCH
 	// await prisma.$transaction(async (prisma) => {

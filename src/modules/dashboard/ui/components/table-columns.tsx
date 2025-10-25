@@ -80,7 +80,7 @@ export const columns: ColumnDef<TCoinsListData[0]>[] = [
 						className='size-6 rounded-full xl:size-8'
 					/>
 
-					<span className='max-w-[6rem] truncate'>{coin.name}</span>
+					<span className='max-w-24 truncate'>{coin.name}</span>
 				</div>
 			)
 		},

@@ -87,17 +87,14 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 				{isLoading ? (
 					<div className='flex flex-nowrap gap-2 text-sm'>
 						{[...Array(5)].map((_, i) => (
-							<div
-								key={i}
-								className='w-full max-w-[18rem] min-w-[15rem] rounded-xl border p-3 dark:border-gray-700'
-							>
+							<div key={i} className='w-full max-w-72 min-w-60 rounded-xl border p-3 dark:border-gray-700'>
 								<div className='flex items-center justify-between'>
 									<div className='flex items-center gap-1'>
 										<Skeleton className='size-8 rounded-full' />
 
 										<div className='flex flex-col gap-1'>
-											<Skeleton className='h-[18px] w-16 rounded-xl' />
-											<Skeleton className='h-[14px] w-12 rounded-xl' />
+											<Skeleton className='h-4.5 w-16 rounded-xl' />
+											<Skeleton className='h-3.5 w-12 rounded-xl' />
 										</div>
 									</div>
 
@@ -105,8 +102,8 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 								</div>
 
 								<div className='mt-3 flex flex-col gap-1'>
-									<Skeleton className='h-[14px] w-16 rounded-xl' />
-									<Skeleton className='h-[14px] w-24 rounded-xl' />
+									<Skeleton className='h-3.5 w-16 rounded-xl' />
+									<Skeleton className='h-3.5 w-24 rounded-xl' />
 								</div>
 							</div>
 						))}
@@ -117,7 +114,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 							<div
 								key={i}
 								onClick={() => handleCoinClick(data.item.id)}
-								className='w-full max-w-[18rem] min-w-[15rem] cursor-pointer rounded-xl border p-3 duration-500 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-slate-800'
+								className='w-full max-w-72 min-w-60 cursor-pointer rounded-xl border p-3 duration-500 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-slate-800'
 							>
 								<div className='flex items-center justify-between'>
 									<div className='flex items-center gap-1'>

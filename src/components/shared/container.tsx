@@ -9,7 +9,7 @@ interface Props {
 
 export const Container = ({ className, children }: Props) => {
 	return (
-		<div data-testid='container' className={cn('mx-auto max-w-320', className)}>
+		<div data-testid='container' className={cn('mx-auto max-w-7xl', className)}>
 			{children}
 		</div>
 	)

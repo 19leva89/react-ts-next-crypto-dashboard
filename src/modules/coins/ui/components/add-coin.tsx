@@ -151,7 +151,7 @@ export const AddCoin = ({ className }: Props) => {
 					key={coin.id}
 					value={coin.id}
 					style={style}
-					className='!w-[99%] cursor-pointer truncate rounded-xl'
+					className='w-[99%]! cursor-pointer truncate rounded-xl'
 				>
 					<div className='flex h-5 items-center gap-2'>
 						<Image
