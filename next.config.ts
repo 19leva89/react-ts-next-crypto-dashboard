@@ -25,6 +25,7 @@ const nextConfig: NextConfig = withNextJsObfuscator({
 		unoptimized: true,
 	},
 	reactStrictMode: false,
+	reactCompiler: true,
 	// cacheComponents: true,
 })
 
