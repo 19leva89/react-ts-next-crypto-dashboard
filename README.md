@@ -37,10 +37,6 @@ Styling and UI Frameworks:
 - shadcn/ui (stylization)
 - Tailwind CSS (stylization)
 
-Testing and QA (Quality Assurance):
-- jsdom (DOM testing)
-- Vitest (unit testing)
-
 Utilities and Libraries:
 - Date-fns (date/time manipulation)
 - Javascript obfuscator (code obfuscation)
