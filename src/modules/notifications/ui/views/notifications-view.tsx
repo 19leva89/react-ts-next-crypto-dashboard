@@ -90,7 +90,7 @@ export const NotificationsView = () => {
 	const trpc = useTRPC()
 	const router = useRouter()
 	const queryClient = useQueryClient()
-	const setDoNotDisturbMutation = useMutation(trpc.user.setDoNotDisturb.mutationOptions())
+	const setDoNotDisturbMutation = useMutation(trpc.user.setDoNotDisturb.mutationOptions({}))
 
 	const queryOptions = trpc.notifications.getNotifications.infiniteQueryOptions(
 		{ limit: INFINITE_SCROLL_LIMIT },
@@ -151,7 +151,7 @@ export const NotificationsView = () => {
 	)
 
 	const { mutate: deleteExpiredNotifications } = useMutation(
-		trpc.notifications.deleteExpiredNotifications.mutationOptions(),
+		trpc.notifications.deleteExpiredNotifications.mutationOptions({}),
 	)
 
 	const handleDoNotDisturbToggle = async (checked: boolean) => {

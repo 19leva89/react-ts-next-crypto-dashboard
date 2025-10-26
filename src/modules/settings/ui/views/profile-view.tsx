@@ -32,8 +32,8 @@ import { TUpdateProfileValues, updateProfileSchema } from '@/modules/settings/sc
 
 export const ProfileView = () => {
 	const trpc = useTRPC()
-	const deleteUserMutation = useMutation(trpc.settings.deleteUser.mutationOptions())
-	const updateUserMutation = useMutation(trpc.settings.updateUserInfo.mutationOptions())
+	const deleteUserMutation = useMutation(trpc.settings.deleteUser.mutationOptions({}))
+	const updateUserMutation = useMutation(trpc.settings.updateUserInfo.mutationOptions({}))
 
 	const { update } = useSession()
 	const { data: profile } = useSuspenseQuery(trpc.settings.getProfile.queryOptions())
