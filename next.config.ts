@@ -1,12 +1,6 @@
 import type { NextConfig } from 'next'
-import createNextJsObfuscator from 'nextjs-obfuscator'
 
-import { obfuscatorOptions, pluginOptions } from './obfuscator-options'
-
-const withNextJsObfuscator = createNextJsObfuscator(obfuscatorOptions, pluginOptions)
-
-const nextConfig: NextConfig = withNextJsObfuscator({
-	turbopack: {},
+const nextConfig: NextConfig = {
 	images: {
 		remotePatterns: [
 			{
@@ -27,6 +21,6 @@ const nextConfig: NextConfig = withNextJsObfuscator({
 	reactStrictMode: false,
 	reactCompiler: true,
 	// cacheComponents: true,
-})
+}
 
 export default nextConfig
