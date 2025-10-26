@@ -52,7 +52,7 @@ export const SidebarApp = ({ firstSection, secondSection, ...props }: Props) => 
 	const isLoading = status === 'loading'
 
 	const addLogoutNotificationMutation = useMutation(
-		trpc.notifications.addLogoutNotification.mutationOptions(),
+		trpc.notifications.addLogoutNotification.mutationOptions({}),
 	)
 
 	const { data: unreadPriceNotifications } = useQuery({
