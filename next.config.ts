@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
 		unoptimized: true,
 	},
 	reactStrictMode: false,
+	reactCompiler: true,
 	// cacheComponents: true,
 }
 
