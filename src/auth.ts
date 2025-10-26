@@ -13,7 +13,7 @@ import { createLoginNotification } from '@/actions/login'
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation'
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
-	adapter: PrismaAdapter(prisma) as Adapter,
+	// adapter: PrismaAdapter(prisma) as Adapter,
 
 	secret: process.env.AUTH_SECRET,
 
