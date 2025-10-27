@@ -1,10 +1,10 @@
 import { isValid } from 'date-fns'
-import { MarketChart } from '@prisma/client'
 
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { ValidDays } from '@/constants/chart'
 import { makeReq } from '@/app/api/make-request'
+import { MarketChart } from '@/generated/client'
 import { handleError } from '@/lib/handle-error'
 import { getFieldForDays } from '@/data/field-for-days'
 import { TUserChartDataPoint } from '@/modules/charts/schema'

@@ -1,10 +1,9 @@
 'use server'
 
-import { MarketChart } from '@prisma/client'
-
 import { prisma } from '@/lib/prisma'
 import { ValidDays } from '@/constants/chart'
 import { makeReq } from '@/app/api/make-request'
+import { MarketChart } from '@/generated/client'
 import { handleError } from '@/lib/handle-error'
 import { getFieldForDays } from '@/data/field-for-days'
 import { TMarketChartData } from '@/modules/coins/schema'

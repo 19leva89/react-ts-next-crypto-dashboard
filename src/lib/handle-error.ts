@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { ZodError } from 'zod'
-import { Prisma } from '@prisma/client'
 import { NextResponse } from 'next/server'
+
+import { Prisma } from '@/generated/client'
 
 export const handleError = (error: unknown, context: string) => {
 	if (error instanceof Prisma.PrismaClientKnownRequestError) {
