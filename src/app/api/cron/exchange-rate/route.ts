@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { headers } from 'next/headers'
+import { NextResponse } from 'next/server'
 
 import { updateExchangeRate } from '@/actions/cron'
 
@@ -7,13 +8,13 @@ export const maxDuration = 10
 /**
  * Handles GET requests for updating exchange rates via cron job
  * Requires Bearer token authorization using CRON_SECRET environment variable
- * @param req - The incoming Next.js request object
  * @returns JSON response indicating success or error
  */
-export async function GET(req: NextRequest) {
+export async function GET() {
 	try {
 		// Checking authorization for cron requests
-		const authHeader = req.headers.get('authorization')
+		const headersList = await headers()
+		const authHeader = headersList.get('authorization')
 
 		const secret = process.env.CRON_SECRET
 
