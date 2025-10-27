@@ -10,7 +10,7 @@ export const userRouter = createTRPCRouter({
 			select: { doNotDisturb: true },
 		})
 
-		return user?.doNotDisturb
+		return user?.doNotDisturb ?? false
 	}),
 
 	setDoNotDisturb: protectedProcedure
