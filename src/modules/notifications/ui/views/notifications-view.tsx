@@ -298,7 +298,12 @@ export const NotificationsView = () => {
 
 										<DropdownMenu>
 											<DropdownMenuTrigger asChild>
-												<Button variant='ghost' size='icon-lg' className='group mt-0! shrink-0 rounded-xl'>
+												<Button
+													variant='ghost'
+													size='icon-lg'
+													disabled={isLoadingThis}
+													className='group mt-0! shrink-0 rounded-xl'
+												>
 													<div className='relative size-5 transition-transform duration-300 ease-in-out group-hover:rotate-180'>
 														{isLoadingThis ? (
 															<Spinner className='absolute inset-0 m-auto' />

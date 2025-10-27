@@ -1,5 +1,4 @@
 import { JWT } from 'next-auth/jwt'
-import { UserRole } from '@prisma/client'
 import { Adapter } from 'next-auth/adapters'
 import NextAuth, { Session, User } from 'next-auth'
 import { PrismaAdapter } from '@auth/prisma-adapter'
@@ -7,13 +6,14 @@ import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from '@/lib/prisma'
 import authConfig from '@/auth.config'
 import { getUserById } from '@/data/user'
+import { UserRole } from '@/generated/client'
 import { getAccountByUserId } from '@/data/account'
 import { getLoginContext } from '@/lib/browser-utils'
 import { createLoginNotification } from '@/actions/login'
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation'
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
-	adapter: PrismaAdapter(prisma) as Adapter,
+	adapter: PrismaAdapter(prisma as any) as Adapter,
 
 	secret: process.env.AUTH_SECRET,
 

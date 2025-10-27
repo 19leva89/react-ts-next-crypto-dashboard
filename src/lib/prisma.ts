@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@/generated/client'
 
 const prismaClientSingleton = () => {
 	const isVercel = process.env.VERCEL === '1'
