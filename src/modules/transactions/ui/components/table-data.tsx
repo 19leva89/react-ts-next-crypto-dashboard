@@ -200,7 +200,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 										<TableHead
 											key={header.id}
 											className={cn(
-												'px-1 py-0 xs:px-2 xs:py-1 sm:px-3 sm:py-2 xl:px-4 xl:py-3',
+												'px-1 py-0 text-center xs:px-2 xs:py-1 sm:px-3 sm:py-2 xl:px-4 xl:py-3',
 												i === 0 && 'sticky left-0 bg-gray-100 dark:bg-slate-800',
 											)}
 										>

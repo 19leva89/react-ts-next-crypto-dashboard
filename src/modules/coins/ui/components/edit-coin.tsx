@@ -192,6 +192,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 						</div>
 
 						<TableContainer
+							key={coin.coinId}
 							editTransactions={editTransactions}
 							onChange={setEditTransactions}
 							className='h-[50vh]'

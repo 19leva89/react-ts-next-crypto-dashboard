@@ -101,9 +101,9 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 								<TableHead
 									key={header.id}
 									className={cn(
-										'px-1 py-1 xs:px-2 sm:px-3 sm:py-2 xl:px-4 xl:py-3',
+										'px-1 py-1 text-center xs:px-2 sm:px-3 sm:py-2 xl:px-4 xl:py-3',
 										i === 0 && 'sticky left-[0.05rem] bg-gray-100 dark:bg-slate-800',
-										i === 1 && 'sticky left-22 min-w-20 bg-gray-100 xs:left-24 sm:left-26 dark:bg-slate-800',
+										i === 1 && 'sticky left-31 min-w-20 bg-gray-100 xs:left-33 sm:left-35 dark:bg-slate-800',
 									)}
 								>
 									{header.isPlaceholder
@@ -126,7 +126,7 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 											'px-1 py-1 group-hover:bg-gray-50 xs:px-2 sm:px-3 sm:py-2 xl:px-4 xl:py-3 dark:group-hover:bg-gray-700',
 											i === 0 && 'sticky left-[0.05rem] bg-background dark:bg-background',
 											i === 1 &&
-												'sticky left-22 min-w-20 bg-background xs:left-24 sm:left-26 dark:bg-background',
+												'sticky left-31 min-w-20 bg-background xs:left-33 sm:left-35 dark:bg-background',
 										)}
 									>
 										{flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -145,11 +145,11 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 
 				<TableFooter className='sticky bottom-0 z-20 bg-secondary'>
 					<TableRow className='text-xs sm:text-sm lg:text-base'>
-						<TableCell className='sticky left-[0.05rem] bg-gray-100 pr-0 pl-2 sm:pr-2 sm:pl-5 lg:pl-7 dark:bg-slate-800'>
+						<TableCell className='sticky left-2 bg-gray-100 pr-0 pl-2 sm:pr-2 sm:pl-5 lg:pl-7 dark:bg-slate-800'>
 							{formatValue(totals.totalQuantity)}
 						</TableCell>
 
-						<TableCell className='sticky left-22 min-w-20 bg-gray-100 pr-0 pl-2 xs:left-24 sm:left-26 sm:pr-2 sm:pl-5 lg:pl-7 dark:bg-slate-800'>
+						<TableCell className='sticky left-33 min-w-20 bg-gray-100 pr-0 pl-2 xs:left-35 sm:left-37 sm:pr-2 sm:pl-5 lg:pl-7 dark:bg-slate-800'>
 							{formatUSDPrice(averagePrice)}
 						</TableCell>
 

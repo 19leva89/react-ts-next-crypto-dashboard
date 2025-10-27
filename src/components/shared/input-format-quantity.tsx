@@ -3,15 +3,17 @@
 import { ActivityIcon } from 'lucide-react'
 import { ChangeEvent, useEffect, useState } from 'react'
 
+import { cn } from '@/lib'
 import { useFormatValue } from '@/hooks/use-format-value'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui'
 
 interface Props {
 	value: number
 	onChange: (value: number) => void
+	className?: string
 }
 
-export const InputFormatQuantity = ({ value, onChange }: Props) => {
+export const InputFormatQuantity = ({ value, onChange, className }: Props) => {
 	const formatValue = useFormatValue()
 
 	const [isEditing, setIsEditing] = useState<boolean>(false)
@@ -68,7 +70,12 @@ export const InputFormatQuantity = ({ value, onChange }: Props) => {
 	}, [value, isEditing])
 
 	return (
-		<InputGroup className='h-10 rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
+		<InputGroup
+			className={cn(
+				'h-10 rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent',
+				className,
+			)}
+		>
 			<InputGroupAddon align='inline-start'>
 				<ActivityIcon className='size-3 sm:size-3.5 lg:size-4' />
 			</InputGroupAddon>

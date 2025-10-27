@@ -14,9 +14,9 @@ import {
 	ShieldIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useEffect } from 'react'
 import { enUS } from 'date-fns/locale'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { useMutation, useQueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query'
 
@@ -99,6 +99,9 @@ export const NotificationsView = () => {
 		},
 	)
 
+	const [markingIds, setMarkingIds] = useState<Set<string>>(new Set())
+	const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set())
+
 	const { data: doNotDisturb } = useQuery(trpc.user.getDoNotDisturb.queryOptions())
 	const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isPending } = useInfiniteQuery(queryOptions)
 
@@ -109,7 +112,17 @@ export const NotificationsView = () => {
 
 	const { mutate: markAsRead, isPending: isMarkingAsRead } = useMutation(
 		trpc.notifications.markAsRead.mutationOptions({
-			onSuccess: () => {
+			onMutate: async (id: string) => {
+				setMarkingIds((prev) => new Set([...prev, id]))
+			},
+			onSuccess: (data, id: string) => {
+				setMarkingIds((prev) => {
+					const newSet = new Set(prev)
+					newSet.delete(id)
+
+					return newSet
+				})
+
 				// Invalidate both the notifications list and unread count
 				queryClient.invalidateQueries({
 					queryKey: trpc.notifications.getNotifications.infiniteQueryKey({ limit: INFINITE_SCROLL_LIMIT }),
@@ -117,6 +130,16 @@ export const NotificationsView = () => {
 				queryClient.invalidateQueries({
 					queryKey: trpc.notifications.getUnreadPriceNotifications.queryKey(),
 				})
+			},
+			onError: (error, id: string) => {
+				setMarkingIds((prev) => {
+					const newSet = new Set(prev)
+					newSet.delete(id)
+
+					return newSet
+				})
+
+				toast.error(error instanceof Error ? error.message : 'Failed to mark as read')
 			},
 		}),
 	)
@@ -139,13 +162,33 @@ export const NotificationsView = () => {
 
 	const { mutate: deleteNotification, isPending: isDeleting } = useMutation(
 		trpc.notifications.deleteNotification.mutationOptions({
-			onSuccess: () => {
+			onMutate: async (id: string) => {
+				setDeletingIds((prev) => new Set([...prev, id]))
+			},
+			onSuccess: (data, id: string) => {
+				setDeletingIds((prev) => {
+					const newSet = new Set(prev)
+					newSet.delete(id)
+
+					return newSet
+				})
+
 				// Optimistic cache update
 				queryClient.invalidateQueries({
 					queryKey: trpc.notifications.getNotifications.infiniteQueryKey({ limit: INFINITE_SCROLL_LIMIT }),
 				})
 
 				toast.success('Notification deleted')
+			},
+			onError: (error, id: string) => {
+				setDeletingIds((prev) => {
+					const newSet = new Set(prev)
+					newSet.delete(id)
+
+					return newSet
+				})
+
+				toast.error(error instanceof Error ? error.message : 'Failed to delete notification')
 			},
 		}),
 	)
@@ -214,105 +257,117 @@ export const NotificationsView = () => {
 
 				<CardContent className='p-0'>
 					<div className='divide-y'>
-						{notifications.map((notification, i) => (
-							<div
-								key={`${notification.id}-${i}`}
-								className='relative cursor-pointer p-4 transition-colors duration-300 ease-in-out hover:bg-muted/50'
-							>
-								<div className='flex items-start'>
-									{!notification.isRead && <span className='absolute top-0 bottom-0 left-0 w-1 bg-primary' />}
+						{notifications.map((notification, i) => {
+							const isMarkingThis = markingIds.has(notification.id)
+							const isDeletingThis = deletingIds.has(notification.id)
+							const isLoadingThis = isDeletingThis || isMarkingThis
 
-									<div className='mr-3 text-xl'>{getNotificationIcon(notification.type)}</div>
+							return (
+								<div
+									key={`${notification.id}-${i}`}
+									className='relative cursor-pointer p-4 transition-colors duration-300 ease-in-out hover:bg-muted/50'
+								>
+									<div className='flex items-start'>
+										{!notification.isRead && (
+											<span className='absolute top-0 bottom-0 left-0 w-1 bg-primary' />
+										)}
 
-									<div className='flex-1'>
-										<div className='flex items-center justify-between'>
-											<p
-												className={cn(
-													'text-sm',
-													notification.isRead ? 'text-muted-foreground' : 'font-medium',
-												)}
-											>
-												{notification.title}
+										<div className='mr-3 text-xl'>{getNotificationIcon(notification.type)}</div>
+
+										<div className='flex-1'>
+											<div className='flex items-center justify-between'>
+												<p
+													className={cn(
+														'text-sm',
+														notification.isRead ? 'text-muted-foreground' : 'font-medium',
+													)}
+												>
+													{notification.title}
+												</p>
+											</div>
+
+											{formatNotificationMessage(notification)}
+
+											<p className='mt-1 text-xs text-muted-foreground'>
+												{formatDistanceToNow(new Date(notification.createdAt), {
+													addSuffix: true,
+													locale: enUS,
+												})}
 											</p>
 										</div>
 
-										{formatNotificationMessage(notification)}
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button variant='ghost' size='icon-lg' className='group mt-0! shrink-0 rounded-xl'>
+													<div className='relative size-5 transition-transform duration-300 ease-in-out group-hover:rotate-180'>
+														{isLoadingThis ? (
+															<Spinner className='absolute inset-0 m-auto' />
+														) : (
+															<EllipsisVerticalIcon className='absolute inset-0 m-auto' />
+														)}
+													</div>
 
-										<p className='mt-1 text-xs text-muted-foreground'>
-											{formatDistanceToNow(new Date(notification.createdAt), {
-												addSuffix: true,
-												locale: enUS,
-											})}
-										</p>
-									</div>
-
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button variant='ghost' size='icon-lg' className='group mt-0! shrink-0 rounded-xl'>
-												<div className='relative size-5 transition-transform duration-300 ease-in-out group-hover:rotate-180'>
-													<EllipsisVerticalIcon className='absolute inset-0 m-auto' />
-												</div>
-
-												<span className='sr-only'>More</span>
-											</Button>
-										</DropdownMenuTrigger>
-
-										<DropdownMenuContent side='right' align='start' sideOffset={0} className='rounded-xl'>
-											{!notification.isRead && (
-												<DropdownMenuItem
-													onClick={() => markAsRead(notification.id)}
-													className='cursor-pointer rounded-xl p-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden'
-												>
-													<Button
-														variant='ghost'
-														size='icon-lg'
-														disabled={isMarkingAsRead}
-														className='mx-2 flex items-center justify-start gap-3'
-													>
-														<CheckIcon />
-
-														<span>Mark read</span>
-													</Button>
-												</DropdownMenuItem>
-											)}
-
-											{notification.type === 'PRICE_ALERT' && (
-												<DropdownMenuItem
-													onSelect={() => router.push(`/coins/${notification.coinId}`)}
-													className='cursor-pointer rounded-xl p-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden'
-												>
-													<Button
-														variant='ghost'
-														size='icon-lg'
-														className='mx-2 flex items-center justify-start gap-3'
-													>
-														<EyeIcon />
-
-														<span>View</span>
-													</Button>
-												</DropdownMenuItem>
-											)}
-
-											<DropdownMenuItem
-												onClick={() => deleteNotification(notification.id)}
-												className='cursor-pointer rounded-xl p-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden'
-											>
-												<Button
-													variant='ghost'
-													size='icon-lg'
-													disabled={isDeleting}
-													className='mx-2 flex items-center justify-start gap-3'
-												>
-													<TrashIcon />
-
-													<span>Delete</span>
+													<span className='sr-only'>More</span>
 												</Button>
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
+											</DropdownMenuTrigger>
+
+											<DropdownMenuContent side='right' align='start' sideOffset={0} className='rounded-xl'>
+												{!notification.isRead && (
+													<DropdownMenuItem
+														onClick={() => markAsRead(notification.id)}
+														className='cursor-pointer rounded-xl p-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden'
+													>
+														<Button
+															variant='ghost'
+															size='icon-lg'
+															disabled={isMarkingThis || isMarkingAsRead}
+															className='mx-2 flex items-center justify-start gap-3'
+														>
+															<CheckIcon />
+
+															<span>Mark read</span>
+														</Button>
+													</DropdownMenuItem>
+												)}
+
+												{notification.type === 'PRICE_ALERT' && (
+													<DropdownMenuItem
+														onSelect={() => router.push(`/coins/${notification.coinId}`)}
+														className='cursor-pointer rounded-xl p-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden'
+													>
+														<Button
+															variant='ghost'
+															size='icon-lg'
+															className='mx-2 flex items-center justify-start gap-3'
+														>
+															<EyeIcon />
+
+															<span>View</span>
+														</Button>
+													</DropdownMenuItem>
+												)}
+
+												<DropdownMenuItem
+													onClick={() => deleteNotification(notification.id)}
+													className='cursor-pointer rounded-xl p-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden'
+												>
+													<Button
+														variant='ghost'
+														size='icon-lg'
+														disabled={isDeletingThis || isDeleting}
+														className='mx-2 flex items-center justify-start gap-3'
+													>
+														<TrashIcon />
+
+														<span>Delete</span>
+													</Button>
+												</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>
+									</div>
 								</div>
-							</div>
-						))}
+							)
+						})}
 
 						{isPending && (
 							<div className='flex items-center justify-center p-10'>
