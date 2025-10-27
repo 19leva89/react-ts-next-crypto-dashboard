@@ -422,7 +422,7 @@ export const CoinIdContainer = ({ coin }: Props) => {
 				</div>
 
 				<TableContainer
-					key={Date.now()}
+					key={coin.coinId}
 					editTransactions={editTransactions}
 					onChange={setEditTransactions}
 					className='h-auto'

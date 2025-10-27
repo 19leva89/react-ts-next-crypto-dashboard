@@ -49,6 +49,7 @@ export const getColumns = (
 			<InputFormatQuantity
 				value={row.original.quantity}
 				onChange={(newValue) => onTransactionChange(row.original.id, 'quantity', newValue.toString())}
+				className='w-29 md:w-full'
 			/>
 		),
 	},
@@ -78,6 +79,7 @@ export const getColumns = (
 			<InputFormatPrice
 				value={row.original.price}
 				onChange={(newValue) => onTransactionChange(row.original.id, 'price', newValue.toString())}
+				className='w-29 md:w-full'
 			/>
 		),
 	},

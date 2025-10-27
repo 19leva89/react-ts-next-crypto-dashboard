@@ -1,18 +1,22 @@
 'use client'
 
 import { ChangeEvent, useState } from 'react'
+
+import { cn } from '@/lib'
 import { useFormatValue } from '@/hooks/use-format-value'
 import { useSelectedCurrency } from '@/hooks/use-selected-currency'
 import { useCurrencyConverter } from '@/hooks/use-currency-converter'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui'
 
 interface Props {
-	value: number // USD value from DB
-	onChange: (value: number) => void // Should return USD value for DB
+	value: number
+	onChange: (value: number) => void
+	className?: string
 }
 
-export const InputFormatPrice = ({ value, onChange }: Props) => {
+export const InputFormatPrice = ({ value, onChange, className }: Props) => {
 	const formatValue = useFormatValue()
+
 	const { CurrencyIcon } = useSelectedCurrency()
 	const { fromUSD, toUSD } = useCurrencyConverter()
 
@@ -73,7 +77,12 @@ export const InputFormatPrice = ({ value, onChange }: Props) => {
 	}
 
 	return (
-		<InputGroup className='h-10 rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent'>
+		<InputGroup
+			className={cn(
+				'h-10 rounded-xl transition-colors duration-300 ease-in-out hover:bg-accent dark:bg-transparent',
+				className,
+			)}
+		>
 			<InputGroupAddon align='inline-start'>
 				<CurrencyIcon className='size-3 sm:size-3.5 lg:size-4' />
 			</InputGroupAddon>

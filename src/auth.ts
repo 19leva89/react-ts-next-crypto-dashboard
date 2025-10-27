@@ -1,4 +1,5 @@
 import { JWT } from 'next-auth/jwt'
+import { UserRole } from '@prisma/client'
 import { Adapter } from 'next-auth/adapters'
 import NextAuth, { Session, User } from 'next-auth'
 import { PrismaAdapter } from '@auth/prisma-adapter'
@@ -6,14 +7,13 @@ import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from '@/lib/prisma'
 import authConfig from '@/auth.config'
 import { getUserById } from '@/data/user'
-import { UserRole } from '../prisma/generated'
 import { getAccountByUserId } from '@/data/account'
 import { getLoginContext } from '@/lib/browser-utils'
 import { createLoginNotification } from '@/actions/login'
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation'
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
-	// adapter: PrismaAdapter(prisma) as Adapter,
+	adapter: PrismaAdapter(prisma) as Adapter,
 
 	secret: process.env.AUTH_SECRET,
 
@@ -26,9 +26,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 	},
 
 	callbacks: {
-		async signIn(params) {
-			const { user, account } = params
-
+		async signIn({ user, account }) {
 			if (!user.id) {
 				return false // Reject sign-in if user ID is undefined
 			}
@@ -36,9 +34,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 			const existingUser = await getUserById(user.id)
 
 			// If the user is found and already has a linked account
-			if (existingUser?.accounts?.length) {
+			if (existingUser?.accounts?.length && account?.provider) {
 				const provider = existingUser.accounts[0].provider
-				if (provider !== account?.provider) {
+				if (provider !== account.provider) {
 					throw new Error(
 						`This account can only be accessed with ${provider.charAt(0).toUpperCase() + provider.slice(1)} login`,
 					)
@@ -65,6 +63,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 		},
 
 		async session({ session, token }: { session: Session; token: JWT }) {
+			if (!token) {
+				return session
+			}
+
 			if (token.sub && session.user) {
 				session.user.id = token.sub
 			}

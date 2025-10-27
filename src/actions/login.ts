@@ -10,9 +10,9 @@ import {
 	TCreateNotification,
 	TNotificationMetadata,
 } from '@/modules/notifications/schema'
-import { getUserByEmail } from '@/data/user'
 import { handleError } from '@/lib/handle-error'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
+import { getUserByEmail, getUserById } from '@/data/user'
 import { getTwoFactorTokenByEmail } from '@/data/two-factor-token'
 import { formatLoginMessage, LoginContext } from '@/lib/browser-utils'
 import { generateTwoFactorToken, generateVerificationToken } from '@/lib/tokens'
@@ -127,6 +127,14 @@ export const credentialsLoginUser = async (values: TLoginValues) => {
 
 export const createLoginNotification = async (userId: string, context?: LoginContext) => {
 	try {
+		const existingUser = await getUserById(userId)
+
+		if (!existingUser) {
+			console.warn(`User with id ${userId} not found in database, skipping notification creation`)
+
+			return
+		}
+
 		let message = 'You have successfully logged in'
 		let title = 'Login Successful'
 

@@ -1,4 +1,5 @@
-import { MarketChart } from '../../prisma/generated'
+import { MarketChart } from '@prisma/client'
+
 import { DAYS_MAPPING, ValidDays } from '@/constants/chart'
 
 export const getFieldForDays = (days: number): keyof MarketChart | null => {
