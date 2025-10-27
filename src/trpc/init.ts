@@ -3,6 +3,7 @@ import { initTRPC, TRPCError } from '@trpc/server'
 // import superjson from 'superjson'
 
 import { auth } from '@/auth'
+import { getUserById } from '@/data/user'
 
 /**
  * Creates TRPC context with user session data
@@ -48,7 +49,12 @@ export const baseProcedure = t.procedure
 export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
 	const session = await auth()
 
-	if (!session) {
+	if (!session || !session.user || !session.user.id) {
+		throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Unauthorized' })
+	}
+
+	const user = await getUserById(session.user.id)
+	if (!user) {
 		throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Unauthorized' })
 	}
 

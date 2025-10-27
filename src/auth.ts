@@ -93,6 +93,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 			const ONE_DAY = 60 * 60 * 24
 			const SEVEN_DAYS = ONE_DAY * 7
 
+			// Logic for initial sign-in (user exists)
 			if (user) {
 				const rememberMe = typeof user.rememberMe === 'boolean' ? user.rememberMe : true
 
@@ -100,16 +101,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 				token.exp = now + (rememberMe ? SEVEN_DAYS : ONE_DAY)
 			}
 
+			// Logic for updating session (user exists)
 			if (trigger === 'update' && typeof session?.rememberMe === 'boolean') {
 				token.rememberMe = session.rememberMe
 				token.exp = now + (session.rememberMe ? SEVEN_DAYS : ONE_DAY)
 			}
 
+			// If there is no sub (user.id), return the token as is
 			if (!token.sub) return token
 
 			const existingUser = await getUserById(token.sub)
 
-			if (!existingUser) return token
+			// If the user is deleted/not found, invalidate the token
+			if (!existingUser) return null
 
 			const existingAccount = await getAccountByUserId(existingUser.id)
 
