@@ -1,4 +1,4 @@
-// Do not change the path, made for seed.ts
+//! Do not change the path, made for seed.ts
 import {
 	deleteNonExistentCoinsListIDMap,
 	getCoinsList,
