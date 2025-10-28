@@ -1,4 +1,5 @@
-import { PrismaClient } from '@/generated/client'
+//! Do not change the path, made for seed.ts
+import { PrismaClient } from '../generated/client'
 
 const prismaClientSingleton = () => {
 	const isVercel = process.env.VERCEL === '1'

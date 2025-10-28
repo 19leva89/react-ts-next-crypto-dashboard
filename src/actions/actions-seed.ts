@@ -1,8 +1,7 @@
 import axios from 'axios'
 import { chunk, pick } from 'lodash'
 
-// Do not change the path, made for seed.ts
-
+//! Do not change the path, made for seed.ts
 import { prisma } from './../lib/prisma'
 import { Prisma } from '../generated/client'
 import { makeReq } from './../app/api/make-request'
