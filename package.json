@@ -96,5 +96,11 @@
     "tailwindcss-animate": "^1.0.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+		"next-auth": {
+			"next": "^16",
+			"nodemailer": "^7"
+		}
   }
 }
