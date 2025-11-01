@@ -42,7 +42,7 @@ export const CoinCard = ({ coin, viewMode }: Props) => {
 	return (
 		<Card
 			className={cn(
-				'flex flex-col gap-1 py-1 transition-all duration-300 ease-in-out hover:scale-[1.02] hover:border-gray-300 hover:shadow-lg dark:hover:border-gray-600',
+				'flex flex-col gap-1 py-1 transition-all duration-300 ease-in-out hover:scale-[1.02] hover:border-gray-400 hover:shadow-lg dark:hover:border-gray-700',
 				viewMode === 'grid'
 					? 'min-h-40 min-w-76 shrink-0 grow sm:basis-[calc(50%-1rem)] md:basis-[calc(40%-1rem)] lg:basis-[calc(33%-1rem)] xl:basis-[calc(25%-1rem)] 2xl:basis-[calc(20%-1rem)]'
 					: 'w-full gap-0',

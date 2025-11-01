@@ -87,7 +87,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 				{isLoading ? (
 					<div className='flex flex-nowrap gap-2 text-sm'>
 						{[...Array(5)].map((_, i) => (
-							<div key={i} className='w-full max-w-72 min-w-60 rounded-xl border p-3 dark:border-gray-700'>
+							<div key={i} className='w-full max-w-72 min-w-60 rounded-xl border p-3'>
 								<div className='flex items-center justify-between'>
 									<div className='flex items-center gap-1'>
 										<Skeleton className='size-8 rounded-full' />
@@ -114,7 +114,7 @@ export const AccountTrendingSection = ({ trendingData }: Props) => {
 							<div
 								key={i}
 								onClick={() => handleCoinClick(data.item.id)}
-								className='w-full max-w-72 min-w-60 cursor-pointer rounded-xl border p-3 duration-500 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-slate-800'
+								className='w-full max-w-72 min-w-60 cursor-pointer rounded-xl border p-3 duration-500 hover:bg-blue-50 dark:hover:bg-slate-800'
 							>
 								<div className='flex items-center justify-between'>
 									<div className='flex items-center gap-1'>

@@ -36,7 +36,7 @@ export const FormCheckbox = ({ name, label, required = false, disabled = false, 
 							checked={!!field.value}
 							onCheckedChange={(val) => field.onChange(val === true)}
 							className={cn(
-								'size-4 cursor-pointer rounded border-gray-300 text-primary focus:ring-primary',
+								'size-4 cursor-pointer rounded border text-primary focus:ring-primary',
 								errorText && 'border-red-500 text-red-600 focus:ring-red-500',
 							)}
 						/>

@@ -94,7 +94,7 @@ export function DataTable<TData extends { quantity: number; price: number; date:
 			)}
 		>
 			<Table>
-				<TableHeader className='sticky top-0 z-20 bg-gray-100 text-left text-sm dark:border-gray-700 dark:bg-slate-800'>
+				<TableHeader className='sticky top-0 z-20 bg-gray-100 text-left text-sm dark:bg-slate-800'>
 					{table.getHeaderGroups().map((headerGroup) => (
 						<TableRow key={headerGroup.id}>
 							{headerGroup.headers.map((header, i) => (

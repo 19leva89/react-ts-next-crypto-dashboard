@@ -12,6 +12,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
+	Separator,
 	SidebarTrigger,
 	Skeleton,
 } from '@/components/ui'
@@ -39,75 +40,85 @@ export const Navbar = () => {
 	useEffect(() => setMounted(true), [])
 
 	return (
-		<header className='sticky inset-x-0 top-0 isolate z-40 flex shrink-0 items-center justify-between gap-2 border-b border-gray-700 bg-background px-4 py-3 text-sm sm:px-6 sm:text-base'>
-			<div className='flex items-center gap-4 sm:gap-14'>
-				<SidebarTrigger size='lg' className='size-10 rounded-xl transition-colors duration-300 ease-in-out' />
+		<header className='sticky inset-x-0 top-0 isolate z-40 bg-background'>
+			<div className='flex items-center justify-between gap-2 px-4 py-3 text-sm sm:px-6 sm:text-base'>
+				<div className='flex items-center gap-4 sm:gap-14'>
+					<SidebarTrigger
+						size='lg'
+						className='size-10 rounded-xl transition-colors duration-300 ease-in-out'
+					/>
 
-				<div className='hidden items-center gap-2 sm:gap-6 lg:flex'>
-					<div className='flex flex-col'>
-						<h1 className='font-medium capitalize'>{pathName.split('/').at(-1) || 'Dashboard'}</h1>
+					<div className='hidden items-center gap-2 sm:gap-6 lg:flex'>
+						<div className='flex flex-col'>
+							<h1 className='font-medium capitalize'>{pathName.split('/').at(-1) || 'Dashboard'}</h1>
 
-						{status === 'loading' ? (
-							<Skeleton className='h-5 w-36 rounded-xl' />
-						) : (
-							<p className='hidden text-sm text-gray-600 lg:block dark:text-slate-300'>
-								Welcome back, {session?.user.name || 'Guest'}!
-							</p>
-						)}
+							{status === 'loading' ? (
+								<Skeleton className='h-5 w-36 rounded-xl' />
+							) : (
+								<p className='hidden text-sm text-gray-600 lg:block dark:text-slate-300'>
+									Welcome back, {session?.user.name || 'Guest'}!
+								</p>
+							)}
+						</div>
 					</div>
+
+					<Button
+						variant='default'
+						size='lg'
+						className='rounded-xl text-white transition-colors duration-300 ease-in-out'
+					>
+						<WalletIcon size={18} />
+
+						<span>Connect wallet</span>
+					</Button>
 				</div>
 
-				<Button
-					variant='default'
-					size='lg'
-					className='rounded-xl text-white transition-colors duration-300 ease-in-out'
-				>
-					<WalletIcon size={18} />
-
-					<span>Connect wallet</span>
-				</Button>
-			</div>
-
-			<div className='flex gap-1 text-gray-500 sm:gap-3 dark:text-white'>
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button
-							variant='outline'
-							size='lg'
-							className='group flex gap-3 rounded-xl px-4 text-sm transition-colors duration-300 ease-in-out'
-						>
-							<span className='relative top-px text-sm'>{currency.toUpperCase()}</span>
-
-							<div className='relative hidden size-6 transition-transform duration-300 group-hover:rotate-180 sm:block'>
-								<ChevronsUpDownIcon size={18} className='absolute inset-0 m-auto size-4.5!' />
-							</div>
-						</Button>
-					</DropdownMenuTrigger>
-
-					<DropdownMenuContent
-						align='start'
-						className='flex w-23 min-w-20 flex-col gap-1 rounded-xl shadow-lg'
-					>
-						{Object.entries(exchangeRate?.vsCurrencies || {}).map(([curr]) => (
-							<DropdownMenuItem
-								key={curr}
-								onClick={() => handleUpdateExchangeRate(curr as Currency)}
-								className='rounded-xl p-0'
+				<div className='flex gap-1 text-gray-500 sm:gap-3 dark:text-white'>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								variant='outline'
+								size='lg'
+								className='group flex gap-3 rounded-xl px-4 text-sm transition-colors duration-300 ease-in-out'
 							>
-								<Button
-									variant='ghost'
-									size='sm'
-									className={cn('w-full rounded-xl', currency === curr && 'bg-accent text-accent-foreground')}
-								>
-									{curr.toUpperCase()}
-								</Button>
-							</DropdownMenuItem>
-						))}
-					</DropdownMenuContent>
-				</DropdownMenu>
+								<span className='relative top-px text-sm'>{currency.toUpperCase()}</span>
 
-				{mounted && <ModeToggle />}
+								<div className='relative hidden size-6 transition-transform duration-300 group-hover:rotate-180 sm:block'>
+									<ChevronsUpDownIcon size={18} className='absolute inset-0 m-auto size-4.5!' />
+								</div>
+							</Button>
+						</DropdownMenuTrigger>
+
+						<DropdownMenuContent
+							align='start'
+							className='flex w-23 min-w-20 flex-col gap-1 rounded-xl shadow-lg'
+						>
+							{Object.entries(exchangeRate?.vsCurrencies || {}).map(([curr]) => (
+								<DropdownMenuItem
+									key={curr}
+									onClick={() => handleUpdateExchangeRate(curr as Currency)}
+									className='rounded-xl p-0'
+								>
+									<Button
+										variant='ghost'
+										size='sm'
+										className={cn(
+											'w-full rounded-xl',
+											currency === curr && 'bg-accent text-accent-foreground',
+										)}
+									>
+										{curr.toUpperCase()}
+									</Button>
+								</DropdownMenuItem>
+							))}
+						</DropdownMenuContent>
+					</DropdownMenu>
+
+					{mounted && <ModeToggle />}
+				</div>
 			</div>
+
+			<Separator />
 		</header>
 	)
 }

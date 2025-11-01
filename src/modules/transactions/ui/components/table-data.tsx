@@ -192,7 +192,7 @@ export function DataTable<TData, TValue>({ columns, data, onRowClick }: Props<TD
 					[&::-webkit-scrollbar-track]:bg-transparent'
 			>
 				<Table>
-					<TableHeader className='border-b bg-gray-100 text-left text-sm dark:border-gray-700 dark:bg-slate-800'>
+					<TableHeader className='border-b bg-gray-100 text-left text-sm dark:bg-slate-800'>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header, i) => {
