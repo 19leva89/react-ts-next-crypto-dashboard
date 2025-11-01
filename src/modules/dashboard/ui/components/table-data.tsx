@@ -226,17 +226,17 @@ export function DataTable<TData, TValue>({
 								}}
 								overscanCount={15}
 								className='h-50 w-62 cursor-pointer
-										[&::-webkit-scrollbar]:h-1.5
-										[&::-webkit-scrollbar]:w-1.5
-										[&::-webkit-scrollbar-thumb]:rounded-full
-										[&::-webkit-scrollbar-thumb]:bg-gray-400
-										dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
-										[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
-										dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
-										[&::-webkit-scrollbar-track]:m-1.5
-										[&::-webkit-scrollbar-track]:rounded-full
-										[&::-webkit-scrollbar-track]:bg-gray-100
-										dark:[&::-webkit-scrollbar-track]:bg-slate-800'
+									[&::-webkit-scrollbar]:h-1.5
+									[&::-webkit-scrollbar]:w-1.5
+									[&::-webkit-scrollbar-thumb]:rounded-full
+									[&::-webkit-scrollbar-thumb]:bg-gray-400
+									dark:[&::-webkit-scrollbar-thumb]:bg-slate-600
+									[&::-webkit-scrollbar-thumb:hover]:bg-gray-500
+									dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-500
+									[&::-webkit-scrollbar-track]:m-1.5
+									[&::-webkit-scrollbar-track]:rounded-full
+									[&::-webkit-scrollbar-track]:bg-gray-100
+									dark:[&::-webkit-scrollbar-track]:bg-slate-800'
 							/>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -295,7 +295,7 @@ export function DataTable<TData, TValue>({
 					[&::-webkit-scrollbar-track]:bg-transparent'
 			>
 				<Table>
-					<TableHeader className='border-b bg-gray-100 text-left text-sm dark:border-gray-700 dark:bg-slate-800'>
+					<TableHeader className='border-b bg-gray-100 text-left text-sm dark:bg-slate-800'>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header, i) => {
