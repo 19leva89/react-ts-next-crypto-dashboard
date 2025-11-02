@@ -1,10 +1,14 @@
-import DashboardPage from './dashboard/page'
+import { Suspense } from 'react'
 
-// The page must be rendered on the server side
-export const dynamic = 'force-dynamic'
+import DashboardPage from './dashboard/page'
+import { DashboardViewLoading } from '@/modules/dashboard/ui/views/dashboard-view'
 
 const HomePage = () => {
-	return <DashboardPage />
+	return (
+		<Suspense fallback={<DashboardViewLoading />}>
+			<DashboardPage />
+		</Suspense>
+	)
 }
 
 export default HomePage

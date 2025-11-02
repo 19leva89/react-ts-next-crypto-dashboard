@@ -18,9 +18,9 @@ const nextConfig: NextConfig = {
 		],
 		unoptimized: true,
 	},
+	// cacheComponents: true,
 	reactCompiler: true,
 	reactStrictMode: false,
-	// cacheComponents: true,
 }
 
 export default nextConfig

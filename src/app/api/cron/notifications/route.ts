@@ -1,5 +1,4 @@
-import { headers } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { connection, NextRequest, NextResponse } from 'next/server'
 
 import { deleteExpiredNotifications } from '@/actions/cron'
 
@@ -10,11 +9,12 @@ export const maxDuration = 60
  * Requires Bearer token authorization using CRON_SECRET environment variable
  * @returns JSON response indicating success or error
  */
-export async function GET() {
+export async function GET(req: NextRequest) {
+	await connection()
+
 	try {
 		// Checking authorization for cron requests
-		const headersList = await headers()
-		const authHeader = headersList.get('authorization')
+		const authHeader = req.headers.get('authorization')
 
 		const secret = process.env.CRON_SECRET
 
