@@ -11,7 +11,7 @@ Core Technologies:
 
 Data Fetching and State Management:
 - Immer (immutable state management)
-- Prisma 6 (ORM for DB)
+- Prisma 7 (ORM for DB)
 - React Hook Form (working with forms)
 
 Email Services:
