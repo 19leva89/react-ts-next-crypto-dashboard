@@ -4,7 +4,7 @@ import {
 	type TPortfolioChartResponse,
 } from '@/modules/charts/schema'
 import { getUserCoinsList } from '@/data/user'
-import { TUserCoinData } from '@/modules/coins/schema'
+import { TUserCoinData, WALLETS } from '@/modules/coins/schema'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 
 const processSparklineData = (coins: TUserCoinData[]): TUserChartDataPoint[] => {
@@ -52,7 +52,7 @@ export const chartsRouter = createTRPCRouter({
 					quantity: transaction.quantity,
 					price: transaction.price,
 					date: transaction.date.toISOString(),
-					wallet: transaction.wallet,
+					wallet: transaction.wallet as keyof typeof WALLETS,
 					userCoinId: transaction.userCoinId,
 				})),
 			}))

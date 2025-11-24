@@ -1,24 +1,21 @@
+import 'dotenv/config'
+import { PrismaPg } from '@prisma/adapter-pg'
+
 //! Do not change the path, made for seed.ts
-import { PrismaClient } from '../generated/client'
+import { PrismaClient } from '../generated/prisma/client'
 
 const prismaClientSingleton = () => {
 	const isVercel = process.env.VERCEL === '1'
 	const isProduction = process.env.NODE_ENV === 'production'
 
-	let databaseUrl = process.env.DATABASE_URL
+	const databaseUrl = isProduction
+		? `${process.env.DATABASE_URL}&connection_limit=${isVercel ? 1 : 5}&pool_timeout=10`
+		: `${process.env.DATABASE_URL}`
 
-	if (isProduction) {
-		// Use connection pool if available
-		const connectionLimit = isVercel ? 1 : 5 // Fewer connections for serverless
-		databaseUrl = `${process.env.DATABASE_URL}&connection_limit=${connectionLimit}&pool_timeout=10`
-	}
+	const adapter = new PrismaPg({ connectionString: databaseUrl })
 
 	const prisma = new PrismaClient({
-		datasources: {
-			db: {
-				url: databaseUrl,
-			},
-		},
+		adapter,
 		log: isProduction ? ['warn', 'error'] : ['info', 'warn', 'error'],
 	})
 

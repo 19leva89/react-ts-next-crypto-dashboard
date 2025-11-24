@@ -62,9 +62,10 @@ export const PieChartContainer = ({ chartData }: Props) => {
 					<PieChart>
 						<ChartTooltip
 							cursor={false}
-							content={({ active, payload, coordinate }) => (
+							content={({ active, activeIndex, payload, coordinate }) => (
 								<ChartTooltipContent
 									active={active}
+									activeIndex={activeIndex}
 									payload={payload}
 									coordinate={coordinate}
 									accessibilityLayer={true}

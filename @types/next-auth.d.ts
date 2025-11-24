@@ -1,7 +1,7 @@
 import { DefaultJWT } from 'next-auth/jwt'
 import { type DefaultUser } from 'next-auth'
 
-import { UserRole } from '@/generated/client'
+import { UserRole } from '@/generated/prisma/client'
 
 declare module 'next-auth' {
 	interface User extends DefaultUser {

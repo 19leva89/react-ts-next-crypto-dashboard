@@ -3,7 +3,7 @@ import { chunk, pick } from 'lodash'
 
 //! Do not change the path, made for seed.ts
 import { prisma } from './../lib/prisma'
-import { Prisma } from '../generated/client'
+import { Prisma } from '../generated/prisma/client'
 import { makeReq } from './../app/api/make-request'
 import { TCoinsListData } from './../modules/dashboard/schema'
 
