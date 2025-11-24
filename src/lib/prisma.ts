@@ -8,8 +8,10 @@ const prismaClientSingleton = () => {
 	const isVercel = process.env.VERCEL === '1'
 	const isProduction = process.env.NODE_ENV === 'production'
 
+	const connectionLimit = isVercel ? 1 : 5
+
 	const databaseUrl = isProduction
-		? `${process.env.DATABASE_URL}&connection_limit=${isVercel ? 1 : 5}&pool_timeout=10`
+		? `${process.env.DATABASE_URL}&connection_limit=${connectionLimit}&pool_timeout=10`
 		: `${process.env.DATABASE_URL}`
 
 	const adapter = new PrismaPg({ connectionString: databaseUrl })

@@ -18,9 +18,6 @@ const nextConfig: NextConfig = {
 		],
 		unoptimized: true,
 	},
-	outputFileTracingIncludes: {
-		'/*': ['./certs/**'], // Includes certs in the server bundle
-	},
 	// cacheComponents: true,
 	reactCompiler: true,
 	reactStrictMode: false,
