@@ -1,6 +1,13 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 
+import {
+	addCoinToUserSchema,
+	userCoinDataSchema,
+	walletSchema,
+	WALLETS,
+	DEFAULT_WALLET,
+} from '@/modules/coins/schema'
 import { prisma } from '@/lib/prisma'
 import { getCoinData } from '@/data/coin'
 import { getUserCoinsList } from '@/data/user'
@@ -8,7 +15,6 @@ import { makeReq } from '@/app/api/make-request'
 import { Wallet } from '@/generated/prisma/client'
 import { recalculateAveragePrice } from '@/actions/cron'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
-import { addCoinToUserSchema, userCoinDataSchema, walletSchema, WALLETS } from '@/modules/coins/schema'
 
 export const coinsRouter = createTRPCRouter({
 	addCoinToUser: protectedProcedure
@@ -92,7 +98,7 @@ export const coinsRouter = createTRPCRouter({
 				quantity: z.number(),
 				price: z.number(),
 				date: z.string().transform((str) => new Date(str)),
-				wallet: walletSchema.default('OTHER'),
+				wallet: walletSchema.default(DEFAULT_WALLET),
 			}),
 		)
 		.mutation(async ({ input: { coinId, quantity, price, date, wallet }, ctx }) => {
@@ -307,7 +313,7 @@ export const coinsRouter = createTRPCRouter({
 							quantity: z.number(),
 							price: z.number(),
 							date: z.string().transform((str) => new Date(str)),
-							wallet: walletSchema.default('OTHER'),
+							wallet: walletSchema.default(DEFAULT_WALLET),
 						}),
 					)
 					.optional(),

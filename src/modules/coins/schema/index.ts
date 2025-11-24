@@ -9,6 +9,8 @@ export const WALLETS = {
 	OTHER: 'Other',
 } as const
 
+export const DEFAULT_WALLET = 'OTHER' as const satisfies keyof typeof WALLETS
+
 export const walletSchema = z.enum(Object.keys(WALLETS) as [keyof typeof WALLETS, ...string[]])
 
 export const transactionSchema = z.object({
@@ -45,7 +47,7 @@ export const addCoinToUserSchema = z.object({
 	coinId: z.string(),
 	quantity: z.number(),
 	price: z.number(),
-	wallet: walletSchema.optional().default('OTHER'),
+	wallet: walletSchema.optional().default(DEFAULT_WALLET),
 	image: z.string().optional(),
 })
 
