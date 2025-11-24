@@ -20,8 +20,8 @@ import {
 import { useTRPC } from '@/trpc/client'
 import { useFormatUSDPrice } from '@/hooks/use-format-usd-price'
 import { useSelectedCurrency } from '@/hooks/use-selected-currency'
-import { TTransaction, TUserCoinData } from '@/modules/coins/schema'
 import { useCurrencyConverter } from '@/hooks/use-currency-converter'
+import { TTransaction, TUserCoinData, WALLETS } from '@/modules/coins/schema'
 import { TableContainer } from '@/components/shared/data-tables/transaction-table'
 
 interface Props {
@@ -131,7 +131,7 @@ export const EditCoin = ({ coin, isOpen, onClose }: Props) => {
 				quantity: transaction.quantity,
 				price: transaction.price,
 				date: new Date(transaction.date).toISOString(),
-				wallet: transaction.wallet,
+				wallet: transaction.wallet as keyof typeof WALLETS,
 			}))
 
 			const sellPriceInUSD = sellPrice ? toUSD(Number(sellPrice)) : undefined

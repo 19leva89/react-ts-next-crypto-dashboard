@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import { getCoinData } from '@/data/coin'
 import { getUserCoinsList } from '@/data/user'
 import { makeReq } from '@/app/api/make-request'
+import { Wallet } from '@/generated/prisma/client'
 import { recalculateAveragePrice } from '@/actions/cron'
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init'
 import { addCoinToUserSchema, userCoinDataSchema, walletSchema, WALLETS } from '@/modules/coins/schema'
@@ -72,7 +73,7 @@ export const coinsRouter = createTRPCRouter({
 						quantity,
 						price,
 						date: new Date(),
-						wallet,
+						wallet: wallet as Wallet,
 						userCoinId: userCoin.id,
 					},
 				})
@@ -91,7 +92,7 @@ export const coinsRouter = createTRPCRouter({
 				quantity: z.number(),
 				price: z.number(),
 				date: z.string().transform((str) => new Date(str)),
-				wallet: walletSchema.default(WALLETS.OTHER),
+				wallet: walletSchema.default('OTHER'),
 			}),
 		)
 		.mutation(async ({ input: { coinId, quantity, price, date, wallet }, ctx }) => {
@@ -118,7 +119,7 @@ export const coinsRouter = createTRPCRouter({
 						quantity,
 						price,
 						date,
-						wallet,
+						wallet: wallet as Wallet,
 						userCoin: {
 							connect: { userId_coinId: { userId, coinId } },
 						},
@@ -241,7 +242,7 @@ export const coinsRouter = createTRPCRouter({
 					quantity: transaction.quantity,
 					price: transaction.price,
 					date: transaction.date.toISOString(),
-					wallet: transaction.wallet,
+					wallet: transaction.wallet as keyof typeof WALLETS,
 					userCoinId: transaction.userCoinId,
 				})),
 			}
@@ -306,7 +307,7 @@ export const coinsRouter = createTRPCRouter({
 							quantity: z.number(),
 							price: z.number(),
 							date: z.string().transform((str) => new Date(str)),
-							wallet: walletSchema.default(WALLETS.OTHER),
+							wallet: walletSchema.default('OTHER'),
 						}),
 					)
 					.optional(),
@@ -354,7 +355,12 @@ export const coinsRouter = createTRPCRouter({
 						transactions.map((t) =>
 							transactionPrisma.userCoinTransaction.update({
 								where: { id: t.id },
-								data: { ...t },
+								data: {
+									quantity: t.quantity,
+									price: t.price,
+									date: t.date,
+									wallet: t.wallet as Wallet,
+								},
 							}),
 						),
 					)

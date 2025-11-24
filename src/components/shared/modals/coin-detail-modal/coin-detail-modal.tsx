@@ -208,9 +208,10 @@ export const CoinDetailModal = ({ coinId, showDetailModal, closeModal }: Props) 
 									{/* Popup tooltip */}
 									<ChartTooltip
 										cursor={true}
-										content={({ active, payload, coordinate }) => (
+										content={({ active, activeIndex, payload, coordinate }) => (
 											<ChartTooltipContent
 												active={active}
+												activeIndex={activeIndex}
 												payload={payload}
 												coordinate={coordinate}
 												accessibilityLayer={true}

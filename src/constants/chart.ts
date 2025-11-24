@@ -1,4 +1,4 @@
-import { MarketChart } from '@/generated/client'
+import { MarketChart } from '@/generated/prisma/client'
 
 export type ValidDays = keyof typeof DAYS_MAPPING
 export const DAYS_MAPPING: { [key: number]: keyof MarketChart } = {

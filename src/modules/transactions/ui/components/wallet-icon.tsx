@@ -2,8 +2,8 @@ import Image from 'next/image'
 import { useTheme } from 'next-themes'
 
 import { cn } from '@/lib'
-import { TWallet } from '@/modules/coins/schema'
-import { WALLET_DISPLAY_NAMES, WALLET_ICONS, WALLET_ICONS_DARK } from '@/constants/wallet'
+import { TWallet, WALLETS } from '@/modules/coins/schema'
+import { WALLET_ICONS, WALLET_ICONS_DARK } from '@/constants/wallet'
 
 interface Props {
 	wallet: TWallet
@@ -14,9 +14,10 @@ export const WalletIcon = ({ wallet, className }: Props) => {
 	const { theme } = useTheme()
 
 	const isDark = theme === 'dark'
+	const key = wallet as keyof typeof WALLETS
 
-	const displayName = WALLET_DISPLAY_NAMES[wallet]
-	const iconSrc = isDark ? WALLET_ICONS[wallet] : WALLET_ICONS_DARK[wallet]
+	const displayName = WALLETS[key]
+	const iconSrc = isDark ? WALLET_ICONS[key] : WALLET_ICONS_DARK[key]
 
 	return (
 		<Image

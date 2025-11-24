@@ -1,15 +1,15 @@
 import { z } from 'zod'
 
 export const WALLETS = {
-	BINANCE: 'BINANCE',
-	GATE: 'GATE',
-	LEDGER: 'LEDGER',
+	BINANCE: 'Binance',
+	GATE: 'Gate',
+	LEDGER: 'Ledger',
 	MEXC: 'MEXC',
-	PROBIT_GLOBAL: 'PROBIT_GLOBAL',
-	OTHER: 'OTHER',
+	PROBIT_GLOBAL: 'ProBit Global',
+	OTHER: 'Other',
 } as const
 
-export const walletSchema = z.enum(['BINANCE', 'GATE', 'LEDGER', 'MEXC', 'PROBIT_GLOBAL', 'OTHER'])
+export const walletSchema = z.enum(Object.keys(WALLETS) as [keyof typeof WALLETS, ...string[]])
 
 export const transactionSchema = z.object({
 	id: z.string(),
@@ -45,7 +45,7 @@ export const addCoinToUserSchema = z.object({
 	coinId: z.string(),
 	quantity: z.number(),
 	price: z.number(),
-	wallet: walletSchema.optional().default(WALLETS.OTHER),
+	wallet: walletSchema.optional().default('OTHER'),
 	image: z.string().optional(),
 })
 
