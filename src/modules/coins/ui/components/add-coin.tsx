@@ -34,8 +34,8 @@ import {
 } from '@/components/ui'
 import { cn } from '@/lib'
 import { useTRPC } from '@/trpc/client'
-import { WALLETS } from '@/modules/coins/schema'
 import { getWalletDisplayName } from '@/data/wallet'
+import { DEFAULT_WALLET, WALLETS } from '@/modules/coins/schema'
 import { useSelectedCurrency } from '@/hooks/use-selected-currency'
 import { WalletIcon } from '@/modules/transactions/ui/components/wallet-icon'
 
@@ -65,7 +65,7 @@ export const AddCoin = ({ className }: Props) => {
 	const [editQuantity, setEditQuantity] = useState<string>('')
 	const [selectedCoin, setSelectedCoin] = useState<string>('')
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-	const [selectedWallet, setSelectedWallet] = useState<keyof typeof WALLETS>('OTHER')
+	const [selectedWallet, setSelectedWallet] = useState<keyof typeof WALLETS>(DEFAULT_WALLET)
 
 	// New state variables for managing Select open state and search focus
 	const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
