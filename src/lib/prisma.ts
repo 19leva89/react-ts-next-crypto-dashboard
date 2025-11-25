@@ -24,4 +24,6 @@ declare const globalThis: {
 
 export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
 
-if (!isProduction) globalThis.prismaGlobal = prisma
+if (!isProduction) {
+	globalThis.prismaGlobal = prisma
+}
