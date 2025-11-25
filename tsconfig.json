@@ -4,7 +4,7 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "ESNext"
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -17,30 +17,17 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
-    "types": [
-      "next",
-      "node",
-      "next-auth"
-    ],
-    "typeRoots": [
-      "./@types",
-      "./node_modules/@types"
-    ]
   },
   "include": [
     "next-env.d.ts",
-    "next.config.js",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
