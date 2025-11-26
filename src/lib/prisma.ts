@@ -1,30 +1,26 @@
 import 'dotenv/config'
-import { PrismaPg } from '@prisma/adapter-pg'
 
 //! Do not change the path, made for seed.ts
 import { PrismaClient } from '../generated/prisma/client'
 
+const baseUrl = process.env.DATABASE_URL
+const isProduction = process.env.NODE_ENV === 'production'
+
+const isVercel = Boolean(process.env.VERCEL)
+const isNetlify = Boolean(process.env.NETLIFY)
+const isServerless = isVercel || isNetlify
+
 const prismaClientSingleton = () => {
-	const isVercel = process.env.VERCEL === '1'
-	const isProduction = process.env.NODE_ENV === 'production'
+	if (!baseUrl) throw new Error('Missing DATABASE_URL environment variable')
 
-	let databaseUrl = process.env.DATABASE_URL
+	const databaseUrl = isProduction
+		? `${baseUrl}&connection_limit=${isVercel ? 1 : 5}&pool_timeout=10`
+		: baseUrl
 
-	if (isProduction) {
-		// Use connection pool if available
-		const connectionLimit = isVercel ? 1 : 5 // Fewer connections for serverless
-
-		databaseUrl = `${process.env.DATABASE_URL}&connection_limit=${connectionLimit}&pool_timeout=10`
-	}
-
-	const adapter = new PrismaPg({ connectionString: databaseUrl })
-
-	const prisma = new PrismaClient({
-		adapter,
+	return new PrismaClient({
+		datasources: { db: { url: databaseUrl } },
 		log: isProduction ? ['warn', 'error'] : ['info', 'warn', 'error'],
 	})
-
-	return prisma
 }
 
 declare const globalThis: {
@@ -33,7 +29,7 @@ declare const globalThis: {
 
 export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
 
-if (process.env.NODE_ENV !== 'production') {
+if (!isProduction) {
 	globalThis.prismaGlobal = prisma
 }
 
@@ -45,22 +41,20 @@ const gracefulShutdown = async (signal: string) => {
 	process.exit(0)
 }
 
-// Handle different shutdown signals
+// Shutdown signals
 process.on('SIGINT', () => gracefulShutdown('SIGINT'))
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
 
-// Serverless-specific handling (for Vercel, Netlify, etc.)
-if (process.env.VERCEL || process.env.NETLIFY) {
-	// Clean up connections after each request in serverless environments
-	const originalDisconnect = prisma.$disconnect
+// Serverless cleanup (Vercel, Netlify)
+if (isServerless) {
+	const originalDisconnect = prisma.$disconnect.bind(prisma)
 
 	prisma.$disconnect = async () => {
-		// Add any cleanup logic here
-		await originalDisconnect.apply(prisma)
+		await originalDisconnect()
 	}
 }
 
-// Handle uncaught exceptions
+// Uncaught Exceptions
 process.on('uncaughtException', async (error) => {
 	console.error('Uncaught Exception:', error)
 
@@ -68,7 +62,7 @@ process.on('uncaughtException', async (error) => {
 	process.exit(1)
 })
 
-// Handle unhandled rejections
+// Unhandled Rejections
 process.on('unhandledRejection', async (reason, promise) => {
 	console.error('Unhandled Rejection at:', promise, 'reason:', reason)
 
