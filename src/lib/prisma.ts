@@ -14,7 +14,7 @@ const prismaClientSingleton = () => {
 	if (!baseUrl) throw new Error('Missing DATABASE_URL environment variable')
 
 	const databaseUrl = isProduction
-		? `${baseUrl}&connection_limit=${isVercel ? 1 : 5}&pool_timeout=10`
+		? `${baseUrl}&connection_limit=${isServerless ? 1 : 5}&pool_timeout=10`
 		: baseUrl
 
 	return new PrismaClient({
