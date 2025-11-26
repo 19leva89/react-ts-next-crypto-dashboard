@@ -1,1 +1,1 @@
-export * from '../generated/prisma/enums'
+export type { AirdropStatus, NotificationType, UserRole, Wallet } from '../generated/prisma/enums'
