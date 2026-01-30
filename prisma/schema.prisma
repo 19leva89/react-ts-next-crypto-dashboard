@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
+  // compilerBuild = "fast" // "fast" | "small" // for prisma 7.3.0
 }
 
 datasource db {
