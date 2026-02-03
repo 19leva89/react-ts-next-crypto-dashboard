@@ -1,5 +1,7 @@
 import 'dotenv/config'
 
+import { PrismaPg } from '@prisma/adapter-pg'
+
 //! Do not change the path, made for seed.ts
 import { PrismaClient } from '../generated/prisma/client'
 
@@ -10,16 +12,19 @@ const isVercel = Boolean(process.env.VERCEL)
 const isNetlify = Boolean(process.env.NETLIFY)
 const isServerless = isVercel || isNetlify
 
+const connectionString = isProduction
+	? `${baseUrl}&uselibpqcompat=true&connection_limit=${isServerless ? 1 : 5}&pool_timeout=10`
+	: baseUrl
+
+const adapter = new PrismaPg({ connectionString })
+
 const prismaClientSingleton = () => {
 	if (!baseUrl) throw new Error('Missing DATABASE_URL environment variable')
 
-	const databaseUrl = isProduction
-		? `${baseUrl}&connection_limit=${isServerless ? 1 : 5}&pool_timeout=10`
-		: baseUrl
-
 	return new PrismaClient({
-		datasources: { db: { url: databaseUrl } },
+		adapter,
 		log: isProduction ? ['warn', 'error'] : ['info', 'warn', 'error'],
+		errorFormat: 'pretty',
 	})
 }
 
