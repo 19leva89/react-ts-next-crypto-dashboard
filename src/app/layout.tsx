@@ -39,6 +39,7 @@ async function RootLayout({ children }: PropsWithChildren) {
 						<AppLayout>{children}</AppLayout>
 					</ThemeProvider>
 				</AppProvider>
+
 				<Toaster position='bottom-right' expand={false} richColors />
 
 				{/* Allow track page views for Vercel */}
