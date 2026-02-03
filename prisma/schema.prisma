@@ -1,12 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
-  // compilerBuild = "fast" // "fast" | "small" // for prisma 7.3.0
+  provider      = "prisma-client-js"
+  output        = "../src/generated/prisma"
+  compilerBuild = "fast" // "fast" | "small"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
