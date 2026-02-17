@@ -16,9 +16,10 @@ export async function proxy(req: NextRequest) {
 
 	const isAuthRoute = authRoutes.includes(pathname)
 	const isProtected = protectedRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
+	const isProduction = process.env.NODE_ENV === 'production'
 
 	//! Important to set secureCookie
-	const token = await getToken({ req, secret, secureCookie: protocol === 'https:' })
+	const token = await getToken({ req, secret, secureCookie: isProduction })
 	const isLoggedIn = !!token
 
 	// 1. If it's an authorization route and the user is already logged in, redirect

@@ -100,7 +100,7 @@ export const getUserCoinsList = async () => {
 		})
 
 		// Launch an update in the background via API
-		const response = await makeReq('GET', `/update/user-coins?userId=${session.user.id}`)
+		const response = await makeReq('GET', `/api/update/user-coins?userId=${session.user.id}`)
 
 		if (!response || !Array.isArray(response) || response.length === 0) {
 			console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')

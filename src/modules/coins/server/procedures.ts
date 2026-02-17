@@ -208,7 +208,7 @@ export const coinsRouter = createTRPCRouter({
 			}
 
 			// Launch an update in the background via API
-			const response = await makeReq('GET', `/update/user-coin/${coinId}`)
+			const response = await makeReq('GET', `/api/update/user-coin/${coinId}`)
 
 			if (!response || !Array.isArray(response) || response.length === 0) {
 				console.log('✅ GET_USER_COINS: Using cached UserCoins from DB')

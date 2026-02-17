@@ -19,21 +19,31 @@ async function makeReq(
 	headers: Record<string, string> = {},
 ): Promise<any> {
 	try {
+		const fullUrl = absoluteUrl(url)
+		console.log(`🔄 Making ${method} request to: ${fullUrl}`)
+
 		const response = await axios({
 			method,
-			url: absoluteUrl(url),
+			url: fullUrl,
 			params: method === 'GET' ? params : undefined,
 			data: method !== 'GET' && Object.keys(params).length ? params : undefined,
 			headers,
 		})
 
+		console.log(`✅ Request successful: ${fullUrl}`)
 		return response.data
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
-			throw new Error(`Axios error: ${error.message}`)
+			const errorMessage = `Axios error: ${error.message}`
+			console.error(`❌ Request failed: ${absoluteUrl(url)} - ${errorMessage}`)
+
+			throw new Error(errorMessage)
 		}
 
-		throw new Error(`Error: ${error}`)
+		const errorMessage = `Error: ${error}`
+		console.error(`❌ Unexpected error: ${errorMessage}`)
+
+		throw new Error(errorMessage)
 	}
 }
 
