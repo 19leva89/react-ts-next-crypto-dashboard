@@ -60,7 +60,7 @@ export const ResetForm = ({ onClose }: Props) => {
 		} catch (error) {
 			console.error('Reset error:', error)
 
-			toast.error('An unexpected error occurred. Please try again')
+			toast.error('An unexpected reset error occurred. Please try again')
 		} finally {
 			setIsLoading(false)
 		}
