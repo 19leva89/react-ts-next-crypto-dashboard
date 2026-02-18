@@ -2,7 +2,7 @@ import { connection, NextRequest, NextResponse } from 'next/server'
 
 import { updateCoinsMarketChart } from '@/actions/cron'
 
-export const maxDuration = 10
+export const maxDuration = 60
 
 /**
  * Handles GET requests for updating coins market chart data via cron job
