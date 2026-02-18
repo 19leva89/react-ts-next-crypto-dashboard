@@ -2,7 +2,7 @@ import { connection, NextRequest, NextResponse } from 'next/server'
 
 import { updateTrendingData } from '@/actions/cron'
 
-export const maxDuration = 10
+export const maxDuration = 60
 
 /**
  * Handles GET requests for updating trending data via cron job
