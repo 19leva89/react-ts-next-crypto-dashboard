@@ -121,7 +121,7 @@ export const credentialsLoginUser = async (values: TLoginValues) => {
 	} catch (error) {
 		console.error('Login error:', error)
 
-		return { error: 'An unexpected error occurred. Please try again' }
+		return { error: 'An unexpected login error occurred. Please try again' }
 	}
 }
 
