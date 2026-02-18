@@ -10,7 +10,7 @@ import { getCgCoinsDataRoute } from '@/app/api/resources'
  * @param context.params - Parameters object containing the coinId parameter
  * @returns JSON response containing detailed coin data or error message
  */
-export async function GET(_req: NextRequest, context: { params: any }) {
+export async function GET(_req: NextRequest, context: { params: Promise<{ coinId: string }> }) {
 	try {
 		const { coinId } = await context.params
 		const url = getCgCoinsDataRoute(coinId)

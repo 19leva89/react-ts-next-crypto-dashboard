@@ -9,7 +9,7 @@ import { updateUserCoinData } from '@/actions/user'
  * @param context.params - Parameters object containing the coinId parameter
  * @returns JSON response indicating success or error
  */
-export async function GET(_req: NextRequest, context: { params: any }) {
+export async function GET(_req: NextRequest, context: { params: Promise<{ coinId: string }> }) {
 	try {
 		const { coinId } = await context.params
 

@@ -9,7 +9,7 @@ export const Footer = () => {
 				target='_blank'
 				rel='noopener noreferrer'
 			>
-				Crypto dashboard 2025 by <span className='underline'> Sobolev</span>
+				Crypto dashboard 2025-2026 by <span className='underline'> Sobolev</span>
 			</Link>
 		</div>
 	)

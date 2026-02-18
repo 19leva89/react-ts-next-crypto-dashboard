@@ -12,7 +12,7 @@ import { getCgCoinsMarketChartRoute } from '@/app/api/resources'
  * @param context.params - Parameters object containing the coinId parameter
  * @returns JSON response containing market chart data for the specified coin or error message
  */
-export async function GET(req: NextRequest, context: { params: any }) {
+export async function GET(req: NextRequest, context: { params: Promise<{ coinId: string }> }) {
 	try {
 		const { coinId } = await context.params
 		const daysParam = req.nextUrl.searchParams.get('days')

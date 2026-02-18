@@ -10,7 +10,7 @@ import { getCgCoinsListByCateRoute } from '@/app/api/resources'
  * @param context.params - Parameters object containing the category parameter
  * @returns JSON response containing coins data for the specified category or error message
  */
-export async function GET(_req: NextRequest, context: { params: any }) {
+export async function GET(_req: NextRequest, context: { params: Promise<{ category: string }> }) {
 	try {
 		const { category } = await context.params
 		const url = getCgCoinsListByCateRoute(category)

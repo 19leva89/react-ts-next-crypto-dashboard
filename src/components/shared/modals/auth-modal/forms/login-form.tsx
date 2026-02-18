@@ -90,10 +90,12 @@ export const LoginForm = ({ onClose }: Props) => {
 			await update()
 
 			onClose?.()
-		} catch (error) {
-			console.error('Provider login error:', error)
+		} catch (error: any) {
+			if (!error?.message?.includes('redirect')) {
+				console.error('Provider login error:', error)
 
-			toast.error('An unexpected error occurred. Please try again')
+				toast.error('An unexpected error occurred. Please try again')
+			}
 		} finally {
 			setIsLoading(false)
 		}
