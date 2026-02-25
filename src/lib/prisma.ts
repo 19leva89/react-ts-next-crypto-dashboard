@@ -8,15 +8,15 @@ import { PrismaClient } from '../generated/prisma/client'
 const baseUrl = process.env.DATABASE_URL
 const isProduction = process.env.NODE_ENV === 'production'
 
-const isVercel = Boolean(process.env.VERCEL)
-const isNetlify = Boolean(process.env.NETLIFY)
-const isServerless = isVercel || isNetlify
+// const isVercel = Boolean(process.env.VERCEL)
+// const isNetlify = Boolean(process.env.NETLIFY)
+// const isServerless = isVercel || isNetlify
 
-const connectionString = isProduction
-	? `${baseUrl}&uselibpqcompat=true&connection_limit=${isServerless ? 1 : 5}&pool_timeout=10`
-	: baseUrl
+// const connectionString = isProduction
+// 	? `${baseUrl}&uselibpqcompat=true&connection_limit=${isServerless ? 1 : 5}&pool_timeout=10`
+// 	: baseUrl
 
-const adapter = new PrismaPg({ connectionString })
+const adapter = new PrismaPg({ connectionString: baseUrl })
 
 const prismaClientSingleton = () => {
 	if (!baseUrl) throw new Error('Missing DATABASE_URL environment variable')
@@ -51,13 +51,13 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'))
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
 
 // Serverless cleanup (Vercel, Netlify)
-if (isServerless) {
-	const originalDisconnect = prisma.$disconnect.bind(prisma)
+// if (isServerless) {
+// 	const originalDisconnect = prisma.$disconnect.bind(prisma)
 
-	prisma.$disconnect = async () => {
-		await originalDisconnect()
-	}
-}
+// 	prisma.$disconnect = async () => {
+// 		await originalDisconnect()
+// 	}
+// }
 
 // Uncaught Exceptions
 process.on('uncaughtException', async (error) => {
