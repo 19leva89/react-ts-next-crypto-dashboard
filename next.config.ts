@@ -1,22 +1,13 @@
 import type { NextConfig } from 'next'
 
+import { IMAGE_HOSTS } from '@/constants/image-hosts'
+
 const nextConfig: NextConfig = {
 	images: {
-		remotePatterns: [
-			{
-				protocol: 'https',
-				hostname: 'academy-public.coinmarketcap.com',
-			},
-			{
-				protocol: 'https',
-				hostname: 'coin-images.coingecko.com',
-			},
-			{
-				protocol: 'https',
-				hostname: 'avatars.githubusercontent.com',
-			},
-		],
-		unoptimized: true,
+		remotePatterns: IMAGE_HOSTS.map((hostname) => ({
+			protocol: 'https',
+			hostname,
+		})),
 	},
 	// cacheComponents: true,
 	reactCompiler: true,
